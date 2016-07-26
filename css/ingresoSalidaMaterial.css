@@ -1,0 +1,28 @@
+		
+/*  inicio de light box  */
+.modal-dialog {width:620px;}
+.thumbnail {margin-bottom:6px;}
+/*  fin de light box  */
+
+
+.titulo{font-size:12px;margin-top:1px;  text-align:right;font-weight : bold}
+
+#letraCabecera{font-size:12px;margin-top:1px; margin-left:25px; text-align:left;}
+    
+.fechaTitulo{font-size:12px;margin-top:1px; margin-left:160px; text-align:right;}
+
+.letraDetalle , .openLightBox{font-size:11px;text-align:left;}
+	
+#inputFecha, #inputFechaInicial, #inputFechaFinal{font-size:11px;text-align:center;}
+
+.letraCentreada{font-size:11px;text-align:center;}
+ 			
+.letraNumero{font-size:11px;text-align:right;}
+        
+.letraNumeroNegrita{font-size:11px;text-align:right; font-weight : bold;}
+
+.totalBs{font-size:16px;text-align:center; margin-left:670px; }
+
+.detalleTotalBs{font-size:16px;text-align:right;  }
+  
+.letraDetalleLightBox{font-size:10px;margin-top:1px;text-align:left;}
