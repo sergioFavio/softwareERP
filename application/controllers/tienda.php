@@ -800,7 +800,7 @@ class Tienda extends CI_Controller {
 					$datos['documento']="pdfsArchivos/ventas/listaPrecios.pdf";	
 					
 					$this->load->view('header');
-					$this->load->view('reporteListaPreciosPdf',$datos );
+					$this->load->view('reportePdfSinFechas',$datos );
 					$this->load->view('footer');	
 				}
 			}	//.. fin IF validar usuario ...
