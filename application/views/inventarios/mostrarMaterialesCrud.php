@@ -98,6 +98,7 @@ $(document).ready(function() {
 		var unidad = $(e.relatedTarget).data('unidad');
 		var precio = $(e.relatedTarget).data('precio');
 		var tipo = $(e.relatedTarget).data('tipo');
+		var stockMin=$(e.relatedTarget).data('stock-min');
 		var title = $(e.relatedTarget).data('title');
 		//aca lo asignamos a un hidden dentro del form que esta en el modal
 	    $(e.currentTarget).find('input[name="inputCodigoM"]').val(id);
@@ -106,7 +107,7 @@ $(document).ready(function() {
 		$(e.currentTarget).find('input[name="inputUnidadM"]').val(unidad);
 		$(e.currentTarget).find('input[name="inputPrecioUnidadM"]').val(precio);
 		$(e.currentTarget).find('input[name="inputEditarTipoMaterialM"]').val(tipo);      //.. variable falsa para tipo radio ...
-		//$(e.currentTarget).find('input[name="inputEstockMinimoM"]').val(0.00);
+		$(e.currentTarget).find('input[name="inputEstockMinimoM"]').val(stockMin);
 		
 		if(tipo=="C" ){
 			document.getElementById('inputTipoMaterial1M').checked = true;	
@@ -412,7 +413,7 @@ function validarEstockMinimoM(numero){
 						
 					 echo"<td style='width:70px;background-color:#b9e9ec;' width='40' align='left'>
 					 <a href='#' data-title='Editar registro' data-item-id='".$material->codInsumo."' data-mat='".$material->nombreInsumo."' data-existencia='".$material->existencia."' 
-					 data-unidad='".$material->unidad."' data-precio='".$material->precioUnidad."' data-tipo='".$material->tipoInsumo."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-pencil'></span> Editar</a></td>";
+					 data-unidad='".$material->unidad."' data-precio='".$material->precioUnidad."' data-tipo='".$material->tipoInsumo."' data-stock-min='".$material->stockMinimo."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-pencil'></span> Editar</a></td>";
 				
 					 echo"<td style='width:70px;background-color:#a5d4da;' width='40' align='left'><a href='#' data-title='Mensaje:' data-item-id='".$material->codInsumo."' data-mat='".$material->nombreInsumo."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 		

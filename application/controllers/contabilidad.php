@@ -226,9 +226,10 @@ class Contabilidad extends CI_Controller {
 				  	$this->pdf->Output('pdfsArchivos/contabilidad/plandectas.pdf', 'F');
 					
 					$datos['documento']="pdfsArchivos/contabilidad/plandectas.pdf";	
+					$datos['titulo']=' Plan de Cuentas';	// ... titulo ...
 					
 					$this->load->view('header');
-					$this->load->view('contabilidad/reportePlanDeCtasPdf',$datos );
+					$this->load->view('reportePdfSinFechas',$datos );
 					$this->load->view('footer');	
 				}
 			}	//.. fin IF validar usuario ...

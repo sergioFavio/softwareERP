@@ -73,7 +73,7 @@ $(document).ready(function(){
 </div>
 
  <br /><br /> 
-<p align='center'><code>NOTA: El botón 'X' en la ventana modal es para terminar el proceso de respaldo de la base de datos.</code></p><br />
+<p align='center'><code>NOTA: Presione el botón 'X' en la ventana modal para terminar el proceso de respaldo de la base de datos.</code></p><br />
            
 <br /><br /><br />
 	<?php		

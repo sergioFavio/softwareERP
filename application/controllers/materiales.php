@@ -465,7 +465,8 @@ class Materiales extends CI_Controller {
         	"existencia"=>$this->input->post("inputExistencia"),
         	"unidad"=>$this->input->post("inputUnidad"),
         	"precioUnidad"=>$this->input->post("inputPrecioUnidad"),
-        	"tipoInsumo"=>$this->input->post("inputTipoMaterial")
+        	"tipoInsumo"=>$this->input->post("inputTipoMaterial"),
+        	"stockMinimo"=>$this->input->post("inputEstockMinimo")
        	);
 
 		$this-> load -> model("inventarios/maestroMaterial_model");
@@ -484,7 +485,8 @@ class Materiales extends CI_Controller {
         	"existencia"=>$this->input->post("inputExistenciaM"),
         	"unidad"=>$this->input->post("inputUnidadM"),
         	"precioUnidad"=>$this->input->post("inputPrecioUnidadM"),
-        	"tipoInsumo"=>$this->input->post("inputTipoMaterialM")
+        	"tipoInsumo"=>$this->input->post("inputTipoMaterialM"),
+        	"stockMinimo"=>$this->input->post("inputEstockMinimoM")
        	);
 				
 		$this-> load -> model("inventarios/maestroMaterial_model");

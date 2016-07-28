@@ -718,7 +718,7 @@ class Tienda extends CI_Controller {
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso3=$this->session->userdata('usuarioProceso3');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='tienda'){  //... valida permiso de userName y de menu...
-			$datos['mensaje']='Usuario NO autorizado para operar ver la lista de precios de productos';
+			$datos['mensaje']='Usuario NO autorizado para ver la lista de precios de productos';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
@@ -760,22 +760,20 @@ class Tienda extends CI_Controller {
 			         
 			    // Se define el formato de fuente: Arial, negritas, tamaño 9
 			    //$this->pdf->SetFont('Arial', 'B', 9);
-			    $this->pdf->SetFont('Arial', '', 9);
-			    $espacio=3; 			//... epacio variable para imprimir ...
+			    $this->pdf->SetFont('Arial', '', 8);
+			    $espacio=1; 			//... epacio variable para imprimir ...
 			    foreach ($registros->result() as $registro) {
 			        // Se imprimen los datos de cada registro
 			       	
 		        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
 					$this->pdf->Cell($espacio,5,'','',0,'L',0);
 					$this->pdf->Cell(2,5,$registro->idProd,'',0,'L',0);
-					$this->pdf->Cell(30,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,'','',0,'L',0);
+					$this->pdf->Cell(95,5,utf8_decode($registro->nombreProd),'',0,'L',0);
+		       		$this->pdf->Cell(30,5,utf8_decode($registro->medidas),'',0,'L',0);
+					$this->pdf->Cell(20,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($registro->precioVenta,2),'',0,'R',0);
 					
-					
-		            //$this->pdf->Cell(80,5,utf8_decode($registro->descripcion),'',0,'L',0);
-					$this->pdf->Cell(120,5,utf8_decode($registro->nombreProd),'',0,'L',0);
-//					$this->pdf->Cell(20-($espacio*($registro->nivel)),5,'','',0,'L',0);
-//		       		$this->pdf->Cell(20,5,utf8_decode($registro->nivel),'',0,'L',0);
-		          
 					//Se agrega un salto de linea
 		        	$this->pdf->Ln(5);	
 			    }
@@ -798,10 +796,11 @@ class Tienda extends CI_Controller {
 				  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
 					
 					$datos['documento']="pdfsArchivos/ventas/listaPrecios.pdf";	
+					$datos['titulo']=' Lista de Precios';	// ... titulo ...
 					
 					$this->load->view('header');
 					$this->load->view('reportePdfSinFechas',$datos );
-					$this->load->view('footer');	
+					$this->load->view('footer');
 				}
 			}	//.. fin IF validar usuario ...
 	    
