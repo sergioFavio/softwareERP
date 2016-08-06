@@ -53,6 +53,7 @@
 					</li>
                     
                     <li><a href="<?=base_url();?>materiales/datosKardex"><span class="glyphicon glyphicon-list-alt"></span> Kardex de Materiales</a></li>
+                    <li><a href="<?=base_url();?>materiales/reponerMateriales"><span class="glyphicon glyphicon-transfer"></span> Reponer Materiales</a></li>
                     
                 </ul>
             </li>
@@ -126,7 +127,7 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega PENDIENTE</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda.../realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
+							<li><a href="<?=base_url();?>tienda/notaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
 							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
 						</ul>
 					</li>
@@ -138,7 +139,16 @@
 						</ul>
 					</li>
 					
-					<li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a></li>
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+						</ul>
+					</li>
+					
+					
+					
+					
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
 						<ul class="dropdown-menu">
 							<li><a href="#"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>

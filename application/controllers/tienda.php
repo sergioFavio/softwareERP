@@ -2,6 +2,59 @@
 
 class Tienda extends CI_Controller {
 	
+		public function notaEntrega(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para hacer notas de entrega';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			
+			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
+			$registros = $this->db->query($sql)->result_array();
+					
+			$datos['registros']=$registros;		
+			$datos['local']=$local;	// ... T: tienda/ F: fabrica ...
+	
+			$this->load->view('header');
+			$this->load->view('tienda/notaEntrega',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin notaEntrega ...
+	
+	public function proforma(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para hacer notas de entrega';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			
+			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
+			$registros = $this->db->query($sql)->result_array();
+					
+			$datos['registros']=$registros;		
+			$datos['local']=$local;	// ... T: tienda/ F: fabrica ...
+	
+			$this->load->view('header');
+			$this->load->view('tienda/proforma',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin proforma ...
+	
+	
 	public function realizarPedido()
 	{
 		//... control de permisos de acceso ....
@@ -526,24 +579,6 @@ class Tienda extends CI_Controller {
 //... inicio funciones reportesPDF
 /////////////////////////////////////
 
-
-
-	
-/*
-	public function fechasReporteIngresoSalida(){
-		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...		
-		$tipoTransaccion= $_GET['tipoTransaccion']; //... lee tipoTransaccion que viene del menu principal(salida de  almacen/bodega ) ...		
-		
-		$datos['nombreDeposito']=$nombreDeposito;
-		$datos['tipoTransaccion']=$tipoTransaccion;
-		$this->load->view('header');
-		$this->load->view('inventarios/fechasReporteIngresoSalida',$datos );
-		$this->load->view('footer');
-	}
-	
-*/	
-
-
 	public function generarPedidoPDF(){
 		//... genera reporte de salida en PDF
 
@@ -807,8 +842,6 @@ class Tienda extends CI_Controller {
 	} //... fin funcion: listaPreciosProductos ...
 	
 	
-
-
 //... fin funciones reportes PDF ...
 ////////////////////////////////////
 
