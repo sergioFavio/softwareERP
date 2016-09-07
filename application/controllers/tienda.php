@@ -135,6 +135,7 @@ class Tienda extends CI_Controller {
 	    	"local"=>$_POST['local'],
 		    "fechaPedido"=>$_POST['inputFecha'],
 		    "fechaEntrega"=>$_POST['inputEntrega'],
+		    "cliente"=>$_POST['cliente'],
 		    "contacto"=>$_POST['contacto'],
 		    "direccion"=>$_POST['direccion'],
 		    "telCel"=>$_POST['telCel'],
@@ -174,7 +175,7 @@ class Tienda extends CI_Controller {
 				    "unidad"=>$_POST['unidadMat_'.$i],
 				    "precio"=>$_POST['precioMat_'.$i],
 				    "secuencia"=>$secuencia,
-				    "cliente"=>$_POST['contacto'],
+				    "cliente"=>$_POST['cliente'],
 				    "fechaEntrega"=>$_POST['inputEntrega']
 				);
 			
@@ -605,6 +606,7 @@ class Tienda extends CI_Controller {
 		
 		$fechaPedido= $pedidoCabecera["fechaPedido"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fechaEntrega= $pedidoCabecera["fechaEntrega"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$contacto= $pedidoCabecera["contacto"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$direccion= $pedidoCabecera["direccion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fono= $pedidoCabecera["telCel"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -637,10 +639,11 @@ class Tienda extends CI_Controller {
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new EstructuraPedidoPdf();
 			
-			$this->pdf->local=$nombreLocal;   			   						//...pasando variable para el header del PDF
+			$this->pdf->local=$nombreLocal;   			   					//...pasando variable para el header del PDF
 			$this->pdf->numeroPedido=strtoupper($numeroPedido);      		//...pasando variable para el header del PDF
 			$this->pdf->fechaPedido=fechaMysqlParaLatina($fechaPedido); 	//...pasando variable para el header del PDF
 			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 	//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 									//...pasando variable para el header del PDF
 			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
 			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
 			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF

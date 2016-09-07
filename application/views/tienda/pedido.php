@@ -147,7 +147,12 @@ function grabarPedido(){
 	var i=0;  //... cuenta numeroFilas  del formulario materiales ...
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
-	if($("#inputContacto").val()=="" ){
+	if($("#cliente").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CLIENTE está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#contacto").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de CONTACTO está vacío");
 			registrosValidos= false;	
 	}
@@ -439,7 +444,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-md-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -582,11 +587,22 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-2">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	 		<input type="text"  class="form-control input-sm" id="facturarA" name="facturarA" placeholder="facturar a&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	 		<input type="text"  class="form-control input-sm" id="facturarA" name="facturarA" placeholder="facturar a&hellip;" style="width: 180px;font-size:11px;text-align:center;" >
 		</div>
 	</div><!-- /.col-md-2 -->
 	
-	<div class="col-md-4">
+	<div class="col-md-1">
+	 	<span></span>
+	</div>
+	
+	<div class="col-md-2">
+		<div class="input-group input-group-sm">
+	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 185px;font-size:11px;text-align:center;" >
+		</div>
+	</div><!-- /.col-md-2 -->
+	
+	<div class="col-md-1">
 	 	<span></span>
 	</div>
 	

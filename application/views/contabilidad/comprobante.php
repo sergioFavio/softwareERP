@@ -28,7 +28,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	
 <div class="jumbotron" id="cuerpoIngreso">	
 	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/grabarComprobanteIngreso" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/grabarComprobante" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
@@ -37,7 +37,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" >Ingreso No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $ingreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $ingreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 78px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -66,12 +66,21 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
+			
+			<?php if($tipoComprobante=='ingreso'){ ?>
+			
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Cliente</span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputCliente" name="inputCliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
+	    	
+	    	<?php } ?>
+	    	
+	    	
+	    	
+	    	
 	    	
 	    	
 	    	<div class="col-xs-3">

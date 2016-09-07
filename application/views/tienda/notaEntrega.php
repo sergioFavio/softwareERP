@@ -84,10 +84,11 @@ $(document).ready(function() {
 	
   
 	$('#tabla2 tbody').on('click', 'tr', function () {
-    	var codigoMaterial = $('td', this).eq(0).text();
-    	var nombreMaterial = $('td', this).eq(1).text();
-    	var cantidad = $('td', this).eq(2).text();
-    	var unidad = $('td', this).eq(3).text();
+		var codigoPedido = $('td', this).eq(0).text();
+    	var codigoMaterial = $('td', this).eq(1).text();
+    	var nombreMaterial = $('td', this).eq(2).text();
+    	var cantidad = $('td', this).eq(3).text();
+    	var unidad = $('td', this).eq(4).text();
   
   		var limiteArreglo=document.getElementsByClassName("detalleMaterial").length;   // limiteArreglo a buscar codigoRepetido
 		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo);			
@@ -132,7 +133,7 @@ $(document).ready(function() {
 		var codiProducto=$("#inputCodigo").val(); 
 		codiProducto=codiProducto.split(' '); //... elimina espacio en blanco ...
 		codiProducto=codiProducto[0]+codiProducto[1]; 
-		fotoP.src ="http://192.168.1.61/irba/assets/img/productos/"+codiProducto+".jpg";
+		fotoP.src ="../assets/img/productos/O-E11.jpg";
 		
   		if($("#inputCodigo").val()!="" ){
   			$('.modal-title').html($('#inputDescripcion').val());			
@@ -362,6 +363,7 @@ function filaVacia(posicionFila){
 		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla2">
 			<thead>
 				<tr class='letraDetalleLightBox'>
+					<th style='width:75px;'>Pedido #</th>
 					<th style='width:75px;'>Código</th>
 					<th style='width:450px;'>Producto</th>
 					<th style='width:50px;'>cantidad</th>
@@ -372,6 +374,7 @@ function filaVacia(posicionFila){
 			<tbody>			
                 <?php foreach($registros as $registro):?>
                     <tr class='letraDetalleLightBox'>
+                    	<td style='width:70px;'><?= $registro["numeroPedido"]?></td>
                         <td style='width:75px;'> <?= $registro["idProducto"].'-'.$registro["secuencia"] ?></td>
                         <td style='width:460px;'> <?= $registro["descripcion"]?></td>
                         <td style='width:60px;'> <?= $registro["cantidad"]?></td>
@@ -412,7 +415,14 @@ function filaVacia(posicionFila){
 					<th style='width:30px;'>Unidad</th>
 				</tr>
 			</thead>
-			<tbody>			
+			<tbody>
+				
+				<script> var variableJS = “contenido de la variable javascript”; </script>
+				<?php				
+					$numPedido = "<script> document.write(variableJS) </script>";
+					echo"variablePHP = ".$variablePHP;
+					$numPedido=0  ;
+				?>		
                 <?php foreach($registros as $registro):?>
                     <tr class='letraDetalleLightBox'>
                         <td style='width:40px;'> <?= $registro["numeroPedido"] ?></td>

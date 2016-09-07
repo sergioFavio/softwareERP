@@ -133,7 +133,7 @@ $(document).ready(function() {
 		var codiProducto=$("#inputCodigo").val(); 
 		codiProducto=codiProducto.split(' '); //... elimina espacio en blanco ...
 		codiProducto=codiProducto[0]+codiProducto[1]; 
-		fotoP.src ="http://192.168.1.61/irba/assets/img/productos/"+codiProducto+".jpg";
+		fotoP.src ="../assets/img/productos/"+codiProducto+".jpg";
 		
   		if($("#inputCodigo").val()!="" ){
   			$('.modal-title').html($('#inputDescripcion').val());			

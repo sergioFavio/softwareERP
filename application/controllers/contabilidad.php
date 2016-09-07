@@ -255,7 +255,7 @@ class Contabilidad extends CI_Controller {
 		}	//... fin control de permisos de acceso ....
 		else {				//... usuario validado ...
 			$this->load->model("numeroDocumento_model");
-			$nombreTabla='contanoingreso'; // ... prefijoTabla
+			$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
 			
 			///////////////////////////////////////
@@ -266,21 +266,24 @@ class Contabilidad extends CI_Controller {
 			
 			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
 			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
-			$secuenciaPedido= substr($pedido, 6, 2);  // toma los caracteres ... secuencia.
+			$secuenciaPedido= substr($pedido, 6, 3);  // toma los caracteres ... secuencia.
 			if($anhoPedido==$anhoSistema){
 				if($mesPedido==$mesSistema){
 			        $secuenciaPedido=$secuenciaPedido +1;
 					if(strlen($secuenciaPedido)==1){
+						 $secuenciaPedido="00". $secuenciaPedido;
+					}
+					if(strlen($secuenciaPedido)==2){
 						 $secuenciaPedido="0". $secuenciaPedido;
 					}
-			     		$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
+			     	$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
 				}
-			                  else{
-					$pedido=$anhoSistema.$mesSistema."01";
+			    else{
+					$pedido=$anhoSistema.$mesSistema."001";
 				}
 			}
 			else{
-				$pedido=$anhoSistema.$mesSistema."01";
+				$pedido=$anhoSistema.$mesSistema."001";
 			}
 			
 			$numComprobante=$pedido;  //... numero de comprobante ...
@@ -349,7 +352,7 @@ class Contabilidad extends CI_Controller {
 	}	//.. fin funcion comprobante ...
 
 
-	public function grabarComprobanteIngreso()
+	public function grabarComprobante()
 	{
 		$tipoComprobante=$_POST['tipoComprobante']; //... formulario tipoComprobante [ingreso/egreso/traspaso] ...
 				
@@ -367,43 +370,54 @@ class Contabilidad extends CI_Controller {
 		
 		// ... inserta registro en tabla salida[almacen/bodega]cabecera ...	
 		$fecha=$_POST['inputFecha'];
-
-
-/*		
+		
 		$cabecera = array(
-	    	"numero"=>$_POST['inputNumero'],
-	    	"fecha"=>$_POST['inputFecha'], 
-	    	"numOrden"=>$_POST['inputOrden'],
-	    	"glosa"=>$_POST['inputGlosa']
+	    	"numComprobante"=>$_POST['inputNumero'],
+	    	"fecha"=>$_POST['inputFecha'],
+	    	"tipoComprobante"=>strtoupper($tipoComprobante),  
+	    	"clienteBanco"=>$_POST['inputCliente'],
+	    	"concepto"=>$_POST['inputConcepto']
 		);
 		
+	    $this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
+	    $this-> tablaGenerica_model -> grabar('comprobantecabecera',$cabecera);
+		// ...fin de insertar registro en tabla comprobantecabecera ...	
 		
-	    $this-> load -> model("inventarios/ingresoSalidaCabecera_model");	//... carga modelo salidaCabecera [almacen/bodega]
-	    $this-> ingresoSalidaCabecera_model -> grabar($cabecera,$nombreDeposito,'salida');
-		// ...fin de insertar registro en tabla salida[almacen/bodega]cabecera ...	
-		
-
-  
- */	
- 
- 	
+ 	    $debeHaber=''; 		//... D:debe  H:haber ...
         for($i=0; $i<$numeroFilasValidas; $i++){
        
         	if( $_POST['cantDebe_'.$i] != "0" || $_POST['cantDebe_'.$i] != "0.00" || $_POST['cantHaber_'.$i] != "0" || $_POST['cantHaber_'.$i] != "0.00"  ){
           	    //... si cantidad mayor que cero  graba registro ... 
-          	    //... agrega registro tabla librodiario ...   
+          	    //... agrega registro tabla librodiario ...  
           	    
-/*          	       
-	            $material = array(
-	            	"numSal"=>$_POST['inputNumero'],
-				    "idMaterial"=>$codigoSinEspacio,
-				    "cantidad"=>$_POST['cantMat_'.$i]
-				    // "value"=>number_format($_POST['5_'.$i], 2, '.', '')
+          	    if($_POST['cantDebe_'.$i]>0 ){
+          	    	$debeHaber='D';
+					$monto= $_POST['cantDebe_'.$i];
+          	    } else{
+          	    	$debeHaber='H';
+					$monto=$_POST['cantHaber_'.$i];
+          	    }
+	
+				$monto=str_replace(",","",$monto); //...quita comas de separacion ..
+          	    
+          	    $codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
+			
+	            $detalle = array(
+	            	"idComprobante"=>$_POST['inputNumero'],
+	            	"tComprobante"=>strtoupper($tipoComprobante),
+	            	"fechaComprobante"=>$_POST['inputFecha'],
+	            	"cuenta"=>$codigoSinEspacio,
+				    "debeHaber"=>$debeHaber,
+				    "monto"=>$monto,
+				    "glosa"=>$_POST['glosa_'.$i]
 				);
 				
-*/			
-
-				$codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
+				$this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
+	    		$this-> tablaGenerica_model -> grabar('comprobantedetalle',$detalle);
+				// ...fin de insertar registro en tabla comprobantedetalle ...	
+				
+							
+//				$codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
 			
 				$clave=$codigoSinEspacio;
 				$debeMonto=$_POST['cantDebe_'.$i];				
@@ -468,7 +482,7 @@ class Contabilidad extends CI_Controller {
 		
 		// ... actualizar numero de comprobante ...	
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='contanoingreso'; // ... prefijoTabla
+		$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de comprobante ...
 		
