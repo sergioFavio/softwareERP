@@ -257,7 +257,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->model("numeroDocumento_model");
 			$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
-			
+			$gestion = $this->numeroDocumento_model->getComprobante('contagestion');
 			///////////////////////////////////////
 			///...INICIO genera nuevo numero de pedido ...
 			//////////////////////////////////////
@@ -276,19 +276,16 @@ class Contabilidad extends CI_Controller {
 					if(strlen($secuenciaPedido)==2){
 						 $secuenciaPedido="0". $secuenciaPedido;
 					}
-			     	$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
+			     	$numComprobante=$anhoSistema.$mesSistema.$secuenciaPedido;
 				}
 			    else{
-					$pedido=$anhoSistema.$mesSistema."001";
+					$numComprobante=$anhoSistema.$mesSistema."001";
 				}
 			}
 			else{
-				$pedido=$anhoSistema.$mesSistema."001";
+				$numComprobante=$anhoSistema.$mesSistema."001";
 			}
 			
-			$numComprobante=$pedido;  //... numero de comprobante ...
-	
-		
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana/contaplanb]
 			$sql ="DELETE FROM contaplana";				//... borra los registros anteriores de contaplana antes de cargar los de la nueva consulta... 
 	 		$result = $this->db->query($sql);
@@ -339,9 +336,10 @@ class Contabilidad extends CI_Controller {
 			// ... fin grabacion del ultimo registro ...
 			
 			$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
-							
+			
+			$datos['gestion']=$gestion;			
 			$datos['titulo']='Comprobante de '.$tipoComprobante;
-			$datos['ingreso']=$pedido;
+			$datos['numComprobante']=$numComprobante;
 			$datos['cuentas']=$cuentas;		
 			$datos['tipoComprobante']=$tipoComprobante;	// ... ingreso/egreso/traspaso ...
 	
@@ -358,11 +356,11 @@ class Contabilidad extends CI_Controller {
 				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salida[ numeroFilas] ...
 		
-		$numComprobante=$_POST['inputNumero'];
+		$numComprobante=$_POST['numComprobante'];
 		
 		// ... actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... 
-		$nombreTabla='contanoingreso'; // ... prefijoTabla
+		$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
 		
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
@@ -372,7 +370,7 @@ class Contabilidad extends CI_Controller {
 		$fecha=$_POST['inputFecha'];
 		
 		$cabecera = array(
-	    	"numComprobante"=>$_POST['inputNumero'],
+	    	"numComprobante"=>$numComprobante,
 	    	"fecha"=>$_POST['inputFecha'],
 	    	"tipoComprobante"=>strtoupper($tipoComprobante),  
 	    	"clienteBanco"=>$_POST['inputCliente'],
@@ -403,7 +401,7 @@ class Contabilidad extends CI_Controller {
           	    $codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
 			
 	            $detalle = array(
-	            	"idComprobante"=>$_POST['inputNumero'],
+	            	"idComprobante"=>$numComprobante,
 	            	"tComprobante"=>strtoupper($tipoComprobante),
 	            	"fechaComprobante"=>$_POST['inputFecha'],
 	            	"cuenta"=>$codigoSinEspacio,
@@ -415,10 +413,7 @@ class Contabilidad extends CI_Controller {
 				$this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
 	    		$this-> tablaGenerica_model -> grabar('comprobantedetalle',$detalle);
 				// ...fin de insertar registro en tabla comprobantedetalle ...	
-				
 							
-//				$codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
-			
 				$clave=$codigoSinEspacio;
 				$debeMonto=$_POST['cantDebe_'.$i];				
 				$haberMonto=$_POST['cantHaber_'.$i];
@@ -430,15 +425,7 @@ class Contabilidad extends CI_Controller {
 					$haberMonto=0.00;
 					$debeMonto=str_replace(",","",$debeMonto); //...quita comas de separacion ..
 				}
-				
-
-/*				
-				// ... inserta registro tabla transacciones[salalmacen/salbodega]
-				$this-> load -> model("inventarios/ingresoSalidaMaterial_model");		//carga modelo salidaMaterial[salalmacen/salbodega]_model
-	    		$this-> ingresoSalidaMaterial_model -> grabar($material,$nombreDeposito,'sal');
-					
-*/					
-
+									
 				if(substr($clave,6,2)=='00'){
 					$nivelCuenta=4;
 				}else{

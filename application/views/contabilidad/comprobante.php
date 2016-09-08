@@ -23,9 +23,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 #titulo{font-size:14px;margin-top:1px;  text-align:right;font-weight : bold}   
 </style>
 
-
-
-	
 <div class="jumbotron" id="cuerpoIngreso">	
 	
    <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/grabarComprobante" id="form_" name="form_" >
@@ -36,8 +33,8 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 			
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Ingreso No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $ingreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 78px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" >Gesti&oacute;n:  </span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputGestion" name="inputGestion" value="<?= substr($gestion,0,4).'-'.substr($gestion,4,2) ?>" readonly="readonly" placeholder="ingreso No." style="width: 78px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -46,7 +43,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	</div>
 	    	
 	    	<div class="col-xs-3">
-	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo) ?>  </span>
+	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo).' No. '.$numComprobante ?>  </span>
 	    	</div> 
 	    	
 	 		<div class="col-xs-2">
@@ -157,6 +154,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 	<input type="hidden"  name="numeroFilas"  />
 	<input type="hidden"  name="tipoComprobante" value="<?= $tipoComprobante ?>" />     <!--  tipoComprobante: ingreso/egreso/traspaso -->
+	<input type="hidden"  name="numComprobante" value="<?= $numComprobante ?>" />     	<!--  numComprobante: ingreso/egreso/traspaso -->
 	
 	<div style="text-align: right; padding-top: 5px;">  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
