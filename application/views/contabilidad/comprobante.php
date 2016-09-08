@@ -76,24 +76,18 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-4">
 	    	 	<span></span>
 	    	</div>
-	    	
-	    	
 	    	<?php } ?>
-	    	
-	    	
-	    	
 	    	
 	    	<?php if($tipoComprobante=='egreso'){ ?>
 			
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:150px;font-size:11px;text-align:center;">
-				         <option value="Santa Cruz-Mercantil">Santa Cruz-Mercantil </option>
-				         <option value="Unión">Unión</option>
-				         <option value="BNB">BNB</option>
-				         <option value="Ganadero">Ganadero</option>
-				         <option value="Económico">Económico</option>
+	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:160px;font-size:11px;text-align:center;">
+				         <option value="BNB Caja Ahorros M.N.">BNB Caja Ahorros M.N. </option>
+				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
+				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
+				         <option value="Banco Unión M.N.">Banco Unión M.N.</option>
 		        	</select>
 	    	 		
 	    		</div>

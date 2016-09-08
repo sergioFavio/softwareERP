@@ -255,7 +255,7 @@ class Contabilidad extends CI_Controller {
 		}	//... fin control de permisos de acceso ....
 		else {				//... usuario validado ...
 			$this->load->model("numeroDocumento_model");
-			$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
+			$nombreTabla='contanocomprobante'; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
 			$gestion = $this->numeroDocumento_model->getComprobante('contagestion');
 			///////////////////////////////////////
@@ -353,6 +353,12 @@ class Contabilidad extends CI_Controller {
 	public function grabarComprobante()
 	{
 		$tipoComprobante=$_POST['tipoComprobante']; //... formulario tipoComprobante [ingreso/egreso/traspaso] ...
+		
+		if($tipoComprobante!='egreso'){
+			$numeroCheque='';
+		}else{
+			$numeroCheque=$_POST['inputCheque'];
+		}
 				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salida[ numeroFilas] ...
 		
@@ -360,7 +366,7 @@ class Contabilidad extends CI_Controller {
 		
 		// ... actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... 
-		$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
+		$nombreTabla='contanocomprobante'; // ... prefijoTabla
 		
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
@@ -374,6 +380,7 @@ class Contabilidad extends CI_Controller {
 	    	"fecha"=>$_POST['inputFecha'],
 	    	"tipoComprobante"=>strtoupper($tipoComprobante),  
 	    	"clienteBanco"=>$_POST['inputCliente'],
+	    	"numeroCheque"=>$numeroCheque,
 	    	"concepto"=>$_POST['inputConcepto']
 		);
 		
@@ -469,7 +476,7 @@ class Contabilidad extends CI_Controller {
 		
 		// ... actualizar numero de comprobante ...	
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='contano'.$tipoComprobante; // ... prefijoTabla
+		$nombreTabla='contanocomprobante'; // ... prefijoTabla
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de comprobante ...
 		

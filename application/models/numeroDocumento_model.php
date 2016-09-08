@@ -33,4 +33,8 @@ class NumeroDocumento_model extends CI_Model{
 		}
 		return $numero1;
    }
+   
+   
+   
+   
 }
