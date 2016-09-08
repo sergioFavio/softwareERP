@@ -33,7 +33,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 			
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Gesti&oacute;n:  </span>
+			    	<span class="input-group-addon" id="letraCabecera" >Gesti&oacute;n </span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputGestion" name="inputGestion" value="<?= substr($gestion,0,4).'-'.substr($gestion,4,2) ?>" readonly="readonly" placeholder="ingreso No." style="width: 78px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
@@ -63,32 +63,65 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
-			
 			<?php if($tipoComprobante=='ingreso'){ ?>
 			
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Cliente</span>
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputCliente" name="inputCliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
+	    	
+	    	
+	    	<div class="col-xs-4">
+	    	 	<span></span>
+	    	</div>
+	    	
 	    	
 	    	<?php } ?>
 	    	
 	    	
 	    	
 	    	
+	    	<?php if($tipoComprobante=='egreso'){ ?>
+			
+		    <div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
+	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:150px;font-size:11px;text-align:center;">
+				         <option value="Santa Cruz-Mercantil">Santa Cruz-Mercantil </option>
+				         <option value="Unión">Unión</option>
+				         <option value="BNB">BNB</option>
+				         <option value="Ganadero">Ganadero</option>
+				         <option value="Económico">Económico</option>
+		        	</select>
+	    	 		
+	    		</div>
+	    		
+	    	</div><!-- /.col-lg-4 -->
 	    	
-	    	
-	    	<div class="col-xs-3">
+	    	<div class="col-xs-1">
 	    	 	<span></span>
 	    	</div>
 	    	
+	    	<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputCheque" name="inputCheque" placeholder="cheque No&hellip;" style="width: 120px;font-size:11px;text-align:center;">
+	    		</div>
+	    		
+	    	</div><!-- /.col-lg-4 -->
+	    	
+	    	<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<?php } ?>
 	    	
 		    <div class="col-xs-3">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Concepto </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputConcepto" name="inputConcepto" placeholder="concepto.&hellip;" style="width: 410px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span> </span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputConcepto" name="inputConcepto" placeholder="concepto.&hellip;" style="width: 370px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	

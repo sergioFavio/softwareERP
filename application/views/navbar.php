@@ -183,11 +183,11 @@
 							
 						</ul>
 					</li>
-                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Reportes</a>
+                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Reportes</a>
                     	<ul class="dropdown-menu">
-							<li><a href="#"><span class="glyphicon glyphicon-usd"></span> Libro Diario</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Libro Mayores</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Sumas y saldos</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-book"></span> Libro Diario</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-book"></span> Libro Mayores</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Sumas y saldos</a></li>
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>
 					</li>
