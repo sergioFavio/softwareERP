@@ -677,16 +677,6 @@ class Tienda extends CI_Controller {
 		    foreach ($productos->result() as $producto) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
-/*
-				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
-				$this->pdf->Cell(84,5,$producto->descripcion,'',0,'L',0);
-				$this->pdf->Cell(92,5,utf8_decode($producto->color),'',0,'L',0);
-				$this->pdf->Ln('5');
-				$this->pdf->Cell(128,5,number_format($producto->cantidad,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
-				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
-*/
 
 				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
 				$this->pdf->Cell(94,5,$producto->descripcion,'',0,'L',0);
@@ -745,7 +735,7 @@ class Tienda extends CI_Controller {
 					
 		}
 	    
-	} //... fin funcion: generarCotizacionPDF ...
+	} //... fin funcion: generarPedidoPDF ...
 
 	
 	public function listaPreciosProductos(){

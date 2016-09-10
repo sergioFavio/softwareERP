@@ -34,7 +34,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//				redirect('menuController/index');
+
 		}	//... fin control de permisos de acceso ....
 		else {	//... usuario validado ...
 			$this->load->model("tablaGenerica_model");
@@ -480,7 +480,10 @@ class Contabilidad extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de comprobante ...
 		
-		redirect('menuController/index');
+//		redirect('menuController/index');
+		
+		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante");
+		
 	}	//... fin grabarComprobanteIngreso
 	
 	
@@ -488,6 +491,151 @@ class Contabilidad extends CI_Controller {
 		$object["literal"]=convertirNumeroAliteral($this->input->post("cadena"));
    		echo json_encode($object);		
 	}
+	
+	
+	public function generarComprobantePDF(){
+		//... genera reporte de salida en PDF
+		$numeroComprobante= $_GET['numeroComprobante']; 	//... lee numeroComprobante que viene de grabarComprobante ...
+		
+		// Se carga la libreria fpdf
+		$this->load->library('contabilidad/ComprobantePdf');
+		
+		// Se obtienen los registros de la base de datos
+		$sql ="SELECT numeroPedido,idProducto,descripcion,color,cantidad,unidad,precio FROM pedidoproducto WHERE numeroPedido='$numeroPedido' ";
+		$productos = $this->db->query($sql);
+						
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+		$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		
+		$fechaPedido= $pedidoCabecera["fechaPedido"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaEntrega= $pedidoCabecera["fechaEntrega"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$contacto= $pedidoCabecera["contacto"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$direccion= $pedidoCabecera["direccion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fono= $pedidoCabecera["telCel"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$localidad= $pedidoCabecera["localidad"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cotizacionFabrica= $pedidoCabecera["cotizacionFabrica"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$ordenCompra= $pedidoCabecera["ordenCompra"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$facturarA= $pedidoCabecera["facturarA"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					
+		$sql ="SELECT * FROM pedidocabecera WHERE numPedido='$numeroPedido' ";
+		$contador = $this->db->query($sql);	
+ 		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
+
+		if($contador==0){
+			$datos['mensaje']='No hay registro grabado con el n&uacute;mero de  comprobante '.$numeroComprobante.' en la tabla COMPROBANTEcabecera.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new ComprobantePdf();
+			
+			$this->pdf->numeroPedido=strtoupper($numeroPedido);      		//...pasando variable para el header del PDF
+			$this->pdf->fechaPedido=fechaMysqlParaLatina($fechaPedido); 	//...pasando variable para el header del PDF
+			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 	//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 									//...pasando variable para el header del PDF
+			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
+			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
+			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF
+			$this->pdf->localidad=$localidad; 								//...pasando variable para el header del PDF
+			$this->pdf->cotizacionFabrica=$cotizacionFabrica; 				//...pasando variable para el header del PDF
+			$this->pdf->ordenCompra=$ordenCompra; 							//...pasando variable para el header del PDF
+			$this->pdf->facturarA=$facturarA; 								//...pasando variable para el header del PDF
+			$this->pdf->nit=$nit; 											//...pasando variable para el header del PDF
+			$this->pdf->usuario=$usuario; 									//...pasando variable para el header del PDF
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    $this->pdf->SetFont('Arial', '', 9);
+		    
+		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
+		    $numeroAnterior = 0;
+			$totalPorNumeroPedido=0; //... acumula los importes de cada nota de ingreso...
+		    foreach ($productos->result() as $producto) {
+		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
+		        // Se imprimen los datos de cada registro
+
+				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
+				$this->pdf->Cell(94,5,$producto->descripcion,'',0,'L',0);
+				
+				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
+				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
+				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
+				
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+				$this->pdf->Cell(32,5,utf8_decode($producto->color),'',0,'L',0);
+				
+				
+				$totalPorNumeroPedido=$totalPorNumeroPedido +( $producto->cantidad*$producto->precio ); //... acumula los importes de cada nota de ingreso...
+		        //Se agrega un salto de linea
+		        $this->pdf->Ln('5');
+		    }
+
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Total Bs. '.number_format($totalPorNumeroPedido,2),0,0,'R');
+	
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'A Cuenta Bs.    '.number_format($aCuenta,2),0,0,'R');
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Descuento  '.$descuento.'% Bs.    '.number_format($totalPorNumeroPedido*$descuento/100,2),0,0,'R');
+
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido*(1-($descuento/100))-$aCuenta,2),0,0,'R');
+			
+		     /* PDF Output() settings
+		     * Se manda el pdf al navegador
+		     *
+		     * $this->pdf->Output(nombredelarchivo, destino);
+		     *
+		     * I = Muestra el pdf en el navegador
+		     * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+		     */
+			  
+			 $this->pdf->Output('pdfsArchivos/pedidos/pedido'.$numeroPedido.'.pdf', 'F');
+	
+			 redirect("menuController/index");			
+					
+		}
+	    
+	} //... fin funcion: generarComprobantePDF ...
+	
 
 	
 }
