@@ -411,7 +411,7 @@ class Contabilidad extends CI_Controller {
 	            	"idComprobante"=>$numComprobante,
 	            	"tComprobante"=>strtoupper($tipoComprobante),
 	            	"fechaComprobante"=>$_POST['inputFecha'],
-	            	"cuenta"=>$codigoSinEspacio,
+	            	"cuentaComprobante"=>$codigoSinEspacio,
 				    "debeHaber"=>$debeHaber,
 				    "monto"=>$monto,
 				    "glosa"=>$_POST['glosa_'.$i]
@@ -511,14 +511,22 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/ComprobantePdf');
 			
 			// Se obtienen los registros de la base de datos
-	//		$sql ="SELECT numeroPedido,idProducto,descripcion,color,cantidad,unidad,precio FROM contaplandectas WHERE numeroPedido='$numeroComprobante' ";
-	//		$productos = $this->db->query($sql);
+			$sql ="SELECT idComprobante,cuentaComprobante,debeHaber,monto,glosa,descripcion FROM comprobantedetalle,contaplandectas WHERE idComprobante='$numeroComprobante' AND cuentaComprobante=cuenta";
+			$cuentas = $this->db->query($sql);
 							
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 			$comprobanteCabecera= $this->tablaGenerica_model->buscar('comprobantecabecera','numComprobante',$numeroComprobante); //..una vez cargado el modelo de la tabla llama comprobantecabecera..
 			
 			$fechaComprobante= $comprobanteCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			$tipoComprobante= $comprobanteCabecera["tipoComprobante"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			if($tipocomprobante=="I"){
+				$tComprobante="Ingreso";
+			}else if($tipoComprobante=="E"){
+				$tComprobante="Egreso";
+				}else{
+					$tComprobante="Diario";
+			}
+			
 			$clienteBanco= $comprobanteCabecera["clienteBanco"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			$numeroCheque= $comprobanteCabecera["numeroCheque"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			$concepto= $comprobanteCabecera["concepto"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -533,10 +541,10 @@ class Contabilidad extends CI_Controller {
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new ComprobantePdf();
 			
-			$this->pdf->numeroComprobante=strtoupper($numeroPedido);      			//...pasando variable para el header del PDF
+			$this->pdf->numeroComprobante=strtoupper($numeroComprobante);      		//...pasando variable para el header del PDF
 			$this->pdf->fechaComprobante=fechaMysqlParaLatina($fechaComprobante); 	//...pasando variable para el header del PDF
 			$this->pdf->clienteBanco=$clienteBanco; 								//...pasando variable para el header del PDF
-			$this->pdf->tipoComprobante=$tipoComprobante; 							//...pasando variable para el header del PDF
+			$this->pdf->tipoComprobante=$tComprobante; 								//...pasando variable para el header del PDF
 			$this->pdf->numeroCheque=$numeroCheque; 								//...pasando variable para el header del PDF
 			$this->pdf->concepto=$concepto; 										//...pasando variable para el header del PDF
 //			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
@@ -558,30 +566,26 @@ class Contabilidad extends CI_Controller {
 		    $this->pdf->SetFont('Arial', '', 9);
 		    
 		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
-		    $numeroAnterior = 0;
 			$totalPorNumeroPedido=0; //... acumula los importes de cada nota de ingreso...
-		    foreach ($productos->result() as $producto) {
+		    foreach ($cuentas->result() as $cuenta) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
 
-				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
-				$this->pdf->Cell(94,5,$producto->descripcion,'',0,'L',0);
+				$this->pdf->Cell(15,5,$cuenta->cuentaComprobante,'',0,'L',0);
+				$this->pdf->Cell(3,5,'','',0,'L',0);
+				$this->pdf->Cell(94,5,$cuenta->descripcion,'',0,'L',0);
 				
-				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
-				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
-				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
-				
-				$this->pdf->Ln('5');
-				$this->pdf->Cell(15,5,'','',0,'L',0);
-				$this->pdf->Cell(32,5,utf8_decode($producto->color),'',0,'L',0);
-				
-				
-				$totalPorNumeroPedido=$totalPorNumeroPedido +( $producto->cantidad*$producto->precio ); //... acumula los importes de cada nota de ingreso...
-		        //Se agrega un salto de linea
-		        $this->pdf->Ln('5');
-		    }
+				$this->pdf->Cell(20,5,number_format($cuenta->monto,2),'',0,'R',0);
+//				$this->pdf->Cell(20,5,$cta->unidad,'',0,'C',0);
+//				$this->pdf->Cell(19,5,number_format($cta->precio,2),'',0,'R',0);
+//				$this->pdf->Cell(21,5,number_format($cta->cantidad*$producto->precio,2),'',0,'R',0);
 
+				//Se agrega un salto de linea
+				$this->pdf->Ln('5');
+//				$this->pdf->Cell(15,5,'','',0,'L',0);
+//				$this->pdf->Cell(32,5,utf8_decode($cta->color),'',0,'L',0);
+		    }
+/*
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(147,5,'','',0,'L',0);
     		$this->pdf->Cell(42,5,'Total Bs. '.number_format($totalPorNumeroPedido,2),0,0,'R');
@@ -589,15 +593,7 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(147,5,'','',0,'L',0);
     		$this->pdf->Cell(42,5,'A Cuenta Bs.    '.number_format($aCuenta,2),0,0,'R');
-			
-			$this->pdf->Ln('5');
-			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'Descuento  '.$descuento.'% Bs.    '.number_format($totalPorNumeroPedido*$descuento/100,2),0,0,'R');
-
-			$this->pdf->Ln('5');
-			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido*(1-($descuento/100))-$aCuenta,2),0,0,'R');
-			
+*/			
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
 		     *
@@ -615,8 +611,7 @@ class Contabilidad extends CI_Controller {
 			  
 			 $this->pdf->Output('pdfsArchivos/contabilidad/cpbte'.$numeroComprobante.'.pdf', 'F');
 	
-			 redirect("menuController/index");			
-					
+			 redirect("menuController/index");					
 		}
 	    
 	} //... fin funcion: generarComprobantePDF ...
