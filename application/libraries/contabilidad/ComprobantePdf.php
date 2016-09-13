@@ -23,7 +23,7 @@
             $this->SetFont('Arial','',13);
             $this->Cell(50);
 			
-			$this->Cell(90,10,utf8_decode(' Comprobante de '.strtoupper($this->tipoComprobante).' No. ').$this->numeroComprobante,0,0,'C');	
+			$this->Cell(90,10,utf8_decode(' Comprobante de '.strtoupper($this->tipoComprobante).' No. ').substr($this->numeroComprobante,0,6).'-'.substr($this->numeroComprobante,6,3),0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);

@@ -574,7 +574,11 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(15,5,$cuenta->cuentaComprobante,'',0,'L',0);
 				$this->pdf->Cell(3,5,'','',0,'L',0);
 				$this->pdf->Cell(94,5,$cuenta->descripcion,'',0,'L',0);
-				
+				if($cuenta->debeHaber=='D'){
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+				}else{
+					$this->pdf->Cell(50,5,'','',0,'L',0);
+				}
 				$this->pdf->Cell(20,5,number_format($cuenta->monto,2),'',0,'R',0);
 //				$this->pdf->Cell(20,5,$cta->unidad,'',0,'C',0);
 //				$this->pdf->Cell(19,5,number_format($cta->precio,2),'',0,'R',0);

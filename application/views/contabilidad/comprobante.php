@@ -145,7 +145,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >
 					<input type='text' name='idCta_".$x."' id='idCta_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #b9e9ec ;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
+                    echo "<td class='letraDetalle'  style='width:320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' readonly='readonly' style='width:320px;border:none;' /></td>";
                     
                     echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'  style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);'/></td>";
 					
