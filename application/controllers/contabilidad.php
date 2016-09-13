@@ -496,33 +496,8 @@ class Contabilidad extends CI_Controller {
 	public function generarComprobantePDF(){
 		//... genera reporte de salida en PDF
 		$numeroComprobante= $_GET['numeroComprobante']; 	//... lee numeroComprobante que viene de grabarComprobante ...
-		
-		// Se carga la libreria fpdf
-		$this->load->library('contabilidad/ComprobantePdf');
-		
-		// Se obtienen los registros de la base de datos
-		$sql ="SELECT numeroPedido,idProducto,descripcion,color,cantidad,unidad,precio FROM pedidoproducto WHERE numeroPedido='$numeroPedido' ";
-		$productos = $this->db->query($sql);
-						
-		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
-		$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
-		
-		$fechaPedido= $pedidoCabecera["fechaPedido"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$fechaEntrega= $pedidoCabecera["fechaEntrega"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$cliente= $pedidoCabecera["cliente"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$contacto= $pedidoCabecera["contacto"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$direccion= $pedidoCabecera["direccion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$fono= $pedidoCabecera["telCel"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$localidad= $pedidoCabecera["localidad"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$cotizacionFabrica= $pedidoCabecera["cotizacionFabrica"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$ordenCompra= $pedidoCabecera["ordenCompra"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$facturarA= $pedidoCabecera["facturarA"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-					
-		$sql ="SELECT * FROM pedidocabecera WHERE numPedido='$numeroPedido' ";
+				
+		$sql ="SELECT * FROM comprobantecabecera WHERE numComprobante='$numeroComprobante' ";
 		$contador = $this->db->query($sql);	
  		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
 
@@ -532,29 +507,39 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
 		}else{
+			// Se carga la libreria fpdf
+			$this->load->library('contabilidad/ComprobantePdf');
 			
+			// Se obtienen los registros de la base de datos
+	//		$sql ="SELECT numeroPedido,idProducto,descripcion,color,cantidad,unidad,precio FROM contaplandectas WHERE numeroPedido='$numeroComprobante' ";
+	//		$productos = $this->db->query($sql);
+							
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+			$comprobanteCabecera= $this->tablaGenerica_model->buscar('comprobantecabecera','numComprobante',$numeroComprobante); //..una vez cargado el modelo de la tabla llama comprobantecabecera..
+			
+			$fechaComprobante= $comprobanteCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			$tipoComprobante= $comprobanteCabecera["tipoComprobante"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			$clienteBanco= $comprobanteCabecera["clienteBanco"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			$numeroCheque= $comprobanteCabecera["numeroCheque"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			$concepto= $comprobanteCabecera["concepto"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+	//		$usuario= $comprobanteCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+				
 			// Creacion del PDF
 		    /*
-		    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+		    * Se crea un objeto de la clase ComprobantePdf, recordar que la clase Pdf
 		    * heredó todos las variables y métodos de fpdf
 		    */
 		     
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new ComprobantePdf();
 			
-			$this->pdf->numeroPedido=strtoupper($numeroPedido);      		//...pasando variable para el header del PDF
-			$this->pdf->fechaPedido=fechaMysqlParaLatina($fechaPedido); 	//...pasando variable para el header del PDF
-			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 	//...pasando variable para el header del PDF
-			$this->pdf->cliente=$cliente; 									//...pasando variable para el header del PDF
-			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
-			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
-			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF
-			$this->pdf->localidad=$localidad; 								//...pasando variable para el header del PDF
-			$this->pdf->cotizacionFabrica=$cotizacionFabrica; 				//...pasando variable para el header del PDF
-			$this->pdf->ordenCompra=$ordenCompra; 							//...pasando variable para el header del PDF
-			$this->pdf->facturarA=$facturarA; 								//...pasando variable para el header del PDF
-			$this->pdf->nit=$nit; 											//...pasando variable para el header del PDF
-			$this->pdf->usuario=$usuario; 									//...pasando variable para el header del PDF
+			$this->pdf->numeroComprobante=strtoupper($numeroPedido);      			//...pasando variable para el header del PDF
+			$this->pdf->fechaComprobante=fechaMysqlParaLatina($fechaComprobante); 	//...pasando variable para el header del PDF
+			$this->pdf->clienteBanco=$clienteBanco; 								//...pasando variable para el header del PDF
+			$this->pdf->tipoComprobante=$tipoComprobante; 							//...pasando variable para el header del PDF
+			$this->pdf->numeroCheque=$numeroCheque; 								//...pasando variable para el header del PDF
+			$this->pdf->concepto=$concepto; 										//...pasando variable para el header del PDF
+//			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
 		    // Agregamos una página
 		    $this->pdf->AddPage();
 		    // Define el alias para el número de página que se imprimirá en el pie
@@ -628,7 +613,7 @@ class Contabilidad extends CI_Controller {
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 		     */
 			  
-			 $this->pdf->Output('pdfsArchivos/pedidos/pedido'.$numeroPedido.'.pdf', 'F');
+			 $this->pdf->Output('pdfsArchivos/contabilidad/cpbte'.$numeroComprobante.'.pdf', 'F');
 	
 			 redirect("menuController/index");			
 					
