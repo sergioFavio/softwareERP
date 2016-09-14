@@ -22,7 +22,6 @@ $(document).ready(function() {
 	});
 	/*  fin de light box javascript  */	
 			
-		 
     	$('#tabla2').dataTable();
     
     	$('#tabla2 tbody').on('click', 'tr', function () {	
@@ -91,9 +90,6 @@ function verificarCodigoRepetido(codigoCuenta,posicionFila,limiteArreglo){
 	return codigoRepetido;
 }	// fin funcion verificarCodigoRepetido 
 	
-
-
-		
 function borrarFormularioIngreso(){
 	//...esta funcion borra los datos del formularioIngreso
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -107,7 +103,6 @@ function borrarFormularioIngreso(){
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioIngreso 
 	
-
 function borrarFormularioSalida(){
 	//...esta funcion borra los datos del formularioSalida
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -120,7 +115,6 @@ function borrarFormularioSalida(){
 		$("#detalleTotalHaber").val("");
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioSalida 
-
 
 function grabarIngreso(){
 	
@@ -176,8 +170,6 @@ function grabarIngreso(){
 			
 }	// ... fin funcion grabarIngreso() ...
 
-
-	
 function grabarSalida(){
 	
 	var i=0;
@@ -188,12 +180,10 @@ function grabarSalida(){
 			var registrosValidos= false;	
 	}
 	
-	
 	if($("#inputGlosa").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
 			var registrosValidos= false;	
 	}
-	
 	
 	if( $("#inputOrden").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
@@ -205,7 +195,6 @@ function grabarSalida(){
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
 			var registrosValidos= false;	
 	}
-	
 	
 //.. OOJJJJJJOOOO ... modificar ...			
 	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
@@ -299,7 +288,7 @@ function calcularTotalDebe(){
 		if( $("#cantDebe_"+i).val()!= "" ){		//...toma los DEBE distintos de vacio ...
 			var cantidad=$("#cantDebe_"+i).val();
 			cantidad=cantidad.split(','); //... elimina ,
-			cantidad=cantidad[0]+cantidad[1];	
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
 			cantidad=parseFloat( cantidad	);
 	
 			totalDebe= totalDebe +  cantidad ;
@@ -328,7 +317,7 @@ function calcularTotalHaber(){
 		if( $("#cantHaber_"+i).val()!= "" ){ 		//...toma los HABER distintos de vacio ...
 			var cantidad=$("#cantHaber_"+i).val();
 			cantidad=cantidad.split(','); //... elimina ,
-			cantidad=cantidad[0]+cantidad[1];	
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
 			cantidad=parseFloat( cantidad	);
 	
 			totalHaber= totalHaber +  cantidad ;

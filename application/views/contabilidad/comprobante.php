@@ -170,11 +170,11 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<span class="label label-info">&nbsp;&nbsp;&nbsp; Total Bs.:</span>&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>&nbsp;&nbsp;&nbsp;
 				
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		

@@ -565,8 +565,8 @@ class Contabilidad extends CI_Controller {
 		    //$this->pdf->SetFont('Arial', 'B', 9);
 		    $this->pdf->SetFont('Arial', '', 9);
 		    
-		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
-			$totalPorNumeroPedido=0; //... acumula los importes de cada nota de ingreso...
+			$totalDebe=0; //... acumula los importes del DEBE...
+			$totalHaber=0; //... acumula los importes del HABER...
 		    foreach ($cuentas->result() as $cuenta) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
@@ -576,28 +576,26 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(94,5,$cuenta->descripcion,'',0,'L',0);
 				if($cuenta->debeHaber=='D'){
 					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$totalDebe=$totalDebe+$cuenta->monto;
 				}else{
-					$this->pdf->Cell(50,5,'','',0,'L',0);
+					$this->pdf->Cell(56,5,'','',0,'L',0);
+					$totalHaber=$totalHaber+$cuenta->monto;
 				}
 				$this->pdf->Cell(20,5,number_format($cuenta->monto,2),'',0,'R',0);
-//				$this->pdf->Cell(20,5,$cta->unidad,'',0,'C',0);
-//				$this->pdf->Cell(19,5,number_format($cta->precio,2),'',0,'R',0);
-//				$this->pdf->Cell(21,5,number_format($cta->cantidad*$producto->precio,2),'',0,'R',0);
-
 				//Se agrega un salto de linea
 				$this->pdf->Ln('5');
-//				$this->pdf->Cell(15,5,'','',0,'L',0);
-//				$this->pdf->Cell(32,5,utf8_decode($cta->color),'',0,'L',0);
 		    }
-/*
+
 			$this->pdf->Ln('5');
-			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'Total Bs. '.number_format($totalPorNumeroPedido,2),0,0,'R');
-	
-			$this->pdf->Ln('5');
-			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'A Cuenta Bs.    '.number_format($aCuenta,2),0,0,'R');
-*/			
+			$this->pdf->Cell(86,5,'','',0,'L',0);
+    		$this->pdf->Cell(20,5,'Totales ',0,0,'R');
+			$this->pdf->Cell(10,5,'','',0,'L',0);
+			$this->pdf->Cell(31,5,number_format($totalDebe,2),0,0,'R');
+			$this->pdf->Cell(10,5,'','',0,'L',0);
+			$this->pdf->Cell(31,5,number_format($totalHaber,2),0,0,'R');
+			
+			
+			
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
 		     *

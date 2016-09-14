@@ -23,7 +23,7 @@
             $this->SetFont('Arial','',13);
             $this->Cell(50);
 			
-			$this->Cell(90,10,utf8_decode(' Comprobante de '.strtoupper($this->tipoComprobante).' No. ').substr($this->numeroComprobante,0,6).'-'.substr($this->numeroComprobante,6,3),0,0,'C');	
+			$this->Cell(90,10,utf8_decode(' Comprobante de '.strtoupper($this->tipoComprobante).' No.: ').substr($this->numeroComprobante,0,6).'-'.substr($this->numeroComprobante,6,3),0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
@@ -53,13 +53,12 @@
 	        */	 
 	        $this->Cell(15,7,utf8_decode('cuenta'),'TBL',0,'C','0');
 	        $this->Cell(37,7,utf8_decode('descripción'),'TB',0,'C','0');
-			$this->Cell(30,7,' ','TB',0,'R','0');
-			$this->Cell(30,7,' ','TB',0,'R','0');
-	        $this->Cell(18,7,'debe','TB',0,'C','0');
+			$this->Cell(78,7,' ','TB',0,'R','0');
+	        $this->Cell(14,7,'debe','TB',0,'C','0');
+			$this->Cell(25,7,' ','TB',0,'R','0');
 			$this->Cell(14,7,'haber','TB',0,'C','0');
-			$this->Cell(10,7,' ','TB',0,'R','0');
-			$this->Cell(15,7,'precio Bs.','TB',0,'C','0');
-			$this->Cell(19,7,'importe Bs.','TBR',0,'R','0');
+			$this->Cell(5,7,' ','TBR',0,'R','0');
+			
 	        $this->Ln(7);
        }
 
