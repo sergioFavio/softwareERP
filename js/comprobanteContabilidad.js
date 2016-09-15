@@ -350,7 +350,7 @@ function verLiteralNumerica(){
 	        dataType: "json",
 	        success: function(data){    
 	//      	   console.log(data);               
-	 		   document.form_.inputLiteral.value="son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
+	 		   document.form_.inputLiteral.value="Son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
 	        }
     	});
 		

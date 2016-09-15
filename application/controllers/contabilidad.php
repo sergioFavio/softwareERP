@@ -25,10 +25,9 @@ class Contabilidad extends CI_Controller {
 	
 	public function crudCuenta()
 	{
-			//... control de permisos de acceso ....
+		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso3=$this->session->userdata('usuarioProceso3');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
 			$this->load->view('header');
@@ -360,9 +359,9 @@ class Contabilidad extends CI_Controller {
 			$numeroCheque=$_POST['inputCheque'];
 		}
 				
-		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salida[ numeroFilas] ...
-		
+		$numeroFilasValidas=$_POST['numeroFilas']; 	//... formulario salida[ numeroFilas] ...
 		$numComprobante=$_POST['numComprobante'];
+		$valorLiteral=$_POST['inputLiteral'];		//... valor literal total del comprobante ...
 		
 		// ... actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... 
@@ -382,6 +381,7 @@ class Contabilidad extends CI_Controller {
 	    	"clienteBanco"=>$_POST['inputCliente'],
 	    	"numeroCheque"=>$numeroCheque,
 	    	"concepto"=>$_POST['inputConcepto']
+	    	
 		);
 		
 	    $this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
@@ -480,15 +480,17 @@ class Contabilidad extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
 		// fin actualizar numero de comprobante ...
 		
-//		redirect('menuController/index');
+		$datos['numeroComprobante']=$numComprobante;
+		$datos['valorLiteral']=$valorLiteral;		
 		
-		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante");
+		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");
+//		redirect("contabilidad/generarComprobantePDF,$datos);
 		
-	}	//... fin grabarComprobanteIngreso
+	}	//... fin grabarComprobante
 	
 	
 	function convertirNumeroAliteral(){
-		$object["literal"]=convertirNumeroAliteral($this->input->post("cadena"));
+		$object['literal']=convertirNumeroAliteral($this->input->post('cadena'));
    		echo json_encode($object);		
 	}
 	
@@ -496,6 +498,7 @@ class Contabilidad extends CI_Controller {
 	public function generarComprobantePDF(){
 		//... genera reporte de salida en PDF
 		$numeroComprobante= $_GET['numeroComprobante']; 	//... lee numeroComprobante que viene de grabarComprobante ...
+		$valorLiteral= $_GET['valorLiteral']; 				//... valor literal total del comprobante ...
 				
 		$sql ="SELECT * FROM comprobantecabecera WHERE numComprobante='$numeroComprobante' ";
 		$contador = $this->db->query($sql);	
@@ -594,6 +597,30 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->Cell(10,5,'','',0,'L',0);
 			$this->pdf->Cell(31,5,number_format($totalHaber,2),0,0,'R');
 			
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(5,5,$valorLiteral,'',0,'L',0);
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+			$this->pdf->Cell(30,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+			$this->pdf->Cell(30,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+			$this->pdf->Cell(30,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(35,5,'Elaborado','',0,'C',0);
+			$this->pdf->Cell(25,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'Vo.Bo. Contador','',0,'C',0);
+			$this->pdf->Cell(30,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'Aprobado','',0,'C',0);
+			$this->pdf->Cell(30,5,'','',0,'L',0);
+			$this->pdf->Cell(20,5,'Recibido','',0,'C',0);
 			
 			
 		     /* PDF Output() settings

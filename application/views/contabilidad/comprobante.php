@@ -165,7 +165,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	<div class="totalBs">
 		
 	     <span > 
-	 		<input type="text"   id="inputLiteral" name="inputLiteral" readonly="readonly"   placeholder="son: ..00/100 Bolivianos.&hellip;" style="width: 550px;font-size:11px;text-align:center;">
+	 		<input type="text"   id="inputLiteral" name="inputLiteral" readonly="readonly"   placeholder="Son: ..00/100 Bolivianos.&hellip;" style="width: 550px;font-size:11px;text-align:center;">
 	    </span>&nbsp;&nbsp;
 		
 		<span class="label label-info">&nbsp;&nbsp;&nbsp; Total Bs.:</span>&nbsp;&nbsp;&nbsp;
