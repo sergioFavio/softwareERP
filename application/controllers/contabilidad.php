@@ -522,7 +522,7 @@ class Contabilidad extends CI_Controller {
 			
 			$fechaComprobante= $comprobanteCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			$tipoComprobante= $comprobanteCabecera["tipoComprobante"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-			if($tipocomprobante=="I"){
+			if($tipoComprobante=="I"){
 				$tComprobante="Ingreso";
 			}else if($tipoComprobante=="E"){
 				$tComprobante="Egreso";
@@ -547,7 +547,7 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->numeroComprobante=strtoupper($numeroComprobante);      		//...pasando variable para el header del PDF
 			$this->pdf->fechaComprobante=fechaMysqlParaLatina($fechaComprobante); 	//...pasando variable para el header del PDF
 			$this->pdf->clienteBanco=$clienteBanco; 								//...pasando variable para el header del PDF
-			$this->pdf->tipoComprobante=$tComprobante; 								//...pasando variable para el header del PDF
+			$this->pdf->tipoComprobante=$tComprobante; 							//...pasando variable para el header del PDF
 			$this->pdf->numeroCheque=$numeroCheque; 								//...pasando variable para el header del PDF
 			$this->pdf->concepto=$concepto; 										//...pasando variable para el header del PDF
 //			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
@@ -576,7 +576,7 @@ class Contabilidad extends CI_Controller {
 
 				$this->pdf->Cell(15,5,$cuenta->cuentaComprobante,'',0,'L',0);
 				$this->pdf->Cell(3,5,'','',0,'L',0);
-				$this->pdf->Cell(94,5,$cuenta->descripcion,'',0,'L',0);
+				$this->pdf->Cell(94,5,utf8_decode($cuenta->descripcion),'',0,'L',0);
 				if($cuenta->debeHaber=='D'){
 					$this->pdf->Cell(15,5,'','',0,'L',0);
 					$totalDebe=$totalDebe+$cuenta->monto;

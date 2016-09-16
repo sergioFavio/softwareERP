@@ -10,7 +10,6 @@
 		
         // El encabezado del PDF
         public function Header(){
-        	
          	//global $titulo;
 			
             $this->Image('assets/img/logo.jpg',10,8,22);
@@ -28,23 +27,31 @@
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
             $this->SetFont('Arial','',8);
-            
-            $this->Cell(80,10,utf8_decode('Cliente: '.$this->clienteBanco.'    Número Cheque: '.$this->numeroCheque.'   concepto: '). $this->concepto,0,0,'L');
-			$this->Cell(57);
-			$this->Cell(50,10,utf8_decode('Fecha:  ').$this->fechaComprobante,0,0,'R');
-            $this->Ln('5');
+            if($this->tipoComprobante=='Egreso'){
+				$this->Cell(40,10,utf8_decode('Banco: '.$this->clienteBanco),0,0,'L');
+				$this->Cell(4);
+				$this->Cell(35,10,utf8_decode('Cheque No.: '.$this->numeroCheque),0,0,'L');
+				$this->Cell(5);
+				$this->Cell(80,10,'Concepto: '. utf8_decode($this->concepto),0,0,'L');
+				$this->Cell(4);
+				$this->Cell(20,10,utf8_decode('Fecha:  ').$this->fechaComprobante,0,0,'R');
+            }
+
+			if($this->tipoComprobante=='Ingreso'){
+            	$this->Cell(50,10,utf8_decode('Cliente: '.$this->clienteBanco),0,0,'L');
+				$this->Cell(10);
+				$this->Cell(88,10,'Concepto: '. utf8_decode($this->concepto),0,0,'L');
+				$this->Cell(20);
+				$this->Cell(20,10,utf8_decode('Fecha:  ').$this->fechaComprobante,0,0,'R');
+            }
 			
-//			$this->Cell(81,10,utf8_decode('Localidad: '.$this->localidad.'   Cotización fábrica: '.$this->cotizacionFabrica.'   Orden compra: '). $this->ordenCompra,0,0,'L');
-			$this->Cell(56);
-//			$this->Cell(50,10,utf8_decode('Fecha Entrega: ').$this->fechaEntrega,0,0,'R');
-			$this->Ln('5');
+			if($this->tipoComprobante=='Diario'){
+				$this->Cell(88,10,'Concepto: '. utf8_decode($this->concepto),0,0,'L');
+				$this->Cell(80);
+				$this->Cell(20,10,utf8_decode('Fecha:  ').$this->fechaComprobante,0,0,'R');
+            }
 			
-//			$this->Cell(70,10,utf8_decode('Facturar a: '.$this->facturarA.'   Nit: '.$this->nit),0,0,'L');
-			$this->Cell(15);
-//			$this->Cell(55,10,utf8_decode('Contacto: '.$this->contacto),0,0,'L');
-			$this->Cell(10);
-//			$this->Cell(30,10,utf8_decode('Código Vendedor: ').$this->usuario,0,0,'L');
-			$this->Ln('9');
+			$this->Ln('8');
 			
 			/*
 	         * TITULOS DE COLUMNAS
@@ -55,9 +62,9 @@
 	        $this->Cell(37,7,utf8_decode('descripción'),'TB',0,'C','0');
 			$this->Cell(78,7,' ','TB',0,'R','0');
 	        $this->Cell(14,7,'debe','TB',0,'C','0');
-			$this->Cell(25,7,' ','TB',0,'R','0');
+			$this->Cell(27,7,' ','TB',0,'R','0');
 			$this->Cell(14,7,'haber','TB',0,'C','0');
-			$this->Cell(5,7,' ','TBR',0,'R','0');
+			$this->Cell(3,7,' ','TBR',0,'R','0');
 			
 	        $this->Ln(7);
        }
