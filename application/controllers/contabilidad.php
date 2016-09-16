@@ -639,9 +639,16 @@ class Contabilidad extends CI_Controller {
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 		     */
 			  
-			 $this->pdf->Output('pdfsArchivos/contabilidad/cpbte'.$numeroComprobante.'.pdf', 'F');
+			$this->pdf->Output('pdfsArchivos/contabilidad/comprobantes/cpbte'.$numeroComprobante.'.pdf', 'F');
+			 
+			$datos['documento']="pdfsArchivos/contabilidad/comprobantes/cpbte".$numeroComprobante.".pdf";	
+			$datos['titulo']=' Comprobante No. '.substr($numeroComprobante,0,6).'-'.substr($numeroComprobante,6,3);	// ... titulo ...
+		
+			$this->load->view('header');
+			$this->load->view('reportePdfSinFechas',$datos );
+			$this->load->view('footer');
 	
-			 redirect("menuController/index");					
+//			 redirect("menuController/index");					
 		}
 	    
 	} //... fin funcion: generarComprobantePDF ...
