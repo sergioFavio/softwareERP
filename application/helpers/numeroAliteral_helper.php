@@ -63,12 +63,12 @@ if ( ! function_exists('convertirNumeroAliteral'))
 	         }
 	
 			 if((strlen($cadena) - $i == 2) || (strlen($cadena) - $i == 5) || (strlen($cadena) - $i == 8) ){   // ... decenas y dieces ...
-			 	if(($digito=='1') && ($cadena.charAt($i+1)!='0')){	// ... dieces ...
+			 	if(($digito=='1') && (substr($cadena,$i+1,1)!='0')   ){	// ... dieces ...
 					$digito = substr($cadena,$i+1,1);
 	                $indice= $digito;
 					$literal=$literal.$dieces[$indice];
 	   				$i++;
-				} else{						//... decenas ...
+				} else{										//... decenas ...
 	   				$literal=$literal.$decenas[$indice];
 	            }
 	         }
@@ -92,7 +92,7 @@ if ( ! function_exists('convertirNumeroAliteral'))
 	                  	 
 			 if((strlen($cadena)-$i  == 7) && ($digito!='1') ){   // ... millones  ...
 	   			$literal=$literal."millones ";
-			   }	
+			 }	
 	
 			 if((strlen($cadena)-$i  == 7) && ($digito=='1') && (strlen($cadena)  > 7)){   // ... millones  ...
 	   			$literal=$literal."millones ";
