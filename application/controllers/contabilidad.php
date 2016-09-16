@@ -568,12 +568,13 @@ class Contabilidad extends CI_Controller {
 		    //$this->pdf->SetFont('Arial', 'B', 9);
 		    $this->pdf->SetFont('Arial', '', 9);
 		    
-			$totalDebe=0; //... acumula los importes del DEBE...
-			$totalHaber=0; //... acumula los importes del HABER...
+			$totalDebe=0; 		//... acumula los importes del DEBE...
+			$totalHaber=0; 		//... acumula los importes del HABER...
+			$numeroLineas=0; 	//...numero de lineas de impresion ...
 		    foreach ($cuentas->result() as $cuenta) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
-
+				$numeroLineas = $numeroLineas +1;
 				$this->pdf->Cell(15,5,$cuenta->cuentaComprobante,'',0,'L',0);
 				$this->pdf->Cell(3,5,'','',0,'L',0);
 				$this->pdf->Cell(94,5,utf8_decode($cuenta->descripcion),'',0,'L',0);
@@ -601,10 +602,10 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(5,5,$valorLiteral,'',0,'L',0);
 			
-			$this->pdf->Ln('5');
-			$this->pdf->Ln('5');
-			$this->pdf->Ln('5');
-			$this->pdf->Ln('5');
+			for($x=$numeroLineas; $x<42; $x++){
+				$this->pdf->Ln('5');				//... imprime lineas en blanco ...
+			}
+			
 			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 			$this->pdf->Cell(30,5,'','',0,'L',0);
 			$this->pdf->Cell(20,5,'____________________','',0,'L',0);
