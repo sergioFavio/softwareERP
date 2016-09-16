@@ -94,7 +94,9 @@ $(function () {
     });
 });
 
-
+var saldoacumulado=0.00;		//... variable para determinar la eliminacion de una cuenta ...
+var cuenta='';					//... asignar cuenta a eliminar ...
+var descripcion='';				//... asigna la descripcion de la cuenta a eleiminar ...
 $(document).ready(function() {
 			
 	/*  inicio de light box crearCuenta javascript */
@@ -107,14 +109,11 @@ $(document).ready(function() {
 	
 	$('#borrarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
-		var cuenta = $(e.relatedTarget).data('cuenta'); 
-		var descripcion =$(e.relatedTarget).data('descripcion');
+		cuenta = $(e.relatedTarget).data('cuenta'); 
+		descripcion =$(e.relatedTarget).data('descripcion');
 		var title = $(e.relatedTarget).data('title');
 		
-		
-		var saldoacumulado = $(e.relatedTarget).data('saldoacumulado');
-		
-		
+		saldoacumulado = $(e.relatedTarget).data('saldoacumulado');
 		
 		//aca lo asignamos a un hidden dentro del form que esta en el modal
 	    $(e.currentTarget).find('input[name="codigo"]').val(cuenta);
@@ -125,43 +124,29 @@ $(document).ready(function() {
 	});
 	
 	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() { 
-		
-		var saldoacumulado=0.00;
+		saldoacumulado=parseFloat(saldoacumulado);
 		if(saldoacumulado!=0.00 ){
-			//alert("¡¡¡ E R R O R !!! ... Saldo acumulado distinto dee cero, no se puede eliminar la cuenta "+cuenta + " "+descripcion);
-			
-			alert("¡¡¡ E R R O R !!! ... Saldo acumulado distinto de cero, no se puede eliminar la cuenta ");
-			$('#borrarModal').modal('hide'); // cierra el lightbox
+			alert("¡¡¡ E R R O R !!! ... Saldo acumulado "+saldoacumulado+" es distinto de cero, no se puede eliminar la cuenta "+cuenta + " "+descripcion);
+			//$('#borrarModal').modal('hide'); // cierra el lightbox
+			//window.history.back();		//...vuelve a la pagina anterior ...
+			//window.location;	//...vuelve a la pagina actual...
 		}else{
-		
-		      
-		      
-		      
-		var form= $('#borrarModal').find("form");
-		var action=form.attr("action");
-		//aca recuperamos el id que paso por tag al modal
-		var idele=$(form).find('input[name="codigo"]').val();
-			
-		$.ajax({
-		
-		    url: action,
-		    type: "POST",
-		    data: $(form).serialize(),
-		
-		    success: function(data){
-		        //alert(data);
-		       
-		    //  aca deberia poner la funcion que hace el refrescado del listado
-		    window.location.href=data;
-
-			}
-		});
-		
-		
-		
+			var form= $('#borrarModal').find("form");
+			var action=form.attr("action");
+			//aca recuperamos el id que paso por tag al modal
+			var idele=$(form).find('input[name="codigo"]').val();
+				
+			$.ajax({
+			    url: action,
+			    type: "POST",
+			    data: $(form).serialize(),
+			    success: function(data){
+			        //alert(data);
+				    //  aca deberia poner la funcion que hace el refrescado del listado
+				    window.location.href=data;
+				}
+			});
 		}	//... fin IF saldoacumulado!=0.00 ...
-		
-		
 	 });
 	 
 	 
