@@ -653,7 +653,25 @@ class Contabilidad extends CI_Controller {
 	    
 	} //... fin funcion: generarComprobantePDF ...
 	
+	public function reporteContabilidad(){
+		$reporte= $_GET['reporte']; //... lee reporte[DG:diario general/ MY:mayores/ BG:balnce general/ ER:estado resultados] ...
+		if($reporte=='DG'){
+			$tituloReporte='Diario General';
+			$reporte='DiarioGeneral';			//... variable guarda el reporte a generar ...
+		}		
+		
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
+		$fechasGestiones= $this->tablaGenerica_model->getTodos('contagestion'); //..una vez cargado el modelo de la tabla llama contagestion..
+			
+		$datos['fechasGestiones']=$fechasGestiones;
+//		$datos['tipoTransaccion']=$tipoTransaccion;
 
+		$datos['tituloReporte']=$tituloReporte;
+		$datos['reporte']=$reporte;
+		$this->load->view('header');
+		$this->load->view('contabilidad/reporteContabilidad',$datos );
+		$this->load->view('footer');
+	}		//... fin DiarioGeneral ...
 	
 }
 

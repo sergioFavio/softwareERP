@@ -89,10 +89,8 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
 				         <option value="Banco Unión M.N.">Banco Unión M.N.</option>
 		        	</select>
-	    	 		
 	    		</div>
-	    		
-	    	</div><!-- /.col-lg-4 -->
+	    	</div><!-- /.col-xs-2 -->
 	    	
 	    	<div class="col-xs-1">
 	    	 	<span></span>

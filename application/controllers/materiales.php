@@ -1758,7 +1758,6 @@ class Materiales extends CI_Controller {
 		$this->load->view('footer');
 	}
 
-	
 	public function materialPorNumeroOrden(){
 		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...		
 		$tipoTransaccion= $_GET['tipoTransaccion']; //... lee tipoTransaccion que viene del menu principal(salida de  almacen/bodega ) ...		
@@ -1769,8 +1768,6 @@ class Materiales extends CI_Controller {
 		$this->load->view('inventarios/materialPorNumeroOrden',$datos );
 		$this->load->view('footer');
 	}
-	
-	
 	
 	public function generarReporteMensualsalida(){
 		//... genera reporte de salida mensual de materiales en PDF
