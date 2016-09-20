@@ -48,7 +48,7 @@ $(document).ready(function() {
 				<div class="col-xs-3">
 					<div class="input-group input-group-sm">
 				    	<span class="input-group-addon" id="letraCabecera" >Fecha de Gestión</span>
-		    	 		<select class = "form-control input-sm" id="fechaGestion" name="fechaGestion" placeholder="fecha de gestión&hellip;" style="width:85px;font-size:11px;text-align:center;">
+		    	 		<select class = "form-control input-sm" id="fechaDeGestion" name="fechaDeGestion" placeholder="fecha de gestión&hellip;" style="width:85px;font-size:11px;text-align:center;">
 						   <?php foreach($fechasGestiones as $fechaGestion):?>
 					         <option value="<?= $fechaGestion['gestion'] ?>"> <?= substr($fechaGestion['gestion'],0,4).'-'.substr($fechaGestion['gestion'],4,2) ?> </option>
 					       <?php endforeach ?>
@@ -73,8 +73,7 @@ $(document).ready(function() {
 				</div>
 			    
 		</div><!-- /.row -->
-			
-			<!--input type="hidden"  name="tituloReporte" value="<?= $reporte?> ?>" />     <!--  nombreDeposito: almacen/bodega -->
+	
 			<!--input type="hidden"  name="tipoTransaccion" value="<?= $tipoTransaccion ?>" />     <!-- tipoTransaccion: ingreso/salida -->
 			
 	    </form>

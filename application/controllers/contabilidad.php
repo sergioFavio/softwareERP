@@ -256,9 +256,16 @@ class Contabilidad extends CI_Controller {
 			$this->load->model("numeroDocumento_model");
 			$nombreTabla='contanocomprobante'; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
-			$gestion = $this->numeroDocumento_model->getComprobante('contagestion');
+			$sql ="SELECT * FROM contagestion ORDER BY gestion DESC LIMIT 1";			//... recupera el ultimo registro insertado de una tabla... 
+		
+			$consulta = $this->db->query($sql);
+			if ($consulta->num_rows() > 0){
+			   $row = $consulta->row_array(); 
+			   $gestion= $row['gestion'];			//..asign ultimo registro tabla contagestion ...
+			}
+			
 			///////////////////////////////////////
-			///...INICIO genera nuevo numero de pedido ...
+			///...INICIO genera nuevo numero de comprobante ...
 			//////////////////////////////////////
 			$anhoSistema = date("Y");	//... anho del sistema
 			$mesSistema = date("m");	//... mes del sistema
@@ -671,7 +678,123 @@ class Contabilidad extends CI_Controller {
 		$this->load->view('header');
 		$this->load->view('contabilidad/reporteContabilidad',$datos );
 		$this->load->view('footer');
-	}		//... fin DiarioGeneral ...
+	}		//... fin reporteContabilidad ...
+	
+		
+	public function generarReporteDiarioGeneral(){
+		//... genera reporte de diarioGeneral en PDF
+		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+
+        // Se obtienen los registros de la base de datos
+        $sql ="SELECT idComprobante,fechaComprobante,cuentaComprobante,debeHaber,monto,glosa,descripcion FROM comprobantedetalle,contaplandectas 
+        WHERE year(fechaComprobante)='$anhoGestion' AND month(fechaComprobante)='$mesGestion' AND cuentaComprobante=cuenta ORDER BY idComprobante";
+
+ 		$registros = $this->db->query($sql);
+ 
+ 		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+ 		
+ 		if($contador==0){
+			$datos['mensaje']='No hay registros en el Diario General para la gestión '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+ 		}else{
+ 			// Se carga la libreria fpdf
+        	$this->load->library('contabilidad/DiarioGeneralPdf');
+		
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new DiarioGeneralPdf('L');		//... ('L') sentido horizontal de la hoja ...
+			
+			$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
+			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage('L');
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 9);
+	        
+	        // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
+	        $numeroAnterior = 0;
+	        foreach ($registros->result() as $reg) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+/*	            if($numeroAnterior == 0 || $numeroAnterior !=($reg->numSal) ){   //...corte de control numero Salida
+	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
+	            	$this->pdf->Cell(12,5,$reg->numSal,'',0,'L',0);
+		            $this->pdf->Cell(20,5,fechaMysqlParaLatina($reg->fecha),'',0,'L',0);
+		            $this->pdf->Cell(22,5,$reg->numOrden,'',0,'L',0);
+		       		$this->pdf->Cell(51,5,utf8_decode($reg->glosa),'',0,'L',0);
+		            $numeroAnterior=$reg->numSal;
+					//Se agrega un salto de linea
+	            	$this->pdf->Ln(5);
+	            }
+*/	            
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(3,5,substr($reg->fechaComprobante,8,2),'',0,'L',0);
+	            $this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,5,3),'',0,'L',0);
+				$this->pdf->Cell(7,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$reg->cuentaComprobante,'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(73,5,$reg->descripcion,'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(75,5,utf8_decode($reg->glosa),'',0,'L',0);
+				$this->pdf->Cell(8,5,'','',0,'L',0);
+	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
+				
+				
+				$this->pdf->Cell(7,5,'','',0,'L',0);
+	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
+	            //Se agrega un salto de linea
+	            $this->pdf->Ln(5);
+	        }
+	        
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/contabilidad/diarioGeneral.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/contabilidad/diarioGeneral.pdf";	
+			$datos['titulo']='DIARIO GENERAL fecha de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+		
+			$this->load->view('header');
+			$this->load->view('reportePdfSinFechas',$datos );
+			$this->load->view('footer');	
+ 		}
+        
+	} //... fin funcion: generarReporteDiarioGeneral ...
 	
 }
 

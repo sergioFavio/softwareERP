@@ -745,7 +745,7 @@ class Tienda extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso3=$this->session->userdata('usuarioProceso3');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='tienda'){  //... valida permiso de userName y de menu...
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName y de menu...
 			$datos['mensaje']='Usuario NO autorizado para ver la lista de precios de productos';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );

@@ -506,7 +506,7 @@ class Produccion extends CI_Controller {
 		    */
 		     
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
-		    $this->pdf = new PlanificarProduccionPdf('L');
+		    $this->pdf = new PlanificarProduccionPdf('L');	//...sentido Horizontal de la hoja new PlanificarProduccionPdf('L') ....
 			
 			$this->pdf->nombreDeposito=strtoupper($nombreDeposito);      			//...pasando variable para el header del PDF
 			$this->pdf->nombreProducto=$descripcionProducto; 			//...pasando variable para el header del PDF
