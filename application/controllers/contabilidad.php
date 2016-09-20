@@ -733,22 +733,34 @@ class Contabilidad extends CI_Controller {
 	        //$this->pdf->SetFont('Arial', 'B', 9);
 	        $this->pdf->SetFont('Arial', '', 9);
 	        
-	        // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
-	        $numeroAnterior = 0;
+	       
+	        $diaAnterior ='';		 	// ... corte de control por dia...				
+			$totalDebeDia=0.00;			//...inicaliza $totalDebeDia ...
+			$totalHaberDia=0.00;		//...inicaliza $totalHaberDia ...
+			$totalDebeMes=0.00;			//...inicaliza $totalDebeMes ...
+			$totalHaberMes=0.00;		//...inicaliza $totalHaberMes ...
 	        foreach ($registros->result() as $reg) {
 	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
 	            // Se imprimen los datos de cada registro
-/*	            if($numeroAnterior == 0 || $numeroAnterior !=($reg->numSal) ){   //...corte de control numero Salida
-	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
-	            	$this->pdf->Cell(12,5,$reg->numSal,'',0,'L',0);
-		            $this->pdf->Cell(20,5,fechaMysqlParaLatina($reg->fecha),'',0,'L',0);
-		            $this->pdf->Cell(22,5,$reg->numOrden,'',0,'L',0);
-		       		$this->pdf->Cell(51,5,utf8_decode($reg->glosa),'',0,'L',0);
-		            $numeroAnterior=$reg->numSal;
-					//Se agrega un salto de linea
-	            	$this->pdf->Ln(5);
+	            if( $diaAnterior != substr($reg->fechaComprobante,8,2) && $diaAnterior !='' ){   //...corte de control por dia ...
+	            	$this->pdf->Ln(5);  //Se agrega un salto de linea...
+	            	$this->pdf->Cell(180,5,'','',0,'L',0);
+		        	$this->pdf->Cell(15,5,utf8_decode('Totales del día ...'),'',0,'L',0);
+					$this->pdf->Cell(20,5,'','',0,'L',0);
+		            $this->pdf->Cell(27,5,number_format($totalDebeDia,2),'',0,'R',0);
+		            $this->pdf->Cell(5,5,'','',0,'L',0);
+		       		$this->pdf->Cell(27,5,number_format($totalHaberDia,2),'',0,'R',0);
+					$totalDebeMes= $totalDebeMes + $totalDebeDia;		//...incrementa $totalDebeMes ...
+					$totalHaberMes=$totalHaberMes +$totalHaberDia;		//...incrementa $totalHaberMes ...
+			
+					$totalDebeDia=0.00;		//...inicaliza $totalDebeDia ...
+					$totalHaberDia=0.00;	//...inicaliza $totalHaberDia ...
+					
+	            	$this->pdf->Ln(5);		//Se agrega un salto de linea
+					$this->pdf->Ln(5);		//Se agrega un salto de linea
+					$this->pdf->Ln(5);		//Se agrega un salto de linea
 	            }
-*/	            
+	            
 				$this->pdf->Cell(1,5,'','',0,'L',0);
 				$this->pdf->Cell(3,5,substr($reg->fechaComprobante,8,2),'',0,'L',0);
 	            $this->pdf->Cell(5,5,'','',0,'L',0);
@@ -759,16 +771,41 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(73,5,$reg->descripcion,'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
 				$this->pdf->Cell(75,5,utf8_decode($reg->glosa),'',0,'L',0);
-				$this->pdf->Cell(8,5,'','',0,'L',0);
-	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
 				
+				if($reg->debeHaber=='D'){					//...discrimina si es columna DEBE o HABER ...
+					$this->pdf->Cell(8,5,'','',0,'L',0);
+					$totalDebeDia=$totalDebeDia + $reg->monto;
+				}else{
+					$this->pdf->Cell(40,5,'','',0,'L',0);
+					$totalHaberDia=$totalHaberDia + $reg->monto;
+				}
 				
-				$this->pdf->Cell(7,5,'','',0,'L',0);
 	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
+				$diaAnterior = substr($reg->fechaComprobante,8,2);		//..asigna diaAnterior ...
 	            //Se agrega un salto de linea
 	            $this->pdf->Ln(5);
-	        }
+	        } //...fin foreach ...
 	        
+        	$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Cell(180,5,'','',0,'L',0);
+        	$this->pdf->Cell(15,5,utf8_decode('Totales del día ...'),'',0,'L',0);
+			$this->pdf->Cell(20,5,'','',0,'L',0);
+            $this->pdf->Cell(27,5,number_format($totalDebeDia,2),'',0,'R',0);
+            $this->pdf->Cell(5,5,'','',0,'L',0);
+       		$this->pdf->Cell(27,5,number_format($totalHaberDia,2),'',0,'R',0);
+			
+			$totalDebeMes= $totalDebeMes + $totalDebeDia;		//...incrementa $totalDebeMes ...
+			$totalHaberMes=$totalHaberMes +$totalHaberDia;		//...incrementa $totalHaberMes ...
+			
+			$this->pdf->Ln(5);	//Se agrega un salto de linea
+			$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Cell(180,5,'','',0,'L',0);
+        	$this->pdf->Cell(15,5,utf8_decode('Totales del mes ...'),'',0,'L',0);
+			$this->pdf->Cell(20,5,'','',0,'L',0);
+            $this->pdf->Cell(27,5,number_format($totalDebeMes,2),'',0,'R',0);
+            $this->pdf->Cell(5,5,'','',0,'L',0);
+       		$this->pdf->Cell(27,5,number_format($totalHaberMes,2),'',0,'R',0);
+			
 	         /* PDF Output() settings
 	         * Se manda el pdf al navegador
 	         *
