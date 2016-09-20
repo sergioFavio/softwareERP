@@ -696,7 +696,7 @@ class Contabilidad extends CI_Controller {
  		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
  		
  		if($contador==0){
-			$datos['mensaje']='No hay registros en el Diario General para la gestión '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);
+			$datos['mensaje']='No hay registros en el Diario General para la gestión '.mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4);
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');

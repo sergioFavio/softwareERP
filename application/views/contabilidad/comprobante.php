@@ -137,7 +137,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     	<?php
         //if ciclo de impresion de filas 
   
-       		for($x=0; $x<25; $x++){
+       		for($x=0; $x<24; $x++){
             	echo "<tr class='detalleMaterial' >";
            
 					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >
@@ -158,7 +158,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
    
       </tbody>
 	</table>
-	
 	
 	<div class="totalBs">
 		
