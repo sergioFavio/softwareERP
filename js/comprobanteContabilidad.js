@@ -33,7 +33,7 @@ $(document).ready(function() {
   		var limiteArreglo=document.getElementsByClassName("detalleMaterial").length;   // limiteArreglo a buscar codigoRepetido
 		var codigoRepetido =verificarCodigoRepetido(codigoCuenta,filaActual,limiteArreglo);			
  			
- 		if(!codigoRepetido){
+// 		if(!codigoRepetido){
 			$('#idCta_'+filaActual).val(codigoCuenta);
 			$('#cta_'+filaActual).val(nombreCuenta);
 			$("#cantDebe_"+filaActual).val("");
@@ -41,10 +41,10 @@ $(document).ready(function() {
 			$('#glosa_'+filaActual).val("");
 					
         	$('#myModal').modal('hide'); // cierra el lightBox
-    	}else{
-    		alert("¡¡¡ Este código" +codigoCuenta +" ya fué adicionado ...!!!");
-    		$('#myModal').modal('hide'); // cierra el lightbox
-      	}
+//    	}else{
+//    		alert("¡¡¡ Este código" +codigoCuenta +" ya fué adicionado ...!!!");
+//    		$('#myModal').modal('hide'); // cierra el lightbox
+//      	}
         	
 	} ); // fin #tabla2 tbody
 
@@ -225,7 +225,7 @@ function validarMontoDebe(numero, filaExistencia){
 					
 	}else{
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    	if (!/^\d{1,8}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
     		alert("El valor " + numero + " no es válido");
     		$("#cantDebe_"+filaExistencia).val("");   // borra celda de cantidad
     	}else{
@@ -251,7 +251,7 @@ function validarMontoHaber(numero, filaExistencia){
 					
 	}else{
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    	if (!/^\d{1,8}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
     		alert("El valor " + numero + " no es válido");
     		$("#cantHaber_"+filaExistencia).val("");   // borra celda de cantidad
     	}else{

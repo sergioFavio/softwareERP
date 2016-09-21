@@ -665,7 +665,12 @@ class Contabilidad extends CI_Controller {
 		if($reporte=='DG'){
 			$tituloReporte='Diario General';
 			$reporte='DiarioGeneral';			//... variable guarda el reporte a generar ...
-		}		
+		}	
+		
+		if($reporte=='MY'){
+			$tituloReporte='Mayor';
+			$reporte='Mayor';					//... variable guarda el reporte a generar ...
+		}	
 		
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
 		$fechasGestiones= $this->tablaGenerica_model->getTodos('contagestion'); //..una vez cargado el modelo de la tabla llama contagestion..
@@ -832,6 +837,169 @@ class Contabilidad extends CI_Controller {
  		}
         
 	} //... fin funcion: generarReporteDiarioGeneral ...
+	
+	
+	public function generarReporteMayor(){
+		//... genera reporte de Mayor en PDF
+		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+
+        // Se obtienen los registros de la base de datos    
+//        $sql ="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle 
+//        WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion' ORDER BY cuentaComprobante ASC";
+
+		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle WHERE MONTH(fechaComprobante) ='09' ORDER BY cuentaComprobante, idComprobante ASC";
+
+ 		$registros = $this->db->query($sql);
+ 
+ 		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+ 		
+ 		if($contador==0){
+			$datos['mensaje']='No hay registros en el Mayor para la gestión '.mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4);
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+ 		}else{
+ 			// Se carga la libreria fpdf
+        	$this->load->library('contabilidad/MayorPdf');
+		
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new MayorPdf();		//... ('L') sentido horizontal de la hoja ...
+			
+			$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
+			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage();			//... ('L') sentido horizontal de la hoja ...
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 8);
+	        
+	        $cuentaAnterior ='';		// ... corte de control por cuenta comprobante...				
+			$totalDebeDia=0.00;			//...inicaliza $totalDebeDia ...
+			$totalHaberDia=0.00;		//...inicaliza $totalHaberDia ...
+			$totalDebeMes=0.00;			//...inicaliza $totalDebeMes ...
+			$totalHaberMes=0.00;		//...inicaliza $totalHaberMes ...
+			$espaciado=0;				//..para la columna del saldo ...
+	        foreach ($registros->result() as $reg) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+	            if( $cuentaAnterior != $reg->cuentaComprobante && $cuentaAnterior !='' ){   //...corte de control por dia ...
+	            	$this->pdf->Ln(5);  //Se agrega un salto de linea...
+	            	$this->pdf->Cell(85,5,'','',0,'L',0);
+		        	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
+					$this->pdf->Cell(8,5,'','',0,'L',0);
+		            $this->pdf->Cell(20,5,number_format($totalDebeDia,2),'',0,'R',0);
+		            $this->pdf->Cell(8,5,'','',0,'L',0);
+		       		$this->pdf->Cell(20,5,number_format($totalHaberDia,2),'',0,'R',0);
+					$totalDebeMes= $totalDebeMes + $totalDebeDia;		//...incrementa $totalDebeMes ...
+					$totalHaberMes=$totalHaberMes +$totalHaberDia;		//...incrementa $totalHaberMes ...
+			
+					$totalDebeDia=0.00;		//...inicaliza $totalDebeDia ...
+					$totalHaberDia=0.00;	//...inicaliza $totalHaberDia ...
+					
+	            	$this->pdf->Ln(5);		//Se agrega un salto de linea
+					$this->pdf->Ln(5);		//Se agrega un salto de linea
+					$this->pdf->Ln(5);		//Se agrega un salto de linea
+	            }
+	            
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,fechaMysqlParaLatina($reg->fechaComprobante),'',0,'L',0);
+	            $this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,5,3),'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+//				$this->pdf->Cell(10,5,$reg->cuentaComprobante,'',0,'L',0);
+//				$this->pdf->Cell(10,5,'','',0,'L',0);
+	//			$this->pdf->Cell(73,5,$reg->descripcion,'',0,'L',0);
+	//			$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(60,5,utf8_decode($reg->glosa),'',0,'L',0);
+				
+				if($reg->debeHaber=='D'){					//...discrimina si es columna DEBE o HABER ...
+					$this->pdf->Cell(7,5,'','',0,'L',0);
+					$totalDebeDia=$totalDebeDia + $reg->monto;
+					$espaciado=35;				//..para la columna del saldo ...
+				}else{
+					$this->pdf->Cell(35,5,'','',0,'L',0);
+					$totalHaberDia=$totalHaberDia + $reg->monto;
+					$espaciado=7;				//..para la columna del saldo ...
+				}
+				
+	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
+				
+				
+				$this->pdf->Cell($espaciado,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($reg->monto,2),'',0,'R',0);
+				$cuentaAnterior = $reg->cuentaComprobante;		//..asigna cuentaAnterior ...
+	            //Se agrega un salto de linea
+	            $this->pdf->Ln(5);
+	        } //...fin foreach ...
+	        
+        	$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Cell(85,5,'','',0,'L',0);
+        	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
+			$this->pdf->Cell(8,5,'','',0,'L',0);
+            $this->pdf->Cell(20,5,number_format($totalDebeDia,2),'',0,'R',0);
+            $this->pdf->Cell(8,5,'','',0,'L',0);
+       		$this->pdf->Cell(20,5,number_format($totalHaberDia,2),'',0,'R',0);
+			
+			$totalDebeMes= $totalDebeMes + $totalDebeDia;		//...incrementa $totalDebeMes ...
+			$totalHaberMes=$totalHaberMes +$totalHaberDia;		//...incrementa $totalHaberMes ...
+			
+			$this->pdf->Ln(5);	//Se agrega un salto de linea
+			$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Cell(90,5,'','',0,'L',0);
+        	$this->pdf->Cell(15,5,utf8_decode('Totales del mes ...'),'',0,'L',0);
+			$this->pdf->Cell(20,5,'','',0,'L',0);
+            $this->pdf->Cell(27,5,number_format($totalDebeMes,2),'',0,'R',0);
+            $this->pdf->Cell(5,5,'','',0,'L',0);
+       		$this->pdf->Cell(20,5,number_format($totalHaberMes,2),'',0,'R',0);
+			
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/contabilidad/mayor.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/contabilidad/mayor.pdf";	
+			$datos['titulo']='MAYOR fecha de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+		
+			$this->load->view('header');
+			$this->load->view('reportePdfSinFechas',$datos );
+			$this->load->view('footer');	
+ 		}
+        
+	} //... fin funcion: generarReporteMayor ...
+	
+	
 	
 }
 

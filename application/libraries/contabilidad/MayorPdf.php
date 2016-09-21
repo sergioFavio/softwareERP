@@ -3,7 +3,7 @@
     require_once APPPATH."/third_party/fpdf/fpdf.php";
  
     //Extendemos la clase Pdf de la clase fpdf para que herede todas sus variables y funciones
-    class PlanDeCuentasPdf extends FPDF {
+    class MayorPdf extends FPDF {
         public function __construct() {
             parent::__construct();
         }
@@ -20,7 +20,7 @@
 			
      		//$this->Cell(120,10,'Reporte de Ingreso de '.$titulo,0,0,'C');
 		
-			$this->Cell(120,10,utf8_decode('PLAN DE CUENTAS'),0,0,'C');	
+			$this->Cell(120,10,utf8_decode('MAYOR'),0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
