@@ -375,8 +375,7 @@ function separadorMiles(n){
         return w;
     });
 }
-
-		
+	
 function filaVacia(posicionFila){
 	var filaAnterior= parseInt( posicionFila )-1;
 				
@@ -386,3 +385,19 @@ function filaVacia(posicionFila){
 		return false; // fila llena ...
 	}
 }  // ... fin validarFilaSeleccionada ...
+
+function validarFecha(){
+	var anhoMesComprobante =$("#inputFecha").val();
+ 	var anhoMesGestion = $("#inputGestion").val();
+ 	
+	anhoMesComprobante = anhoMesComprobante.split('-');
+ 	anhoMesGestion = anhoMesGestion.split('-');
+ 	
+ 	anhoMesComprobante = anhoMesComprobante[0]+anhoMesComprobante[1];
+ 	anhoMesGestion = anhoMesGestion[0]+anhoMesGestion[1];
+ 	                
+    if(anhoMesComprobante != anhoMesGestion){	// Verificamos si la fechaGestion es diferente a la fechaComprobante ...
+		alert(" ¡¡¡... ERROR ... !!! La fecha del comprobante "+$("#inputFecha").val()+" es distinta a la fecha de gestión "+$("#inputGestion").val()  );   
+		$("#inputFecha").val("<?=date('d-m-Y')?>");
+    }				                                	
+}   // fin ... validarFecha ...

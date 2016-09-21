@@ -53,7 +53,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-2" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera">Fecha </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" onChange='validarFecha();'>
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -88,6 +88,9 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
 				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
 				         <option value="Banco Unión M.N.">Banco Unión M.N.</option>
+				         <option value="Caja Mayor">Caja Mayor</option>
+				         <option value="Caja Chica Fábrica">Caja Chica Fábrica</option>
+				          <option value="Caja Chica Tienda">Caja Chica Tienda</option>
 		        	</select>
 	    		</div>
 	    	</div><!-- /.col-xs-2 -->
