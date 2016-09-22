@@ -849,7 +849,7 @@ class Contabilidad extends CI_Controller {
 //        $sql ="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle 
 //        WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion' ORDER BY cuentaComprobante ASC";
 
-		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle WHERE MONTH(fechaComprobante) ='09' ORDER BY cuentaComprobante, idComprobante ASC";
+		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion FROM comprobantedetalle,contaplandectas WHERE MONTH(fechaComprobante)='09' AND YEAR(fechaComprobante)='2016' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
 
  		$registros = $this->db->query($sql);
  
@@ -896,25 +896,89 @@ class Contabilidad extends CI_Controller {
 	        $cuentaAnterior ='';		// ... corte de control por cuenta comprobante...				
 			$totalDebeDia=0.00;			//...inicaliza $totalDebeDia ...
 			$totalHaberDia=0.00;		//...inicaliza $totalHaberDia ...
-			$espaciado=0;				//..para la columna del saldo ...
+			$espaciado=0;				//...para la columna del saldo ...
+			$debeAnterior=0.00;			//...recupera de la tabla contaplandectas ...
+			$haberAnterior=0.00;		//...recupera de la tabla contaplandectas ...
+			$saldo=0.00;				//...calcula el saldo de la cuenta ...
 	        foreach ($registros->result() as $reg) {
-	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	        	$cuentaMayor=substr($reg->cuentaComprobante,0,4).'0000';      			//...pasando variable para el header del PDF
+	            
 	            // Se imprimen los datos de cada registro
-	            if( $cuentaAnterior != $reg->cuentaComprobante && $cuentaAnterior !='' ){   //...corte de control por dia ...
-	            	$this->pdf->Ln(5);  //Se agrega un salto de linea...
-	            	$this->pdf->Cell(85,5,'','',0,'L',0);
-		        	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
-					$this->pdf->Cell(8,5,'','',0,'L',0);
-		            $this->pdf->Cell(20,5,number_format($totalDebeDia,2),'',0,'R',0);
-		            $this->pdf->Cell(8,5,'','',0,'L',0);
-		       		$this->pdf->Cell(20,5,number_format($totalHaberDia,2),'',0,'R',0);
+	            if( $cuentaAnterior != $reg->cuentaComprobante  ){   //...corte de control por dia ...
+	            	if($cuentaAnterior !=''){	//... imprime totales ...
+	            		$this->pdf->Ln(5);  //Se agrega un salto de linea...
+		            	$this->pdf->Cell(85,5,'','',0,'L',0);
+			        	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
+						$this->pdf->Cell(8,5,'','',0,'L',0);
+			            $this->pdf->Cell(20,5,number_format($totalDebeDia,2),'',0,'R',0);
+			            $this->pdf->Cell(8,5,'','',0,'L',0);
+			       		$this->pdf->Cell(20,5,number_format($totalHaberDia,2),'',0,'R',0);
+						$this->pdf->Cell(7,5,'','',0,'L',0);
+		       			$this->pdf->Cell(20,5,number_format($totalDebeDia-$totalHaberDia,2),'',0,'R',0);
+						
+						$totalDebeDia=0.00;		//...inicaliza $totalDebeDia ...
+						$totalHaberDia=0.00;	//...inicaliza $totalHaberDia ...
+						
+		            	$this->pdf->Ln(5);		//Se agrega un salto de linea
+						$this->pdf->Ln(5);		//Se agrega un salto de linea
+						$this->pdf->Ln(5);		//Se agrega un salto de linea
+						
+	            	}		//..fin corte de control por cuentaAnterior != '' ...
 					
-					$totalDebeDia=0.00;		//...inicaliza $totalDebeDia ...
-					$totalHaberDia=0.00;	//...inicaliza $totalHaberDia ...
+	            	$this->pdf->Cell(80,10,'-------------------------------------------------------------------------------------',0,0,'L');
+					$this->pdf->Cell(80,10,'-------------------------------------------------------------------------------------',0,0,'L');
+					$this->pdf->Cell(22,10,'----------------------------',0,0,'L');
+	            	$this->pdf->Ln(5);
+				
+			        $this->pdf->Cell(20);
+					$this->pdf->Cell(30,10,utf8_decode('Cuenta No.: ').substr($cuentaMayor,0,2).'-'.substr($cuentaMayor,2,2).'-00-00',0,0,'L');
+					$this->pdf->Cell(10);
+					$this->pdf->Cell(15,10,utf8_decode('Descripción: '),0,0,'L');
 					
-	            	$this->pdf->Ln(5);		//Se agrega un salto de linea
-					$this->pdf->Ln(5);		//Se agrega un salto de linea
-					$this->pdf->Ln(5);		//Se agrega un salto de linea
+					$this->pdf->Ln(5);
+					
+					$this->pdf->Cell(30);
+					if(substr($reg->cuentaComprobante,6,2)=='00'){
+						$this->pdf->Cell(30,10,utf8_decode('Sub-cuenta No.: ').substr($reg->cuentaComprobante,0,2).'-'.substr($reg->cuentaComprobante,2,2).'-'.substr($reg->cuentaComprobante,4,2).'-'.substr($reg->cuentaComprobante,6,2),0,0,'L');
+					}else{
+						$this->pdf->Cell(35,10,utf8_decode('Sub-sub-cuenta No.: ').substr($reg->cuentaComprobante,0,2).'-'.substr($reg->cuentaComprobante,2,2).'-'.substr($reg->cuentaComprobante,4,2).'-'.substr($reg->cuentaComprobante,6,2),0,0,'L');
+					}
+					
+					$this->pdf->Cell(10);
+					$this->pdf->Cell(15,10,utf8_decode('Descripción: '),0,0,'L');
+					$this->pdf->Cell(3);
+					$this->pdf->Cell(30,10,utf8_decode($reg->descripcion),0,0,'L');
+					$this->pdf->Ln(7);
+					
+					/*
+			         * TITULOS DE COLUMNAS
+			         *
+			         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
+			        */	 
+			        $this->pdf->Cell(3,7,'','TBL',0,'L','0');
+			        $this->pdf->Cell(10,7,'fecha','TB',0,'C','0');
+					$this->pdf->Cell(10,7,'','TB',0,'L','0');
+					$this->pdf->Cell(10,7,'no.Dcto.','TB',0,'C','0');
+					$this->pdf->Cell(20,7,'','TB',0,'L','0');
+			        $this->pdf->Cell(25,7,utf8_decode('detalle - asiento'),'TB',0,'L','0');
+					$this->pdf->Cell(43,7,'','TB',0,'L','0');
+					$this->pdf->Cell(10,7,'debe','TB',0,'L','0');
+					$this->pdf->Cell(17,7,'','TB',0,'L','0');
+					$this->pdf->Cell(10,7,'haber','TB',0,'L','0');
+					$this->pdf->Cell(11,7,'','TB',0,'L','0');
+					$this->pdf->Cell(15,7,'saldo','TB',0,'R','0');
+					$this->pdf->Cell(4,7,'','TBR',0,'R','0');
+			        $this->pdf->Ln(7);
+	            
+					$this->pdf->Cell(21);
+					$this->pdf->Cell(60,10,utf8_decode('S a l d o    A n t e r i o r   .   .   .   .   .   .   .   .   .   .   .   .'),0,0,'L');
+					$this->pdf->Cell(32,5,'','',0,'L',0);
+		            $this->pdf->Cell(20,10,number_format($debeAnterior,2),'',0,'R',0);
+		            $this->pdf->Cell(8,10,'','',0,'L',0);
+		       		$this->pdf->Cell(20,10,number_format($haberAnterior,2),'',0,'R',0);
+					$this->pdf->Cell(7,10,'','',0,'L',0);
+		       		$this->pdf->Cell(20,10,number_format($saldo,2),'',0,'R',0);
+					$this->pdf->Ln(7);					
 	            }
 	            
 				$this->pdf->Cell(1,5,'','',0,'L',0);
@@ -922,10 +986,6 @@ class Contabilidad extends CI_Controller {
 	            $this->pdf->Cell(5,5,'','',0,'L',0);
 				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,5,3),'',0,'L',0);
 				$this->pdf->Cell(5,5,'','',0,'L',0);
-//				$this->pdf->Cell(10,5,$reg->cuentaComprobante,'',0,'L',0);
-//				$this->pdf->Cell(10,5,'','',0,'L',0);
-	//			$this->pdf->Cell(73,5,$reg->descripcion,'',0,'L',0);
-	//			$this->pdf->Cell(10,5,'','',0,'L',0);
 				$this->pdf->Cell(60,5,utf8_decode($reg->glosa),'',0,'L',0);
 				
 				if($reg->debeHaber=='D'){					//...discrimina si es columna DEBE o HABER ...
@@ -955,6 +1015,8 @@ class Contabilidad extends CI_Controller {
             $this->pdf->Cell(20,5,number_format($totalDebeDia,2),'',0,'R',0);
             $this->pdf->Cell(8,5,'','',0,'L',0);
        		$this->pdf->Cell(20,5,number_format($totalHaberDia,2),'',0,'R',0);
+			$this->pdf->Cell(7,5,'','',0,'L',0);
+		    $this->pdf->Cell(20,5,number_format($totalDebeDia-$totalHaberDia,2),'',0,'R',0);
 			
 	         /* PDF Output() settings
 	         * Se manda el pdf al navegador
