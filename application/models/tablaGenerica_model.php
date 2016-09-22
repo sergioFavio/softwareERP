@@ -35,8 +35,8 @@ class TablaGenerica_model extends CI_Model{
    
   
   public function buscar($nombreTabla,$campo,$patron) {
-        $this->db->where($campo, $patron);
-        return $this->db->get($nombreTabla)->row_array();
+    $this->db->where($campo, $patron);
+    return $this->db->get($nombreTabla)->row_array();
   }
   
    
@@ -79,8 +79,6 @@ class TablaGenerica_model extends CI_Model{
   	$sql="UPDATE $nombreTabla SET debeacumulado=debeacumulado + $debeMonto, haberacumulado=haberacumulado+$haberMonto,debemes=debemes+$debeMonto, habermes=habermes+$haberMonto WHERE cuenta=$clave";
   	return $this->db->query($sql);
   }
-  
-  
   
   
 }

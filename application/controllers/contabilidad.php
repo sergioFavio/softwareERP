@@ -841,7 +841,7 @@ class Contabilidad extends CI_Controller {
 	
 	public function generarReporteMayor(){
 		//... genera reporte de Mayor en PDF
-		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$fechaGestion= $_POST['fechaDeGestion']; 	//... lee fechaGestion ...
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
 
@@ -849,7 +849,8 @@ class Contabilidad extends CI_Controller {
 //        $sql ="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle 
 //        WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion' ORDER BY cuentaComprobante ASC";
 
-		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion FROM comprobantedetalle,contaplandectas WHERE MONTH(fechaComprobante)='09' AND YEAR(fechaComprobante)='2016' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
+		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion,debeAcumulado,haberAcumulado,debeMes,haberMes
+		 FROM comprobantedetalle,contaplandectas WHERE MONTH(fechaComprobante)='09' AND YEAR(fechaComprobante)='2016' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
 
  		$registros = $this->db->query($sql);
  
@@ -900,9 +901,16 @@ class Contabilidad extends CI_Controller {
 			$debeAnterior=0.00;			//...recupera de la tabla contaplandectas ...
 			$haberAnterior=0.00;		//...recupera de la tabla contaplandectas ...
 			$saldo=0.00;				//...calcula el saldo de la cuenta ...
+			
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+			
 	        foreach ($registros->result() as $reg) {
 	        	$cuentaMayor=substr($reg->cuentaComprobante,0,4).'0000';      			//...pasando variable para el header del PDF
-	            
+	            $result = $this->tablaGenerica_model->buscar('contaplandectas','cuenta',$cuentaMayor); //..una vez cargado el modelo de la tabla llama cotizacionvalores..
+	   			$descripcionCtaMayor= $result["descripcion"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+	  			$debeAnterior=$reg->debeAcumulado-$reg->debeMes;
+	            $haberAnterior=$reg->haberAcumulado-$reg->haberMes;
+				
 	            // Se imprimen los datos de cada registro
 	            if( $cuentaAnterior != $reg->cuentaComprobante  ){   //...corte de control por dia ...
 	            	if($cuentaAnterior !=''){	//... imprime totales ...
@@ -934,7 +942,8 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Cell(30,10,utf8_decode('Cuenta No.: ').substr($cuentaMayor,0,2).'-'.substr($cuentaMayor,2,2).'-00-00',0,0,'L');
 					$this->pdf->Cell(10);
 					$this->pdf->Cell(15,10,utf8_decode('Descripción: '),0,0,'L');
-					
+					$this->pdf->Cell(3);
+					$this->pdf->Cell(30,10,utf8_decode(strtoupper($descripcionCtaMayor)),0,0,'L');
 					$this->pdf->Ln(5);
 					
 					$this->pdf->Cell(30);
@@ -977,6 +986,9 @@ class Contabilidad extends CI_Controller {
 		            $this->pdf->Cell(8,10,'','',0,'L',0);
 		       		$this->pdf->Cell(20,10,number_format($haberAnterior,2),'',0,'R',0);
 					$this->pdf->Cell(7,10,'','',0,'L',0);
+					
+					$saldo= $debeAnterior - $haberAnterior;
+					
 		       		$this->pdf->Cell(20,10,number_format($saldo,2),'',0,'R',0);
 					$this->pdf->Ln(7);					
 	            }
@@ -990,10 +1002,12 @@ class Contabilidad extends CI_Controller {
 				
 				if($reg->debeHaber=='D'){					//...discrimina si es columna DEBE o HABER ...
 					$this->pdf->Cell(7,5,'','',0,'L',0);
+					$saldo= $saldo + $reg->monto;
 					$totalDebeDia=$totalDebeDia + $reg->monto;
 					$espaciado=35;				//..para la columna del saldo ...
 				}else{
 					$this->pdf->Cell(35,5,'','',0,'L',0);
+					$saldo= $saldo - $reg->monto;
 					$totalHaberDia=$totalHaberDia + $reg->monto;
 					$espaciado=7;				//..para la columna del saldo ...
 				}
@@ -1002,7 +1016,7 @@ class Contabilidad extends CI_Controller {
 				
 				
 				$this->pdf->Cell($espaciado,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($reg->monto,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,number_format($saldo,2),'',0,'R',0);
 				$cuentaAnterior = $reg->cuentaComprobante;		//..asigna cuentaAnterior ...
 	            //Se agrega un salto de linea
 	            $this->pdf->Ln(5);
