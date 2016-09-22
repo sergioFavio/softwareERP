@@ -82,7 +82,7 @@ if ( ! function_exists('convertirNumeroAliteral'))
 				}
 	         }
 	
-			 if((strlen($cadena)-$i  == 4) ){   // ... mil ...
+			 if((strlen($cadena)-$i  == 4)    ){   // ... mil ...
 	   			$literal=$literal."mil ";
 	         }
 	
