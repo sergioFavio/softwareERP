@@ -83,7 +83,18 @@ if ( ! function_exists('convertirNumeroAliteral'))
 	         }
 	
 			 if((strlen($cadena)-$i  == 4)    ){   // ... mil ...
-	   			$literal=$literal."mil ";
+				if(strlen($cadena)  == 7 && substr($cadena,1,3)!='000' ){
+					$literal=$literal."mil ";
+				}
+				if(strlen($cadena)  == 8 && substr($cadena,2,3)!='000' ){
+					$literal=$literal."mil ";
+				}
+				if(strlen($cadena)  == 9 && substr($cadena,3,3)!='000' ){
+					$literal=$literal."mil ";
+				}
+				if(strlen($cadena)<= 6 ){
+					$literal=$literal."mil ";
+				}
 	         }
 	
 			 if((strlen($cadena)-$i  == 7) && ($digito=='1') && (strlen($cadena)  == 7)){   // ... millon  ...
