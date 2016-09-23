@@ -844,13 +844,27 @@ class Contabilidad extends CI_Controller {
 		$fechaGestion= $_POST['fechaDeGestion']; 	//... lee fechaGestion ...
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+		$mesConsulta=intval($mesGestion);						//...convierte a numero un string....
 
-        // Se obtienen los registros de la base de datos    
-//        $sql ="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto FROM comprobantedetalle 
-//        WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion' ORDER BY cuentaComprobante ASC";
-
-		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion,debeAcumulado,haberAcumulado,debeMes,haberMes
-		 FROM comprobantedetalle,contaplandectas WHERE MONTH(fechaComprobante)='09' AND YEAR(fechaComprobante)='2016' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
+        // Se obtienen los registros de la base de datos   
+        
+        $sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion,debeAcumulado,haberAcumulado,debeMes,haberMes
+		 FROM comprobantedetalle,contaplandectas WHERE cast(MONTH(fechaComprobante) as CHAR(";      
+        
+        $cantDigitos=0;		//..cantidad de digitos como argumento para la consulta ...
+        if($mesConsulta<10){
+        	$cantDigitos=1;
+			$sql=$sql.$cantDigitos;
+        }else{
+        	$cantDigitos=2;
+        	$sql=$sql.$cantDigitos;
+        }
+        
+        $sql=$sql."))='$mesConsulta' AND cast(YEAR(fechaComprobante) as CHAR(4))='$anhoGestion' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
+     
+       
+//		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion,debeAcumulado,haberAcumulado,debeMes,haberMes
+//		 FROM comprobantedetalle,contaplandectas WHERE cast(MONTH(fechaComprobante) as CHAR(1))='$mesConsulta' AND cast(YEAR(fechaComprobante) as CHAR(4))='$anhoGestion' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
 
  		$registros = $this->db->query($sql);
  
