@@ -236,6 +236,62 @@ class Contabilidad extends CI_Controller {
 	} //... fin funcion: generarReportePlanDeCuentas ...
 	
 	
+	
+	public function habilitarCuentasMovimiento()
+	{
+		$sql ="DELETE FROM contaplana";				//... borra los registros anteriores de contaplana antes de cargar los de la nueva consulta... 
+ 		$result = $this->db->query($sql);
+		
+		$sql ="SELECT cuenta,descripcion,nivel FROM contaplandectas WHERE nivel>='4' ";
+ 		$result = $this->db->query($sql);
+		
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]
+		
+		foreach ($result->result() as $registro) {                 //... carga registros a la tabla contaplana ...
+			$registro=array(
+	       		"cuenta"=>$registro->cuenta,
+	        	"descripcion"=>$registro->descripcion,
+	        	"nivel"=>$registro->nivel
+       		);
+                        
+            $this-> tablaGenerica_model -> grabar('contaplana',$registro);	        
+        };
+			
+		$sql ="SELECT cuenta FROM contaplandectas WHERE nivel='5' ";
+ 		$result = $this->db->query($sql);
+		
+		$codAnterior='';										//... var. aux.para codigo cuenta ...
+		foreach ($result->result() as $registro) {                 //... carga registros a la tabla contaplanb ...
+			$registroAux=array(
+	       		"cuenta"=>substr($registro->cuenta,0,6).'00'	//... actualiza codigo al de la subcta ...
+	   		);
+	               
+			if( $codAnterior!='' && $codAnterior!= substr($registro->cuenta,0,6).'00'){ 
+
+				$registro=array(
+		       		"cuenta"=>$codAnterior	//... actualiza codigo al de la subcta ...
+	       		);
+				
+				$this-> tablaGenerica_model -> eliminar('contaplana','cuenta',$codAnterior);	//... elimina registro en tabla contaplana ...
+			}		//... fin if ...
+			
+			$codAnterior= $registroAux['cuenta'] ;
+ 
+        };	//... fin foreach ...
+	
+		//... graba ultimo registro después del ciclo del foreach ...
+		$registro=array(
+       		"cuenta"=>$codAnterior	//... actualiza codigo al de la subcta ...
+   		);
+      
+	    $this-> tablaGenerica_model -> eliminar('contaplana','cuenta',$codAnterior);	//... elimina registro en tabla contaplana ...
+		// ... fin grabacion del ultimo registro ...
+	
+		redirect("menuController/index");	//... vuelve menu principal ...
+	}
+	
+	
+	
 	public function comprobante()
 	{
 		$tipoComprobante= $_GET['tipoComprobante']; //... lee tipoComprobante que viene del menu principal(ingreso/egreso/traspaso ) ...		
@@ -250,7 +306,6 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//				redirect('menuController/index');
 		}	//... fin control de permisos de acceso ....
 		else {				//... usuario validado ...
 			$this->load->model("numeroDocumento_model");
@@ -267,8 +322,8 @@ class Contabilidad extends CI_Controller {
 			///////////////////////////////////////
 			///...INICIO genera nuevo numero de comprobante ...
 			//////////////////////////////////////
-			$anhoSistema = date("Y");	//... anho del sistema
-			$mesSistema = date("m");	//... mes del sistema
+			$anhoSistema = substr($gestion, 0, 4);	//... anho del periodo ...
+			$mesSistema = substr($gestion, 4, 2);	//... mes del periodo ...
 			
 			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
 			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
@@ -292,55 +347,7 @@ class Contabilidad extends CI_Controller {
 				$numComprobante=$anhoSistema.$mesSistema."001";
 			}
 			
-			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana/contaplanb]
-			$sql ="DELETE FROM contaplana";				//... borra los registros anteriores de contaplana antes de cargar los de la nueva consulta... 
-	 		$result = $this->db->query($sql);
-			
-			$sql ="SELECT cuenta,descripcion,nivel FROM contaplandectas WHERE nivel>='4' ";
-	 		$result = $this->db->query($sql);
-			
-			foreach ($result->result() as $registro) {                 //... carga registros a la tabla contaplana ...
-				$registro=array(
-		       		"cuenta"=>$registro->cuenta,
-		        	"descripcion"=>$registro->descripcion,
-		        	"nivel"=>$registro->nivel
-	       		);
-	                        
-	            $this-> tablaGenerica_model -> grabar('contaplana',$registro);	        
-	        };
-			
-			
-			$sql ="SELECT cuenta FROM contaplandectas WHERE nivel='5' ";
-	 		$result = $this->db->query($sql);
-			
-			$codAnterior='';										//... var. aux.para codigo cuenta ...
-			foreach ($result->result() as $registro) {                 //... carga registros a la tabla contaplanb ...
-	
-				$registroAux=array(
-		       		"cuenta"=>substr($registro->cuenta,0,6).'00'	//... actualiza codigo al de la subcta ...
-		   		);
-		               
-				if( $codAnterior!='' && $codAnterior!= substr($registro->cuenta,0,6).'00'){ 
-	
-					$registro=array(
-			       		"cuenta"=>$codAnterior	//... actualiza codigo al de la subcta ...
-		       		);
-					
-					$this-> tablaGenerica_model -> eliminar('contaplana','cuenta',$codAnterior);	//... elimina registro en tabla contaplana ...
-				}		//... fin if ...
-				
-				$codAnterior= $registroAux['cuenta'] ;
-	 
-	        };	//... fin foreach ...
-	
-			//... graba ultimo registro después del ciclo del foreach ...
-			$registro=array(
-	       		"cuenta"=>$codAnterior	//... actualiza codigo al de la subcta ...
-	   		);
-	      
-		    $this-> tablaGenerica_model -> eliminar('contaplana','cuenta',$codAnterior);	//... elimina registro en tabla contaplana ...
-			// ... fin grabacion del ultimo registro ...
-			
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
 			$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
 			
 			$datos['gestion']=$gestion;			
@@ -490,9 +497,8 @@ class Contabilidad extends CI_Controller {
 		$datos['numeroComprobante']=$numComprobante;
 		$datos['valorLiteral']=$valorLiteral;		
 		
-		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");
-//		redirect("contabilidad/generarComprobantePDF,$datos);
-		
+		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");	
+
 	}	//... fin grabarComprobante
 	
 	
@@ -672,6 +678,11 @@ class Contabilidad extends CI_Controller {
 			$reporte='Mayor';					//... variable guarda el reporte a generar ...
 		}	
 		
+		if($reporte=='SS'){
+			$tituloReporte='Balance de Sumas y Saldos';
+			$reporte='SumasYsaldos';					//... variable guarda el reporte a generar ...
+		}
+		
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
 		$fechasGestiones= $this->tablaGenerica_model->getTodos('contagestion'); //..una vez cargado el modelo de la tabla llama contagestion..
 			
@@ -829,7 +840,7 @@ class Contabilidad extends CI_Controller {
 	  		$this->pdf->Output('pdfsArchivos/contabilidad/diarioGeneral.pdf', 'F');
 	  		
 			$datos['documento']="pdfsArchivos/contabilidad/diarioGeneral.pdf";	
-			$datos['titulo']='DIARIO GENERAL fecha de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+			$datos['titulo']='DIARIO GENERAL período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
 		
 			$this->load->view('header');
 			$this->load->view('reportePdfSinFechas',$datos );
@@ -1071,7 +1082,7 @@ class Contabilidad extends CI_Controller {
 	  		$this->pdf->Output('pdfsArchivos/contabilidad/mayor.pdf', 'F');
 	  		
 			$datos['documento']="pdfsArchivos/contabilidad/mayor.pdf";	
-			$datos['titulo']='MAYOR fecha de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+			$datos['titulo']='MAYOR período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
 		
 			$this->load->view('header');
 			$this->load->view('reportePdfSinFechas',$datos );
@@ -1079,6 +1090,125 @@ class Contabilidad extends CI_Controller {
  		}
         
 	} //... fin funcion: generarReporteMayor ...
+	
+	
+	public function generarReporteSumasYsaldos(){
+		//... genera reporte PlanDeCuentas en PDF
+		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso3=$this->session->userdata('usuarioProceso3');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$fechaGestion= $_POST['fechaDeGestion']; 	//... lee fechaGestion ...
+			$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+			$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+			// Se carga la libreria fpdf
+			$this->load->library('contabilidad/SumasSaldosPdf');
+			
+			// Se obtienen los registros de la base de datos
+			$sql="SELECT * FROM contaplandectas WHERE nivel>='4' AND ( debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			
+			$registros = $this->db->query($sql);
+			 
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros para el reporte del BALANCE DE SUMAS Y SALDOS.';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				// Creacion del PDF
+			    /*
+			    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+			    * heredó todos las variables y métodos de fpdf
+			    */
+			     
+			    ob_clean(); // cierra si es se abrio el envio de pdf...
+			    $this->pdf = new SumasSaldosPdf();
+				
+				$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
+				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+		
+				
+			    // Agregamos una página
+			    $this->pdf->AddPage();
+			    // Define el alias para el número de página que se imprimirá en el pie
+			    $this->pdf->AliasNbPages();
+			 
+			    /* Se define el titulo, márgenes izquierdo, derecho y
+			    * el color de relleno predeterminado
+			    */
+			         
+			    // Se define el formato de fuente: Arial, negritas, tamaño 9
+			    //$this->pdf->SetFont('Arial', 'B', 9);
+			    $this->pdf->SetFont('Arial', '', 7);
+			    $espacio=2; 			//... epacio variable para imprimir ...
+			    foreach ($registros->result() as $registro) {
+			        // Se imprimen los datos de cada registro
+			      
+		        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
+					$this->pdf->Cell($espacio*($registro->nivel)-7,5,'','',0,'L',0);
+					$this->pdf->Cell(2,5,$registro->cuenta,'',0,'L',0);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					
+		            //$this->pdf->Cell(80,5,utf8_decode($registro->descripcion),'',0,'L',0);
+					$this->pdf->Cell(56,5,utf8_decode($registro->descripcion),'',0,'L',0);
+					
+					if($registro->nivel=='4'){					//... espaciado ...
+						$this->pdf->Cell(5,5,'','',0,'L',0);
+					}else{
+						$this->pdf->Cell(3,5,'','',0,'L',0);
+					}
+					
+					$this->pdf->Cell(17,5,number_format($registro->debemes,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($registro->habermes,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+		       		$this->pdf->Cell(17,5,number_format($registro->haberacumulado,2),'',0,'R',0);
+		          	$this->pdf->Cell(6,5,'','',0,'L',0);
+		       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+					
+					//Se agrega un salto de linea
+		        	$this->pdf->Ln(5);	
+			    }
+					
+				     /* PDF Output() settings
+				     * Se manda el pdf al navegador
+				     *
+				     * $this->pdf->Output(nombredelarchivo, destino);
+				     *
+				     * I = Muestra el pdf en el navegador
+				     * D = Envia el pdf para descarga
+					 * F: save to a local file
+					 * S: return the document as a string. name is ignored.
+					 * $pdf->Output(); //default output to browser
+					 * $pdf->Output('D:/example2.pdf','F');
+					 * $pdf->Output("example2.pdf", 'D');
+					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+				     */
+				  
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/plandectas.pdf', 'F');
+					
+					$datos['documento']="pdfsArchivos/contabilidad/plandectas.pdf";	
+					$datos['titulo']=' BALANCE DE SUMAS Y SALDOS período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+					
+					$this->load->view('header');
+					$this->load->view('reportePdfSinFechas',$datos );
+					$this->load->view('footer');	
+				}
+			}	//.. fin IF validar usuario ...
+	    
+	} //... fin funcion: generarReporteSumasYsaldos ...
 	
 	
 	

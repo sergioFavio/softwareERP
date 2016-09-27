@@ -184,7 +184,8 @@
                     	<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=DG"><span class="glyphicon glyphicon-book"></span> Libro Diario</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=MY"><span class="glyphicon glyphicon-book"></span> Libro Mayor</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Sumas y saldos</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=SS"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Balance Sumas y Saldos</a></li>
+							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>
 					</li>

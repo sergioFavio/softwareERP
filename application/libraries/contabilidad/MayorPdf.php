@@ -26,7 +26,7 @@
             //$this->SetFont('Arial','B',8);
             $this->SetFont('Arial','',8);
 			
-			$this->Cell(60,10,utf8_decode('Fecha de gestión: ').$this->gestion,0,0,'L');
+			$this->Cell(60,10,utf8_decode('Período de gestión: ').$this->gestion,0,0,'L');
 			$this->Cell(20);
 			 $this->Cell(60,10,utf8_decode('Expresado en bolivianos '),0,0,'L');
 			$this->Cell(10);
