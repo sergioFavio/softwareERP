@@ -1151,7 +1151,8 @@ class Contabilidad extends CI_Controller {
 			    //$this->pdf->SetFont('Arial', 'B', 9);
 			    $this->pdf->SetFont('Arial', '', 7);
 			    $espacio=2; 			//... epacio variable para imprimir ...
-				$contador=0;		//... cuenta registros que son sub-sub.cuenta ...			    
+				$contador=0;		//... cuenta registros que son sub-sub.cuenta ...	
+				$cuentaActual='';			//... asigna cuenta actual ...		    
 		    	$subCuentaAnterior='';		//... para hacer corte de control por diferencias de subCuentas..
 		    	$subCuentaAnteriorDescripcion='';
 				$subCuentaAnteriorDebeMes=0.00;
@@ -1159,9 +1160,12 @@ class Contabilidad extends CI_Controller {
 				$subCuentaAnteriorDebeAcumulado=0.00;
 				$subCuentaAnteriorHaberAcumulado=0.00;
 				
+				$cuentaMayorAnterior='';		//... para hacer corte de control por diferencias de subCuentas..
+				
 			    foreach ($registros->result() as $registro) {
 			       	// Se imprimen los datos de cada registro
-			        if(substr($registro->cuenta,0,6)!=$subCuentaAnterior && $subCuentaAnterior!=''   ){			//... corte de control por diferencias de subCuentas ...
+			       	$cuentaActual=$registro->cuenta;
+			        if(substr($cuentaActual,0,6)!=$subCuentaAnterior && $subCuentaAnterior!=''   ){			//... corte de control por diferencias de subCuentas ...
 			        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
 			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
@@ -1182,9 +1186,31 @@ class Contabilidad extends CI_Controller {
 						
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
 			        }
-			        
-			        
-			        
+
+					
+					 if(substr($cuentaActual,0,4).'0000'!=$cuentaMayorAnterior && $cuentaMayorAnterior!=''   ){			//... corte de control por diferencias de cuentaMayor ...
+			        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
+			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+						$this->pdf->Ln(3);		//Se agrega un salto de linea
+						$this->pdf->Cell(18,5,'','',0,'L',0);
+						$this->pdf->Cell(56,5,utf8_decode('datos CUENTA MAYOR'),'',0,'L',0);
+						$this->pdf->Cell(5,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeMes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberMes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
+			          	$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+						$this->pdf->Ln(2);		//Se agrega un salto de linea
+			        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
+						
+						$this->pdf->Ln(6);		//Se agrega un salto de linea
+			        }
+
+
 					$this->pdf->Cell($espacio*($registro->nivel)-7,5,'','',0,'L',0);
 					$this->pdf->Cell(2,5,$registro->cuenta,'',0,'L',0);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
@@ -1222,9 +1248,14 @@ class Contabilidad extends CI_Controller {
 			       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 					}
 					
+					$cuentaMayorAnterior=substr($registro->cuenta,0,4).'0000';		//...asigna cuenta mayor anterior
+					
 		        	$this->pdf->Ln(4);		//Se agrega un salto de linea
 					
 			    }		//...fin foreach ...
+			    
+			    
+
 					
 				     /* PDF Output() settings
 				     * Se manda el pdf al navegador
@@ -1241,9 +1272,9 @@ class Contabilidad extends CI_Controller {
 					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 				     */
 				  
-				  	$this->pdf->Output('pdfsArchivos/contabilidad/plandectas.pdf', 'F');
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/balancesumasysaldos.pdf', 'F');
 					
-					$datos['documento']="pdfsArchivos/contabilidad/plandectas.pdf";	
+					$datos['documento']="pdfsArchivos/contabilidad/balancesumasysaldos.pdf";	
 					$datos['titulo']=' BALANCE DE SUMAS Y SALDOS período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
 					
 					$this->load->view('header');
