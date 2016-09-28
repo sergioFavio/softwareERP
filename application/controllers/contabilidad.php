@@ -1167,6 +1167,11 @@ class Contabilidad extends CI_Controller {
 				$cuentaMayorDebeAcumulado=0.00;
 				$cuentaMayorHaberAcumulado=0.00;
 				
+				$totalDebeMes=0.00;					//...acumula total debeMes ...
+				$totalHaberMes=0.00;				//...acumula total haberMes ...
+				$totalDebeAcumulado=0.00;			//...acumula total debeAcumulado ...
+				$totalHaberAcumulado=0.00;			//...acumula total haberAcumulado ...
+				
 			    foreach ($registros->result() as $registro) {
 			       	// Se imprimen los datos de cada registro
 			       	$cuentaActual=$registro->cuenta;
@@ -1192,8 +1197,7 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
 			        }
 
-					
-					 if(substr($cuentaActual,0,4).'0000'!=$cuentaMayorAnterior && $cuentaMayorAnterior!=''   ){			//... corte de control por diferencias de cuentaMayor ...
+					if(substr($cuentaActual,0,4).'0000'!=$cuentaMayorAnterior && $cuentaMayorAnterior!=''   ){			//... corte de control por diferencias de cuentaMayor ...
 			        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
 			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
@@ -1223,13 +1227,11 @@ class Contabilidad extends CI_Controller {
 					
 					if($registro->nivel=='4'){					//... espaciado ...
 						$this->pdf->Cell(5,5,'','',0,'L',0);
-					
 						$subCuentaAnteriorDescripcion=$registro->descripcion;
 						$subCuentaAnteriorDebeMes=$registro->debemes;
 						$subCuentaAnteriorHaberMes=$registro->habermes;
 						$subCuentaAnteriorDebeAcumulado=$registro->debeacumulado;
 						$subCuentaAnteriorhaberAcumulado=$registro->haberacumulado;
-						
 						$cuenta=substr($registro->cuenta,0,6);
 						$sql="SELECT * FROM contaplandectas WHERE cuenta LIKE '$cuenta%' AND nivel='5' ";
 						$result = $this->db->query($sql);
@@ -1251,15 +1253,16 @@ class Contabilidad extends CI_Controller {
 			       		$this->pdf->Cell(17,5,number_format($registro->haberacumulado,2),'',0,'R',0);
 			          	$this->pdf->Cell(6,5,'','',0,'L',0);
 			       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+						$totalDebeMes=$totalDebeMes + $registro->debemes;						//...acumula total debeMes ...
+						$totalHaberMes=$totalHaberMes + $registro->habermes;					//...acumula total haberMes ...
+						$totalDebeAcumulado=$totalDebeAcumulado + $registro->debeacumulado;		//...acumula total debeAcumulado ...
+						$totalHaberAcumulado=$totalHaberAcumulado + $registro->haberacumulado;	//...acumula total haberAcumulado ...
 					}
 					
 					$cuentaMayorAnterior=substr($registro->cuenta,0,4).'0000';		//...asigna cuenta mayor anterior
-					
 					$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 					$regCtaMayor= $this->tablaGenerica_model->buscar('contaplandectas','cuenta',$cuentaMayorAnterior); //..una vez cargado el modelo para la tabla contaplandectas..
-
 					$cuentaMayorDescripcion= $regCtaMayor["descripcion"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-
 					$cuentaMayorDebeMes=$regCtaMayor["debemes"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					$cuentaMayorHaberMes=$regCtaMayor["habermes"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					$cuentaMayorDebeAcumulado=$regCtaMayor["debeacumulado"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -1269,9 +1272,6 @@ class Contabilidad extends CI_Controller {
 					
 			    }		//...fin foreach ...
 			    
-			    
-			    
-			   
 			    if( $subCuentaAnterior!=''){			//... corte de control por diferencias de subCuentas ...
 		        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
 		        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
@@ -1294,7 +1294,6 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Ln(3);		//Se agrega un salto de linea
 			    }
 			    
-			    
 			    //... imprime totales de la cuenta mayor ........
 			    $this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 				$this->pdf->Ln(3);		//Se agrega un salto de linea
@@ -1314,9 +1313,26 @@ class Contabilidad extends CI_Controller {
 	        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
 				
 				$this->pdf->Ln(6);		//Se agrega un salto de linea
-				//... fin impresion totales de la cuenta mayor ........
 				
-					
+				//... imprime totales ........
+			    $this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(18,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalDebeMes,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalHaberMes,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalDebeAcumulado,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($totalHaberAcumulado,2),'',0,'R',0);
+	          	$this->pdf->Cell(6,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($totalDebeAcumulado - $totalHaberAcumulado ,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+	        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
 				     /* PDF Output() settings
 				     * Se manda el pdf al navegador
 				     *
