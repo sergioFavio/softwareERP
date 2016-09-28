@@ -533,7 +533,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 			$comprobanteCabecera= $this->tablaGenerica_model->buscar('comprobantecabecera','numComprobante',$numeroComprobante); //..una vez cargado el modelo de la tabla llama comprobantecabecera..
 			
-			$fechaComprobante= $comprobanteCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			$fechaComprobante= $comprobanteCabecera["fecha"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			$tipoComprobante= $comprobanteCabecera["tipoComprobante"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 			if($tipoComprobante=="I"){
 				$tComprobante="Ingreso";
@@ -1151,36 +1151,80 @@ class Contabilidad extends CI_Controller {
 			    //$this->pdf->SetFont('Arial', 'B', 9);
 			    $this->pdf->SetFont('Arial', '', 7);
 			    $espacio=2; 			//... epacio variable para imprimir ...
+				$contador=0;		//... cuenta registros que son sub-sub.cuenta ...			    
+		    	$subCuentaAnterior='';		//... para hacer corte de control por diferencias de subCuentas..
+		    	$subCuentaAnteriorDescripcion='';
+				$subCuentaAnteriorDebeMes=0.00;
+				$subCuentaAnteriorHaberMes=0.00;
+				$subCuentaAnteriorDebeAcumulado=0.00;
+				$subCuentaAnteriorHaberAcumulado=0.00;
+				
 			    foreach ($registros->result() as $registro) {
-			        // Se imprimen los datos de cada registro
-			      
-		        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
+			       	// Se imprimen los datos de cada registro
+			        if(substr($registro->cuenta,0,6)!=$subCuentaAnterior && $subCuentaAnterior!=''   ){			//... corte de control por diferencias de subCuentas ...
+			        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
+			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+						$this->pdf->Ln(3);		//Se agrega un salto de linea
+						$this->pdf->Cell(18,5,'','',0,'L',0);
+						$this->pdf->Cell(56,5,utf8_decode($subCuentaAnteriorDescripcion),'',0,'L',0);
+						$this->pdf->Cell(5,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeMes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberMes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
+			          	$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+						$this->pdf->Ln(2);		//Se agrega un salto de linea
+			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+						
+						$this->pdf->Ln(3);		//Se agrega un salto de linea
+			        }
+			        
+			        
+			        
 					$this->pdf->Cell($espacio*($registro->nivel)-7,5,'','',0,'L',0);
 					$this->pdf->Cell(2,5,$registro->cuenta,'',0,'L',0);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					
-		            //$this->pdf->Cell(80,5,utf8_decode($registro->descripcion),'',0,'L',0);
 					$this->pdf->Cell(56,5,utf8_decode($registro->descripcion),'',0,'L',0);
 					
 					if($registro->nivel=='4'){					//... espaciado ...
 						$this->pdf->Cell(5,5,'','',0,'L',0);
+					
+						$subCuentaAnteriorDescripcion=$registro->descripcion;
+						$subCuentaAnteriorDebeMes=$registro->debemes;
+						$subCuentaAnteriorHaberMes=$registro->habermes;
+						$subCuentaAnteriorDebeAcumulado=$registro->debeacumulado;
+						$subCuentaAnteriorhaberAcumulado=$registro->haberacumulado;
+						
+						$cuenta=substr($registro->cuenta,0,6);
+						$sql="SELECT * FROM contaplandectas WHERE cuenta LIKE '$cuenta%' AND nivel='5' ";
+						$result = $this->db->query($sql);
+						$contador= $result->num_rows;
+						$subCuentaAnterior='';
 					}else{
 						$this->pdf->Cell(3,5,'','',0,'L',0);
+						$contador=0;			//... variable para ssaber si tiene sub-sub-cuenta ...
+						$subCuentaAnterior=substr($registro->cuenta,0,6);
 					}
 					
-					$this->pdf->Cell(17,5,number_format($registro->debemes,2),'',0,'R',0);
-					$this->pdf->Cell(6,5,'','',0,'L',0);
-					$this->pdf->Cell(17,5,number_format($registro->habermes,2),'',0,'R',0);
-					$this->pdf->Cell(6,5,'','',0,'L',0);
-					$this->pdf->Cell(17,5,number_format($registro->debeacumulado,2),'',0,'R',0);
-					$this->pdf->Cell(6,5,'','',0,'L',0);
-		       		$this->pdf->Cell(17,5,number_format($registro->haberacumulado,2),'',0,'R',0);
-		          	$this->pdf->Cell(6,5,'','',0,'L',0);
-		       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+					if($contador==0){		//... imprime saldos cuando son sub-cuentas SIN sub-sub-cuentas O son sub-sub-cuentas ...
+						$this->pdf->Cell(17,5,number_format($registro->debemes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($registro->habermes,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($registro->haberacumulado,2),'',0,'R',0);
+			          	$this->pdf->Cell(6,5,'','',0,'L',0);
+			       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+					}
 					
-					//Se agrega un salto de linea
-		        	$this->pdf->Ln(5);	
-			    }
+		        	$this->pdf->Ln(4);		//Se agrega un salto de linea
+					
+			    }		//...fin foreach ...
 					
 				     /* PDF Output() settings
 				     * Se manda el pdf al navegador
