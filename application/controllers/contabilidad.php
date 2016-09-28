@@ -772,9 +772,9 @@ class Contabilidad extends CI_Controller {
 					$totalDebeDia=0.00;		//...inicaliza $totalDebeDia ...
 					$totalHaberDia=0.00;	//...inicaliza $totalHaberDia ...
 					
-	            	$this->pdf->Ln(5);		//Se agrega un salto de linea
-					$this->pdf->Ln(5);		//Se agrega un salto de linea
-					$this->pdf->Ln(5);		//Se agrega un salto de linea
+	            	$this->pdf->Ln(4);		//Se agrega un salto de linea
+					$this->pdf->Ln(4);		//Se agrega un salto de linea
+					$this->pdf->Ln(4);		//Se agrega un salto de linea
 	            }
 	            
 				$this->pdf->Cell(1,5,'','',0,'L',0);
@@ -799,10 +799,10 @@ class Contabilidad extends CI_Controller {
 	            $this->pdf->Cell(25,5,number_format($reg->monto,2),'',0,'R',0);
 				$diaAnterior = substr($reg->fechaComprobante,8,2);		//..asigna diaAnterior ...
 	            //Se agrega un salto de linea
-	            $this->pdf->Ln(5);
+	            $this->pdf->Ln(4);
 	        } //...fin foreach ...
 	        
-        	$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Ln(4);	//Se agrega un salto de linea
         	$this->pdf->Cell(180,5,'','',0,'L',0);
         	$this->pdf->Cell(15,5,utf8_decode('Totales del día ...'),'',0,'L',0);
 			$this->pdf->Cell(20,5,'','',0,'L',0);
@@ -813,8 +813,8 @@ class Contabilidad extends CI_Controller {
 			$totalDebeMes= $totalDebeMes + $totalDebeDia;		//...incrementa $totalDebeMes ...
 			$totalHaberMes=$totalHaberMes +$totalHaberDia;		//...incrementa $totalHaberMes ...
 			
-			$this->pdf->Ln(5);	//Se agrega un salto de linea
-			$this->pdf->Ln(5);	//Se agrega un salto de linea
+			$this->pdf->Ln(4);	//Se agrega un salto de linea
+			$this->pdf->Ln(4);	//Se agrega un salto de linea
         	$this->pdf->Cell(180,5,'','',0,'L',0);
         	$this->pdf->Cell(15,5,utf8_decode('Totales del mes ...'),'',0,'L',0);
 			$this->pdf->Cell(20,5,'','',0,'L',0);
@@ -939,7 +939,7 @@ class Contabilidad extends CI_Controller {
 				  
 	            if( $cuentaAnterior != $reg->cuentaComprobante  ){   //...corte de control por dia ...
 	            	if($cuentaAnterior !=''){	//... imprime totales ...
-	            		$this->pdf->Ln(5);  //Se agrega un salto de linea...
+	            		$this->pdf->Ln(4);  //Se agrega un salto de linea...
 		            	$this->pdf->Cell(85,5,'','',0,'L',0);
 			        	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
 						$this->pdf->Cell(8,5,'','',0,'L',0);
@@ -956,9 +956,9 @@ class Contabilidad extends CI_Controller {
 						if( $cuentaMayor != $cuentaMayorAnterior && $cuentaMayorAnterior !='' ){   //...corte de control por dia ...
 	            	 		$this->pdf->AddPage();			//... salto de pagina ...
 						}else{
-							$this->pdf->Ln(5);		//Se agrega un salto de linea
-							$this->pdf->Ln(5);		//Se agrega un salto de linea
-							$this->pdf->Ln(5);		//Se agrega un salto de linea
+							$this->pdf->Ln(4);		//Se agrega un salto de linea
+							$this->pdf->Ln(4);		//Se agrega un salto de linea
+							$this->pdf->Ln(4);		//Se agrega un salto de linea
 						}
 	   
 						
@@ -967,7 +967,7 @@ class Contabilidad extends CI_Controller {
 	            	$this->pdf->Cell(80,10,'-------------------------------------------------------------------------------------',0,0,'L');
 					$this->pdf->Cell(80,10,'-------------------------------------------------------------------------------------',0,0,'L');
 					$this->pdf->Cell(22,10,'----------------------------',0,0,'L');
-	            	$this->pdf->Ln(5);
+	            	$this->pdf->Ln(4);
 				
 			        $this->pdf->Cell(20);
 					$this->pdf->Cell(30,10,utf8_decode('Cuenta No.: ').substr($cuentaMayor,0,2).'-'.substr($cuentaMayor,2,2).'-00-00',0,0,'L');
@@ -975,7 +975,7 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Cell(15,10,utf8_decode('Descripción: '),0,0,'L');
 					$this->pdf->Cell(3);
 					$this->pdf->Cell(30,10,utf8_decode(strtoupper($descripcionCtaMayor)),0,0,'L');
-					$this->pdf->Ln(5);
+					$this->pdf->Ln(4);
 					
 					$this->pdf->Cell(30);
 					if(substr($reg->cuentaComprobante,6,2)=='00'){
@@ -1008,7 +1008,7 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Cell(11,7,'','TB',0,'L','0');
 					$this->pdf->Cell(15,7,'saldo','TB',0,'R','0');
 					$this->pdf->Cell(4,7,'','TBR',0,'R','0');
-			        $this->pdf->Ln(7);
+			        $this->pdf->Ln(6);
 	            
 					$this->pdf->Cell(21);
 					$this->pdf->Cell(60,10,utf8_decode('S a l d o    A n t e r i o r   .   .   .   .   .   .   .   .   .   .   .   .'),0,0,'L');
@@ -1021,7 +1021,7 @@ class Contabilidad extends CI_Controller {
 					$saldo= $debeAnterior - $haberAnterior;
 					
 		       		$this->pdf->Cell(20,10,number_format($saldo,2),'',0,'R',0);
-					$this->pdf->Ln(7);					
+					$this->pdf->Ln(6);					
 	            }
 	            
 				$this->pdf->Cell(1,5,'','',0,'L',0);
@@ -1051,10 +1051,10 @@ class Contabilidad extends CI_Controller {
 				$cuentaAnterior = $reg->cuentaComprobante;		//..asigna cuentaAnterior ...
 				$cuentaMayorAnterior=$cuentaMayor;		//..asigna cuentaMayor ...
 	            //Se agrega un salto de linea
-	            $this->pdf->Ln(5);
+	            $this->pdf->Ln(4);
 	        } //...fin foreach ...
 	        
-        	$this->pdf->Ln(5);	//Se agrega un salto de linea
+        	$this->pdf->Ln(4);	//Se agrega un salto de linea
         	$this->pdf->Cell(85,5,'','',0,'L',0);
         	$this->pdf->Cell(20,5,utf8_decode('Totales ...'),'',0,'L',0);
 			$this->pdf->Cell(8,5,'','',0,'L',0);
@@ -1270,7 +1270,52 @@ class Contabilidad extends CI_Controller {
 			    }		//...fin foreach ...
 			    
 			    
-
+			    
+			   
+			    if( $subCuentaAnterior!=''){			//... corte de control por diferencias de subCuentas ...
+		        	//$this->pdf->Ln(2);		//Se agrega un salto de linea
+		        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+					$this->pdf->Ln(3);		//Se agrega un salto de linea
+					$this->pdf->Cell(18,5,'','',0,'L',0);
+					$this->pdf->Cell(56,5,utf8_decode($subCuentaAnteriorDescripcion),'',0,'L',0);
+					$this->pdf->Cell(5,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeMes,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberMes,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado,2),'',0,'R',0);
+					$this->pdf->Cell(6,5,'','',0,'L',0);
+		       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
+		          	$this->pdf->Cell(6,5,'','',0,'L',0);
+		       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+					$this->pdf->Ln(2);		//Se agrega un salto de linea
+		        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+					
+					$this->pdf->Ln(3);		//Se agrega un salto de linea
+			    }
+			    
+			    
+			    //... imprime totales de la cuenta mayor ........
+			    $this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(18,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( strtoupper($cuentaMayorDescripcion) ),'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($cuentaMayorDebeMes,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($cuentaMayorHaberMes,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado,2),'',0,'R',0);
+				$this->pdf->Cell(6,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($cuentaMayorHaberAcumulado,2),'',0,'R',0);
+	          	$this->pdf->Cell(6,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+	        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
+				
+				$this->pdf->Ln(6);		//Se agrega un salto de linea
+				//... fin impresion totales de la cuenta mayor ........
+				
 					
 				     /* PDF Output() settings
 				     * Se manda el pdf al navegador
