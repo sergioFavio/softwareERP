@@ -1160,7 +1160,12 @@ class Contabilidad extends CI_Controller {
 				$subCuentaAnteriorDebeAcumulado=0.00;
 				$subCuentaAnteriorHaberAcumulado=0.00;
 				
-				$cuentaMayorAnterior='';		//... para hacer corte de control por diferencias de subCuentas..
+				$cuentaMayorAnterior='';		//... para hacer corte de control por diferencias de cuentaMayor..
+				$cuentaMayorDescripcion='';
+				$cuentaMayorDebeMes=0.00;
+				$cuentaMayorHaberMes=0.00;
+				$cuentaMayorDebeAcumulado=0.00;
+				$cuentaMayorHaberAcumulado=0.00;
 				
 			    foreach ($registros->result() as $registro) {
 			       	// Se imprimen los datos de cada registro
@@ -1193,17 +1198,17 @@ class Contabilidad extends CI_Controller {
 			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
 						$this->pdf->Cell(18,5,'','',0,'L',0);
-						$this->pdf->Cell(56,5,utf8_decode('datos CUENTA MAYOR'),'',0,'L',0);
+						$this->pdf->Cell(56,5,utf8_decode( strtoupper($cuentaMayorDescripcion) ),'',0,'L',0);
 						$this->pdf->Cell(5,5,'','',0,'L',0);
-						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeMes,2),'',0,'R',0);
+						$this->pdf->Cell(17,5,number_format($cuentaMayorDebeMes,2),'',0,'R',0);
 						$this->pdf->Cell(6,5,'','',0,'L',0);
-						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberMes,2),'',0,'R',0);
+						$this->pdf->Cell(17,5,number_format($cuentaMayorHaberMes,2),'',0,'R',0);
 						$this->pdf->Cell(6,5,'','',0,'L',0);
-						$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado,2),'',0,'R',0);
+						$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado,2),'',0,'R',0);
 						$this->pdf->Cell(6,5,'','',0,'L',0);
-			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
+			       		$this->pdf->Cell(17,5,number_format($cuentaMayorHaberAcumulado,2),'',0,'R',0);
 			          	$this->pdf->Cell(6,5,'','',0,'L',0);
-			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+			       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
 						$this->pdf->Ln(2);		//Se agrega un salto de linea
 			        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
 						
@@ -1249,6 +1254,16 @@ class Contabilidad extends CI_Controller {
 					}
 					
 					$cuentaMayorAnterior=substr($registro->cuenta,0,4).'0000';		//...asigna cuenta mayor anterior
+					
+					$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+					$regCtaMayor= $this->tablaGenerica_model->buscar('contaplandectas','cuenta',$cuentaMayorAnterior); //..una vez cargado el modelo para la tabla contaplandectas..
+
+					$cuentaMayorDescripcion= $regCtaMayor["descripcion"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+
+					$cuentaMayorDebeMes=$regCtaMayor["debemes"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					$cuentaMayorHaberMes=$regCtaMayor["habermes"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					$cuentaMayorDebeAcumulado=$regCtaMayor["debeacumulado"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					$cuentaMayorHaberAcumulado=$regCtaMayor["haberacumulado"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					
 		        	$this->pdf->Ln(4);		//Se agrega un salto de linea
 					
