@@ -683,6 +683,11 @@ class Contabilidad extends CI_Controller {
 			$reporte='SumasYsaldos';					//... variable guarda el reporte a generar ...
 		}
 		
+		if($reporte=='BG'){
+			$tituloReporte='Balance General';
+			$reporte='BalanceGeneral';					//... variable guarda el reporte a generar ...
+		}
+		
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
 		$fechasGestiones= $this->tablaGenerica_model->getTodos('contagestion'); //..una vez cargado el modelo de la tabla llama contagestion..
 			
