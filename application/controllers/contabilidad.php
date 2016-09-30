@@ -1426,17 +1426,26 @@ class Contabilidad extends CI_Controller {
 			    $espacio=1; 			//... epacio variable para imprimir ...
 			    foreach ($registros->result() as $registro) {
 			        // Se imprimen los datos de cada registro
-			       	
-		        	if($registro->cuenta<='19999999'){
-		        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-		        	}else{
-		        		$this->pdf->Cell(50+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-		        	}
+			       	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
-					$this->pdf->Cell(75,5,utf8_decode($registro->descripcion),'',0,'L',0);
+			       	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
+			       		$this->pdf->Cell(67,5,strtoupper(utf8_decode($registro->descripcion)),'',0,'L',0);
+			       	}else{
+			       		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+			       	}
+					
 		       		if($registro->nivel=='3'){
-		       			$this->pdf->Cell(8,5,'','',0,'L',0);
-						$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+		       			if($registro->cuenta<='19999999'){
+			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+			        	}else{
+			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+			        }
+						
+		       			$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+						
+						$this->pdf->Cell(12,5,'','',0,'L',0);
+						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 		       		}
 		          
 					//Se agrega un salto de linea

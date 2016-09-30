@@ -37,9 +37,9 @@
 	         *
 	         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
 	        */	 
-	        $this->Cell(10,7,'','TBL',0,'C','0');
-	        $this->Cell(18,7,'ACTIVO','TB',0,'C','0');
-			$this->Cell(128,7,'','TB',0,'C','0');
+	        $this->Cell(100,7,'','TBL',0,'C','0');
+	        $this->Cell(18,7,'A  C  T  I  V  O','TB',0,'C','0');
+			$this->Cell(38,7,'','TB',0,'C','0');
 			$this->Cell(22,7,'PASIVO y PATRIMONIO','TB',0,'R','0');
 			$this->Cell(10,7,'','TBR',0,'R','0');
 	        $this->Ln(7);

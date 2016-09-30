@@ -63,8 +63,8 @@
 }
 
 	
-#cuerpoCabecera{margin:0 auto; padding:0; width:865px; height:50px;}
-#cuerpoDetalle{margin:0 auto; padding:0; width:865px; }
+#cuerpoCabecera{margin:0 auto; padding:0; width:925px; height:50px;}
+#cuerpoDetalle{margin:0 auto; padding:0; width:925px; }
 /*  #cuerpoPaginacion{margin:0 auto;padding:0; width:850px; height:60px;}
 */
 #crearModal,#editarModal, #borrarModal{padding-top:180px;}  /* ... baja la ventana modal más al centro vertical ... */
