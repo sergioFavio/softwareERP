@@ -21,7 +21,20 @@ class NumeroDocumento_model extends CI_Model{
 		foreach($query->result() as $r){
 			$numero1 .= $r->numero;
 		}
-	
 		return $numero1;
-   }	
+   }
+  
+   public function getComprobante($nombreTabla){
+		// ... lee el número de ocumento
+		$numero1 ="";
+		$query = $this->db->get($nombreTabla);
+		foreach($query->result() as $r){
+			$numero1 .= $r->gestion;
+		}
+		return $numero1;
+   }
+   
+   
+   
+   
 }

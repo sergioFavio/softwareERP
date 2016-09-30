@@ -22,7 +22,6 @@ $(document).ready(function() {
 	});
 	/*  fin de light box javascript  */	
 			
-		 
     	$('#tabla2').dataTable();
     
     	$('#tabla2 tbody').on('click', 'tr', function () {	
@@ -34,7 +33,7 @@ $(document).ready(function() {
   		var limiteArreglo=document.getElementsByClassName("detalleMaterial").length;   // limiteArreglo a buscar codigoRepetido
 		var codigoRepetido =verificarCodigoRepetido(codigoCuenta,filaActual,limiteArreglo);			
  			
- 		if(!codigoRepetido){
+// 		if(!codigoRepetido){
 			$('#idCta_'+filaActual).val(codigoCuenta);
 			$('#cta_'+filaActual).val(nombreCuenta);
 			$("#cantDebe_"+filaActual).val("");
@@ -42,10 +41,10 @@ $(document).ready(function() {
 			$('#glosa_'+filaActual).val("");
 					
         	$('#myModal').modal('hide'); // cierra el lightBox
-    	}else{
-    		alert("¡¡¡ Este código" +codigoCuenta +" ya fué adicionado ...!!!");
-    		$('#myModal').modal('hide'); // cierra el lightbox
-      	}
+//    	}else{
+//    		alert("¡¡¡ Este código" +codigoCuenta +" ya fué adicionado ...!!!");
+//    		$('#myModal').modal('hide'); // cierra el lightbox
+//      	}
         	
 	} ); // fin #tabla2 tbody
 
@@ -91,9 +90,6 @@ function verificarCodigoRepetido(codigoCuenta,posicionFila,limiteArreglo){
 	return codigoRepetido;
 }	// fin funcion verificarCodigoRepetido 
 	
-
-
-		
 function borrarFormularioIngreso(){
 	//...esta funcion borra los datos del formularioIngreso
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -107,7 +103,6 @@ function borrarFormularioIngreso(){
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioIngreso 
 	
-
 function borrarFormularioSalida(){
 	//...esta funcion borra los datos del formularioSalida
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -120,7 +115,6 @@ function borrarFormularioSalida(){
 		$("#detalleTotalHaber").val("");
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioSalida 
-
 
 function grabarIngreso(){
 	
@@ -176,8 +170,6 @@ function grabarIngreso(){
 			
 }	// ... fin funcion grabarIngreso() ...
 
-
-	
 function grabarSalida(){
 	
 	var i=0;
@@ -188,12 +180,10 @@ function grabarSalida(){
 			var registrosValidos= false;	
 	}
 	
-	
 	if($("#inputGlosa").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
 			var registrosValidos= false;	
 	}
-	
 	
 	if( $("#inputOrden").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
@@ -205,7 +195,6 @@ function grabarSalida(){
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
 			var registrosValidos= false;	
 	}
-	
 	
 //.. OOJJJJJJOOOO ... modificar ...			
 	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
@@ -236,7 +225,7 @@ function validarMontoDebe(numero, filaExistencia){
 					
 	}else{
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
     		alert("El valor " + numero + " no es válido");
     		$("#cantDebe_"+filaExistencia).val("");   // borra celda de cantidad
     	}else{
@@ -262,7 +251,7 @@ function validarMontoHaber(numero, filaExistencia){
 					
 	}else{
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
     		alert("El valor " + numero + " no es válido");
     		$("#cantHaber_"+filaExistencia).val("");   // borra celda de cantidad
     	}else{
@@ -299,7 +288,7 @@ function calcularTotalDebe(){
 		if( $("#cantDebe_"+i).val()!= "" ){		//...toma los DEBE distintos de vacio ...
 			var cantidad=$("#cantDebe_"+i).val();
 			cantidad=cantidad.split(','); //... elimina ,
-			cantidad=cantidad[0]+cantidad[1];	
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
 			cantidad=parseFloat( cantidad	);
 	
 			totalDebe= totalDebe +  cantidad ;
@@ -328,7 +317,7 @@ function calcularTotalHaber(){
 		if( $("#cantHaber_"+i).val()!= "" ){ 		//...toma los HABER distintos de vacio ...
 			var cantidad=$("#cantHaber_"+i).val();
 			cantidad=cantidad.split(','); //... elimina ,
-			cantidad=cantidad[0]+cantidad[1];	
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
 			cantidad=parseFloat( cantidad	);
 	
 			totalHaber= totalHaber +  cantidad ;
@@ -361,7 +350,7 @@ function verLiteralNumerica(){
 	        dataType: "json",
 	        success: function(data){    
 	//      	   console.log(data);               
-	 		   document.form_.inputLiteral.value="son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
+	 		   document.form_.inputLiteral.value="Son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
 	        }
     	});
 		
@@ -386,8 +375,7 @@ function separadorMiles(n){
         return w;
     });
 }
-
-		
+	
 function filaVacia(posicionFila){
 	var filaAnterior= parseInt( posicionFila )-1;
 				
@@ -397,3 +385,19 @@ function filaVacia(posicionFila){
 		return false; // fila llena ...
 	}
 }  // ... fin validarFilaSeleccionada ...
+
+function validarFecha(){
+	var anhoMesComprobante =$("#inputFecha").val();
+ 	var anhoMesGestion = $("#inputGestion").val();
+ 	
+	anhoMesComprobante = anhoMesComprobante.split('-');
+ 	anhoMesGestion = anhoMesGestion.split('-');
+ 	
+ 	anhoMesComprobante = anhoMesComprobante[0]+anhoMesComprobante[1];
+ 	anhoMesGestion = anhoMesGestion[0]+anhoMesGestion[1];
+ 	                
+    if(anhoMesComprobante != anhoMesGestion){	// Verificamos si la fechaGestion es diferente a la fechaComprobante ...
+		alert(" ¡¡¡... ERROR ... !!! La fecha del comprobante "+$("#inputFecha").val()+" es distinta a la fecha de gestión "+$("#inputGestion").val()  );   
+		$("#inputFecha").val("<?=date('d-m-Y')?>");
+    }				                                	
+}   // fin ... validarFecha ...

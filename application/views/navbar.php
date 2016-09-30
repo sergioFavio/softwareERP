@@ -53,6 +53,7 @@
 					</li>
                     
                     <li><a href="<?=base_url();?>materiales/datosKardex"><span class="glyphicon glyphicon-list-alt"></span> Kardex de Materiales</a></li>
+                    <li><a href="<?=base_url();?>materiales/reponerMateriales"><span class="glyphicon glyphicon-transfer"></span> Reponer Materiales</a></li>
                     
                 </ul>
             </li>
@@ -123,7 +124,28 @@
 							<li><a href="<?=base_url();?>tienda/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
 						</ul>
 					</li>
-					<li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a></li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega PENDIENTE</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/notaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
+						</ul>
+					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Depósitos PENDIENTE</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda.../realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito </a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Depósitos</a></li>
+						</ul>
+					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+						</ul>
+					</li>
+					
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
 						<ul class="dropdown-menu">
 							<li><a href="#"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
@@ -142,19 +164,29 @@
             <li class="dropdown" >
                 <a href="<?=base_url();?>" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span> Contabilidad <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Transacciones</a>
+                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Comprobantes</a>
                     	<ul class="dropdown-menu">
-                    		<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=ingreso"><span class="glyphicon glyphicon-log-in"></span> Comprobante Ingreso</a></li>
-                    
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Comprobante Egreso</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Comprobante Traspaso</a></li>
+                    		<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=ingreso"><span class="glyphicon glyphicon-log-in"></span> Ingreso</a></li>
+							<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=egreso"><span class="glyphicon glyphicon-log-out"></span> Egreso</a></li>
+							<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=diario"><span class="glyphicon glyphicon-new-window"></span> Diario</a></li>
+							
+							<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span> Buscar</a>
+	                    		<ul class="dropdown-menu">
+		                    		<li><a href="<?=base_url();?>contabilidad/...?tipoComprobante=ingreso"><span class="glyphicon glyphicon-log-in"></span> Ingreso</a></li>
+									<li><a href="<?=base_url();?>contabilidad/...?tipoComprobante=egreso"><span class="glyphicon glyphicon-log-out"></span> Egreso</a></li>
+									<li><a href="<?=base_url();?>contabilidad/...?tipoComprobante=diario"><span class="glyphicon glyphicon-new-window"></span> Diario</a></li>
+								</ul>	
+							</li>
+							
 						</ul>
 					</li>
-                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Reportes</a>
+                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Reportes</a>
                     	<ul class="dropdown-menu">
-							<li><a href="#"><span class="glyphicon glyphicon-usd"></span> Libro Diario</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Libro Mayores</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Sumas y saldos</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=DG"><span class="glyphicon glyphicon-book"></span> Libro Diario</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=MY"><span class="glyphicon glyphicon-book"></span> Libro Mayor</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=SS"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Balance Sumas y Saldos</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BG"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance General</a></li>
+							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>
 					</li>
@@ -164,7 +196,7 @@
 							<li><a href="<?=base_url();?>contabilidad/generarReportePlanDeCuentas"><span class="glyphicon glyphicon-print"></span> Plan de Cuentas</a></li>
 						</ul>
 					</li>
-                    <li><a href="#"> Iniciar Gesti&oacute;n</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Iniciar Gesti&oacute;n Mensual</a></li>
                     <li><a href="#">otros ...</a></li>
                 </ul>
             </li>

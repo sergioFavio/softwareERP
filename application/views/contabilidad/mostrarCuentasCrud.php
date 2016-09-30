@@ -94,7 +94,9 @@ $(function () {
     });
 });
 
-
+var saldoacumulado=0.00;		//... variable para determinar la eliminacion de una cuenta ...
+var cuenta='';					//... asignar cuenta a eliminar ...
+var descripcion='';				//... asigna la descripcion de la cuenta a eleiminar ...
 $(document).ready(function() {
 			
 	/*  inicio de light box crearCuenta javascript */
@@ -107,44 +109,48 @@ $(document).ready(function() {
 	
 	$('#borrarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
-		var cuenta = $(e.relatedTarget).data('cuenta'); 
-		var descripcion =$(e.relatedTarget).data('descripcion');
+		cuenta = $(e.relatedTarget).data('cuenta'); 
+		descripcion =$(e.relatedTarget).data('descripcion');
 		var title = $(e.relatedTarget).data('title');
+		
+		saldoacumulado = $(e.relatedTarget).data('saldoacumulado');
+		
 		//aca lo asignamos a un hidden dentro del form que esta en el modal
 	    $(e.currentTarget).find('input[name="codigo"]').val(cuenta);
 		//esto solo pone el id pasado por tag para mostralo en el modal
 		$(e.currentTarget).find('#showCodigo').html(cuenta);
 		$(e.currentTarget).find('#showCuenta').html(descripcion);
-		$(e.currentTarget).find('.modal-title').html(title);		
-		
+		$(e.currentTarget).find('.modal-title').html(title);
 	});
 	
-	
-	
-	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() {       
-		var form= $('#borrarModal').find("form");
-		var action=form.attr("action");
-		//aca recuperamos el id que paso por tag al modal
-		var idele=$(form).find('input[name="codigo"]').val();
-			
-		$.ajax({
-		
-		    url: action,
-		    type: "POST",
-		    data: $(form).serialize(),
-		
-		    success: function(data){
-		        //alert(data);
-		       
-		    //  aca deberia poner la funcion que hace el refrescado del listado
-		    window.location.href=data;
-
-			}
-		});
+	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() { 
+		saldoacumulado=parseFloat(saldoacumulado);
+		if(saldoacumulado!=0.00 ){
+			alert("¡¡¡ E R R O R !!! ... Saldo acumulado "+saldoacumulado+" es distinto de cero, no se puede eliminar la cuenta "+cuenta + " "+descripcion);
+			//$('#borrarModal').modal('hide'); // cierra el lightbox
+			//window.history.back();		//...vuelve a la pagina anterior ...
+			//window.location;	//...vuelve a la pagina actual...
+		}else{
+			var form= $('#borrarModal').find("form");
+			var action=form.attr("action");
+			//aca recuperamos el id que paso por tag al modal
+			var idele=$(form).find('input[name="codigo"]').val();
+				
+			$.ajax({
+			    url: action,
+			    type: "POST",
+			    data: $(form).serialize(),
+			    success: function(data){
+			        //alert(data);
+				    //  aca deberia poner la funcion que hace el refrescado del listado
+				    window.location.href=data;
+				}
+			});
+		}	//... fin IF saldoacumulado!=0.00 ...
 	 });
 	 
 	 
-	 	$('#editarModal').on('show.bs.modal', function(e) {  
+	 $('#editarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
 		var cuenta = $(e.relatedTarget).data('cuenta'); 
 		var descripcion = $(e.relatedTarget).data('descripcion');
@@ -186,8 +192,6 @@ $(document).ready(function() {
 		});
 	 });
 
-	 
-	 
 	 
 	 $("#btnGrabarNuevaCuenta").click(function(){
 		// grabar registro en tablas [almacen/bodega]
@@ -313,7 +317,6 @@ function validarNivel(numero){
 	
 }
 
-
 function validarCodigoNoRepetido(numero){
 	// la valiacion del codigo se la hace con una busqueda binaria ...		
 	var centro=0; 
@@ -360,7 +363,9 @@ function validarCodigoNoRepetido(numero){
 			   	</div>
 			   	    		     	
 			    <div class="col-xs-1 col-md-1"> 
-			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			    	<!--button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					-->
+			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>contabilidad/habilitarCuentasMovimiento'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			    
 		</div>  <!-- /.row -->
@@ -373,7 +378,6 @@ function validarCodigoNoRepetido(numero){
 
 <div class="tree well" id="cuerpoDetalle" style="height:430px; overflow: auto;">
  
- 
 <table> 	<!-- estructura dentro de tabla para cargar las cuentas de contabilidad en un arreglo y hacer busqueda binaria posterior -->
 	<?php  
 	$posicionFila=-1;
@@ -385,7 +389,6 @@ function validarCodigoNoRepetido(numero){
 	endforeach;
 echo"</table>";
 
-	  
 	 $posicionFila=-1;
 	 $nivelAnterior=0; 	
 	 
@@ -393,6 +396,10 @@ echo"</table>";
 		 $posicionFila=$posicionFila+1;  //...posicionFila
 		 $codigo= $material->cuenta;
 		 $descripcion= $material->descripcion;
+		 
+		 $saldoAcumulado= $material->debeacumulado - $material->haberacumulado;		//... para controlar el saldoacumulado =0 para borrar cuenta ...
+		 
+		 
 		 $largoDescripcion=strlen($descripcion);
 		 $nivel= $material->nivel;
 		 $diferenciaNivel=$nivel - $nivelAnterior;
@@ -433,7 +440,7 @@ echo"</table>";
 			
 			echo "&nbsp; $codigo </span> &nbsp; $descripcion &nbsp;&nbsp;". nbs($espacio) ."<a href='#' data-title='Editar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
 			   data-nivel='".$nivel."' data-toggle='modal' data-target='#editarModal' ><button type='button' class='btn btn-warning btn-xs' ><span class='glyphicon glyphicon-edit'></span> Modificar</button></a>&nbsp;&nbsp;<a href='#' data-title='Eliminar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
-			   data-toggle='modal' data-target='#borrarModal'><button type='button' class='btn btn-danger btn-xs' ><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";		
+			   data-saldoacumulado='".$saldoAcumulado."' data-toggle='modal' data-target='#borrarModal'><button type='button' class='btn btn-danger btn-xs' ><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";		
 		 }
 		 
 		 if($nivel==$nivelAnterior)
@@ -472,7 +479,7 @@ echo"</table>";
 			
 			echo "&nbsp; $codigo </span> &nbsp; $descripcion &nbsp;&nbsp;". nbs($espacio) ."<a href='#' data-title='Editar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
 				data-nivel='".$nivel."' data-toggle='modal' data-target='#editarModal' ><button type='button' class='btn btn-warning btn-xs' ><span class='glyphicon glyphicon-edit'></span> Modificar</button></a>&nbsp;&nbsp;<a href='#'  data-title='Eliminar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
-			   data-toggle='modal' data-target='#borrarModal'><button type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";
+			    data-saldoacumulado='".$saldoAcumulado."' data-toggle='modal' data-target='#borrarModal'><button type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";
 		 }
 		 
 		  if($nivel<$nivelAnterior)
@@ -514,7 +521,7 @@ echo"</table>";
 			
 			echo "&nbsp; $codigo </span> &nbsp; $descripcion &nbsp;&nbsp;". nbs($espacio) ."<a href='#' data-title='Editar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
 				data-nivel='".$nivel."' data-toggle='modal' data-target='#editarModal' ><button type='button' class='btn btn-warning btn-xs' ><span class='glyphicon glyphicon-edit'></span> Modificar</button></a>&nbsp;&nbsp;<a href='#'  data-title='Eliminar Cuenta' data-cuenta='".$codigo."' data-descripcion='".$descripcion."' 
-			   data-toggle='modal' data-target='#borrarModal' ><button type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";
+			    data-saldoacumulado='".$saldoAcumulado."' data-toggle='modal' data-target='#borrarModal' ><button type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span> Eliminar</button></a>";
 		  }
 		 
 	      $nivelAnterior=$nivel; 
@@ -665,7 +672,7 @@ echo"</table>";
       </div>
       <div class="modal-body">
 	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>contabilidad/eliminarCuentaCrud" method="POST">
-        ¿ Esta seguro de eliminar el código <span id="showCodigo" style="font-weight : bold;"></span> <span id="showCuenta" style="font-weight : bold;"></span> ?
+        ¿ Esta seguro de eliminar la cuenta <span id="showCodigo" style="font-weight : bold;"></span> <span id="showCuenta" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 		</form>
       </div>

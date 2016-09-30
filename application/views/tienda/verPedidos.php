@@ -118,7 +118,7 @@ function reportePdf(nPedido){
     		<tr style="background-color: #b9e9ec;" class='letraDetalle'>
     			<th style="width: 80px;">&nbsp;&nbsp;&nbsp;Pedido</th>
     			<th style="width: 80px;">Fecha Entrega</th>
-				<th style="width: 200px;">Contacto - Empresa</th>
+				<th style="width: 200px;">Cliente - Empresa</th>
 				<th style="width: 80px;">Fono/Celular</th>
 				<th style="width: 75px;">Fecha Pedido</th>
 				<th style="width: 40px;">Estado</th>
@@ -141,7 +141,7 @@ function reportePdf(nPedido){
 						
 					 echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEntrega)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 							 
-					 echo"<td style='width: 200px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$pedido->contacto."' readonly='readonly' style='border:none; width:200px;' /></td>";
+					 echo"<td style='width: 200px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$pedido->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
 						
 					 echo"<td style='width: 80px;'><input type='text' id='telCel_".$posicionFila."' name='telCel_".$posicionFila."' value='".$pedido->telCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
 

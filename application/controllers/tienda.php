@@ -2,6 +2,59 @@
 
 class Tienda extends CI_Controller {
 	
+		public function notaEntrega(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para hacer notas de entrega';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			
+			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
+			$registros = $this->db->query($sql)->result_array();
+					
+			$datos['registros']=$registros;		
+			$datos['local']=$local;	// ... T: tienda/ F: fabrica ...
+	
+			$this->load->view('header');
+			$this->load->view('tienda/notaEntrega',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin notaEntrega ...
+	
+	public function proforma(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para hacer notas de entrega';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			
+			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
+			$registros = $this->db->query($sql)->result_array();
+					
+			$datos['registros']=$registros;		
+			$datos['local']=$local;	// ... T: tienda/ F: fabrica ...
+	
+			$this->load->view('header');
+			$this->load->view('tienda/proforma',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin proforma ...
+	
+	
 	public function realizarPedido()
 	{
 		//... control de permisos de acceso ....
@@ -82,6 +135,7 @@ class Tienda extends CI_Controller {
 	    	"local"=>$_POST['local'],
 		    "fechaPedido"=>$_POST['inputFecha'],
 		    "fechaEntrega"=>$_POST['inputEntrega'],
+		    "cliente"=>$_POST['cliente'],
 		    "contacto"=>$_POST['contacto'],
 		    "direccion"=>$_POST['direccion'],
 		    "telCel"=>$_POST['telCel'],
@@ -121,7 +175,7 @@ class Tienda extends CI_Controller {
 				    "unidad"=>$_POST['unidadMat_'.$i],
 				    "precio"=>$_POST['precioMat_'.$i],
 				    "secuencia"=>$secuencia,
-				    "cliente"=>$_POST['contacto'],
+				    "cliente"=>$_POST['cliente'],
 				    "fechaEntrega"=>$_POST['inputEntrega']
 				);
 			
@@ -526,24 +580,6 @@ class Tienda extends CI_Controller {
 //... inicio funciones reportesPDF
 /////////////////////////////////////
 
-
-
-	
-/*
-	public function fechasReporteIngresoSalida(){
-		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...		
-		$tipoTransaccion= $_GET['tipoTransaccion']; //... lee tipoTransaccion que viene del menu principal(salida de  almacen/bodega ) ...		
-		
-		$datos['nombreDeposito']=$nombreDeposito;
-		$datos['tipoTransaccion']=$tipoTransaccion;
-		$this->load->view('header');
-		$this->load->view('inventarios/fechasReporteIngresoSalida',$datos );
-		$this->load->view('footer');
-	}
-	
-*/	
-
-
 	public function generarPedidoPDF(){
 		//... genera reporte de salida en PDF
 
@@ -570,6 +606,7 @@ class Tienda extends CI_Controller {
 		
 		$fechaPedido= $pedidoCabecera["fechaPedido"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fechaEntrega= $pedidoCabecera["fechaEntrega"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$contacto= $pedidoCabecera["contacto"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$direccion= $pedidoCabecera["direccion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fono= $pedidoCabecera["telCel"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -602,10 +639,11 @@ class Tienda extends CI_Controller {
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new EstructuraPedidoPdf();
 			
-			$this->pdf->local=$nombreLocal;   			   						//...pasando variable para el header del PDF
+			$this->pdf->local=$nombreLocal;   			   					//...pasando variable para el header del PDF
 			$this->pdf->numeroPedido=strtoupper($numeroPedido);      		//...pasando variable para el header del PDF
 			$this->pdf->fechaPedido=fechaMysqlParaLatina($fechaPedido); 	//...pasando variable para el header del PDF
 			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 	//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 									//...pasando variable para el header del PDF
 			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
 			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
 			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF
@@ -639,16 +677,6 @@ class Tienda extends CI_Controller {
 		    foreach ($productos->result() as $producto) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
-/*
-				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
-				$this->pdf->Cell(84,5,$producto->descripcion,'',0,'L',0);
-				$this->pdf->Cell(92,5,utf8_decode($producto->color),'',0,'L',0);
-				$this->pdf->Ln('5');
-				$this->pdf->Cell(128,5,number_format($producto->cantidad,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
-				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
-*/
 
 				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
 				$this->pdf->Cell(94,5,$producto->descripcion,'',0,'L',0);
@@ -707,7 +735,7 @@ class Tienda extends CI_Controller {
 					
 		}
 	    
-	} //... fin funcion: generarCotizacionPDF ...
+	} //... fin funcion: generarPedidoPDF ...
 
 	
 	public function listaPreciosProductos(){
@@ -717,8 +745,8 @@ class Tienda extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso3=$this->session->userdata('usuarioProceso3');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='tienda'){  //... valida permiso de userName y de menu...
-			$datos['mensaje']='Usuario NO autorizado para operar ver la lista de precios de productos';
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para ver la lista de precios de productos';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
@@ -760,22 +788,20 @@ class Tienda extends CI_Controller {
 			         
 			    // Se define el formato de fuente: Arial, negritas, tamaño 9
 			    //$this->pdf->SetFont('Arial', 'B', 9);
-			    $this->pdf->SetFont('Arial', '', 9);
-			    $espacio=3; 			//... epacio variable para imprimir ...
+			    $this->pdf->SetFont('Arial', '', 8);
+			    $espacio=1; 			//... epacio variable para imprimir ...
 			    foreach ($registros->result() as $registro) {
 			        // Se imprimen los datos de cada registro
 			       	
 		        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
 					$this->pdf->Cell($espacio,5,'','',0,'L',0);
 					$this->pdf->Cell(2,5,$registro->idProd,'',0,'L',0);
-					$this->pdf->Cell(30,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,'','',0,'L',0);
+					$this->pdf->Cell(95,5,utf8_decode($registro->nombreProd),'',0,'L',0);
+		       		$this->pdf->Cell(30,5,utf8_decode($registro->medidas),'',0,'L',0);
+					$this->pdf->Cell(20,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($registro->precioVenta,2),'',0,'R',0);
 					
-					
-		            //$this->pdf->Cell(80,5,utf8_decode($registro->descripcion),'',0,'L',0);
-					$this->pdf->Cell(120,5,utf8_decode($registro->nombreProd),'',0,'L',0);
-//					$this->pdf->Cell(20-($espacio*($registro->nivel)),5,'','',0,'L',0);
-//		       		$this->pdf->Cell(20,5,utf8_decode($registro->nivel),'',0,'L',0);
-		          
 					//Se agrega un salto de linea
 		        	$this->pdf->Ln(5);	
 			    }
@@ -798,18 +824,17 @@ class Tienda extends CI_Controller {
 				  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
 					
 					$datos['documento']="pdfsArchivos/ventas/listaPrecios.pdf";	
+					$datos['titulo']=' Lista de Precios';	// ... titulo ...
 					
 					$this->load->view('header');
 					$this->load->view('reportePdfSinFechas',$datos );
-					$this->load->view('footer');	
+					$this->load->view('footer');
 				}
 			}	//.. fin IF validar usuario ...
 	    
 	} //... fin funcion: listaPreciosProductos ...
 	
 	
-
-
 //... fin funciones reportes PDF ...
 ////////////////////////////////////
 

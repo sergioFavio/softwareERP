@@ -23,12 +23,9 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 #titulo{font-size:14px;margin-top:1px;  text-align:right;font-weight : bold}   
 </style>
 
-
-
-	
 <div class="jumbotron" id="cuerpoIngreso">	
 	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/grabarComprobanteIngreso" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/grabarComprobante" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
@@ -36,8 +33,8 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 			
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Ingreso No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $ingreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" >Gesti&oacute;n </span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputGestion" name="inputGestion" value="<?= substr($gestion,0,4).'-'.substr($gestion,4,2) ?>" readonly="readonly" placeholder="ingreso No." style="width: 78px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -46,7 +43,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	</div>
 	    	
 	    	<div class="col-xs-3">
-	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo) ?>  </span>
+	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo).' No. '.$numComprobante ?>  </span>
 	    	</div> 
 	    	
 	 		<div class="col-xs-2">
@@ -56,7 +53,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-2" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera">Fecha </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" onChange='validarFecha();'>
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -66,23 +63,60 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
+			<?php if($tipoComprobante=='ingreso'){ ?>
+			
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Cliente</span>
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputCliente" name="inputCliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
 	    	
-	    	<div class="col-xs-3">
+	    	<div class="col-xs-4">
+	    	 	<span></span>
+	    	</div>
+	    	<?php } ?>
+	    	
+	    	<?php if($tipoComprobante=='egreso'){ ?>
+			
+		    <div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
+	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:160px;font-size:11px;text-align:center;">
+				         <option value="BNB Caja Ahorros M.N.">BNB Caja Ahorros M.N. </option>
+				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
+				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
+				         <option value="Banco Unión M.N.">Banco Unión M.N.</option>
+				         <option value="Caja Mayor">Caja Mayor</option>
+				         <option value="Caja Chica Fábrica">Caja Chica Fábrica</option>
+				          <option value="Caja Chica Tienda">Caja Chica Tienda</option>
+		        	</select>
+	    		</div>
+	    	</div><!-- /.col-xs-2 -->
+	    	
+	    	<div class="col-xs-1">
 	    	 	<span></span>
 	    	</div>
 	    	
+	    	<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputCheque" name="inputCheque" placeholder="cheque No&hellip;" style="width: 120px;font-size:11px;text-align:center;">
+	    		</div>
+	    		
+	    	</div><!-- /.col-lg-4 -->
+	    	
+	    	<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<?php } ?>
 	    	
 		    <div class="col-xs-3">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Concepto </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputConcepto" name="inputConcepto" placeholder="concepto.&hellip;" style="width: 410px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span> </span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputConcepto" name="inputConcepto" placeholder="concepto.&hellip;" style="width: 370px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -106,13 +140,13 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     	<?php
         //if ciclo de impresion de filas 
   
-       		for($x=0; $x<25; $x++){
+       		for($x=0; $x<24; $x++){
             	echo "<tr class='detalleMaterial' >";
            
 					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >
 					<input type='text' name='idCta_".$x."' id='idCta_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #b9e9ec ;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
+                    echo "<td class='letraDetalle'  style='width:320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' readonly='readonly' style='width:320px;border:none;' /></td>";
                     
                     echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'  style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);'/></td>";
 					
@@ -128,26 +162,26 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
       </tbody>
 	</table>
 	
-	
 	<div class="totalBs">
 		
 	     <span > 
-	 		<input type="text"   id="inputLiteral" name="inputLiteral" readonly="readonly"   placeholder="son: ..00/100 Bolivianos.&hellip;" style="width: 550px;font-size:11px;text-align:center;">
+	 		<input type="text"   id="inputLiteral" name="inputLiteral" readonly="readonly"   placeholder="Son: ..00/100 Bolivianos.&hellip;" style="width: 550px;font-size:11px;text-align:center;">
 	    </span>&nbsp;&nbsp;
 		
 		<span class="label label-info">&nbsp;&nbsp;&nbsp; Total Bs.:</span>&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>&nbsp;&nbsp;&nbsp;
 				
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		
 		
 	<input type="hidden"  name="numeroFilas"  />
 	<input type="hidden"  name="tipoComprobante" value="<?= $tipoComprobante ?>" />     <!--  tipoComprobante: ingreso/egreso/traspaso -->
+	<input type="hidden"  name="numComprobante" value="<?= $numComprobante ?>" />     	<!--  numComprobante: ingreso/egreso/traspaso -->
 	
 	<div style="text-align: right; padding-top: 5px;">  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

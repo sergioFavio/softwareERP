@@ -1,6 +1,6 @@
 <style type="text/css" >
 	/*  inicio de light box  */
-	.modal-dialog {width:400px;}
+	.modal-dialog {width:360px;}
 	.thumbnail {margin-bottom:6px;}
 	/*  fin de light box  */
 	

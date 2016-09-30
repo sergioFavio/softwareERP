@@ -40,9 +40,9 @@ $(document).ready(function(){
 
 <div class="container">
 	<div class="row">
-	<h3><center><small>Crea un respaldo de la base de datos en la partición D:\respaldoBD</small></center></h3>
+	<h3><center><small>Crea un respaldo de la base de datos en la partición C:\respaldoBD</small></center></h3>
 	<?php
-		$directorio='D:\respaldoBD';
+		$directorio='C:\respaldoBD';
 		if (!file_exists($directorio)) {
 			echo"<p align='center'><code>NOTA: El directorio $directorio NO existe, se tiene que crear el directorio $directorio</code></p><br />";
 	?>
@@ -63,7 +63,7 @@ $(document).ready(function(){
         <div class="modal-content">
             <div class="modal-body" >
             	<?php
-            		shell_exec('c:\xampp\mysql\bin\mysqldump -u root irbadb>d:\respaldoBD\irbaDB.sql');
+            		shell_exec('c:\xampp\mysql\bin\mysqldump -u root irbadb>c:\respaldoBD\irbaDB.sql');
                     echo img('/assets/img/loading.gif');
                 ?>    
                 <h4>Procesando... <button type="button" class="close" style="float:none;" data-dismiss="modal" aria-hidden="true"  onClick="window.location.href='<?=base_url();?>menuController/index'" >×</button></h4>
@@ -73,7 +73,7 @@ $(document).ready(function(){
 </div>
 
  <br /><br /> 
-<p align='center'><code>NOTA: El botón 'X' en la ventana modal es para terminar el proceso de respaldo de la base de datos.</code></p><br />
+<p align='center'><code>NOTA: Presione el botón 'X' en la ventana modal para terminar el proceso de respaldo de la base de datos.</code></p><br />
            
 <br /><br /><br />
 	<?php		

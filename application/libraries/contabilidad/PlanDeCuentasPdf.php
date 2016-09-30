@@ -20,7 +20,7 @@
 			
      		//$this->Cell(120,10,'Reporte de Ingreso de '.$titulo,0,0,'C');
 		
-			$this->Cell(120,10,utf8_decode('Plan de Cuentas'),0,0,'C');	
+			$this->Cell(120,10,utf8_decode('PLAN DE CUENTAS'),0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
@@ -43,9 +43,6 @@
 			$this->Cell(10,7,'','TBR',0,'R','0');
 	        $this->Ln(7);
        }
-
-
-
 
        // El pie del pdf
        public function Footer(){
