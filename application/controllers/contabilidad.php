@@ -1424,6 +1424,11 @@ class Contabilidad extends CI_Controller {
 			    //$this->pdf->SetFont('Arial', 'B', 9);
 			    $this->pdf->SetFont('Arial', '', 9);
 			    $espacio=1; 			//... epacio variable para imprimir ...
+			    $cuentaAnteriorSubGrupo='';		//...par corte de control por cuentaSubGrupo ...
+			    $saldoSubGrupo=0.00;			//...saldoSubGrupo ...
+			    $totalActivo=0.00;				//...acumula saldos cuentas del activo ...
+			    $totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+			    
 			    foreach ($registros->result() as $registro) {
 			        // Se imprimen los datos de cada registro
 			       	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
@@ -1434,23 +1439,69 @@ class Contabilidad extends CI_Controller {
 			       		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
 			       	}
 					
+					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
+						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
+						if($registro->cuenta<='19999999'){
+							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
+						}else{
+							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
+						}			
+					}
+					
 		       		if($registro->nivel=='3'){
 		       			if($registro->cuenta<='19999999'){
 			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 			        	}else{
 			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-			        }
+			        	}
 						
 		       			$this->pdf->Cell(6,5,'','',0,'L',0);
 						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 						
-						$this->pdf->Cell(12,5,'','',0,'L',0);
-						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+//						if(substr($registro->cuenta,0,2)!= $cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' ){
+							$this->pdf->Cell(12,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+//						}
 		       		}
 		          
+				  	$cuentaAnteriorSubGrupo=substr($registro->nivel,0,2);		//...par corte de control por cuentaSubGrupo ...
 					//Se agrega un salto de linea
-		        	$this->pdf->Ln(5);	
-			    }
+		        	$this->pdf->Ln(5);
+						
+			    }			//... fin foreach ....
+			    
+			    //... imprime totales ........
+			    $this->pdf->Ln(5);
+			    $this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(18,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
+				$this->pdf->Cell(44,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
+				$this->pdf->Cell(37,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+	        	$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+				
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(40,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				
+					
 					
 				     /* PDF Output() settings
 				     * Se manda el pdf al navegador

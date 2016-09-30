@@ -16,7 +16,7 @@
             $this->Image('assets/img/logo.jpg',10,8,22);
             //$this->SetFont('Arial','B',13); // 'B' es negrita
             $this->SetFont('Arial','B',13);
-            $this->Cell(30);
+            $this->Cell(35);
 			
      		//$this->Cell(120,10,'Reporte de Ingreso de '.$titulo,0,0,'C');
 		
