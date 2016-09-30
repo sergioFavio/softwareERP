@@ -1367,6 +1367,110 @@ class Contabilidad extends CI_Controller {
 	} //... fin funcion: generarReporteSumasYsaldos ...
 	
 	
+	public function generarReporteBalanceGeneral(){
+		//... genera reporte de diarioGeneral en PDF
+		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+
+        		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso3=$this->session->userdata('usuarioProceso3');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			// Se carga la libreria fpdf
+			$this->load->library('contabilidad/BalanceGeneralPdf');
+			
+			// Se obtienen los registros de la base de datos
+//			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3' AND <='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3'AND cuenta<='39999999' ";
+			
+			$registros = $this->db->query($sql);
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros seleccionados para el BALANCE GENERAL.';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				// Creacion del PDF
+			    /*
+			    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+			    * heredó todos las variables y métodos de fpdf
+			    */
+			     
+			    ob_clean(); // cierra si es se abrio el envio de pdf...
+			    $this->pdf = new BalanceGeneralPdf();
+				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
+				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
+		
+			    // Agregamos una página
+			    $this->pdf->AddPage();
+			    // Define el alias para el número de página que se imprimirá en el pie
+			    $this->pdf->AliasNbPages();
+			 
+			    /* Se define el titulo, márgenes izquierdo, derecho y
+			    * el color de relleno predeterminado
+			    */
+			         
+			    // Se define el formato de fuente: Arial, negritas, tamaño 9
+			    //$this->pdf->SetFont('Arial', 'B', 9);
+			    $this->pdf->SetFont('Arial', '', 9);
+			    $espacio=1; 			//... epacio variable para imprimir ...
+			    foreach ($registros->result() as $registro) {
+			        // Se imprimen los datos de cada registro
+			       	
+		        	if($registro->cuenta<='19999999'){
+		        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+		        	}else{
+		        		$this->pdf->Cell(50+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+		        	}
+					
+					$this->pdf->Cell(75,5,utf8_decode($registro->descripcion),'',0,'L',0);
+		       		if($registro->nivel=='3'){
+		       			$this->pdf->Cell(8,5,'','',0,'L',0);
+						$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+		       		}
+		          
+					//Se agrega un salto de linea
+		        	$this->pdf->Ln(5);	
+			    }
+					
+				     /* PDF Output() settings
+				     * Se manda el pdf al navegador
+				     *
+				     * $this->pdf->Output(nombredelarchivo, destino);
+				     *
+				     * I = Muestra el pdf en el navegador
+				     * D = Envia el pdf para descarga
+					 * F: save to a local file
+					 * S: return the document as a string. name is ignored.
+					 * $pdf->Output(); //default output to browser
+					 * $pdf->Output('D:/example2.pdf','F');
+					 * $pdf->Output("example2.pdf", 'D');
+					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+				     */
+				  
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/balanceGeneral.pdf', 'F');
+					
+					$datos['documento']="pdfsArchivos/contabilidad/balanceGeneral.pdf";	
+					$datos['titulo']=' BALANCE GENERAL período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+					
+					$this->load->view('header');
+					$this->load->view('reportePdfSinFechas',$datos );
+					$this->load->view('footer');	
+				}
+			}	//.. fin IF validar usuario ...
+        
+	} //... fin funcion: generarReporteBalanceGeneral ...
+	
 	
 }
 
