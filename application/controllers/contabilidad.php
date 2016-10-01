@@ -1388,8 +1388,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/BalanceGeneralPdf');
 			
 			// Se obtienen los registros de la base de datos
-//			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3' AND <='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3'AND cuenta<='39999999' ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 			
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
@@ -1424,13 +1423,25 @@ class Contabilidad extends CI_Controller {
 			    //$this->pdf->SetFont('Arial', 'B', 9);
 			    $this->pdf->SetFont('Arial', '', 9);
 			    $espacio=1; 			//... epacio variable para imprimir ...
-			    $cuentaAnteriorSubGrupo='';		//...par corte de control por cuentaSubGrupo ...
+			    $cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
+			    $nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
 			    $saldoSubGrupo=0.00;			//...saldoSubGrupo ...
 			    $totalActivo=0.00;				//...acumula saldos cuentas del activo ...
 			    $totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+			    $numeroLineas=0; 	//...numero de lineas de impresion ...
 			    
 			    foreach ($registros->result() as $registro) {
 			        // Se imprimen los datos de cada registro
+			        $numeroLineas = $numeroLineas +1;
+					
+			        if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
+						$this->pdf->Cell(12,5,'','',0,'L',0);
+						$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+			        }
+					if($cuentaAnteriorSubGrupo!=''){
+						 $this->pdf->Ln(5);
+					}
+			       
 			       	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
 			       	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
@@ -1457,18 +1468,16 @@ class Contabilidad extends CI_Controller {
 						
 		       			$this->pdf->Cell(6,5,'','',0,'L',0);
 						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
-						
-//						if(substr($registro->cuenta,0,2)!= $cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' ){
-							$this->pdf->Cell(12,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-//						}
 		       		}
-		          
-				  	$cuentaAnteriorSubGrupo=substr($registro->nivel,0,2);		//...par corte de control por cuentaSubGrupo ...
-					//Se agrega un salto de linea
-		        	$this->pdf->Ln(5);
-						
+		         
+				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
+				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
+				  							
 			    }			//... fin foreach ....
+			    
+			    
+			    $this->pdf->Cell(12,5,'','',0,'L',0);
+				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
 			    
 			    //... imprime totales ........
 			    $this->pdf->Ln(5);
@@ -1485,11 +1494,10 @@ class Contabilidad extends CI_Controller {
 				//... fin impresion totales  ........
 				
 				
-				$this->pdf->Ln(5);
-				$this->pdf->Ln(5);
-				$this->pdf->Ln(5);
-				$this->pdf->Ln(5);
-				$this->pdf->Ln(5);
+				for($x=$numeroLineas; $x<45; $x++){
+					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
+				}
+				
 				$this->pdf->Cell(40,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
