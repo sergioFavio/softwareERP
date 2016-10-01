@@ -63,8 +63,8 @@
 }
 
 	
-#cuerpoCabecera{margin:0 auto; padding:0; width:925px; height:50px;}
-#cuerpoDetalle{margin:0 auto; padding:0; width:925px; }
+#cuerpoCabecera{margin:0 auto; padding:0; width:865px; height:50px;}
+#cuerpoDetalle{margin:0 auto; padding:0; width:865px; }
 /*  #cuerpoPaginacion{margin:0 auto;padding:0; width:850px; height:60px;}
 */
 #crearModal,#editarModal, #borrarModal{padding-top:180px;}  /* ... baja la ventana modal más al centro vertical ... */
@@ -263,6 +263,51 @@ function validarCodigo(numero){
 }
 
 
+function validarCuentaNivelAnterior(numero,nivel){
+	//... valida si existe cuentanivelAnterior ...
+	var cuentaNivelAnterior=numero.toString();
+	var	nivel=parseInt(nivel);
+	for (var i=nivel-1; i >= 1; i--){
+		if(i==4){
+			cuentaNivelAnterior= cuentaNivelAnterior.substring(0,6)+'00';
+			if(validarCodigoNoRepetido(cuentaNivelAnterior) ){
+				alert('ERROR No existe la cuenta '+cuentaNivelAnterior+' del nivel anterior'); 
+				$("#inputCodigo").val("");
+				document.getElementById('inputNivel5').checked = false;
+			}	
+		}
+		
+		if(i==3){
+			cuentaNivelAnterior= cuentaNivelAnterior.substring(0,4)+'0000';
+			if(validarCodigoNoRepetido(cuentaNivelAnterior)){
+				alert('ERROR No existe la cuenta '+cuentaNivelAnterior+' del nivel anterior'); 
+				$("#inputCodigo").val("");
+				document.getElementById('inputNivel4').checked = false;
+			}
+		}
+		
+		if(i==2){
+			cuentaNivelAnterior= cuentaNivelAnterior.substring(0,2)+'000000';
+			if(validarCodigoNoRepetido(cuentaNivelAnterior)){
+				alert('ERROR No existe la cuenta '+cuentaNivelAnterior+' del nivel anterior'); 
+				$("#inputCodigo").val("");
+				document.getElementById('inputNivel3').checked = false;
+			}
+		}
+		
+		if(i==1){
+			cuentaNivelAnterior= cuentaNivelAnterior.substring(0,1)+'0000000';
+			if(validarCodigoNoRepetido(cuentaNivelAnterior)){
+				alert('ERROR No existe la cuenta '+cuentaNivelAnterior+' del nivel anterior'); 
+				$("#inputCodigo").val("");
+				document.getElementById('inputNivel2').checked = false;
+			}
+		}	
+	}		//..fin FOR ...
+	
+}		//... fin funcion validarCuentaAnterior ...
+
+
 function validarNivel(numero){
 	var cuenta= numero.toString();
 	if(cuenta=='00000000' || cuenta.substring(0,1)=='0' ){
@@ -288,6 +333,7 @@ function validarNivel(numero){
 		if( (cuenta.substr(0,1)!='0') && (cuenta.substr(1,1)!='0') && (cuenta.substr(2)=='000000') ){
 			document.getElementById('inputNivel2').checked = true;
 			document.formGrabarNuevoRegistro_.nivelCuenta.value='2';  // ... nivelCuenta  variable hidden formulario...
+			validarCuentaNivelAnterior(numero,2);
 			return
 		}
 		
@@ -295,6 +341,7 @@ function validarNivel(numero){
 		if( (cuenta.substr(0,1)!='0') && (cuenta.substr(1,1)!='0') &&  (cuenta.substr(2,2)!='00') && (cuenta.substr(4)=='0000') ){
 			document.getElementById('inputNivel3').checked = true;
 			document.formGrabarNuevoRegistro_.nivelCuenta.value='3';  // ... nivelCuenta  variable hidden formulario...
+			validarCuentaNivelAnterior(numero,3);
 			return
 		}
 		
@@ -302,6 +349,7 @@ function validarNivel(numero){
 		if( (cuenta.substr(0,1)!='0') && (cuenta.substr(1,1)!='0') &&  (cuenta.substr(2,2)!='00') && (cuenta.substr(4,2)!='00') && (cuenta.substr(6)=='00')  ){
 			document.getElementById('inputNivel4').checked = true;
 			document.formGrabarNuevoRegistro_.nivelCuenta.value='4';  // ... nivelCuenta  variable hidden formulario...
+			validarCuentaNivelAnterior(numero,4);
 			return
 		}
 		
@@ -309,6 +357,7 @@ function validarNivel(numero){
 		if( (cuenta.substr(0,1)!='0') && (cuenta.substr(1,1)!='0') &&  (cuenta.substr(2,2)!='00') && (cuenta.substr(4,2)!='00') && (cuenta.substr(6)!='00')  ){
 			document.getElementById('inputNivel5').checked = true;
 			document.formGrabarNuevoRegistro_.nivelCuenta.value='5';  // ... nivelCuenta  variable hidden formulario...
+			validarCuentaNivelAnterior(numero,5);
 			return
 		}
 		
