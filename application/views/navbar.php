@@ -170,6 +170,8 @@
 							<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=egreso"><span class="glyphicon glyphicon-log-out"></span> Egreso</a></li>
 							<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=diario"><span class="glyphicon glyphicon-new-window"></span> Diario</a></li>
 							
+							<li><a href="<?=base_url();?>contabilidad/modificarComprobante"><span class="glyphicon glyphicon-edit"></span> Modificar</a></li>
+							
 							<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span> Buscar</a>
 	                    		<ul class="dropdown-menu">
 		                    		<li><a href="<?=base_url();?>contabilidad/...?tipoComprobante=ingreso"><span class="glyphicon glyphicon-log-in"></span> Ingreso</a></li>
@@ -186,6 +188,7 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=MY"><span class="glyphicon glyphicon-book"></span> Libro Mayor</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=SS"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Balance Sumas y Saldos</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BG"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance General</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=ER"><span class="glyphicon glyphicon-usd"></span><span class="glyphicon glyphicon-ok"></span> Estado de Resultados</a></li>
 							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>

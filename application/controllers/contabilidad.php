@@ -688,6 +688,11 @@ class Contabilidad extends CI_Controller {
 			$reporte='BalanceGeneral';					//... variable guarda el reporte a generar ...
 		}
 		
+		if($reporte=='ER'){
+			$tituloReporte='Estado de Resultados';
+			$reporte='EstadoResultados';					//... variable guarda el reporte a generar ...
+		}
+		
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
 		$fechasGestiones= $this->tablaGenerica_model->getTodos('contagestion'); //..una vez cargado el modelo de la tabla llama contagestion..
 			
@@ -1538,6 +1543,179 @@ class Contabilidad extends CI_Controller {
 			}	//.. fin IF validar usuario ...
         
 	} //... fin funcion: generarReporteBalanceGeneral ...
+	
+	
+		public function generarReporteEstadoResultados(){
+		//... genera reporte de diarioGeneral en PDF
+		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+
+        		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso3=$this->session->userdata('usuarioProceso3');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			// Se carga la libreria fpdf
+			$this->load->library('contabilidad/EstadoResultadosPdf');
+			
+			// Se obtienen los registros de la base de datos
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3' AND cuenta>='40000000' AND cuenta<='69999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			
+			$registros = $this->db->query($sql);
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros seleccionados para el ESTADO DE RESULTADOS';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				// Creacion del PDF
+			    /*
+			    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+			    * heredó todos las variables y métodos de fpdf
+			    */
+			     
+			    ob_clean(); // cierra si es se abrio el envio de pdf...
+			    $this->pdf = new EstadoResultadosPdf();
+				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
+				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
+		
+			    // Agregamos una página
+			    $this->pdf->AddPage();
+			    // Define el alias para el número de página que se imprimirá en el pie
+			    $this->pdf->AliasNbPages();
+			 
+			    /* Se define el titulo, márgenes izquierdo, derecho y
+			    * el color de relleno predeterminado
+			    */
+			         
+			    // Se define el formato de fuente: Arial, negritas, tamaño 9
+			    //$this->pdf->SetFont('Arial', 'B', 9);
+			    $this->pdf->SetFont('Arial', '', 9);
+			    $espacio=1; 			//... epacio variable para imprimir ...
+			    $cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
+			    $nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
+			    $saldoSubGrupo=0.00;			//...saldoSubGrupo ...
+			    $totalActivo=0.00;				//...acumula saldos cuentas del activo ...
+			    $totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+			    $numeroLineas=0; 	//...numero de lineas de impresion ...
+			    
+			    foreach ($registros->result() as $registro) {
+			        // Se imprimen los datos de cada registro
+			        $numeroLineas = $numeroLineas +1;
+					
+			        if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
+						$this->pdf->Cell(12,5,'','',0,'L',0);
+						$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+			        }
+					if($cuentaAnteriorSubGrupo!=''){
+						 $this->pdf->Ln(5);
+					}
+			       
+			       	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+					
+			       	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
+			       		$this->pdf->Cell(67,5,strtoupper(utf8_decode($registro->descripcion)),'',0,'L',0);
+			       	}else{
+			       		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+			       	}
+					
+					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
+						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
+						if($registro->cuenta<='49999999'){
+							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
+						}else{
+							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
+						}			
+					}
+					
+		       		if($registro->nivel=='3'){
+		       			if($registro->cuenta<='49999999'){
+			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+			        	}else{
+			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+			        	}
+						
+		       			$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+		       		}
+		         
+				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
+				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
+				  							
+			    }			//... fin foreach ....
+			    
+			    
+			    $this->pdf->Cell(12,5,'','',0,'L',0);
+				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
+			    
+			    //... imprime totales ........
+			    $this->pdf->Ln(5);
+			    $this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(18,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
+				$this->pdf->Cell(44,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
+				$this->pdf->Cell(37,5,'','',0,'L',0);
+	       		$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+	        	$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+				
+				for($x=$numeroLineas; $x<45; $x++){
+					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
+				}
+				
+				$this->pdf->Cell(40,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				
+					
+					
+				     /* PDF Output() settings
+				     * Se manda el pdf al navegador
+				     *
+				     * $this->pdf->Output(nombredelarchivo, destino);
+				     *
+				     * I = Muestra el pdf en el navegador
+				     * D = Envia el pdf para descarga
+					 * F: save to a local file
+					 * S: return the document as a string. name is ignored.
+					 * $pdf->Output(); //default output to browser
+					 * $pdf->Output('D:/example2.pdf','F');
+					 * $pdf->Output("example2.pdf", 'D');
+					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+				     */
+				  
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/estadoResultados.pdf', 'F');
+					
+					$datos['documento']="pdfsArchivos/contabilidad/estadoResultados.pdf";	
+					$datos['titulo']=' ESTADO DE RESULTADOS período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+					
+					$this->load->view('header');
+					$this->load->view('reportePdfSinFechas',$datos );
+					$this->load->view('footer');	
+				}
+			}	//.. fin IF validar usuario ...
+        
+	} //... fin funcion: generarReporteEstadoResultados ...
 	
 	
 }
