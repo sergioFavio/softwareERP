@@ -290,6 +290,43 @@ class Contabilidad extends CI_Controller {
 		redirect("menuController/index");	//... vuelve menu principal ...
 	}
 	
+	public function buscarComprobante()
+	{		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+	
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName ...
+			redirect('menuController/index');
+		}
+		//... fin control de permisos de acceso ....	
+		
+		$sql ="SELECT * FROM contagestion ORDER BY gestion DESC LIMIT 1";			//... recupera el ultimo registro insertado de una tabla... 
+		
+		$consulta = $this->db->query($sql);
+		if ($consulta->num_rows() > 0){
+		   $row = $consulta->row_array(); 
+		   $gestion= $row['gestion'];			//..asign ultimo registro tabla contagestion ...
+		}
+		
+		///////////////////////////////////////
+		///...INICIO genera nuevo numero de comprobante ...
+		//////////////////////////////////////
+		$anhoGestion = substr($gestion, 0, 4);	//... anho del periodo ...
+		$mesGestion = substr($gestion, 4, 2);	//... mes del periodo ...
+
+		$sql ="SELECT * FROM comprobantecabecera WHERE year(fecha)='$anhoGestion' AND month(fecha)='$mesGestion' ";	
+		$cabeceraComprobante = $this->db->query($sql)->result_array();
+		 	
+		$datos['titulo']='Modificar COMPROBANTE';
+		$datos['gestion']=$gestion;
+		$datos['cabeceraComprobante']=$cabeceraComprobante;	
+
+		$this->load->view('header');
+		$this->load->view('contabilidad/buscarComprobante',$datos);
+		$this->load->view('footer');
+	}		//... fin buscarComprobante ....
 	
 	
 	public function comprobante()
