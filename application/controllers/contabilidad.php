@@ -298,34 +298,38 @@ class Contabilidad extends CI_Controller {
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 	
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName ...
-			redirect('menuController/index');
-		}
-		//... fin control de permisos de acceso ....	
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+			//... fin control de permisos de acceso ....	
+		}else{
+			$sql ="SELECT * FROM contagestion ORDER BY gestion DESC LIMIT 1";			//... recupera el ultimo registro insertado de una tabla... 
+			
+			$consulta = $this->db->query($sql);
+			if ($consulta->num_rows() > 0){
+			   $row = $consulta->row_array(); 
+			   $gestion= $row['gestion'];			//..asign ultimo registro tabla contagestion ...
+			}
+			
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de comprobante ...
+			//////////////////////////////////////
+			$anhoGestion = substr($gestion, 0, 4);	//... anho del periodo ...
+			$mesGestion = substr($gestion, 4, 2);	//... mes del periodo ...
+	
+			$sql ="SELECT * FROM comprobantecabecera WHERE year(fecha)='$anhoGestion' AND month(fecha)='$mesGestion' ";	
+			$cabeceraComprobante = $this->db->query($sql)->result_array();
+			 	
+			$datos['titulo']='Modificar COMPROBANTE';
+			$datos['gestion']=$gestion;
+			$datos['cabeceraComprobante']=$cabeceraComprobante;	
+	
+			$this->load->view('header');
+			$this->load->view('contabilidad/buscarComprobante',$datos);
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
 		
-		$sql ="SELECT * FROM contagestion ORDER BY gestion DESC LIMIT 1";			//... recupera el ultimo registro insertado de una tabla... 
-		
-		$consulta = $this->db->query($sql);
-		if ($consulta->num_rows() > 0){
-		   $row = $consulta->row_array(); 
-		   $gestion= $row['gestion'];			//..asign ultimo registro tabla contagestion ...
-		}
-		
-		///////////////////////////////////////
-		///...INICIO genera nuevo numero de comprobante ...
-		//////////////////////////////////////
-		$anhoGestion = substr($gestion, 0, 4);	//... anho del periodo ...
-		$mesGestion = substr($gestion, 4, 2);	//... mes del periodo ...
-
-		$sql ="SELECT * FROM comprobantecabecera WHERE year(fecha)='$anhoGestion' AND month(fecha)='$mesGestion' ";	
-		$cabeceraComprobante = $this->db->query($sql)->result_array();
-		 	
-		$datos['titulo']='Modificar COMPROBANTE';
-		$datos['gestion']=$gestion;
-		$datos['cabeceraComprobante']=$cabeceraComprobante;	
-
-		$this->load->view('header');
-		$this->load->view('contabilidad/buscarComprobante',$datos);
-		$this->load->view('footer');
 	}		//... fin buscarComprobante ....
 	
 	
@@ -537,6 +541,52 @@ class Contabilidad extends CI_Controller {
 		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");	
 
 	}	//... fin grabarComprobante
+	
+	
+	public function modificarComprobante()
+	{
+		$numComprobante= $_POST['inputNumero']; 	//... lee numeroComprobante ...	
+		$fecha= $_POST['inputFecha']; 				//... lee fecha ...	
+		$concepto= $_POST['inputConcepto']; 		//... lee concepto ...
+		$gestion= $_POST['gestion']; 				//... lee gestion ...
+		$clienteBanco= $_POST['clienteBanco']; 		//... lee clienteBanco ...
+		
+  		$tComprobante=str_replace(" ","",$_POST['inputTipo']); //...tipoComprobante y quita espacio en blanco ..
+  
+		$tipoComprobante='vacio';
+		if($tComprobante=="I"){
+			$tipoComprobante='ingreso';
+		} else if($tComprobante=='E'){
+				$tipoComprobante='egreso';
+			}else{
+				$tipoComprobante='diario';
+		}
+		
+//		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
+//		$consultaSalidas=$this->db->query($sql);
+//		$nRegistrosSalida=$consultaSalidas->num_rows;  	//... numero registros salida que satisfacen la consulta ...
+		
+//		$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+//		$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+						
+		$datos['titulo']='Modificar Comprobante '.$tipoComprobante;
+
+		$datos['numComprobante']=$numComprobante; 		//... dato cabecera comprobante ..
+		$datos['fecha']=$fecha;							//... dato cabecera comprobante ..
+		$datos['concepto']=$concepto;					//... dato cabecera comprobante ..
+		$datos['tipoComprobante']=$tipoComprobante;		//... dato cabecera comprobante ..
+		$datos['gestion']=$gestion;						//... dato cabecera comprobante ..
+		$datos['clienteBanco']=$clienteBanco;			//... dato cabecera comprobante ..
+		
+//		$datos['consultaSalidas']=$consultaSalidas;
+//		$datos['nRegistrosSalida']=$nRegistrosSalida;
+			
+//		$datos['insumos']=$insumos;		
+
+		$this->load->view('header');
+		$this->load->view('contabilidad/modificarComprobante',$datos);
+		$this->load->view('footer');
+	}		//... fin funcion: modificarComprobante ...
 	
 	
 	function convertirNumeroAliteral(){

@@ -7,7 +7,7 @@
 
 <div class="panel panel-primary" id="cuerpo">
     <div class="panel-heading">
-        <h3 class="panel-title">Mensaje</h3>
+        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> Mensaje</h3>
     </div>
     <div class="panel-body" >
         <?= $mensaje ?> 

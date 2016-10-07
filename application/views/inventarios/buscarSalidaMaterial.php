@@ -103,21 +103,29 @@ function buscarSalida(){
       <div class="cabeceraSalida">
 		<div class="row-fluid">
 			
-	    	<div class="col-lg-4">
+	    	<div class="col-md-2">
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Modificar Salida No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccionar NUMERO SALIDA' readonly="readonly" placeholder="salida No." style="background-color:#d9f9ec;width:70px;font-size:11px;text-align:center;">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccionar NUMERO SALIDA'  readonly="readonly" placeholder="salida No." style="background-color:#d9f9ec;width:70px;font-size:11px;text-align:center;">
 	    		</div>
-	    	</div><!-- /.col-lg-4 -->
+	    	</div><!-- /.col-md-2 -->
 	    	
-	    	<div class="col-xs-2 col-md-2">
+	    	<div class="col-md-1">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div class="col-xs-2 col-md-3">
 	    	 	<span  id="titulo" class="label label-default"><?= strtoupper($titulo) ?></span>
 	    	</div> 
 	    	
-	    	<div class="col-lg-4" >
+	    	<div class="col-md-2">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div class="col-md-2" >
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera">Fecha </span>
-	    			<input type="text" class="form-control input-sm" id="inputFecha" name="inputFecha" readonly="readonly" style="width: 135px;" >
+			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span></span>
+	    			<input type="text" class="form-control input-sm" id="inputFecha" name="inputFecha" placeholder="fecha&hellip;" readonly="readonly" style="width: 135px;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -130,23 +138,23 @@ function buscarSalida(){
 			
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Trabajador </span>
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" readonly="readonly" placeholder="trabajador&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
 	    	
-	    	<div class="col-xs-2 col-md-2">
+	    	<div class="col-md-4">
 	    	 	<span></span>
 	    	</div>
 	    	
 	    	
-		    <div class="col-lg-4">
+		    <div class="col-md-2">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Orden No. </span>
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" readonly="readonly" placeholder="orden No.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
 	    		</div>
-	    	</div><!-- /.col-lg-4 -->
+	    	</div><!-- /.col-md-2 -->
 	    	
 	    	<div style="height:25px;"></div>
 	    	

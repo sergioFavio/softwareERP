@@ -42,31 +42,46 @@ $(document).ready(function() {
 	$('#tabla1').dataTable();
     
     $('#tabla1 tbody').on('click', 'tr', function () {	
-    	var numeroSalida = $('td', this).eq(0).text();
+    	var numeroComprobante = $('td', this).eq(0).text();
     	var fecha = $('td', this).eq(1).text();
-    	var numeroOrden = $('td', this).eq(2).text();
-  		var glosa = $('td', this).eq(3).text();
+    	var tipoComprobante = $('td', this).eq(2).text();
+  		var concepto = $('td', this).eq(3).text();			
   		
-		$('#inputNumero').val(numeroSalida);
+  		
+  		
+//var clienteBanco = $('td', this).eq(4).text();   
+//var numeroCheque = $('td', this).eq(5).text();
+  		
+//alert('clienteBanco= '+clienteBanco);  		
+  		
+		$('#inputNumero').val(numeroComprobante);
 		$('#inputFecha').val(fecha);
-		$('#inputGlosa').val(glosa);
-		$('#inputOrden').val(numeroOrden);
+		$('#inputConcepto').val(concepto);
+		$('#inputTipo').val(tipoComprobante);
+		
+		
+		
+//$('#clienteBanco').val(clienteBanco);		
+//document.form_.clienteBanco.value=clienteBanco;  // ... clienteBanco  variable hidden formulario...
+//document.form_.numeroCheque.value=numeroCheque;  // ... numeroCheque  variable hidden formulario...
+
+
 		
     	$('#cabeceraModal').modal('hide'); // cierra el lightBox
   
 	} ); // fin #tabla1 tbody
 	
 	
-	$("#btnBuscarSalida").click(function(){
+	$("#btnBuscarComprobante").click(function(){
 	  //...buscar salida [almacen/bodega]							
-    	buscarSalida();
+    	buscarComprobante();
 	});
 	
 	
 }); // fin document.ready 
 
 
-function buscarSalida(){
+function buscarComprobante(){
 	
 	var todayTime = new Date();					//... asigna fecha del sistema...
     var month = todayTime.getMonth() + 1;
@@ -79,25 +94,20 @@ function buscarSalida(){
 	var anhoSalida = fechaSalida.substring(7, 11); 	// porcion = "ola Mun"	
 	
 	if($("#inputNumero").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de COMPROBANTE No. está vacío, seleccione un comprobante");	
+			alert("¡¡¡ E R R O R !!! ... El contenido de No. COMPROBANTE está vacío, seleccione un comprobante");	
 	}
 	else{
-		if((month != mesSalida) || (year != anhoSalida) ){
-			alert("¡¡¡... ERROR ...!!! no se puede modificar salida de un mes y/o año diferentes a la fecha del sistema.");
-		}
-		else{
-			$("#form_").submit(); // ...  busca registros ...
-		}	
-	}
+		$("#form_").submit(); // ...  busca registros ...
+	}	
 			
-}	// ... fin funcion buscarSalida() ...
+}	// ... fin funcion buscarComprobante() ...
 		
 		
 </script>
 
 <div class="jumbotron" id="cuerpoSalida">		
 		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/modificarSalidaAlmacen" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>contabilidad/modificarComprobante" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">
@@ -105,8 +115,8 @@ function buscarSalida(){
 			
 	    	<div class="col-md-2">
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Comprobante No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccionar NUMERO SALIDA' readonly="readonly" placeholder="No. Compbte." style="background-color:#d9f9ec;width:100px;font-size:11px;text-align:center;">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccione un NUMERO DE COMPROBANTE' readonly="readonly" placeholder="No. Compbte.&hellip;"  style="background-color:#d9f9ec;width:100px;font-size:11px;text-align:center;">
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -124,8 +134,8 @@ function buscarSalida(){
 	    	
 	    	<div class="col-md-2" >
 				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera">Fecha </span>
-	    			<input type="text" class="form-control input-sm" id="inputFecha" name="inputFecha" readonly="readonly" style="width: 135px;" >
+			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span></span>
+	    			<input type="text" class="form-control input-sm" id="inputFecha" name="inputFecha" readonly="readonly" placeholder="fecha&hellip;" style="width: 135px;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -138,8 +148,8 @@ function buscarSalida(){
 			
 		    <div class="col-md-4">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Concepto</span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" readonly="readonly" placeholder="concepto&hellip;" style="width: 370px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputConcepto" name="inputConcepto" readonly="readonly" placeholder="concepto&hellip;" style="width: 370px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -151,8 +161,8 @@ function buscarSalida(){
 	    	
 		    <div class="col-md-2">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" >Tipo Comprobante</span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" readonly="readonly" placeholder="tipo compbte.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-list-alt"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputTipo" name="inputTipo" readonly="readonly" placeholder="tipo compbte&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -161,12 +171,38 @@ function buscarSalida(){
 		</div>
 	</div>
 
-	<input type="hidden"  name="numeroFilas"  />
-	<!--input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
-	
-	<div style="text-align: right; padding-top: 3px;">   
+	<input type="hidden"  name="gestion" value="<?= $gestion ?>" />
+	<input type="hidden"  name="clienteBanco"  id="clienteBanco" />
+	<input type="hidden"  name="numeroCheque"  />
+		
+	<div style="text-align: right; padding-top: 3px;"> 
+		
+		<div class="col-xs-2">
+			<div class="input-group input-group-sm">
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
+		 		<input type="text" class = "form-control input-sm" id="inputCliente" name="inputCliente" readonly="readonly" placeholder="cliente / banco&hellip;" style="width:160px;font-size:11px;text-align:center;">
+			</div>
+    	</div><!-- /.col-xs-2 -->
+		
+		<div class="col-xs-2">
+	    	<span></span>
+	    </div>
+	    	
+	    	<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputCheque" name="inputCheque" readonly="readonly" placeholder="cheque No&hellip;" style="width: 120px;font-size:11px;text-align:center;">
+	    		</div>
+	    		
+	    	</div><!-- /.col-lg-4 -->
+		
+		
+		
+		
+		
+		  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnBuscarSalida" name="btnBuscarSalida" ><span class="glyphicon glyphicon-search"></span> Buscar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnBuscarComprobante" name="btnBuscarComprobante" ><span class="glyphicon glyphicon-search"></span> Buscar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
  </form>
@@ -188,19 +224,20 @@ function buscarSalida(){
 		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla1">
 			<thead>
 				<tr class='letraDetalleLightBox'>
-					<th style='width:60px;'>No. Salida</th>
-					<th style='width:60px;'>Fecha</th>
-					<th style='width:60px;'>No. Orden</th>
-					<th style='width:250px;'>Trabajador</th>
+					<th style='width:55px;'>No.Compbte.</th>
+					<th style='width:45px;'>Fecha</th>
+					<th style='width:50px;'>Tipo Compbte.</th>
+					<th style='width:250px;'>Concepto</th>
 				</tr>
 			</thead>
 			<tbody>			
                 <?php foreach($cabeceraComprobante as $cabecera):?>
                     <tr class='letraDetalleLightBox'>
-                        <td style='width:80px;'> <?= $cabecera["numComprobante"] ?></td>
-                        <td style='width:100px;'> <?= fechaMysqlParaLatina($cabecera["fecha"])?></td>
-                        <td style='width:100px;'> <?= $cabecera["tipoComprobante"]?></td>
-   						<td style='width:200px;' ><?= $cabecera['concepto']  ?></td>
+                        <td style='width:70px;'> <?= $cabecera["numComprobante"] ?></td>
+                        <td style='width:60px;'> <?= fechaMysqlParaLatina($cabecera["fecha"])?></td>
+                        <td style='width:80px;'> <?= $cabecera["tipoComprobante"]?></td>
+   						<td style='width:250px;' ><?= $cabecera['concepto']  ?></td>
+   						<!--td style='width:200px;' ><?= $cabecera['clienteBanco']  ?></td-->
                     </tr>
                 <?php endforeach ?>
 			</tbody>

@@ -92,7 +92,7 @@ class Materiales extends CI_Controller {
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
 		$cabeceraSalidas= $this->tablaGenerica_model->getTodos('salidaalmacencabecera'); //..una vez cargado el modelo de la tabla llama salidaalmacencabecera..
 						
-		$datos['titulo']=$nombreDeposito;
+		$datos['titulo']='Modificar salida '.$nombreDeposito;
 		$datos['cabeceraSalidas']=$cabeceraSalidas;	
 		$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
 
@@ -134,7 +134,7 @@ class Materiales extends CI_Controller {
 		$this->load->view('header');
 		$this->load->view('inventarios/modificarSalidaMaterial',$datos);
 		$this->load->view('footer');
-	}
+	}		//... fin funcion: modificarSalidaAlmacen ...
 	
 	
 	public function salir()
