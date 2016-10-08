@@ -94,7 +94,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputCheque" name="inputCheque" placeholder="cheque No&hellip;" style="width: 120px;font-size:11px;text-align:center;">
+	    	 		<input type="text"  class="form-control input-sm" id="inputCheque" name="inputCheque" value="<?= $numeroCheque ?>" readonly="readonly" style="width: 120px;font-size:11px;text-align:center;">
 	    		</div>
 	    		
 	    	</div><!-- /.col-lg-4 -->
@@ -131,8 +131,30 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     		
     	<?php
         //if ciclo de impresion de filas 
+		 	$x=0;
+$descrip='';		
+			while($regCompbte = mysql_fetch_row($regComprobante)){
+				echo "<tr class='detalleMaterial' >";
+					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >
+					<input type='text' name='idCta_".$x."' id='idCta_".$x."' value='$regCompbte[0]' readonly='readonly' style='width: 60px; border:none; background-color: #b9e9ec ;' /></td>";
+					
+                    echo "<td class='letraDetalle'  style='width:320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' value='$regCompbte[1]' readonly='readonly' style='width:320px;border:none;' /></td>";
+                    
+					if($regCompbte[2]=='D'){
+						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."' value='$regCompbte[3]'  style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);'/></td>";
+						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'   style='width: 80px; border:none; background-color: #b9e9ec;' onChange='validarMontoHaber(this.value,$x);'/></td>";  
+					}else{
+						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'   style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);'/></td>";
+						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'  value='$regCompbte[3]' style='width: 80px; border:none; background-color: #b9e9ec;' onChange='validarMontoHaber(this.value,$x);'/></td>";  
+					}
+                           
+                    echo "<td style='width: 330px; background-color: #d9f9ec;' ><input type='text' class='letraIzquierda' name='glosa_".$x."' id='glosa_".$x."' value='$regCompbte[4]' style='width: 272px; border:none;background-color: #d9f9ec;' /></td>";
+					
+                echo "</tr>";
+				$x=$x+1;
+			}	
   
-       		for($x=0; $x<24; $x++){
+       		for($x=$nRegistrosComprobante; $x<24; $x++){
             	echo "<tr class='detalleMaterial' >";
            
 					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >

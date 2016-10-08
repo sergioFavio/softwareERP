@@ -545,13 +545,14 @@ class Contabilidad extends CI_Controller {
 	
 	public function modificarComprobante()
 	{
-		$numComprobante= $_POST['inputNumero']; 	//... lee numeroComprobante ...	
+		$numComprobante= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
 		$fecha= $_POST['inputFecha']; 				//... lee fecha ...	
 		$concepto= $_POST['inputConcepto']; 		//... lee concepto ...
 		$gestion= $_POST['gestion']; 				//... lee gestion ...
-		$clienteBanco= $_POST['clienteBanco']; 		//... lee clienteBanco ...
+		$clienteBanco= $_POST['inputCliente']; 		//... lee clienteBanco ...
+		$numeroCheque= $_POST['inputCheque']; 		//... lee numeroCheque ...
 		
-  		$tComprobante=str_replace(" ","",$_POST['inputTipo']); //...tipoComprobante y quita espacio en blanco ..
+  		$tComprobante=str_replace(" ","",$_POST['inputTipo']); //... lee tipoComprobante y quita espacio en blanco ..
   
 		$tipoComprobante='vacio';
 		if($tComprobante=="I"){
@@ -561,13 +562,13 @@ class Contabilidad extends CI_Controller {
 			}else{
 				$tipoComprobante='diario';
 		}
-		
-//		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
-//		$consultaSalidas=$this->db->query($sql);
-//		$nRegistrosSalida=$consultaSalidas->num_rows;  	//... numero registros salida que satisfacen la consulta ...
-		
-//		$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
-//		$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+				
+		$sql="SELECT cuentaComprobante,descripcion,debeHaber,monto,glosa FROM comprobantedetalle,contaplandectas WHERE idComprobante='$numComprobante' AND cuentaComprobante=cuenta";
+		$regComprobante=mysql_query($sql);
+		$nRegistrosComprobante= mysql_num_rows($regComprobante); 	//... numero registros salida que satisfacen la consulta ...
+			
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
+		$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
 						
 		$datos['titulo']='Modificar Comprobante '.$tipoComprobante;
 
@@ -577,11 +578,10 @@ class Contabilidad extends CI_Controller {
 		$datos['tipoComprobante']=$tipoComprobante;		//... dato cabecera comprobante ..
 		$datos['gestion']=$gestion;						//... dato cabecera comprobante ..
 		$datos['clienteBanco']=$clienteBanco;			//... dato cabecera comprobante ..
-		
-//		$datos['consultaSalidas']=$consultaSalidas;
-//		$datos['nRegistrosSalida']=$nRegistrosSalida;
-			
-//		$datos['insumos']=$insumos;		
+		$datos['numeroCheque']=$numeroCheque;			//... dato cabecera comprobante ..
+		$datos['nRegistrosComprobante']=$nRegistrosComprobante;	
+		$datos['regComprobante']=$regComprobante;	
+		$datos['cuentas']=$cuentas;	
 
 		$this->load->view('header');
 		$this->load->view('contabilidad/modificarComprobante',$datos);

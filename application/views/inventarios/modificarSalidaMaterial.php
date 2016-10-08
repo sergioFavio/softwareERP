@@ -109,23 +109,20 @@ $(document).ready(function() {
     		
     	<?php
         //if ciclo de impresion de filas 
-            $sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
-		    $regSalidas=mysql_query($sql);
         	$x=0;
-			while($regSalida = mysql_fetch_row($regSalidas)){ 
-			//foreach ($consultaSalidas->result() as $regSalida) {        		
+			while($regSalida = mysql_fetch_row($regSalidas)){   		
 				echo "<tr class='detalleMaterial' >";
            
 					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  value=".$regSalida[0]." readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  value='$regSalida[0]' readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value=".$regSalida[1]." readonly='readonly' style='border:none;' /></td>";
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value='$regSalida[1]' readonly='readonly' style='border:none;' /></td>";
                     
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' value=".$regSalida[2]." readonly='readonly' style='border:none;' /></td>";
+                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' value='$regSalida[2]' readonly='readonly' style='border:none;' /></td>";
 					
-                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value=".$regSalida[3]." style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
+                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$regSalida[3]' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
 					          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' value=".$regSalida[4]." readonly='readonly' style='border:none;'/></td>";
+                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' value='$regSalida[4]' readonly='readonly' style='border:none;'/></td>";
                 echo "</tr>";
         		$x=$x+1;
 			}

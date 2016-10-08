@@ -110,10 +110,11 @@ class Materiales extends CI_Controller {
 		$nOrden= $_POST['inputOrden']; //... lee numeroOrden ...
 	
 		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
-		
+				
 		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
-		$consultaSalidas=$this->db->query($sql);
-		$nRegistrosSalida=$consultaSalidas->num_rows;  	//... numero registros salida que satisfacen la consulta ...
+		$regSalidas=mysql_query($sql);
+        	
+		$nRegistrosSalida=mysql_num_rows($regSalidas);  	//... numero registros salida que satisfacen la consulta ...
 		
 		$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
 		$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
@@ -124,10 +125,9 @@ class Materiales extends CI_Controller {
 		$datos['fecha']=$fecha;				//... dato cabecera salida almacen ..
 		$datos['glosa']=$glosa;				//... dato cabecera salida almacen ..
 		$datos['nOrden']=$nOrden;			//... dato cabecera salida almacen ..
-		
-		$datos['consultaSalidas']=$consultaSalidas;
+		$datos['regSalidas']=$regSalidas;
 		$datos['nRegistrosSalida']=$nRegistrosSalida;
-			
+
 		$datos['insumos']=$insumos;		
 		$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
 

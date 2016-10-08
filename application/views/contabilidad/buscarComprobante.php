@@ -21,8 +21,8 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 
 #titulo{font-size:14px;margin-top:1px;  text-align:right;font-weight : bold}
 
-.cabecera-dialog {width:580px;}
-#cabeceraModal{padding-left:350px;}  /* ... baja la ventana modal más al centro vertical ... */
+.cabecera-dialog {width:820px;}
+#cabeceraModal{padding-left:330px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 </style>
 
@@ -46,26 +46,15 @@ $(document).ready(function() {
     	var fecha = $('td', this).eq(1).text();
     	var tipoComprobante = $('td', this).eq(2).text();
   		var concepto = $('td', this).eq(3).text();			
-  		
-  		
-  		
-//var clienteBanco = $('td', this).eq(4).text();   
-//var numeroCheque = $('td', this).eq(5).text();
-  		
-//alert('clienteBanco= '+clienteBanco);  		
-  		
+		var clienteBanco = $('td', this).eq(4).text();   
+		var numeroCheque = $('td', this).eq(5).text();
+  				
 		$('#inputNumero').val(numeroComprobante);
 		$('#inputFecha').val(fecha);
 		$('#inputConcepto').val(concepto);
 		$('#inputTipo').val(tipoComprobante);
-		
-		
-		
-//$('#clienteBanco').val(clienteBanco);		
-//document.form_.clienteBanco.value=clienteBanco;  // ... clienteBanco  variable hidden formulario...
-//document.form_.numeroCheque.value=numeroCheque;  // ... numeroCheque  variable hidden formulario...
-
-
+		$('#inputCliente').val(clienteBanco);
+		$('#inputCheque').val(numeroCheque);			
 		
     	$('#cabeceraModal').modal('hide'); // cierra el lightBox
   
@@ -116,7 +105,7 @@ function buscarComprobante(){
 	    	<div class="col-md-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccione un NUMERO DE COMPROBANTE' readonly="readonly" placeholder="No. Compbte.&hellip;"  style="background-color:#d9f9ec;width:100px;font-size:11px;text-align:center;">
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" title='Seleccione un número de comprobante' readonly="readonly" placeholder="No. Compbte.&hellip;"  style="background-color:#d9f9ec;width:100px;font-size:11px;text-align:center;">
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -172,8 +161,6 @@ function buscarComprobante(){
 	</div>
 
 	<input type="hidden"  name="gestion" value="<?= $gestion ?>" />
-	<input type="hidden"  name="clienteBanco"  id="clienteBanco" />
-	<input type="hidden"  name="numeroCheque"  />
 		
 	<div style="text-align: right; padding-top: 3px;"> 
 		
@@ -196,11 +183,6 @@ function buscarComprobante(){
 	    		
 	    	</div><!-- /.col-lg-4 -->
 		
-		
-		
-		
-		
-		  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-inverse btn-sm" id="btnBuscarComprobante" name="btnBuscarComprobante" ><span class="glyphicon glyphicon-search"></span> Buscar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
@@ -226,8 +208,10 @@ function buscarComprobante(){
 				<tr class='letraDetalleLightBox'>
 					<th style='width:55px;'>No.Compbte.</th>
 					<th style='width:45px;'>Fecha</th>
-					<th style='width:50px;'>Tipo Compbte.</th>
-					<th style='width:250px;'>Concepto</th>
+					<th style='width:45px;'>Tipo Compbte.</th>
+					<th style='width:260px;'>Concepto</th>
+					<th style='width:250px;'>Cliente/Banco</th>
+					<th style='width:70px;'>Cheque No.</th>
 				</tr>
 			</thead>
 			<tbody>			
@@ -236,8 +220,9 @@ function buscarComprobante(){
                         <td style='width:70px;'> <?= $cabecera["numComprobante"] ?></td>
                         <td style='width:60px;'> <?= fechaMysqlParaLatina($cabecera["fecha"])?></td>
                         <td style='width:80px;'> <?= $cabecera["tipoComprobante"]?></td>
-   						<td style='width:250px;' ><?= $cabecera['concepto']  ?></td>
-   						<!--td style='width:200px;' ><?= $cabecera['clienteBanco']  ?></td-->
+   						<td style='width:250px;' ><?= $cabecera['concepto']  ?></td>	
+   						<td style='width:200px;' ><?= $cabecera['clienteBanco']  ?></td>
+   						<td style='width:70px;' ><?= $cabecera['numeroCheque']  ?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>
