@@ -174,15 +174,24 @@ function validarMontoDebe(numero, filaExistencia){
 
 
 function validarMontoDebeM(numero, filaExistencia){		//...validarMontoDebeM ... modificar comprobante ...
-	var cantidad=numero;
-	cantidad=parseFloat(cantidad);	
-	$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantDebe
-	calcularTotalDebeM();   //... actualiza totalDebe formulario 
+	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantDebe_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		if($("#cantHaber_"+filaExistencia).val()!=''){
+				alert("¡¡¡ ERROR !!! La celda del HABER ya esta llenada.");
+				$("#cantDebe_"+filaExistencia).val("");   // borra celda de DEBE
+    		}else{
+	    		var cantidad=$("#cantDebe_"+filaExistencia).val();
+		   		cantidad=parseFloat(cantidad);
+	    		$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+	    		calcularTotalDebeM();   //... actualiza totalDebe formulario 
+	    	}
+    	}
 }   // fin ... validarMontoDebeM(odificacion) ...
 
 
 function validarMontoHaber(numero, filaExistencia){
-			
 	if($("#idCta_"+filaExistencia).val()==""){
 		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar monto.");
 		$("#cantHaber_"+filaExistencia).val("");   // borra celda de HABER
@@ -208,11 +217,20 @@ function validarMontoHaber(numero, filaExistencia){
 }   // fin ... validarMontoHaber ...
 
 function validarMontoHaberM(numero, filaExistencia){		//...validarMontoHaberM ... modificar comprobante ...
-	var cantidad=numero;
-	cantidad=parseFloat(cantidad);	
-	$("#cantHaber_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-	calcularTotalHaberM();   //... actualiza totalHaber formulario
-    
+	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantHaber_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		if($("#cantDebe_"+filaExistencia).val()!=""){
+				alert("¡¡¡ ERROR !!! La celda del DEBE ya esta llenada.");
+				$("#cantHaber_"+filaExistencia).val("");   // borra celda de cantidad
+    		}else{
+		   		var cantidad=$("#cantHaber_"+filaExistencia).val();
+		   		cantidad=parseFloat(cantidad);
+	    		$("#cantHaber_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+	    		calcularTotalHaberM();   //... actualiza totalHaber formulario
+	    	}
+    	}
 }   // fin ... validarMontoHaberM(odificacion) ...
 
 
@@ -275,10 +293,6 @@ function calcularTotalDebeM(){			//...calculartotalDebeM ... modificar comproban
 	
 	totalDebe=separadorMiles(totalDebe.toFixed(2) ); 
 	
-
-	
-//	verLiteralNumericaM();				//... muestra literalNumerica ...
-
 	if($("#detalleTotalDebe").val()==$("#detalleTotalHaber").val() && $("#detalleTotalDebe").val()!="" ){
 		var posicionDecimal=totalDebe.lastIndexOf('.');   //... devuelve posicion donde se encuentra el punto .
 		var parteDecimal=totalDebe.substring(posicionDecimal+1);  //... devuelve parte decimal del numero ...
@@ -303,7 +317,6 @@ function calcularTotalDebeM(){			//...calculartotalDebeM ... modificar comproban
 		$("#inputLiteral").val("");			//... blanquea campo donde se muestra la lietarlnumerica...
 	}		//...fin IF totalDebe == totalhaber ....
 	
-		
 } // fin funcion ... calcularTotalDebeM(odificado)
 
 
@@ -357,7 +370,29 @@ function calcularTotalHaberM(){			//...calculartotalHaberM ... modificar comprob
 	
 	totalHaber=separadorMiles(totalHaber.toFixed(2) ); 
 	
-//	verLiteralNumericaM();				//... muestra literalNumerica ...
+	if($("#detalleTotalDebe").val()==$("#detalleTotalHaber").val() && $("#detalleTotalHaber").val()!="" ){
+		var posicionDecimal=totalHaber.lastIndexOf('.');   //... devuelve posicion donde se encuentra el punto .
+		var parteDecimal=totalHaber.substring(posicionDecimal+1);  //... devuelve parte decimal del numero ...
+		
+		$.ajax({
+	    	url: "convertirNumeroAliteral",  //"convertirNumeroAliteral('1490)",
+	        type:"POST",
+	        data:{ cadena:totalDebeHaber},
+	        dataType: "json",
+	        success: function(data){    
+	//      	   console.log(data);               
+	 		   document.form_.inputLiteral.value="Son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
+	        }
+    	});
+		
+		/*
+		 $('#detalleTotalHaber').on("change", 'input[type="text"]', function() {  
+		 console.log("test")
+		});
+		*/
+	}else{
+		$("#inputLiteral").val("");			//... blanquea campo donde se muestra la lietarlnumerica...
+	}		//...fin IF totalDebe == totalhaber ....
 		
 } // fin funcion ... calcularTotalHaberM(odificado)
 

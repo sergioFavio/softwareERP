@@ -142,16 +142,18 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
                     echo "<td class='letraDetalle'  style='width:320px; background-color: #f9f9ec;' ><input type='text' class='letraIzquierda' id='cta_".$x."' name='cta_".$x."' value='$regCompbte[1]' readonly='readonly' style='width:320px;border:none;' /></td>";
                     
 					if($regCompbte[2]=='D'){
-						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."' value='$regCompbte[3]'  style='width:80px;border:none;background-color: #d9f9ec;' /></td>";
+						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."' value='$regCompbte[3]'  style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);' /></td>";
 						$totDebe=$totDebe + $regCompbte[3];
+													
+						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'   style='width: 80px; border:none; background-color: #b9e9ec;' onChange='validarMontoHaber(this.value,$x);' /></td>";  
+						
 						echo "<script>";
 						echo "validarMontoDebeM($regCompbte[3],$x);";
-						echo "</script>";							
+						echo "</script>";
 						
-						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'   style='width: 80px; border:none; background-color: #b9e9ec;' /></td>";  
 					}else{
-						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'   style='width:80px;border:none;background-color: #d9f9ec;' /></td>";
-						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'  value='$regCompbte[3]' style='width: 80px; border:none; background-color: #b9e9ec;' /></td>";
+						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'   style='width:80px;border:none;background-color: #d9f9ec;' onChange='validarMontoDebe(this.value,$x);' /></td>";
+						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'  value='$regCompbte[3]' style='width: 80px; border:none; background-color: #b9e9ec;' onChange='validarMontoHaber(this.value,$x);' /></td>";
 						$totHaber=$totHaber + $regCompbte[3];
 						echo "<script>";
 						echo "validarMontoHaberM($regCompbte[3],$x);";
