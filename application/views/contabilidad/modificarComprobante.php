@@ -131,7 +131,9 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     		
     	<?php
         //if ciclo de impresion de filas 
-		 	$x=0;		
+		 	$x=0;
+			$totDebe=0.00;		//...acumulador DEBE para comprobante recuperado ...
+			$totHaber=0.00;		//...acumulador HABER para comprobante recuperado ...
 			while($regCompbte = mysql_fetch_row($regComprobante)){
 				echo "<tr class='detalleMaterial' >";
 					echo"<td  class='openLightBox' title='Seleccionar cuenta de la tabla de Plan de Cuentas' style='width: 80px; background-color: #b9e9ec;' fila=$x >
@@ -141,7 +143,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
                     
 					if($regCompbte[2]=='D'){
 						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."' value='$regCompbte[3]'  style='width:80px;border:none;background-color: #d9f9ec;' /></td>";
-
+						$totDebe=$totDebe + $regCompbte[3];
 						echo "<script>";
 						echo "validarMontoDebeM($regCompbte[3],$x);";
 						echo "</script>";							
@@ -150,7 +152,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 					}else{
 						echo "<td style='width: 85px; background-color: #d9f9ec;' ><input type='text' class='letraNumeroNegrita' name='cantDebe_".$x."' id='cantDebe_".$x."'   style='width:80px;border:none;background-color: #d9f9ec;' /></td>";
 						echo "<td style='width: 85px; background-color: #b9e9ec;'><input type='text' class='letraNumeroNegrita'  name='cantHaber_".$x."' id='cantHaber_".$x."'  value='$regCompbte[3]' style='width: 80px; border:none; background-color: #b9e9ec;' /></td>";
-						
+						$totHaber=$totHaber + $regCompbte[3];
 						echo "<script>";
 						echo "validarMontoHaberM($regCompbte[3],$x);";
 						echo "</script>";								  
@@ -192,11 +194,11 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<span class="label label-info">&nbsp;&nbsp;&nbsp; Total Bs.:</span>&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalDebe' id='detalleTotalDebe' value='<?= number_format($totDebe,2) ?>' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>&nbsp;&nbsp;&nbsp;
 				
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalHaber' id='detalleTotalHaber' value='<?= number_format($totHaber,2) ?>' size='9' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		
@@ -207,8 +209,8 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	
 	<div style="text-align: right; padding-top: 5px;">  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarIngreso" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarComprobante"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarComprobanteModificado" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
    </form>

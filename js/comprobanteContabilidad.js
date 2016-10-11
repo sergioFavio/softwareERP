@@ -49,25 +49,13 @@ $(document).ready(function() {
 	} ); // fin #tabla2 tbody
 
 			
-	$("#btnBorrarIngreso").click(function(){
-        	borrarFormularioIngreso();
+	$("#btnBorrarComprobante").click(function(){
+        	borrarFormularioComprobante();
     });	
     		
-
-	$("#btnBorrarSalida").click(function(){
-        	borrarFormularioSalida();
-    });	
-
-
-	$("#btnGrabarIngreso").click(function(){
+	$("#btnGrabarComprobante").click(function(){
 	// grabar ingreso [almacen/bodega]
-    	grabarIngreso();
-	});
-	
-	
-	$("#btnGrabarSalida").click(function(){
-	// grabar salida [almacen/bodega]
-    	grabarSalida();
+    	grabarComprobante();
 	});
 				
 }); // fin document.ready 
@@ -90,7 +78,7 @@ function verificarCodigoRepetido(codigoCuenta,posicionFila,limiteArreglo){
 	return codigoRepetido;
 }	// fin funcion verificarCodigoRepetido 
 	
-function borrarFormularioIngreso(){
+function borrarFormularioComprobante(){
 	//...esta funcion borra los datos del formularioIngreso
 	var fila = document.getElementsByClassName("detalleMaterial");
 	for(var i=0; i<fila.length; i++){
@@ -101,22 +89,9 @@ function borrarFormularioIngreso(){
 		$("#glosa_"+i).val("");
 		$("#detalleTotalHaber").val("");
 	} // fin ciclo FOR
-} // fin funcion borrarFormularioIngreso 
-	
-function borrarFormularioSalida(){
-	//...esta funcion borra los datos del formularioSalida
-	var fila = document.getElementsByClassName("detalleMaterial");
-	for(var i=0; i<fila.length; i++){
-	        $("#idCta_"+i).val("");
-        	$("#cta_"+i).val("");
-		$("#cantDebe_"+i).val("");
-		$("#cantHaber_"+i).val("");
-		$("#glosa_"+i).val("");
-		$("#detalleTotalHaber").val("");
-	} // fin ciclo FOR
-} // fin funcion borrarFormularioSalida 
-
-function grabarIngreso(){
+} // fin funcion borrarFormularioComprobante
+	 
+function grabarComprobante(){
 	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
@@ -170,52 +145,6 @@ function grabarIngreso(){
 			
 }	// ... fin funcion grabarIngreso() ...
 
-function grabarSalida(){
-	
-	var i=0;
-	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
-	
-	if($("#inputFecha").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
-			var registrosValidos= false;	
-	}
-	
-	if($("#inputGlosa").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
-			var registrosValidos= false;	
-	}
-	
-	if( $("#inputOrden").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
-			var registrosValidos= false;	
-	}
-	
-	
-	if($("#idCta_0").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
-			var registrosValidos= false;	
-	}
-	
-//.. OOJJJJJJOOOO ... modificar ...			
-	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
-	while($("#idCta_"+i).val()!= ""){
-		if($("#cantHaber_"+i).val()==""){
-			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
-			var registrosValidos= false;	
-		}
-	
-		i++;
-	} // ... fin while ...
-		
-	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
-		
-	if(!registrosValidos){
-		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
-	}else{
-		$("#form_").submit(); // ...  graba registros ...
-	}
-			
-}	// ... fin funcion grabarSalida() ...
 		
 function validarMontoDebe(numero, filaExistencia){
 			
@@ -236,7 +165,7 @@ function validarMontoDebe(numero, filaExistencia){
 	    		var cantidad=$("#cantDebe_"+filaExistencia).val();
 		   		cantidad=parseFloat(cantidad);
 	    		$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-	    		calcularTotalDebe();   //... actualiza totalDebe formulario ingreso
+	    		calcularTotalDebe();   //... actualiza totalDebe formulario 
 	    	}
     	}
 	    		
@@ -248,7 +177,7 @@ function validarMontoDebeM(numero, filaExistencia){		//...validarMontoDebeM ... 
 	var cantidad=numero;
 	cantidad=parseFloat(cantidad);	
 	$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantDebe
-	calcularTotalDebeM();   //... actualiza totalDebe formulario ingreso
+	calcularTotalDebeM();   //... actualiza totalDebe formulario 
 }   // fin ... validarMontoDebeM(odificacion) ...
 
 
@@ -271,7 +200,7 @@ function validarMontoHaber(numero, filaExistencia){
 		   		var cantidad=$("#cantHaber_"+filaExistencia).val();
 		   		cantidad=parseFloat(cantidad);
 	    		$("#cantHaber_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-	    		calcularTotalHaber();   //... actualiza totalHaber formulario ingreso
+	    		calcularTotalHaber();   //... actualiza totalHaber formulario
 	    	}
     	}
 	    		
@@ -282,7 +211,7 @@ function validarMontoHaberM(numero, filaExistencia){		//...validarMontoHaberM ..
 	var cantidad=numero;
 	cantidad=parseFloat(cantidad);	
 	$("#cantHaber_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-//	calcularTotalHaberM();   //... actualiza totalDebe formulario ingreso
+	calcularTotalHaberM();   //... actualiza totalHaber formulario
     
 }   // fin ... validarMontoHaberM(odificacion) ...
 
@@ -337,11 +266,7 @@ function calcularTotalDebeM(){			//...calculartotalDebeM ... modificar comproban
 			cantidad=cantidad.split(','); //... elimina ,
 			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
 			cantidad=parseFloat( cantidad	);
-	
-			totalDebe= totalDebe +  cantidad ;	
-			
-alert('idCta'+i+'= '+ $("#idCta_"+i).val()+' cantidad= '+cantidad+' totalDebe= '+totalDebe);			
-					
+			totalDebe= totalDebe +  cantidad ;				
 		}
 		i++;
 	} // fin ciclo WHILE
@@ -350,15 +275,13 @@ alert('idCta'+i+'= '+ $("#idCta_"+i).val()+' cantidad= '+cantidad+' totalDebe= '
 	
 	totalDebe=separadorMiles(totalDebe.toFixed(2) ); 
 	
-	document.form_.detalleTotalDebe.value=totalDebe;  // ... totalDebe  variable formulario...
-	
-	verLiteralNumerica();				//... muestra literalNumerica ...
+//	verLiteralNumerica();				//... muestra literalNumerica ...
 		
 } // fin funcion ... calcularTotalDebeM(odificado)
 
 
 function calcularTotalHaber(){
-	//...suma los importes del formularioIngreso
+	//...suma los importes del formulario
 	var i=0;
 	totalHaber=0;
 	totalHaber=parseFloat(totalHaber);
@@ -386,6 +309,30 @@ function calcularTotalHaber(){
 		
 } // fin funcion ... calcularTotalHaber 
 
+function calcularTotalHaberM(){			//...calculartotalHaberM ... modificar comprobante ...
+	//...suma los importes del formulario
+	var i=0;
+	totalHaber=0;
+	totalHaber=parseFloat(totalHaber);
+				
+	while($("#idCta_"+i).val()!=null){
+		if( $("#cantHaber_"+i).val()!= null ){		//...toma los DEBE distintos de vacio ...
+			var cantidad=$("#cantHaber_"+i).val();
+			cantidad=cantidad.split(','); //... elimina ,
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
+			cantidad=parseFloat( cantidad	);
+			totalHaber= totalHaber +  cantidad ;				
+		}
+		i++;
+	} // fin ciclo WHILE
+	
+	totalDebeHaber=parseInt(totalHaber);
+	
+	totalHaber=separadorMiles(totalHaber.toFixed(2) ); 
+	
+//	verLiteralNumerica();				//... muestra literalNumerica ...
+		
+} // fin funcion ... calcularTotalHaberM(odificado)
 
 function verLiteralNumerica(){
 	//... si los totales DEBE y HABER son iguales muestra la literalNumerica...
