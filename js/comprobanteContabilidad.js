@@ -275,7 +275,34 @@ function calcularTotalDebeM(){			//...calculartotalDebeM ... modificar comproban
 	
 	totalDebe=separadorMiles(totalDebe.toFixed(2) ); 
 	
-//	verLiteralNumerica();				//... muestra literalNumerica ...
+
+	
+//	verLiteralNumericaM();				//... muestra literalNumerica ...
+
+	if($("#detalleTotalDebe").val()==$("#detalleTotalHaber").val() && $("#detalleTotalDebe").val()!="" ){
+		var posicionDecimal=totalDebe.lastIndexOf('.');   //... devuelve posicion donde se encuentra el punto .
+		var parteDecimal=totalDebe.substring(posicionDecimal+1);  //... devuelve parte decimal del numero ...
+		
+		$.ajax({
+	    	url: "convertirNumeroAliteral",  //"convertirNumeroAliteral('1490)",
+	        type:"POST",
+	        data:{ cadena:totalDebeHaber},
+	        dataType: "json",
+	        success: function(data){    
+	//      	   console.log(data);               
+	 		   document.form_.inputLiteral.value="Son: "+ data["literal"] + parteDecimal +"/100 Bolivianos";
+	        }
+    	});
+		
+		/*
+		 $('#detalleTotalHaber').on("change", 'input[type="text"]', function() {  
+		 console.log("test")
+		});
+		*/
+	}else{
+		$("#inputLiteral").val("");			//... blanquea campo donde se muestra la lietarlnumerica...
+	}		//...fin IF totalDebe == totalhaber ....
+	
 		
 } // fin funcion ... calcularTotalDebeM(odificado)
 
@@ -330,7 +357,7 @@ function calcularTotalHaberM(){			//...calculartotalHaberM ... modificar comprob
 	
 	totalHaber=separadorMiles(totalHaber.toFixed(2) ); 
 	
-//	verLiteralNumerica();				//... muestra literalNumerica ...
+//	verLiteralNumericaM();				//... muestra literalNumerica ...
 		
 } // fin funcion ... calcularTotalHaberM(odificado)
 
@@ -359,7 +386,7 @@ function verLiteralNumerica(){
 	}else{
 		$("#inputLiteral").val("");			//... blanquea campo donde se muestra la lietarlnumerica...
 	}
-}
+}		//...fin funcion: verLiteralNumerica ...
 
 
 function separadorMiles(n){
