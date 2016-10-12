@@ -43,7 +43,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	</div>
 	    	
 	    	<div class="col-xs-4">
-	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo).' No. '.$numComprobante ?>  </span>
+	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo).' No. '.substr($numComprobante,0,6).' - '.substr($numComprobante,6,3) ?>  </span>
 	    	</div> 
 	    	
 	 		<div class="col-xs-2">
