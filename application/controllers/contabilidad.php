@@ -426,7 +426,7 @@ class Contabilidad extends CI_Controller {
 		// fin actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
 		
 		
-		// ... inserta registro en tabla salida[almacen/bodega]cabecera ...	
+		// ... inserta registro en tabla comprobantecabecera ...	
 		$fecha=$_POST['inputFecha'];
 		
 		$cabecera = array(
@@ -587,6 +587,176 @@ class Contabilidad extends CI_Controller {
 		$this->load->view('contabilidad/modificarComprobante',$datos);
 		$this->load->view('footer');
 	}		//... fin funcion: modificarComprobante ...
+	
+	
+	public function grabarComprobanteModificado(){
+		
+		$tipoComprobante=$_POST['tipoComprobante']; //... formulario tipoComprobante [ingreso/egreso/traspaso] ...
+		
+		if($tipoComprobante!='egreso'){
+			$numeroCheque='';
+		}else{
+			$numeroCheque=$_POST['inputCheque'];
+		}
+				
+		$numeroFilasValidas=$_POST['numeroFilas']; 	//... formulario salida[ numeroFilas] ...
+		$numComprobante=$_POST['numComprobante'];
+		$valorLiteral=$_POST['inputLiteral'];		//... valor literal total del comprobante ...
+				
+		$sql="SELECT cuentaComprobante,debeHaber,monto,fechaComprobante FROM comprobantedetalle WHERE idComprobante='$numComprobante' ";
+		$regComprobante=$this->db->query($sql);
+		
+		// ... borra registros en la tabla: comprobantedetalle ...	
+		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
+		$this-> tablaGenerica_model -> eliminar('comprobantedetalle','idComprobante',$numComprobante);	
+		// fin borrar registros de comprobantedetalle ...
+		
+		//... decrementar montos de cuentas en tabla: contaplandectas ...
+		foreach ($regComprobante->result() as $regCompbte) {
+			$clave=$regCompbte->cuentaComprobante;
+			$fechaComprobante=$regCompbte->fechaComprobante;
+			
+			if($regCompbte->debeHaber=='D'){
+				$debeMonto=$regCompbte->monto;				
+				$haberMonto=0.00;
+			}else{
+				$debeMonto=0.00;				
+				$haberMonto=$regCompbte->monto;
+			}
+						
+			if(substr($clave,6,2)=='00'){
+				$nivelCuenta=4;
+			}else{
+				$nivelCuenta=5;
+			}
+							
+			$k=0; 			//... cantidad de digitos a tomar de $clave ...
+			
+			for($j=1;$j<=$nivelCuenta; $j++){
+				$k=$j;
+				if($j==3){
+					$k=4;
+				}
+				
+				if($j==4){
+					$k=6;
+				}
+				
+				if($j==5){
+					$k=8;
+				}
+				
+				$cuentaAux=substr($clave,0,$k);	//... variable aux para generar cuentas de niveles anteriores a 4 y 5.
+			
+				for($l=1; $l<=8-$k; $l++){
+					$cuentaAux=$cuentaAux.'0';		//... genera cuenta los niveles anteriores ..1,2,3..4
+				}	// ... fin FOR l
+				
+				// ... actualiza registro tabla maestra[almacen/bodega]	
+				$this-> load -> model("tablaGenerica_model");
+	    		$this-> tablaGenerica_model -> disminuirSaldosContables('contaplandectas',$cuentaAux,$debeMonto,$haberMonto);  
+								
+				// ... fin de inserción  registro tabla transacciones y actualizacion tabla maestra...
+					
+			}	//... fin FOR j	
+			
+		}	 //... fin foreach ...
+		
+		//... fin de deshacer datos de linea de detalle del comprobante original ...		
+		
+		//... inicio de insercion y actualizacion de registros en tablas: comprobantedetalle y contaplandectas ...	
+ 	    $debeHaber=''; 		//... D:debe  H:haber ...
+        for($i=0; $i<$numeroFilasValidas; $i++){
+       
+        	if( $_POST['cantDebe_'.$i] != "0" || $_POST['cantDebe_'.$i] != "0.00" || $_POST['cantHaber_'.$i] != "0" || $_POST['cantHaber_'.$i] != "0.00"  ){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    //... agrega registro tabla librodiario ...  
+          	    
+          	    if($_POST['cantDebe_'.$i]>0 ){
+          	    	$debeHaber='D';
+					$monto= $_POST['cantDebe_'.$i];
+          	    } else{
+          	    	$debeHaber='H';
+					$monto=$_POST['cantHaber_'.$i];
+          	    }
+	
+				$monto=str_replace(",","",$monto); //...quita comas de separacion ..
+          	    
+          	    $codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
+			
+	            $detalle = array(
+	            	"idComprobante"=>$numComprobante,
+	            	"tComprobante"=>strtoupper($tipoComprobante),
+	            	"fechaComprobante"=>$fechaComprobante,
+	            	"cuentaComprobante"=>$codigoSinEspacio,
+				    "debeHaber"=>$debeHaber,
+				    "monto"=>$monto,
+				    "glosa"=>$_POST['glosa_'.$i]
+				);
+				
+				$this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
+	    		$this-> tablaGenerica_model -> grabar('comprobantedetalle',$detalle);
+				// ...fin de insertar registro en tabla comprobantedetalle ...	
+							
+				$clave=$codigoSinEspacio;
+				$debeMonto=$_POST['cantDebe_'.$i];				
+				$haberMonto=$_POST['cantHaber_'.$i];
+				
+				if( $debeMonto== ""){
+					$debeMonto=0.00;
+					$haberMonto=str_replace(",","",$haberMonto); //...quita comas de separacion ..
+				}else{
+					$haberMonto=0.00;
+					$debeMonto=str_replace(",","",$debeMonto); //...quita comas de separacion ..
+				}
+									
+				if(substr($clave,6,2)=='00'){
+					$nivelCuenta=4;
+				}else{
+					$nivelCuenta=5;
+				}
+								
+				$k=0; 			//... cantidad de digitos a tomar de $clave ...
+				
+				for($j=1;$j<=$nivelCuenta; $j++){
+					$k=$j;
+					if($j==3){
+						$k=4;
+					}
+					
+					if($j==4){
+						$k=6;
+					}
+					
+					if($j==5){
+						$k=8;
+					}
+					
+					$cuentaAux=substr($clave,0,$k);	//... variable aux para generar cuentas de niveles anteriores a 4 y 5.
+				
+					for($l=1; $l<=8-$k; $l++){
+						$cuentaAux=$cuentaAux.'0';		//... genera cuenta los niveles anteriores ..1,2,3..4
+					}	// ... fin FOR l
+					
+					// ... actualiza registro tabla maestra[almacen/bodega]	
+					$this-> load -> model("tablaGenerica_model");
+		    		$this-> tablaGenerica_model -> aumentarSaldosContables('contaplandectas',$cuentaAux,$debeMonto,$haberMonto);  
+									
+					// ... fin de inserción  registro tabla transacciones y actualizacion tabla maestra...
+						
+				}	//... fin FOR j	
+				
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR  i
+		
+		$datos['numeroComprobante']=$numComprobante;
+		$datos['valorLiteral']=$valorLiteral;		
+		
+		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");	
+
+	}	//... fin grabarComprobanteModificado ...
 	
 	
 	function convertirNumeroAliteral(){
@@ -877,7 +1047,7 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(1,5,'','',0,'L',0);
 				$this->pdf->Cell(3,5,substr($reg->fechaComprobante,8,2),'',0,'L',0);
 	            $this->pdf->Cell(5,5,'','',0,'L',0);
-				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,5,3),'',0,'L',0);
+				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,6,3),'',0,'L',0);
 				$this->pdf->Cell(7,5,'','',0,'L',0);
 				$this->pdf->Cell(10,5,$reg->cuentaComprobante,'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);

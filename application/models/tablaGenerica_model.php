@@ -76,7 +76,12 @@ class TablaGenerica_model extends CI_Model{
   }
   
   public function aumentarSaldosContables($nombreTabla,$clave,$debeMonto,$haberMonto){
-  	$sql="UPDATE $nombreTabla SET debeacumulado=debeacumulado + $debeMonto, haberacumulado=haberacumulado+$haberMonto,debemes=debemes+$debeMonto, habermes=habermes+$haberMonto WHERE cuenta=$clave";
+  	$sql="UPDATE $nombreTabla SET debeacumulado=debeacumulado + $debeMonto, haberacumulado=haberacumulado + $haberMonto,debemes=debemes + $debeMonto, habermes=habermes + $haberMonto WHERE cuenta=$clave";
+  	return $this->db->query($sql);
+  }
+  
+  public function disminuirSaldosContables($nombreTabla,$clave,$debeMonto,$haberMonto){
+  	$sql="UPDATE $nombreTabla SET debeacumulado=debeacumulado - $debeMonto, haberacumulado=haberacumulado - $haberMonto,debemes=debemes - $debeMonto, habermes=habermes - $haberMonto WHERE cuenta=$clave";
   	return $this->db->query($sql);
   }
   
