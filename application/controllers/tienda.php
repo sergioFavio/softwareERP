@@ -347,7 +347,8 @@ class Tienda extends CI_Controller {
 			$this->load->view('tienda/verPedidos', $datos);
 			$this->load->view('footer');
 		}		//... fin IF total registros encintrados ...
-	}
+		
+	}		//... fin funcion: buscarPedido ...
 
 	
 	public function reportePdfCrud(){
