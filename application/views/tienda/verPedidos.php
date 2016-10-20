@@ -16,6 +16,7 @@
 	td { height:10px;  width:850px; margin:0px; cell-spacing:0px;}
 	/*  fin de scrollbar  */
 	
+	#borrarModal{padding-top:90px;}  /* ... baja la ventana modal más al centro vertical ... */
 	#pdfModal{padding-top:60px;padding-left:261px;}  /* ... baja la ventana modal más al centro vertical ... */
 	
 	.cuerpoDetalle, {margin: 2px;} 
@@ -25,9 +26,9 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpoCabecera{margin:0 auto; padding:0; width:755px; height:105px;}
-	#cuerpoDetalle{margin:0 auto; padding:0; width:755px; height:410px;}
-	#cuerpoPaginacion{margin:0 auto;padding:0; width:755px; height:60px;}
+	#cuerpoCabecera{margin:0 auto; padding:0; width:820px; height:50px;}
+	#cuerpoDetalle{margin:0 auto; padding:0; width:820px; height:410px;}
+	#cuerpoPaginacion{margin:0 auto;padding:0; width:820px; height:60px;}
 	
 	#inputBuscarPatron, #letraCabecera{font-size:11px;text-align:center; }
 	
@@ -35,20 +36,55 @@
 	
 	.letraNumero{font-size:11px;text-align:right; }
 	
+	#titulo{font-size:14px;margin-top:1px;  text-align:right; font-weight:bold} 
 </style>
 
 <script>
 
 $(document).ready(function() {
-			 	  
-}); // fin document.ready 
+			
+	$('#borrarModal').on('show.bs.modal', function(e) {  
+		//aca recuperamos el id que pasaremos por tag al modal  
+		var id = $(e.relatedTarget).data('item-id'); 
+		var cli =$(e.relatedTarget).data('cli');
+		var title = $(e.relatedTarget).data('title');
+		//aca lo asignamos a un hidden dentro del form que esta en el modal
+	    $(e.currentTarget).find('input[name="codigo"]').val(id);
+		//esto solo pone el id pasado por tag para mostralo en el modal
+		$(e.currentTarget).find('#showCodigo').html(id);
+		$(e.currentTarget).find('#showCliente').html(cli);
+		$(e.currentTarget).find('.modal-title').html(title);		
+		
+	});
+	
+	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() {       
+		var form= $('#borrarModal').find("form");
+		var action=form.attr("action");
+		//aca recuperamos el id que paso por tag al modal
+		var idele=$(form).find('input[name="codigo"]').val();
+			
+		$.ajax({
+		    url: action,
+		    type: "POST",
+		    data: $(form).serialize(),
+		
+		    success: function(data){
+		        //alert(data);
+		       
+			    //  aca deberia poner la funcion que hace el refrescado del listado
+			    window.location.href=data;
+			}
+		});
+	 });
+	 		  
+ }); // fin document.ready 
 
 
-function reportePdf(nPedido){
+function pedidoPdf(nPedido){
     var pedido= nPedido;
     
 	$.ajax({
-      url: "<?=base_url()?>tienda/reportePdfCrud",
+      url: "<?=base_url()?>produccion/pedidoPdfCrud",
 
       type: "POST",
       data: {numePedido: pedido},
@@ -63,49 +99,51 @@ function reportePdf(nPedido){
 
   $('#pdfModal').modal({show:true});
    
-}  // ... fin reportePdf ...
+}  // ... fin pedidoPdf ...
 	
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		
 	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarPedido" id="formBuscarRegistro_" name="formBuscarRegistro_" >
-	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-default"> Ver Pedidos Tienda</span></p>
-	
-		   <div class="row">
-		   	
-			   	<div class="col-xs-2 col-md-2"> 
+	    	<div style="height:10px;"></div>
+			
+			<div class="row">
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 			   	     
-				<div class="col-lg-6">    
+				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar ...">
-						
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar No. pedido&hellip;">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>
 			    	</div>
-			    </div><!-- /.col-lg-6 -->	
+			    </div><!-- /.col-xs-3 -->	
 			    
-			    <div class="col-xs-1 col-md-1"> 
+			    <div class="col-xs-1"> 
 					<span></span>
 			   	</div>
+			   	
+			   	<div class="col-xs-3"> 
+					<span  id="titulo" class="label label-success"> V e r  &nbsp;&nbsp;&nbsp;&nbsp; P e d i d o s</span>
+			   	</div>
 			    
-			    			     	
-			    <div class="col-xs-2 col-md-2"> 
+			    <div class="col-xs-1"> 
+					<span></span>
+			   	</div>
+			   			     	
+			    <div class="col-xs-2"> 
 			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			    
-		</div>  <!-- /.row -->
-			
+			</div>  <!-- /.row -->
+
 	   </form>  <!--/div-->
 	
 </div> <!-- fin ... cuerpoCabecera -->
-
-
 
 <div style="height:7px;"></div>
 
@@ -124,7 +162,7 @@ function reportePdf(nPedido){
 				<th style="width: 40px;">Estado</th>
 				<th style="width: 75px;">Fecha Estado</th>
 				<th style="width: 30px;">Nota Entrega</th>
-				<th style="width: 62px;"></th>
+				<th style="width: 130px;text-align:center ">Acciones</th>
     		</tr>
  		</thead>
  		
@@ -152,9 +190,11 @@ function reportePdf(nPedido){
 					 echo"<td style='width: 60px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEstado)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 					
 					 echo"<td style='width: 40px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:40px;' /></td>";
-
-					 echo"<td style='width:50px;background-color:#b9e9ec;' align='left'><a href='#' onClick='reportePdf($numePedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
-	
+								
+					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numePedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
+					 	
+					 echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->numPedido."' data-cli='".$pedido->contacto."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+		
 				   ?>						
 				</tr>
 	        <?php endforeach ?>
@@ -176,7 +216,33 @@ function reportePdf(nPedido){
 </div>
 
 
-<!-- ... inicio  lightbox reportePdf... -->
+<!-- ...  lightbox borrar material ... -->
+
+<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+        <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarPedidoCrud" method="POST">
+        ¿ Esta seguro de eliminar el pedido <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
+		<input type="hidden" value="" name="codigo" class="itemId">
+	  </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
+        <button type="submit" id="eliminar" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-remove"></span> Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ... fin  lightbox borrar material ... -->
+
+
+<!-- ... inicio  lightbox pedidoPdf... -->
 
 <div class="modal fade" id="pdfModal" >
   <div class="modalEditar-dialog">
@@ -197,5 +263,6 @@ function reportePdf(nPedido){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- ... fin  lightbox reportePdf ... -->
+<!-- ... fin  lightbox pedidoPdf ... -->
+
 
