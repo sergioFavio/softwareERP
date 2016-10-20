@@ -54,11 +54,8 @@ class Tienda extends CI_Controller {
 		}	//... fin validar acceso usuario ...
 	}	//... fin proforma ...
 	
-	
-	public function realizarPedido()
-	{
+		public function realizarPedidoEspecial(){
 		//... control de permisos de acceso ....
-		
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
@@ -67,7 +64,72 @@ class Tienda extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
+		}
+		else{		//... fin control de permisos de acceso ....
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla
+	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de pedido ...
+			//////////////////////////////////////
+			$anhoSistema = date("Y");	//... anho del sistema
+			$mesSistema = date("m");	//... mes del sistema
+			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
+			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
+			$secuenciaPedido= substr($pedido, 6, 2);  // toma los caracteres ... secuencia.
+			if($local=="F"){
+				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+				$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
+				$mesPedido= substr($pedido, 2, 2);  // toma los  caracteres ... mes.
+				$secuenciaPedido= substr($pedido, 4, 2);  // toma los caracteres ... secuencia.
+			}
+			
+			if($anhoPedido==$anhoSistema){
+				if($mesPedido==$mesSistema){
+			        $secuenciaPedido=$secuenciaPedido +1;
+					if(strlen($secuenciaPedido)==1){
+						 $secuenciaPedido="0". $secuenciaPedido;
+					}
+			     		$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
+				}
+			    else{
+					$pedido=$anhoSistema.$mesSistema."01";
+				}
+			}
+			else{
+				$pedido=$anhoSistema.$mesSistema."01";
+			}
+			
+			///////////////////////////////////////
+			///...FIN genera nuevo numero de pedido ...
+			//////////////////////////////////////
+		
+			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+			$datos['local']=$local;					//... T: tienda / F: fabrica ...		
+			$datos['titulo']='productosfabrica';
+			$datos['pedido']=$pedido;
+			$datos['insumos']=$insumos;	
+				
+			$this->load->view('header');
+			$this->load->view('tienda/pedidoEspecial',$datos);
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
+	}	//..fin realizarPedidoEspecial ...
+	
+	
+	public function realizarPedido(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
 		}
 		else{		//... fin control de permisos de acceso ....
 			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	

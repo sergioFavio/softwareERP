@@ -99,7 +99,7 @@ $(document).ready(function() {
     <?php foreach($listaComprobante as $compbte):?>
 		<embed src="<?= base_url('pdfsArchivos/contabilidad/comprobantes/cpbte'.$compbte->numComprobante.'.pdf') ?>" width="820" height="455" > <!-- documento embebido PDF -->
     <?php endforeach ?>
-        		
+     		
 </div> <!-- fin ... cuerpoDetalle -->
 
 <div style="height:5px;"></div>
