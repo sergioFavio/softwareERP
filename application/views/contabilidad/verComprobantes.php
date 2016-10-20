@@ -35,7 +35,7 @@
 	
 	.letraNumero{font-size:11px;text-align:right; }
 	
-	#titulo{font-size:14px;margin-top:1px;  text-align:right; font-weight:bold} 
+	#titulo{font-size:16px;margin-top:1px;  text-align:right; font-weight:bold} 
 	
 </style>
 
