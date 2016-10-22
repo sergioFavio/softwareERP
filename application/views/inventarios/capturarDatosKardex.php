@@ -16,7 +16,7 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpo{margin:0 auto; padding:0; width:820px; height:140px;}
+	#cuerpo{margin:0 auto; padding:0; width:730px; height:140px;}
 	
 	#inputFechaInicial, #inputFechaFinal, #letraCabecera{font-size:11px;text-align:center; }
 	.inputFechaInicial, .inputFechaFinal{font-size:11px;text-align:center; }  
@@ -99,63 +99,61 @@ $(document).ready(function() {
 		
 	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/kardexMaterial' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-default"> <?= $titulo ?> </span></p>
+			<p align="center" class="tituloReporte" ><span class="label label-success"> <?= $titulo ?> </span></p>
 	
 		   <div class="row">
 		   	
-			   	<div class="col-xs-1 col-md-1"> 
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 				     
-		  	   	<div class="col-lg-4">
+		  	   	<div class="col-xs-4">
 			    	<div class="input-group input-group-sm">
 			    		 <span class="input-group-addon" id="letraCabecera" >Fecha Inicial </span>
 			    	 	<input type="date"  class="form-control" id="inputFechaInicial" name="inputFechaInicial" placeholder="Fecha Inicial" style="width: 135px; height:30px;" >
 			    	</div>
 			    </div><!-- /.col-lg-4 -->	
 				     
-				<div class="col-lg-4">    
+				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
 			    		 <span class="input-group-addon" id="letraCabecera"  >Fecha Final </span>
 			    		<input type="date" class="form-control" id="inputFechaFinal" name="inputFechaFinal" placeholder="Fecha Final" style="width: 135px; height:30px;" >
 			    	</div>
 			    </div><!-- /.col-lg-6 -->	
 			    			     	
-			    <div class="col-xs-6 col-md-2"> 
+			    <div class="col-xs-2"> 
 			    	<button type="button" id="btnGenerarReporteKardex" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver Reporte</button>
 			    </div>
 			    
 			</div><!-- /.row -->
 			
+			<div style="height:10px;"></div>
 			
-			
-			
-			<div style="height:7px;"></div>
 			<div class="row">
 		   	
-			   	<div class="col-xs-1 col-md-1"> 
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 				     
-		  	   	<div class="col-lg-2">
+		  	   	<div class="col-xs-2">
 					<div class="input-group input-group-sm" >
 			    		<span class="input-group-addon" id="letraCabecera" >C&oacute;digo </span>
 	    	 			<input type="text"  class="form-control input-sm" id="inputCodigo" name="inputCodigo" title='Seleccionar material de la tabla de ALMACEN' readonly="readonly" placeholder="c&oacute;digo&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
 	    			</div>
 	    		</div><!-- /.col-lg-2 -->	
 	    		
-	    		<div class="col-xs-1 col-md-1"> 
+	    		<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 	    	    
-				<div class="col-lg-4">
+				<div class="col-xs-4">
 					<div class="input-group input-group-sm">
 			    		<span class="input-group-addon" id="letraCabecera" >Descripci&oacute;n </span>
 	    	 			<input type="text"  class="form-control input-sm" id="inputDescripcion" name="inputDescripcion"  readonly='readonly' placeholder="descripci&oacute;n&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
 	    			</div>
 	    		</div><!-- /.col-lg-4 -->	
 			    
-			    <div class="col-xs-1 col-md-2"> 
+			    <div class="col-xs-2"> 
 					<span></span>
 			   	</div>
 			   				     	

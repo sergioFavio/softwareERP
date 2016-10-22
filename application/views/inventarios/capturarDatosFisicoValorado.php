@@ -13,7 +13,7 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpo{margin:0 auto; padding:0; width:820px; height:140px;}
+	#cuerpo{margin:0 auto; padding:0; width:550px; height:140px;}
 	
 	#inputFechaInicial, #inputFechaFinal, #letraCabecera{font-size:11px;text-align:center; }
 	.inputFechaInicial, .inputFechaFinal{font-size:11px;text-align:center; }  
@@ -69,53 +69,51 @@ $(document).ready(function() {
 		
 	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/fisicoValorado' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-default"> <?= $titulo ?> </span></p>
+			<p align="center" class="tituloReporte" ><span class="label label-success"> <?= $titulo ?> </span></p>
 	
 		   <div class="row">
 		   	
-			   	<div class="col-md-1"> 
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 				     
-		  	   	<div class="col-md-2">
+		  	   	<div class="col-xs-2">
 			    	<div class="input-group input-group-sm">
 			    		 <span class="input-group-addon" id="letraCabecera" >Fecha Inicial </span>
 			    	 	<input type="date"  class="form-control" id="inputFechaInicial" name="inputFechaInicial" placeholder="Fecha Inicial" style="width: 135px; height:30px;" >
 			    	</div>
 			    </div><!-- /.col-md-2 -->	
 			    
-			    <div class="col-md-2"> 
+			    <div class="col-xs-3"> 
 					<span></span>
 			   	</div>
 				     
-				<div class="col-md-2">    
+				<div class="col-xs-2">    
 			    	<div class="input-group input-group-sm">
 			    		 <span class="input-group-addon" id="letraCabecera"  >Fecha Final </span>
 			    		<input type="date" class="form-control" id="inputFechaFinal" name="inputFechaFinal" placeholder="Fecha Final" style="width: 135px; height:30px;" >
 			    	</div>
 			    </div><!-- /.col-md-2 -->	
-			    
-			    <div class="col-md-2"> 
-					<span></span>
-			   	</div>
-			   				     	
-			    <div class="col-md-2"> 
-			    	<button type="button" id="btnGenerarReporteFisicoValorado" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver Reporte</button>
-			    </div>
-			    
+			    			     	
 			</div><!-- /.row -->
 			
+			<div style="height:10px;"></div>
 			
-			
-			
-			<div style="height:7px;"></div>
 			<div class="row">
 		   	
-			   	<div class="col-xs-1 col-md-9"> 
+			   	<div class="col-xs-6"> 
+					<span></span>
+			   	</div>
+			   	
+			   	<div class="col-xs-2"> 
+			    	<button type="button" id="btnGenerarReporteFisicoValorado" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver Reporte</button>
+				</div>
+				
+				<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 				     			     	
-			    <div class="col-md-2"> 
+			    <div class="col-xs-2"> 
 					<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			    

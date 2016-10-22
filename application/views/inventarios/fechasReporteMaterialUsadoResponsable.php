@@ -9,7 +9,7 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpo{margin:0 auto; padding:0; width:1020px; height:140px;}
+	#cuerpo{margin:0 auto; padding:0; width:680px; height:140px;}
 	
 	#inputFechaInicial, #inputFechaFinal, #letraCabecera{font-size:11px;text-align:center; }
 	.inputFechaInicial, .inputFechaFinal{font-size:11px;text-align:center; }  
@@ -63,25 +63,14 @@ $(document).ready(function() {
 	<div class="cuerpoCabeceraReporteSalida">
 	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/generarReporteMaterialUsadoResponsable' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-default"> Fechas Reporte de Material Usado por Responsable </span></p>
+			<p align="center" class="tituloReporte" ><span class="label label-success"> Fechas Reporte de Material Usado por Responsable </span></p>
 	
 		   <div class="row">
 		   	
 			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
-			   	
-			   	<div class="col-xs-2">
-					<div class="input-group input-group-sm">
-				    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-		    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
-		    		</div>
-	    		</div><!-- /.col-md-2 -->
-	    		
-	    		<div class="col-xs-1"> 
-					<span></span>
-			   	</div>
-	    		     
+			   	     
 		  	   	<div class="col-xs-2">
 			    	<div class="input-group input-group-sm">
 			    		 <span class="input-group-addon" id="letraCabecera" >Fecha Inicial </span>
@@ -89,7 +78,7 @@ $(document).ready(function() {
 			    	</div>
 			    </div><!-- /.col-md-2 -->	
 			    
-			    <div class="col-xs-1"> 
+			    <div class="col-xs-2"> 
 					<span></span>
 			   	</div>
 				     
@@ -100,7 +89,7 @@ $(document).ready(function() {
 			    	</div>
 			    </div><!-- /.col-md-3 -->
 			    
-			    <div class="col-md-1"> 
+			    <div class="col-xs-2"> 
 					<span></span>
 			   	</div>	
 			    			     	
@@ -109,17 +98,33 @@ $(document).ready(function() {
 			    </div>
 			    
 		</div><!-- /.row -->
+		<div style="height:10px;"></div>
+		<div class="row">
+			<div class="col-xs-1"> 
+				<span></span>
+		   	</div>
+		   	
+		   	<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    		</div>
+			</div><!-- /.col-md-2 -->
+			
+			<div class="col-xs-6"> 
+				<span></span>
+		   	</div>
+		   	
+		   	<div class="col-xs-2"> 
+				<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>
+			</div>
+		
+		</div><!-- /.row -->
 			
 			<input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
 			<input type="hidden"  name="tipoTransaccion" value="<?= $tipoTransaccion ?>" />     <!-- tipoTransaccion: ingreso/salida -->
 			
 	    </form>
-	</div>
-	
-	<div style="height:5px;"></div>
-	
-	<div style="text-align: right; padding-top: 2px;"> 
-		<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	</div>
 	
 </div>
