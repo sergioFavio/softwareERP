@@ -2,7 +2,24 @@
 
 class Tienda extends CI_Controller {
 	
-		public function notaEntrega(){
+	public function registrarDeposito(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para registrar depósito';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {
+			$this->load->view('header');
+			$this->load->view('tienda/registrarDeposito' );
+			$this->load->view('footer');
+		}		
+	}		//... fin function: registrarPedido ...
+	
+	public function notaEntrega(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');

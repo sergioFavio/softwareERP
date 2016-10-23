@@ -136,7 +136,7 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Depósitos PENDIENTE</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda.../realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito </a></li>
+							<li><a href="<?=base_url();?>tienda/registrarDeposito"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito </a></li>
 							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Depósitos</a></li>
 						</ul>
 					</li>
