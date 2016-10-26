@@ -137,7 +137,7 @@ function eliminarComa(numero){
 	//... para convertirla en numerica ...
 	var auxiliarMonto=numero;
 	auxiliarMonto=auxiliarMonto.split(','); //... elimina ,
-	auxiliarMonto=auxiliarMonto[0]+auxiliarMonto[1];
+	auxiliarMonto=auxiliarMonto[0]+auxiliarMonto[1]+auxiliarMonto[2];
 	auxiliarMonto=parseFloat( auxiliarMonto );	
 	return auxiliarMonto;
 } // ... fin funcion eliminarComa ... 

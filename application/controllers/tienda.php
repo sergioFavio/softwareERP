@@ -223,7 +223,8 @@ class Tienda extends CI_Controller {
 		    "ordenCompra"=>$_POST['ordenCompra'],
 		    "facturarA"=>$_POST['facturarA'],
 		    "nit"=>$_POST['nit'],
-		    "aCuenta"=>$_POST['aCuenta'],
+		    "montoTotal"=>str_replace(",","",$_POST['detalleTotalBs']), //...quita , como separador de miles ...
+		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 		    "descuento"=>$_POST['descuento'],
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
