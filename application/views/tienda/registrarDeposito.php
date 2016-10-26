@@ -78,7 +78,7 @@ $(document).ready(function() {
 				    </div><!-- /input-group -->
 				  </div><!-- /.col-xs-3 -->
 				  
-				  <div class="col-xs-1"> 
+				  <div class="col-xs-0"> 
 				  	<span></span>
 				  </div>
 	   			     	
@@ -150,7 +150,21 @@ $(document).ready(function() {
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
-			<div class="col-xs-1"> 
+			<div class="col-xs-2"> 
+				<span></span>
+		   	</div>
+		   	
+		   		<div class="col-xs-1">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tags"></span></span>
+	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:90px;font-size:11px;text-align:center;">
+				         <option value="F">Factura </option>
+				         <option value="R">Recibo</option>
+		        	</select>
+	    		</div>
+			</div><!-- /.col-md-2 -->
+			
+			<div class="col-xs-2"> 
 				<span></span>
 		   	</div>
 		   	
@@ -177,14 +191,14 @@ $(document).ready(function() {
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
-			<div class="col-xs-1"> 
+			<div class="col-xs-2"> 
 				<span></span>
 		   	</div>
 		   	
 		   	<div class="col-xs-3">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="glosa&hellip;" style="width: 330px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="glosa&hellip;" style="width: 308px;font-size:11px;text-align:center;" >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 		
