@@ -185,6 +185,40 @@ class Tienda extends CI_Controller {
 				$pedido=$anhoSistema.$mesSistema."01";
 			}
 			
+		
+
+
+
+/*	
+			
+			$secuenciaPedido= substr($pedido, 6, 3);  // toma los caracteres ... secuencia.
+			if($anhoPedido==$anhoSistema){
+				if($mesPedido==$mesSistema){
+			        $secuenciaPedido=$secuenciaPedido +1;
+					if(strlen($secuenciaPedido)==1){
+						 $secuenciaPedido="00". $secuenciaPedido;
+					}
+					if(strlen($secuenciaPedido)==2){
+						 $secuenciaPedido="0". $secuenciaPedido;
+					}
+			     	$numComprobante=$anhoSistema.$mesSistema.$secuenciaPedido;
+				}
+			    else{
+					$numComprobante=$anhoSistema.$mesSistema."001";
+				}
+			}
+			else{
+				$numComprobante=$anhoSistema.$mesSistema."001";
+			}
+			
+			
+*/			
+			
+			
+			
+			
+			
+			
 			///////////////////////////////////////
 			///...FIN genera nuevo numero de pedido ...
 			//////////////////////////////////////
