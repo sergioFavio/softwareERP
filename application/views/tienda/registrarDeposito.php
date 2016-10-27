@@ -25,16 +25,74 @@ $(document).ready(function() {
 	// valida fechas y luego genera reporte de salida ...
     	validarFechaMayorQue($("#inputFechaInicial").val(), $("#inputFechaFinal").val());
 	});
+	
+	$("#btnBorrarDeposito").click(function(){
+        	borrarFormularioDeposito();
+    });	
 	  
 }); // fin document.ready 
+
+	function borrarFormularioDeposito(){
+	//...esta funcion borra los datos del formularioDeposito
+		document.getElementById("inputTipoPago1").checked = true;		//... resetea el button radio al primer valor ...
+		$("#inputFecha").val("");
+	    $("#inputBanco").val("");
+	    $("#numCheque").val("");
+	    $("#numDeposito").val("");
+	    $("#numPedido").val("");
+		$("#tipoDocumento").val("");
+		$("#facturaRecibo").val("");
+		$("#montoDeposito").val("");
+		$("#glosaDeposito").val("");
+	} // fin funcion borrarFormularioDeposito
+	
+	
+	function validarNumero(numero,campo){	
+		// ... valida ingreso de numeros para telefono/celular y NIT 
+    	if (!/^([0-9])*$/.test(numero)){  // ... solo numeros enteros ...  
+    	//if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#"+campo).val("");   // borra celda de aCuenta
+    	}
+	}   // fin ... validarNumero ...
+	
+	function validarGlosa(numero, campo){
+			
+	if($("#numPedido").val()==""){
+		alert("¡¡¡ ERROR !!! Primero registre un NÚMERO DE PEDIDO para ingresar glosa.");
+		$("#"+campo).val("");   // borra celda de glosa			
+	}
+}   // fin ... validarGlosa ...
 		
 	
-	function validarFecha(fechaInicial){
-		
-		if($("#inputFechaInicial").val()==""  ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");	
-		}			                                	
-	}   // fin ... validarFecha ...
+	function validarMonto(numero,campo){	
+		if($("#numPedido").val()==""){
+			alert("¡¡¡ ERROR !!! Primero registre NÚMERO DE PEDIDO para ingresar monto.");
+			$("#"+campo).val("");   // borra celda de cantidad
+						
+		}else{
+	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+	    	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+	    		alert("El valor " + numero + " no es válido");
+	    		$("#"+campo).val("");   // borra celda de cantidad
+	    	}else{
+	    		var cantidad=$("#"+campo).val();
+		   		cantidad=parseFloat(cantidad);
+	    		$("#"+campo).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+	    	}
+		    		
+		}
+	}   // fin ... validarMonto ...
+	
+	function separadorMiles(n){
+	    var rx=  /(\d+)(\d{3})/;
+	    return String(n).replace(/^\d+/, function(w){
+	        while(rx.test(w)){
+	            w= w.replace(rx, '$1,$2');
+	        }
+	        return w;
+	    });
+	}
 
 </script>
 
@@ -115,7 +173,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="cheque No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="numCheque" name="numCheque" placeholder="cheque No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numCheque");'>
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -126,7 +184,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="dep&oacute;sito No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="numDeposito" name="numDeposito" placeholder="dep&oacute;sito No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numDeposito");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 		
@@ -143,7 +201,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="pedido No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="numPedido" name="numPedido" placeholder="pedido No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numPedido");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -168,7 +226,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"facturaRecibo");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -184,7 +242,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="montoDeposito" name="montoDeposito" placeholder="monto Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="montoDeposito" name="montoDeposito" placeholder="monto Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"montoDeposito");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -195,7 +253,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-3">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="glosaDeposito" name="glosaDeposito" placeholder="glosa&hellip;" style="width: 308px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="glosaDeposito" name="glosaDeposito" placeholder="glosa&hellip;" style="width: 308px;font-size:11px;text-align:center;" onChange='validarGlosa(this.value,"glosaDeposito");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 		
@@ -210,7 +268,7 @@ $(document).ready(function() {
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-		        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarComprobante"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+		        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarDeposito"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
 		        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarComprobante" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		   </div>
 		   <div style="height:10px;"></div>
