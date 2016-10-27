@@ -12,9 +12,6 @@
 	#cuerpo{margin:0 auto; padding:0; width:725px; height:285px;}
 	
 	#inputFecha, #letraCabecera{font-size:11px;text-align:center; }
-	.inputFechaInicial{font-size:11px;text-align:center; }  
-	 
-	.fechaInicial{font-size:11px;text-align:center; }  
 	
 	#titulo{font-size:16px;margin-top:1px;  text-align:right; font-weight:bold} 
 	
@@ -44,7 +41,7 @@ $(document).ready(function() {
 <div class="jumbotron" id="cuerpo" >	
 		
 	<div class="cuerpoCabeceraReporteSalida">
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/generarReporteMaterialUsadoResponsable' id='form_' name='form_' >
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDeposito' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-success"> Registrar Dep&oacute;sito No. XXXXXX - XX</span></p>
 							
@@ -102,7 +99,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:160px;font-size:11px;text-align:center;">
+	    	 		<select class = "form-control input-sm" id="inputBanco" name="inputBanco" style="width:160px;font-size:11px;text-align:center;">
 				         <option value="BNB Caja Ahorros M.N.">BNB Caja Ahorros M.N. </option>
 				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
 				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
@@ -157,7 +154,7 @@ $(document).ready(function() {
 		   		<div class="col-xs-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tags"></span></span>
-	    	 		<select class = "form-control input-sm" id="inputCliente" name="inputCliente" style="width:90px;font-size:11px;text-align:center;">
+	    	 		<select class = "form-control input-sm" id="tipoDocumento" name="tipoDocumento" style="width:90px;font-size:11px;text-align:center;">
 				         <option value="F">Factura </option>
 				         <option value="R">Recibo</option>
 		        	</select>
@@ -171,7 +168,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -187,7 +184,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="monto Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="montoDeposito" name="montoDeposito" placeholder="monto Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -198,7 +195,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-3">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="glosa&hellip;" style="width: 308px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="glosaDeposito" name="glosaDeposito" placeholder="glosa&hellip;" style="width: 308px;font-size:11px;text-align:center;" >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 		
