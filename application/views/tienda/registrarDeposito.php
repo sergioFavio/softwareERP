@@ -21,14 +21,14 @@
 
 $(document).ready(function() {
 	
-	$("#btnGenerarReporteSalida").click(function(){
-	// valida fechas y luego genera reporte de salida ...
-    	validarFechaMayorQue($("#inputFechaInicial").val(), $("#inputFechaFinal").val());
-	});
-	
 	$("#btnBorrarDeposito").click(function(){
         	borrarFormularioDeposito();
     });	
+    
+    $("#btnGrabarDeposito").click(function(){
+		//... grabar comprobante ...
+    	grabarDeposito();
+	});
 	  
 }); // fin document.ready 
 
@@ -98,6 +98,43 @@ $(document).ready(function() {
 	        return w;
 	    });
 	}
+	
+	function grabarDeposito(){
+		var i=0;
+		var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
+		
+		if($("#inputFecha").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
+				var registrosValidos= false;	
+		}
+		
+		if($("#numPedido").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO PEDIDO está vacío");
+				var registrosValidos= false;	
+		}
+		
+		if($("#facturaRecibo").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO FACTURA/RECIBO está vacío");
+				var registrosValidos= false;	
+		}
+		
+		if($("#montoDeposito").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de MONTO está vacío");
+				var registrosValidos= false;	
+		}
+		
+		if($("#glosaDeposito").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
+				var registrosValidos= false;	
+		}
+					
+		if(!registrosValidos){
+			alert('Corrija los campos que están vacíos');
+		}else{
+			$("#form_").submit(); // ...  graba registros ...
+		}
+				
+	}	// ... fin funcion grabarDeposito() ...
 
 </script>
 
@@ -274,7 +311,7 @@ $(document).ready(function() {
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
 		        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarDeposito"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-		        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarComprobante" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarDeposito" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		   </div>
 		   <div style="height:10px;"></div>
 			

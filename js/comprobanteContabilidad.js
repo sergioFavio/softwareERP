@@ -54,7 +54,7 @@ $(document).ready(function() {
     });	
     		
 	$("#btnGrabarComprobante").click(function(){
-	// grabar ingreso [almacen/bodega]
+		//... grabar comprobante ...
     	grabarComprobante();
 	});
 				
@@ -92,7 +92,6 @@ function borrarFormularioComprobante(){
 } // fin funcion borrarFormularioComprobante
 	 
 function grabarComprobante(){
-	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
@@ -116,7 +115,6 @@ function grabarComprobante(){
 			var registrosValidos= false;	
 	}
 	
-	
 	if($("#inputLiteral").val()==""){
 			alert("¡¡¡ E R R O R !!! ... El valor de NUMERO a LITERAL está vacío");
 			var registrosValidos= false;	
@@ -134,7 +132,6 @@ function grabarComprobante(){
 		i++;
 	} // ... fin while ...
 
-		
 	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
 		
 	if(!registrosValidos){
@@ -143,7 +140,7 @@ function grabarComprobante(){
 		$("#form_").submit(); // ...  graba registros ...
 	}
 			
-}	// ... fin funcion grabarIngreso() ...
+}	// ... fin funcion grabarComprobante() ...
 
 		
 function validarMontoDebe(numero, filaExistencia){
