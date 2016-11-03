@@ -26,16 +26,15 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpoCabecera{margin:0 auto; padding:0; width:850px; height:105px;}
+	#cuerpoCabecera{margin:0 auto; padding:0; width:850px; height:50px;}
 	#cuerpoDetalle{margin:0 auto; padding:0; width:850px; height:410px;}
 	#cuerpoPaginacion{margin:0 auto;padding:0; width:850px; height:60px;}
 	
 	#inputBuscarPatron, #letraCabecera{font-size:11px;text-align:center; }
 	
 	.letraDetalle, .letraTipoMaterial{font-size:11px;text-align:center; }
-	
 	.letraNumero{font-size:11px;text-align:right; }
-	
+	#titulo{font-size:16px;margin-top:1px;  text-align:right;font-weight : bold}
 </style>
 
 <script>
@@ -111,30 +110,32 @@ function reportePdf(nCotizacion){
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		
 	    <form class="form-horizontal" method="post" action="<?=base_url()?>produccion/buscarCotizacionCrud" id="formBuscarRegistro_" name="formBuscarRegistro_" >
-	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-default"> CRUD cotizaciones </span></p>
-	
-		   <div class="row">
-		   	
-			   	<div class="col-xs-2 col-md-2"> 
+	    	<div style="height:10px;"></div>
+		    <div class="row">
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 			   	     
-				<div class="col-lg-6">    
+				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
 			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaCotizacion ?>' placeholder="buscar ...">
-						
-						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>
 			    	</div>
 			    </div><!-- /.col-lg-6 -->	
 			    
-			    <div class="col-xs-1 col-md-1"> 
+			    <div class="col-xs-1"> 
 					<span></span>
 			   	</div>
-			    
+			   	
+			   	<div class="col-xs-2">
+	    	 		<span  id="titulo" class="label label-success">Ver Cotizaciones</span>
+	    		</div>
+			   	
+			    <div class="col-xs-1"> 
+					<span></span>
+			   	</div>
 			    			     	
 			    <div class="col-xs-2 col-md-2"> 
 			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
