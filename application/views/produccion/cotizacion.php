@@ -30,7 +30,7 @@ td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 
 #cuerpoIngreso{margin:0 auto;  padding:0; width:840px; background:#f4f4f4;}
 .cabeceraIngreso{margin:5px;}
-#titulo{font-size:14px;margin-top:1px;  text-align:right;font-weight : bold}
+#titulo{font-size:16px;margin-top:1px;  text-align:right;font-weight : bold}
 
 .openMaterialArea, .openManoObra{font-size:11px;text-align:left;}
 </style>

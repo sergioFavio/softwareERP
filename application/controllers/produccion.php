@@ -15,38 +15,25 @@ class Produccion extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
 			$this->load->model("numeroDocumento_model");
 			$nombreTabla='nocotizacion'; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
 			///////////////////////////////////////
-			///...INICIO genera nuevo numero de pedido ...
+			///...INICIO genera nuevo numero de cotizacion ...
 			//////////////////////////////////////
-			$anhoSistema = date("Y");	//... anho del sistema
-			$mesSistema = date("m");	//... mes del sistema
-			
-			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
-			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
-			$secuenciaPedido= substr($pedido, 6, 2);  // toma los caracteres ... secuencia.
-			if($anhoPedido==$anhoSistema){
-				if($mesPedido==$mesSistema){
-			        $secuenciaPedido=$secuenciaPedido +1;
-					if(strlen($secuenciaPedido)==1){
-						 $secuenciaPedido="0". $secuenciaPedido;
+			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
+			$secuenciaPedido=$secuenciaPedido +1;
+			if($secuenciaPedido<10){
+				$secuenciaPedido='000'.$secuenciaPedido;
+			} elseif($secuenciaPedido<100){
+					$secuenciaPedido='00'.$secuenciaPedido;
+				} elseif($secuenciaPedido<1000){
+						$secuenciaPedido='0'.$secuenciaPedido;
 					}
-			     		$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
-				}
-			                  else{
-					$pedido=$anhoSistema.$mesSistema."01";
-				}
-			}
-			else{
-				$pedido=$anhoSistema.$mesSistema."01";
-			}
-			
-			$ingreso=$pedido;  //... numero de comprobante ...
+				
+			$ingreso=$secuenciaPedido;  //... numero de comprobante ...
 			
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tablaGenerica
 			$insumos= $this->tablaGenerica_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..	
@@ -110,7 +97,6 @@ class Produccion extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
 			$nombreDeposito= $_GET['nombreDeposito']; //...  nombreDeposito ( blanco/acabado ) ...		
@@ -364,11 +350,12 @@ class Produccion extends CI_Controller {
    		$this-> tablaGenerica_model -> eliminar('cotizacionareamaterial','nuCotizacion',$codigoCotizacion);
 		$this-> tablaGenerica_model -> eliminar('cotizacioncabecera','numCotizacion',$codigoCotizacion);
 		$this-> tablaGenerica_model -> eliminar('cotizacionmaterial','numeroCotizacion',$codigoCotizacion);
+		$this-> tablaGenerica_model -> eliminar('cotizacionmanoobra','numCotizacion',$codigoCotizacion);
+		$this-> tablaGenerica_model -> eliminar('cotizacionvalores','idCotizacion',$codigoCotizacion);
 
-		$archivoPDF='cotizacion'.$codigoCotizacion.'PDF.pdf';
+		$archivoPDF='cotizacion'.$codigoCotizacion.'.pdf';
 		//$archivoPDF='cotizacion10077PDF.pdf';
-		$archivo ='pdfsArchivos/cotizacion'.$codigoCotizacion.'PDF.pdf';
-		//$archivo ='pdfsArchivos/cotizacion10077PDF.pdf';
+		$archivo ='pdfsArchivos/cotizaciones/cotizacion'.$codigoCotizacion.'.pdf';
 		$hacer = unlink($archivo);
  
 		if($hacer != true){
@@ -456,11 +443,9 @@ class Produccion extends CI_Controller {
 	public function reportePdfCrud(){
 		//... recupera la variable de numeCotizcion ...
 		$numeCotizacion=$_POST["numeCotizacion"];
-  		
 		?>
-		<embed src="<?= base_url('pdfsArchivos/cotizacion'.$numeCotizacion.'PDF.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<embed src="<?= base_url('pdfsArchivos/cotizaciones/cotizacion'.$numeCotizacion.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
 		<?php
-	
 	}	
 
 	
@@ -841,7 +826,7 @@ class Produccion extends CI_Controller {
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 		     */
 			  
-			 $this->pdf->Output('pdfsArchivos/cotizacion'.$numeroCotizacion.'PDF.pdf', 'F');
+			 $this->pdf->Output('pdfsArchivos/cotizaciones/cotizacion'.$numeroCotizacion.'.pdf', 'F');
 	
 			 redirect("menuController/index");			
 					
