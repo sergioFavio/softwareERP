@@ -295,7 +295,7 @@ function borrarFormularioIngreso(){
 
 function borrarFormularioIngresoMatArea(){
 	//...esta funcion borra los datos del formularioIngreso
-	var borrar= prompt('¿ Estás seguro de borrar ? [S/N]')
+	var borrar= prompt('¿ Está seguro de borrar ? [S/N]')
 	if(borrar=='S'){
 		var fila = document.getElementsByClassName("detalleMaterialArea");
 		for(var i=0; i<fila.length; i++){
@@ -893,6 +893,24 @@ function filaVacia(posicionFila, codPrefijo){
    
       </tbody>
 	</table>
+	
+	
+	
+	<div class="col-xs-0">
+	 	<span></span>
+	</div>
+	
+	
+	<div class="col-xs-2">
+		<div class="input-group input-group-sm">
+	    	 <button type="button" class="btn btn-success btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-info-sign"></span> Descripci&oacute;n</button>&nbsp;
+       </div>
+	</div><!-- /.col-md-2 -->
+	
+	
+	
+	
+	
 	
 	
 	<div class="totalBs">
