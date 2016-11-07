@@ -18,8 +18,7 @@
 
 /*   light box fotografia */
 .fotografia-dialog {width:350px;}
-
- #fotografiaModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
+#fotografiaModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 #productoModal{padding-left:350px;}  /* ... baja la ventana modal más al centro vertical ... */
 

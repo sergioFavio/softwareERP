@@ -161,7 +161,8 @@ class Produccion extends CI_Controller {
 		    "fecha"=>$_POST['inputFecha'],
 		    "cliente"=>$_POST['inputCliente'],
 		    "email"=>$_POST['inputEmail'],
-		    "fonoCel"=>$_POST['inputTelCel']
+		    "fonoCel"=>$_POST['inputTelCel'],
+		    "descripcion"=>$_POST['descripcion']
 		);
 		
 		// ... inserta registro tabla cotizacioncabecera ...
@@ -260,6 +261,19 @@ class Produccion extends CI_Controller {
 		$nombreTabla='nocotizacion'; // ... prefijoTabla
 		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
+		
+		//... agrega registro tabla: productosfabrica ...      
+        $plantillaProducto = array(
+        	"idProd"=>"Z-".$numeroCotizacion,
+		    "nombreProd"=>$_POST['descripcion'],
+		    "precioVenta"=>$_POST['totalGral'],
+			"unidad"=>"pza"
+		);
+		
+		// ... inserta registro tabla transacciones ... cotizacionmaterial 
+		$this-> load -> model("tablaGenerica_model");		//carga modelo 
+		$this-> tablaGenerica_model -> grabar('productosfabrica',$plantillaProducto);			
+		// ... fin de inserción  registro tabla: productosfabrica ...
 		
 		redirect("produccion/generarCotizacionPDF?numeroCotizacion=$numeroCotizacion");
 		
@@ -565,22 +579,6 @@ class Produccion extends CI_Controller {
 
 		$numeroCotizacion= $_GET['numeroCotizacion']; //... lee numeroCotizacion que viene de grabarCotizacion ...
 		
-		//... control de permisos de acceso ....
-		$permisoUserName=$this->session->userdata('userName');
-		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoDeposito=$this->session->userdata('usuarioDeposito');
-		$permisoProceso3=$this->session->userdata('usuarioProceso3');
-		if($permisoUserName!='superuser' ){  //... valida permiso de userName ...
-			if($permisoMenu!='produccion' ){	//... valida permiso de menu  ...
-				redirect('menuController/index');
-			}
-			
-			if( $permisoProceso3==false ){   //... valida permiso de proceso ...
-				redirect('menuController/index');
-			}
-		}
-		//... fin control de permisos de acceso ....
-		
 		// Se carga la libreria fpdf
 		$this->load->library('produccion/EstructuraCotizacionPdf');
 		
@@ -601,7 +599,8 @@ class Produccion extends CI_Controller {
 		$cliente= $cotizacionCabecera["cliente"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$email= $cotizacionCabecera["email"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fono= $cotizacionCabecera["fonoCel"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-				
+		$descripcion= $cotizacionCabecera["descripcion"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+			
 	   $valores = $this->tablaGenerica_model->buscar('cotizacionvalores','idCotizacion',$numeroCotizacion); //..una vez cargado el modelo de la tabla llama cotizacionvalores..
 	   $manoObraDirecta= $valores["manoObraDirecta"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 	   $manoObraIndirecta= $valores["manoObraIndirecta"];// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -810,6 +809,15 @@ class Produccion extends CI_Controller {
 			$this->pdf->Ln(5);
 			$this->pdf->Cell(95,5,'',0,0,'R');
 			$this->pdf->Cell(92,5,'Total General Acumulado Bs.: '.number_format($totalGeneral,2),0,0,'R');
+			
+			$this->pdf->Ln(5);
+			$this->pdf->Ln(5);
+			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,0,142) ),0,0,'L');
+			$this->pdf->Ln(5);
+			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,142,142) ),0,0,'L');
+			$this->pdf->Ln(5);
+			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,284,142) ),0,0,'L');
+			
 			
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador

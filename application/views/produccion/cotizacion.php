@@ -13,6 +13,10 @@
 .modalTrabajadores-dialog {width:500px;}
 .modalValores-dialog {width:430px;}
 
+/*   light box descripcion */
+.descripcion-dialog {width:375px;}
+#descripcionModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
+
 .totalBsArea{font-size:16px;text-align:center; margin-left:700px; }   
 .totalBsManoObra{font-size:16px;text-align:center; margin-left:550px; }
 
@@ -177,24 +181,18 @@ $(document).ready(function() {
 		var codPrefijo='#idMatArea_';  // para sleccionar Material x Area
 		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActualArea,limiteArregloArea,codPrefijo);			
  			
- //		if(!codigoRepetido){
-			$('#idMatArea_'+filaActualArea).val(codigoMaterial);
-			$('#matArea_'+filaActualArea).val(nombreMaterial);
-			$('#unidadMatArea_'+filaActualArea).val(unidad);
-			$('#precioMatAreaM2_'+filaActualArea).val(precioM2);
-			
-			$('#largoMatArea_'+filaActualArea).val("");				//... blanquea campo...
-			$('#anchoMatArea_'+filaActualArea).val("");				//... blanquea campo...
-			$('#cantMatArea_'+filaActualArea).val("");				//... blanquea campo...
-			$('#importeMatArea_'+filaActualArea).val("");			//... blanquea campo...
-					
-        	$('#areaModal').modal('hide'); // cierra el lightBox
-//    	}
-/*    	else{
-    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
-    		$('#areaModal').modal('hide'); // cierra el lightbox
-      	}
-*/
+		$('#idMatArea_'+filaActualArea).val(codigoMaterial);
+		$('#matArea_'+filaActualArea).val(nombreMaterial);
+		$('#unidadMatArea_'+filaActualArea).val(unidad);
+		$('#precioMatAreaM2_'+filaActualArea).val(precioM2);
+		
+		$('#largoMatArea_'+filaActualArea).val("");				//... blanquea campo...
+		$('#anchoMatArea_'+filaActualArea).val("");				//... blanquea campo...
+		$('#cantMatArea_'+filaActualArea).val("");				//... blanquea campo...
+		$('#importeMatArea_'+filaActualArea).val("");			//... blanquea campo...
+				
+    	$('#areaModal').modal('hide'); // cierra el lightBox
+
         	
 	} ); // fin #tabla4 tbody
 	
@@ -228,7 +226,9 @@ $(document).ready(function() {
         	
 	} ); // fin #tabla6 tbody
 	
-
+	$("#btnBorrarDescripcion").click(function(){
+        	$("#descripcion").val("");
+    });
 			
 	$("#btnBorrarIngreso").click(function(){
         	borrarFormularioIngreso();
@@ -250,6 +250,12 @@ $(document).ready(function() {
 	// grabar cotizacion...
     	grabarCotizacion();
 	});
+	
+	$('#btnDescripcion').click(function(){	
+		var title = $(this).attr("data-title");
+		$('.modal-title').html(title);		
+  		$('#descripcionModal').modal({show:true});
+	});	//...fin btnDescripcion ...
 		
 }); // fin document.ready 
 		
@@ -389,6 +395,11 @@ function grabarCotizacion(){
     		$("#inputTelCel").val("");   // borra celda de cantidad
     		registrosValidos= false;
     	}
+	}
+	
+	if($("#descripcion").val()=="" ){
+		alert("¡¡¡ E R R O R !!! ... El contenido de DESCRIPCION está vacío, ingrese descripción");
+		registrosValidos= false;	
 	}
 	
 	if($("#idMat_0").val()=="" ){        //... registro primer formulario... materiales
@@ -844,7 +855,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div><!-- /.col-md-2 -->
 	    	
 	    	<div class="col-xs-2"> 
-				<button type="button" id="btnImagen" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-picture"></span> Imagen</button>
+				<button type="button" class="btn btn-success btn-sm" data-title='Descripción' id="btnDescripcion" ><span class="glyphicon glyphicon-info-sign"></span> Descripción</button>
 			</div>
 	    	
 	    	<div style="height:30px;"></div>
@@ -901,11 +912,11 @@ function filaVacia(posicionFila, codPrefijo){
 	</div>
 	
 	
-	<div class="col-xs-2">
+	<!--div class="col-xs-2">
 		<div class="input-group input-group-sm">
-	    	 <button type="button" class="btn btn-success btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-info-sign"></span> Descripci&oacute;n</button>&nbsp;
+	    	 <button type="button" class="btn btn-success btn-sm" data-title='Descripción' id="btnDescripcion"><span class="glyphicon glyphicon-info-sign"></span> Descripci&oacute;n</button>&nbsp;
        </div>
-	</div><!-- /.col-md-2 -->
+	</div--><!-- /.col-md-2 -->
 	
 	
 	
@@ -1223,6 +1234,30 @@ function filaVacia(posicionFila, codPrefijo){
 </div>
 <!-- ... fin  lightbox tabla prodmanoobra: trabajadores... -->
 
+<!-- ... inicio  lightbox descripcion... -->
+<div id="descripcionModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="descripcion-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h5 class="modal-title">cabecera de caja luz</h5>
+	</div>
+	<div class="modal-body">
+		<div class="input-group input-group-sm">
+	    	<!--span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span-->
+	 		<textarea rows='5'  id='descripcion' name='descripcion' placeholder="descripci&oacute;n&hellip;" style="width:335px;font-size:11px;text-align:center;" ></textarea>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarDescripcion"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
+	</div>
+	
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox descripcion... -->
 
 <!-- ... inicio  lightbox  valores ... -->
 <div class="modal fade" id="valores" >
@@ -1431,5 +1466,6 @@ function filaVacia(posicionFila, codPrefijo){
 </div><!-- /.modal -->
 
 <!-- ... fin  lightbox  valores ... -->
+
 
 
