@@ -874,7 +874,7 @@ class Tienda extends CI_Controller {
 					$this->pdf->Cell($espacio,5,'','',0,'L',0);
 					$this->pdf->Cell(2,5,$registro->idProd,'',0,'L',0);
 					$this->pdf->Cell(20,5,'','',0,'L',0);
-					$this->pdf->Cell(95,5,utf8_decode($registro->nombreProd),'',0,'L',0);
+					$this->pdf->Cell(95,5,utf8_decode(substr($registro->nombreProd,0,55)),'',0,'L',0);
 		       		$this->pdf->Cell(30,5,utf8_decode($registro->medidas),'',0,'L',0);
 					$this->pdf->Cell(20,5,'','',0,'L',0);
 					$this->pdf->Cell(20,5,number_format($registro->precioVenta,2),'',0,'R',0);

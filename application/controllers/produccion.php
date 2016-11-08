@@ -659,6 +659,32 @@ class Produccion extends CI_Controller {
 			$totalMaterial=0; //... acumula los importes de cada material...
 			$totalAreaMaterial=0; //... acumula los importes de cada material por area...
 			$totalEmpleado=0; //... acumula los importes de cada empleado ...
+			
+//			$this->pdf->Ln(5);
+			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,0,142) ),0,0,'L');
+			$this->pdf->Ln(5);
+			
+			if(substr($descripcion,142,142)!=""){
+				$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,142,142) ),0,0,'L');
+				$this->pdf->Ln(5);
+			}
+			
+			if(substr($descripcion,284,142)!=""){
+				$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,284,142) ),0,0,'L');
+				$this->pdf->Ln(5);
+			}
+			
+			if(substr($descripcion,426,142)!=""){
+				$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,426,142) ),0,0,'L');
+				$this->pdf->Ln(5);
+			}
+			
+			if(substr($descripcion,568,142)!=""){
+				$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,568,142) ),0,0,'L');
+				$this->pdf->Ln(5);
+			}
+			
+			$this->pdf->Ln(5);
 		    foreach ($materiales->result() as $material) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
@@ -809,15 +835,6 @@ class Produccion extends CI_Controller {
 			$this->pdf->Ln(5);
 			$this->pdf->Cell(95,5,'',0,0,'R');
 			$this->pdf->Cell(92,5,'Total General Acumulado Bs.: '.number_format($totalGeneral,2),0,0,'R');
-			
-			$this->pdf->Ln(5);
-			$this->pdf->Ln(5);
-			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,0,142) ),0,0,'L');
-			$this->pdf->Ln(5);
-			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,142,142) ),0,0,'L');
-			$this->pdf->Ln(5);
-			$this->pdf->Cell(85,5,utf8_decode(substr($descripcion,284,142) ),0,0,'L');
-			
 			
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador

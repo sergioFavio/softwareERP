@@ -1245,7 +1245,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="modal-body">
 		<div class="input-group input-group-sm">
 	    	<!--span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span-->
-	 		<textarea rows='5'  id='descripcion' name='descripcion' placeholder="descripci&oacute;n&hellip;" style="width:335px;font-size:11px;text-align:center;" ></textarea>
+	 		<textarea rows='7'  id='descripcion' name='descripcion' placeholder="descripci&oacute;n&hellip;" style="width:335px;font-size:11px;text-align:center;" ></textarea>
 		</div>
 	</div>
 	
