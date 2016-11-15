@@ -1050,7 +1050,7 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(7,5,'','',0,'L',0);
 				$this->pdf->Cell(10,5,$reg->cuentaComprobante,'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
-				$this->pdf->Cell(73,5,$reg->descripcion,'',0,'L',0);
+				$this->pdf->Cell(73,5,utf8_decode($reg->descripcion),'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
 				$this->pdf->Cell(75,5,utf8_decode($reg->glosa),'',0,'L',0);
 				

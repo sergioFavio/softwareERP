@@ -25,14 +25,14 @@ class Produccion extends CI_Controller {
 			//////////////////////////////////////
 			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
 			$secuenciaPedido=$secuenciaPedido +1;
-			if($secuenciaPedido<10){
+/*			if($secuenciaPedido<10){
 				$secuenciaPedido='000'.$secuenciaPedido;
 			} elseif($secuenciaPedido<100){
 					$secuenciaPedido='00'.$secuenciaPedido;
 				} elseif($secuenciaPedido<1000){
 						$secuenciaPedido='0'.$secuenciaPedido;
 					}
-				
+*/				
 			$ingreso=$secuenciaPedido;  //... numero de comprobante ...
 			
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tablaGenerica
@@ -1171,15 +1171,52 @@ class Produccion extends CI_Controller {
         //... lineq de detalle ...		
 		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
 		$this->pdf->Cell(10,7,' ','',0,'L',0);
-		$this->pdf->Cell(60,7,utf8_decode($producto),'',0,'L',0);
+		$this->pdf->Cell(60,7,utf8_decode(substr($producto,0,56) ),'',0,'L',0);
 		$this->pdf->Cell(7,7,' ','',0,'L',0);
 		$this->pdf->Cell(75,7,' ','',0,'L',0);
 		$this->pdf->Cell(15,7,number_format($cantidad,2),'',0,'R',0);
 		$this->pdf->Cell(10,7,' ','',0,'L',0);
         $this->pdf->Cell(15,7,$unidad,'',0,'L',0);
+		
+		if(substr($producto,56,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,56,120) ),0,0,'L');
+		}
+
+		if(substr($producto,176,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,176,120) ),0,0,'L');
+		}
+		
+		if(substr($producto,296,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,296,120) ),0,0,'L');
+		}
+		
+		if(substr($producto,416,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,416,120) ),0,0,'L');
+		}
+		
+		if(substr($producto,536,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,536,120) ),0,0,'L');
+		}
+		
+		if(substr($producto,656,120)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(12,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($producto,656,120) ),0,0,'L');
+		}
+		
         //Se agrega un salto de linea
         $this->pdf->Ln(7);
-		$this->pdf->Cell(10,7,' ','',0,'L',0);
+		$this->pdf->Cell(12,7,' ','',0,'L',0);
         $this->pdf->Cell(90,7,utf8_decode($color),'',0,'L',0);
 		
         

@@ -71,72 +71,7 @@ class Tienda extends CI_Controller {
 		}	//... fin validar acceso usuario ...
 	}	//... fin proforma ...
 	
-		public function realizarPedidoEspecial(){
-		//... control de permisos de acceso ....
-		$permisoUserName=$this->session->userdata('userName');
-		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso1=$this->session->userdata('usuarioProceso1');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
-			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
-			$this->load->view('header');
-			$this->load->view('mensaje',$datos );
-			$this->load->view('footer');
-		}
-		else{		//... fin control de permisos de acceso ....
-			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
-			$this->load->model("numeroDocumento_model");
-			$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla
-	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
-			
-			///////////////////////////////////////
-			///...INICIO genera nuevo numero de pedido ...
-			//////////////////////////////////////
-			$anhoSistema = date("Y");	//... anho del sistema
-			$mesSistema = date("m");	//... mes del sistema
-			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
-			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
-			$secuenciaPedido= substr($pedido, 6, 2);  // toma los caracteres ... secuencia.
-			if($local=="F"){
-				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-				$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
-				$mesPedido= substr($pedido, 2, 2);  // toma los  caracteres ... mes.
-				$secuenciaPedido= substr($pedido, 4, 2);  // toma los caracteres ... secuencia.
-			}
-			
-			if($anhoPedido==$anhoSistema){
-				if($mesPedido==$mesSistema){
-			        $secuenciaPedido=$secuenciaPedido +1;
-					if(strlen($secuenciaPedido)==1){
-						 $secuenciaPedido="0". $secuenciaPedido;
-					}
-			     		$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
-				}
-			    else{
-					$pedido=$anhoSistema.$mesSistema."01";
-				}
-			}
-			else{
-				$pedido=$anhoSistema.$mesSistema."01";
-			}
-			
-			///////////////////////////////////////
-			///...FIN genera nuevo numero de pedido ...
-			//////////////////////////////////////
-		
-			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
-			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
-			$datos['local']=$local;					//... T: tienda / F: fabrica ...		
-			$datos['titulo']='productosfabrica';
-			$datos['pedido']=$pedido;
-			$datos['insumos']=$insumos;	
-				
-			$this->load->view('header');
-			$this->load->view('tienda/pedidoEspecial',$datos);
-			$this->load->view('footer');
-		}		//... fin IF validar usuario ...
-	}	//..fin realizarPedidoEspecial ...
-	
-	
+
 	public function realizarPedido(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -157,61 +92,64 @@ class Tienda extends CI_Controller {
 			///////////////////////////////////////
 			///...INICIO genera nuevo numero de pedido ...
 			//////////////////////////////////////
-/*			$anhoSistema = date("Y");	//... anho del sistema
-			$mesSistema = date("m");	//... mes del sistema
-			$anhoPedido= substr($pedido, 0, 4);  // toma los primeros 4 caracteres ... anho.
-			$mesPedido= substr($pedido, 4, 2);  // toma los  caracteres ... mes.
-			$secuenciaPedido= substr($pedido, 6, 2);  // toma los caracteres ... secuencia.
-			if($local=="F"){
-				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-				$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
-				$mesPedido= substr($pedido, 2, 2);  // toma los  caracteres ... mes.
-				$secuenciaPedido= substr($pedido, 4, 2);  // toma los caracteres ... secuencia.
-			}
-			
-			if($anhoPedido==$anhoSistema){
-				if($mesPedido==$mesSistema){
-			        $secuenciaPedido=$secuenciaPedido +1;
-					if(strlen($secuenciaPedido)==1){
-						 $secuenciaPedido="0". $secuenciaPedido;
-					}
-			     		$pedido=$anhoSistema.$mesSistema.$secuenciaPedido;
-				}
-			    else{
-					$pedido=$anhoSistema.$mesSistema."01";
-				}
-			}
-			else{
-				$pedido=$anhoSistema.$mesSistema."01";
-			}
-			
-*/		
 
-			$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
 			if($local=="F"){
-				$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
 				$anhoSistema = date("Y");	//... anho del sistema
  				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-			}else{
-				$anhoPedido= substr($pedido, 3, 4);  // toma los primeros 4 caracteres ... anho.
-				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-			}
-			
-			if($anhoPedido!=$anhoSistema){
-				$pedido="001".$anhoSistema;
-			}else{		//... si anhoPedido==anhoSistema ...
-		     	$secuenciaPedido=$secuenciaPedido+1;
-				if($secuenciaPedido<10){
-					$pedido="00".$secuenciaPedido.$anhoSistema;
-				}elseif($secuenciaPedido<100){
-					$pedido="0".$secuenciaPedido.$anhoSistema;
-				}else{
-					$pedido=$secuenciaPedido.$anhoSistema;
+ 				
+				if(strlen($pedido)==2 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
 				}
 				
+				if(strlen($pedido)==3 ){
+					$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+			}else{		//...cuando el local es T:tienda ...
+				$anhoSistema = date("Y");	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+ 					
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0,1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 4);  // toma 4 caracteres ... anho.
+				}
+			
+				if(strlen($pedido)==6 ){
+					$secuenciaPedido= substr($pedido, 0,2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==7 ){
+					$secuenciaPedido= substr($pedido, 0,3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 4);  // toma 4 caracteres ... anho.
+				}
+			
+			}
+		
+			if($anhoPedido!=$anhoSistema){
+				$secuenciaPedido="1";
+			}else{		//... si anhoPedido==anhoSistema ...
+		     	$secuenciaPedido=$secuenciaPedido+1;
 			}
 			
+			$pedido=$secuenciaPedido.$anhoSistema;	
 			
 			///////////////////////////////////////
 			///...FIN genera nuevo numero de pedido ...
@@ -221,6 +159,8 @@ class Tienda extends CI_Controller {
 			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
 			$datos['local']=$local;					//... T: tienda / F: fabrica ...		
 			$datos['titulo']='productosfabrica';
+			$datos['secuenciaPedido']=$secuenciaPedido;
+			$datos['anhoSistema']=$anhoSistema;
 			$datos['pedido']=$pedido;
 			$datos['insumos']=$insumos;	
 				
@@ -236,6 +176,8 @@ class Tienda extends CI_Controller {
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
 		$local=$_POST['local'];
 		$numPedido=$_POST['numPedido'];
+		$secuenciaPedido=$_POST['secuenciaPedido'];
+		$anhoSistema=$_POST['anhoSistema'];
 			
 		$pedidoCabecera = array(
 	    	"numPedido"=>$_POST['numPedido'],
@@ -303,7 +245,7 @@ class Tienda extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
 		
-		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local");
+		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
 		
 	}	//... fin grabarPedido	
 
@@ -692,8 +634,11 @@ class Tienda extends CI_Controller {
 	public function generarPedidoPDF(){
 		//... genera reporte de salida en PDF
 
-		$numeroPedido= $_GET['numeroPedido']; 	//... lee numeroPedido que viene de grabarPedido ...
-		$local= $_GET['local']; 				//... lee local que viene de grabarPedido ...
+		$numeroPedido= $_GET['numeroPedido']; 			//... lee numeroPedido que viene de grabarPedido ...
+		$local= $_GET['local']; 						//... lee local que viene de grabarPedido ...
+		$secuenciaPedido= $_GET['secuenciaPedido'];		//... lee local que viene de grabarPedido ...
+		$anhoSistema= $_GET['anhoSistema']; 			//... lee local que viene de grabarPedido ...
+		
 		$nombreLocal='';
 		if($local=='T'){
 			$nombreLocal='Tienda';
@@ -762,6 +707,10 @@ class Tienda extends CI_Controller {
 			$this->pdf->facturarA=$facturarA; 								//...pasando variable para el header del PDF
 			$this->pdf->nit=$nit; 											//...pasando variable para el header del PDF
 			$this->pdf->usuario=$usuario; 									//...pasando variable para el header del PDF
+			
+			$this->pdf->secuenciaPedido=$secuenciaPedido; 					//...pasando variable para el header del PDF
+			$this->pdf->anhoSistema=$anhoSistema; 							//...pasando variable para el header del PDF
+			
 		    // Agregamos una página
 		    $this->pdf->AddPage();
 		    // Define el alias para el número de página que se imprimirá en el pie
@@ -788,12 +737,47 @@ class Tienda extends CI_Controller {
 		        // Se imprimen los datos de cada registro
 
 				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
-				$this->pdf->Cell(94,5,$producto->descripcion,'',0,'L',0);
-				
+				$this->pdf->Cell(94,5,utf8_decode(substr($producto->descripcion,0,56) ),'',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
 				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
 				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
 				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
+				
+				if(substr($producto->descripcion,56,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,176,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,176,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,296,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,296,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,416,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,416,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,536,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,536,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,656,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,656,120) ),0,0,'L');
+				}
 				
 				$this->pdf->Ln('5');
 				$this->pdf->Cell(15,5,'','',0,'L',0);

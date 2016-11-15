@@ -23,7 +23,7 @@
             $this->SetFont('Arial','',13);
             $this->Cell(50);
 			
-			$this->Cell(90,10,utf8_decode($this->local.' Pedido No. ').$this->numeroPedido,0,0,'C');	
+			$this->Cell(90,10,utf8_decode($this->local.' Pedido No. ').$this->secuenciaPedido.' / '.$this->anhoSistema ,0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);

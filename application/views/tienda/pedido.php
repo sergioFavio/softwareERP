@@ -464,7 +464,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span id="titulo" class="label label-default">Pedido:<?= $pedido ?> </span>
+	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.' / '.$anhoSistema ?> </span>
 	    	</div> 
 	    	
 	    	<div class="col-md-1">
@@ -623,8 +623,10 @@ function filaVacia(posicionFila, codPrefijo){
 		
 		
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     <!--  numero pedido -->
-	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  local  F: fabrica  T: tienda -->
+	<input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     				<!--  numero pedido -->
+	<input type="hidden"  name="local" value="<?= $local ?>" />     					<!--  local  F: fabrica  T: tienda -->
+	<input type="hidden"  name="secuenciaPedido" value="<?= $secuenciaPedido ?>" />     <!--  secuenciaPedido -->
+	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
 	
 	<div style="text-align: right; padding-top: 15px;"> 
 		

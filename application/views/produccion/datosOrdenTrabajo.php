@@ -112,7 +112,11 @@ $(document).ready(function() {
 	        {	
 	   			alert(" ¡¡¡... ERROR ... !!! La fecha final "+$("#inputFechaFinal").val()+" NO es superior a la fecha inicial "+$("#inputFechaInicial").val()  );   	
 	        }else{
-	        	$("#form_").submit(); // ...  va a la funcion generarReporteSalida ...
+	        	if($("#inputTrabajador").val()==""){
+	        		alert("¡¡¡ E R R O R !!! ... El contenido de TRABAJADOR está vacío, seleccione un trabajador.");	
+	        	}else{
+	        		$("#form_").submit(); // ...  va a la funcion generarReporteSalida ...
+	        	}
 	        }
 		}
 					                                	

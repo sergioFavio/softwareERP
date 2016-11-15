@@ -82,7 +82,7 @@ $(document).ready(function() {
 
 function pedidoPdf(nPedido){
     var pedido= nPedido;
-    
+  
 	$.ajax({
       url: "<?=base_url()?>produccion/pedidoPdfCrud",
 
