@@ -2,9 +2,11 @@
 <html>
     <head>
         <link rel="stylesheet" href="<?= base_url("css/bootstrap.css")?>">
+        
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="<?= base_url("js/jquery.js")?>"></script>
         <script type="text/javascript" src="<?= base_url("js/bootstrap.js")?>"></script>
+        
         <style>
         	.cabecera{font-size:11px;text-align:center; }
         </style>

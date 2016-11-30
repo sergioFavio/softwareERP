@@ -206,10 +206,10 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 
-	if($("#nit").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de NIT está vacío");
-			registrosValidos= false;	
-	}
+//	if($("#nit").val()=="" ){
+//			alert("¡¡¡ E R R O R !!! ... El contenido de NIT está vacío");
+//			registrosValidos= false;	
+//	}
 
 	if($("#descuento").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");

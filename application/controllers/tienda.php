@@ -51,7 +51,7 @@ class Tienda extends CI_Controller {
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
-			$datos['mensaje']='Usuario NO autorizado para hacer notas de entrega';
+			$datos['mensaje']='Usuario NO autorizado para hacer PROFORMAS';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
@@ -71,7 +71,39 @@ class Tienda extends CI_Controller {
 		}	//... fin validar acceso usuario ...
 	}	//... fin proforma ...
 	
-
+	
+	public function cotizacion(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para hacer SOLICTUD DE COTIZACION';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+//			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			
+			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
+			$registros = $this->db->query($sql)->result_array();
+					
+			$datos['registros']=$registros;		
+			$datos['local']='tienda';	// ... T: tienda/ F: fabrica ...
+	
+			$this->load->view('header');
+			$this->load->view('tienda/cotizacion',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin cotizacion ...
+	
+	
+	public function grabarCotizacion(){
+		
+		
+	}	//... fin grabarCotizacion ...
+	
 	public function realizarPedido(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
