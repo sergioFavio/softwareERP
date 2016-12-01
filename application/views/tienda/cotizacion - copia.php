@@ -137,9 +137,9 @@ $(document).ready(function(){
         	borrarPlantillaProduccion();
     });	
     			
-	$("#btnGrabarCotizacion").click(function(){
+	$("#btnGrabarPlantilla").click(function(){
 	// grabar salida [almacen/bodega]
-    	grabarCotizacion();
+    	grabarPlantilla();
 	});
 	
 		
@@ -176,11 +176,11 @@ function borrarPlantillaProduccion(){
 } // fin funcion borrarPlantillaProduccion 
 
 	
-function grabarCotizacion(){
+function grabarPlantilla(){
 	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
-/*	
+	
 	if($("#inputCodigo").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO DE PRODUCTO está vacío");
 			var registrosValidos= false;	
@@ -197,14 +197,14 @@ function grabarCotizacion(){
 	} // ... fin while ...
 		
 	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
-*/		
+		
 	if(!registrosValidos){
 		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
 	}else{
 		$("#form_").submit(); // ...  graba registros ...
 	}
 			
-}	// ... fin funcion grabarCotizacion() ...
+}	// ... fin funcion grabarSalida() ...
 		
 		
 function validarCantidad(numero, filaExistencia){
@@ -255,7 +255,7 @@ function filaVacia(posicionFila){
 
 <div class="jumbotron" id="cuerpoSalida">		
 		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarCotizacion" id="form_" name="form_" enctype="multipart/form-data" >
+   <!--form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarCotizacion" id="form_" name="form_" -->
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">
@@ -263,14 +263,24 @@ function filaVacia(posicionFila){
 			
 	    	<div class="col-xs-4">
 				<div class="input-group input-group-sm" >
-						<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-picture"></span></span>
-    					<input type="file" name="fileToUpload" id="fileToUpload" class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" >
+					
+					 <form  enctype="multipart/form-data">
+					 	<!-- input id="file-1" type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" style="background-color:#d9f9ec;width:350px;font-size:11px;text-align:center;" -->
+						<input id="file-1" type="file" class="file" data-preview-file-type="text" style="background-color:#d9f9ec;width:350px;font-size:11px;text-align:center;" >                
+					 </form>
+					
+			    	
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
 			<div class="col-xs-2">
 				<span></span>
 			</div>    	
+	    	
+	    	
+	    	<!--form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarCotizacion" id="form_" name="form_" -->
+	    	
+	    	
 	    	
 	    	<div class="col-xs-4">
 	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Cotización #: <?= strtoupper($local) ?> </span>
@@ -351,10 +361,10 @@ function filaVacia(posicionFila){
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-default btn-sm"  id="btnBorrarPlantillaProduccion" ><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarCotizacion" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPlantilla" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
-   </form>
+   <!--/form-->
 </div>
 
 
