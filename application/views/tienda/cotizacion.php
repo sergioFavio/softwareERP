@@ -13,11 +13,12 @@
 
 	/*  inicio de scrollbar  */
 thead { display:block;  margin:0px; cell-spacing:0px; left:0px; }  
-tbody { display:block; overflow:auto; height:330px; }               
+tbody { display:block; overflow:auto; height:270px; }               
 th { height:10px;  width:890px;}                                    
 td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 /*  fin de scrollbar  */
 
+#cuerpoCabecera{margin:0 auto;  padding:0; width:750px;height:140px; background:#f4f4f4;}
 #cuerpoSalida{margin:0 auto;  padding:0; width:750px; background:#f4f4f4;}
 .cabeceraSalida{margin:10px;}
 
@@ -43,25 +44,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 
 $(document).ready(function(){
 
-	/*  inicio de light box  javascript */
-	$('.openLightBox').click(function(){
-  		var title = $(this).attr("title");
-  		filaActual = $(this).attr("fila");
-  				
-  		if(!filaVacia(filaActual)){
-  			$('.modal-title').html(title);
-	  		$('#materialModal').modal({show:true});
-  		}else{
-  			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.')// fila vacía ...
-  		}
-
-	});
-	/*  fin de light box javascript  */	
-			
-		 
-    	
-	
-	
 	/*  inicio de light box  verFotografia javascript */
 	$('#btnVerPlano').click(function(){
   		var title = $(this).attr("title");
@@ -92,25 +74,7 @@ $(document).ready(function(){
 	
 		
 }); // fin document.ready 
-		
-
-function verificarCodigoRepetido(codigoMaterial,posicionFila,limiteArreglo){
-	var codigo = codigoMaterial;
-	var posicion = parseInt( posicionFila ); // convierte de string to number 
-	var limite =limiteArreglo;
-	var codigoRepetido= false;  // retorna el estado de la busqueda
-					
-	for(var i=0; i<limiteArreglo; i++){
-		var codigoTdFormulario = $('#idMat_'+i).val(); // asigna codigo del material actual
-	    		
-			if(codigo == codigoTdFormulario && i != posicion){
-	       			codigoRepetido= true;
-	       			break;
-	       		}
-	}
-	return codigoRepetido;
-}	// fin funcion verificarCodigoRepetido 
-	
+			
 
 function borrarPlantillaProduccion(){
 	//...esta funcion borra los datos del formularioSalida
@@ -162,15 +126,15 @@ function validarCantidad(numero, filaExistencia){
 		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
 				
 	}else{
-			
-		var existenciaAlmacen=parseFloat($('#existMat_'+filaExistencia).val()   );
 		var cantidad=parseFloat( numero ); // convierte de string to number 
 				
-	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-	    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
-	    		alert("El valor " + numero + " no es una cantidad válida");
-	    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-	    	}
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+    		alert("El valor " + numero + " no es una cantidad válida");
+    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{				//... cantidad validada ...
+    		$("#unidadMat_"+filaExistencia).val("pza");   // borra celda de cantidad
+    	}
 	    		
 	}
 }   // fin ... validarCantidad ...
@@ -201,7 +165,7 @@ function filaVacia(posicionFila){
 
 </script>
 
-<div class="jumbotron" id="cuerpoSalida">		
+<div class="jumbotron" id="cuerpoCabecera">		
 		
    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarCotizacion" id="form_" name="form_" enctype="multipart/form-data" >
    	  <div style="height:10px;"></div>
@@ -242,8 +206,8 @@ function filaVacia(posicionFila){
 			
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputDescripcion" name="inputDescripcion"  readonly='readonly' placeholder="cliente&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -253,8 +217,8 @@ function filaVacia(posicionFila){
 	    	
 		    <div class="col-lg-6">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputMedida" name="inputMedida"  placeholder="observaci&oacute;n&hellip;" style="font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto"  placeholder="contacto&hellip;" style="font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -262,23 +226,23 @@ function filaVacia(posicionFila){
 		
 		<div style="height:38px;"></div>
 		
-		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
+		<div class="row-fluid"> <!-- tercera fila de la cabecera -->
 			
-		    <div class="col-lg-4">
+		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputDescripcion" name="inputDescripcion"  readonly='readonly' placeholder="cliente&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-phone-alt"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="telefono" name="telefono"  placeholder="tel&eacute;fono/celular&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
-	    	<div class="col-xs-3 col-md-2">
+	    	<div class="col-xs-4">
 	    	 	<span></span>
 	    	</div>
 	    	
-		    <div class="col-lg-6">
+		    <div class="col-xs-6">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputMedida" name="inputMedida"  placeholder="observaci&oacute;n&hellip;" style="font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-envelope"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="correo" name="correo"  placeholder="correo electr&oacute;nico&hellip;" style="font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -288,30 +252,30 @@ function filaVacia(posicionFila){
 		
 	</div>		<!--fin de la cabecera -->
 	
+</div>		<!--fin de cuerpoCabecera -->
+
+<div style="height:7px;"></div>
 	
-	
-	<div style="height:25px;"></div>
+<div class="jumbotron" id="cuerpoSalida">		
+	<div style="height:4px;"></div>
 
 	<table width="79%" class="table table-striped table-bordered table-condensed " >
 	  <thead >
     	<tr style="background-color: #b9e9ec; " class='letraDetalle'>
-        	<th style="width: 180px;">Código</th>
-            <th style="width: 320px;">Material</th>
-            <th style="width: 80px;">Cantidad</th>                              
-            <th style="width: 80px">Unidad</th>
+        	<th style="width: 80px;text-align:center;">Cantidad</th>
+        	<th style="width: 80px;text-align:center;">Unidad</th>
+            <th style="width: 587px;text-align:center;">Descripci&oacute;n</th>
     	</tr>
       </thead >
     <tbody >
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<20; $x++){
+       		for($x=0; $x<2; $x++){
             	echo "<tr class='detalleMaterial' >";
-					echo"<td  class='openLightBox' title='Seleccionar producto de la tabla de pedidoproducto' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-                    echo "<td class='letraDetalle'  style='width: 400px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
-                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' readonly='readonly' style='border:none;'/></td>";
+					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
+                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";
+					echo "<td class='letraDetalle'  style='width: 560px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:560px;border:none;background-color: #d9f9ec;'' /></textarea></td>";
                 echo "</tr>";
              }
          ?>
