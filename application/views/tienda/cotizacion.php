@@ -208,11 +208,10 @@ function filaVacia(posicionFila){
    	   
       <div class="cabeceraSalida">
 		<div class="row-fluid">
-			
 	    	<div class="col-xs-4">
 				<div class="input-group input-group-sm" >
-						<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span>
-    					<input type="file" name="fileToUpload" id="fileToUpload" class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" >
+					<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span>
+					<input type="file" name="fileToUpload" id="fileToUpload" class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -224,11 +223,9 @@ function filaVacia(posicionFila){
 	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Cotización #: <?= strtoupper($local) ?> </span>
 	    	</div> 
 	    	
-	    	
 			<div class="col-xs-1">
 				<span></span>
 			</div>      	
-	    	
 	    	
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
@@ -236,11 +233,10 @@ function filaVacia(posicionFila){
 	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
-	    	
-		</div>
+	    
+		</div>		<!--fin de la fila -->
 		
-		
-		<div style="height:40px;"></div>
+		<div style="height:38px;"></div>
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
@@ -262,10 +258,39 @@ function filaVacia(posicionFila){
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
-	    	<div style="height:25px;"></div>
+		</div>  <!--fin de la fila -->
+		
+		<div style="height:38px;"></div>
+		
+		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
+			
+		    <div class="col-lg-4">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputDescripcion" name="inputDescripcion"  readonly='readonly' placeholder="cliente&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
+	    		</div>
+	    	</div><!-- /.col-lg-4 -->
 	    	
-		</div>
-	</div>
+	    	<div class="col-xs-3 col-md-2">
+	    	 	<span></span>
+	    	</div>
+	    	
+		    <div class="col-lg-6">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="inputMedida" name="inputMedida"  placeholder="observaci&oacute;n&hellip;" style="font-size:11px;text-align:center;" >
+	    		</div>
+	    	</div><!-- /.col-lg-2 -->
+	    	
+		</div>  <!--fin de la fila -->
+		
+		
+		
+	</div>		<!--fin de la cabecera -->
+	
+	
+	
+	<div style="height:25px;"></div>
 
 	<table width="79%" class="table table-striped table-bordered table-condensed " >
 	  <thead >
