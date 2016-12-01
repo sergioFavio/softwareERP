@@ -263,7 +263,7 @@ function filaVacia(posicionFila){
 			
 	    	<div class="col-xs-4">
 				<div class="input-group input-group-sm" >
-						<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-picture"></span></span>
+						<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span>
     					<input type="file" name="fileToUpload" id="fileToUpload" class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
