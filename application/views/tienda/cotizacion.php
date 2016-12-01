@@ -1,12 +1,8 @@
 <link rel="stylesheet" href="<?= base_url("css/bootstrap.min.css")?>"> 
-
-
-
 <script type="text/javascript" src="<?=base_url(); ?>js/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="<?=base_url(); ?>js/bootstrap.min.js"></script>
 
-<link rel="stylesheet" href="<?= base_url("css/fileinput.css")?>">					<!-- archivo .css para subir archivos -->
-<script type="text/javascript" src="<?=base_url(); ?>js/fileinput.min.js"></script>		<!-- archivo .js para subir archivos -->
+<link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
 
 <style type="text/css" >
 
@@ -15,7 +11,6 @@
 
 #fotografiaModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
-
 	/*  inicio de scrollbar  */
 thead { display:block;  margin:0px; cell-spacing:0px; left:0px; }  
 tbody { display:block; overflow:auto; height:330px; }               
@@ -23,7 +18,7 @@ th { height:10px;  width:890px;}
 td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 /*  fin de scrollbar  */
 
-#cuerpoSalida{margin:0 auto;  padding:0; width:658px; background:#f4f4f4;}
+#cuerpoSalida{margin:0 auto;  padding:0; width:750px; background:#f4f4f4;}
 .cabeceraSalida{margin:10px;}
 
 #inputFecha, #inputFechaInicial, #inputFechaFinal{font-size:11px;text-align:center;}
@@ -46,55 +41,8 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 
 <script>
 
-
-//	$("#file-1").fileinput({'showUpload':true, 'previewFileType':'any'});
-/*
-	$("#file-1").fileinput({
-		showUpload: true,
-		showCaption: true,
-		
-        uploadUrl:"D:/naomi.jpg", // you must set a valid URL here else you will get an error
-        allowedFileExtensions: ['jpg', 'png','gif'],
-        overwriteInitial: false,
-        maxFileSize: 1000,
-        maxFilesNum: 10,
-        //allowedFileTypes: ['image', 'video', 'flash'],
-        slugCallback: function(filename) {
-            return filename.replace('(', '_').replace(']', '_');
-        }
-	});
-
-
-*/
-
-
-
 $(document).ready(function(){
-	
-//	$("#file-1").fileinput({'showUpload':true, 'previewFileType':'any'});
 
-	$("#file-1").fileinput({
-		showUpload: true,
-		showCaption: true,
-		
-		
-        uploadUrl:"htpp://192.168.1.75/borrador/", // you must set a valid URL here else you will get an error
-        allowedFileExtensions: ['jpg', 'png','gif'],
-        overwriteInitial: false,
-        maxFileSize: 1000,
-        maxFilesNum: 10,
-        //allowedFileTypes: ['image', 'video', 'flash'],
-        slugCallback: function(filename) {
-            return filename.replace('(', '_').replace(']', '_');
-        }
-	});
-	
-
-	
-	
-	
-
-	
 	/*  inicio de light box  javascript */
 	$('.openLightBox').click(function(){
   		var title = $(this).attr("title");
@@ -272,21 +220,22 @@ function filaVacia(posicionFila){
 				<span></span>
 			</div>    	
 	    	
-	    	<div class="col-xs-4">
+	    	<div class="col-xs-2">
 	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Cotización #: <?= strtoupper($local) ?> </span>
 	    	</div> 
 	    	
 	    	
-	<div class="col-xs-1">
-		<span></span>
-	</div>      	
+			<div class="col-xs-1">
+				<span></span>
+			</div>      	
 	    	
 	    	
-	    	<div class="col-xs-2" >
+	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
-					<button type="button" class="btn btn-info btn-sm"  title="Foto: " id="btnVerFoto"><span class="glyphicon glyphicon-camera"></span> &nbsp;Ver &nbsp;Plano</button>
+			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span> </span>
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
 	    		</div>
-	    	</div><!-- /.col-lg-2 -->
+	    	</div><!-- /.col-xs-1 -->
 	    	
 		</div>
 		
