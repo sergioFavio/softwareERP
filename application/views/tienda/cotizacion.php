@@ -63,8 +63,8 @@ $(document).ready(function(){
 	});
 		
 			
-	$("#btnBorrarPlantillaProduccion").click(function(){
-        	borrarPlantillaProduccion();
+	$("#btnBorrarPlantillaCotizacion").click(function(){
+        	borrarPlantillaCotizacion();
     });	
     			
 	$("#btnGrabarCotizacion").click(function(){
@@ -76,14 +76,13 @@ $(document).ready(function(){
 }); // fin document.ready 
 			
 
-function borrarPlantillaProduccion(){
+function borrarPlantillaCotizacion(){
 	//...esta funcion borra los datos del formularioSalida
 	var fila = document.getElementsByClassName("detalleMaterial");
 	for(var i=0; i<fila.length; i++){
-	    $("#idMat_"+i).val("");
-        $("#mat_"+i).val("");
 		$("#cantMat_"+i).val("");
 		$("#unidadMat_"+i).val("");
+        $("#mat_"+i).val("");
 	} // fin ciclo FOR
 } // fin funcion borrarPlantillaProduccion 
 
@@ -118,24 +117,31 @@ function grabarCotizacion(){
 			
 }	// ... fin funcion grabarCotizacion() ...
 		
+
+function validarDescripcion(filaExistencia){
+	if($("#cantMat_"+filaExistencia).val()==""){
+		alert("¡¡¡ ERROR !!! Primero ingrese la cantidad.");
+		$("#mat_"+filaExistencia).val("");   // borra celda de cantidad		
+	}
+}   // fin ... validarDescripcion ...
+
 		
 function validarCantidad(numero, filaExistencia){
+	var cantidad=parseFloat( numero ); // convierte de string to number 
 			
-	if($("#idMat_"+filaExistencia).val()==""){
-		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
+	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+		alert("El valor " + numero + " no es una cantidad válida");
 		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-				
-	}else{
-		var cantidad=parseFloat( numero ); // convierte de string to number 
-				
-    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
-    		alert("El valor " + numero + " no es una cantidad válida");
-    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-    	}else{				//... cantidad validada ...
-    		$("#unidadMat_"+filaExistencia).val("pza");   // borra celda de cantidad
-    	}
-	    		
+	}else{					//... cantidad validada ...
+		if(!filaVacia(filaExistencia)){
+			$("#unidadMat_"+filaExistencia).val("pza");   // escribe celda de unidad ...
+  		}else{
+  			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.');// fila vacía ...
+  			$("#cantMat_"+filaExistencia).val("");
+			$("#unidadMat_"+filaExistencia).val("");
+	        $("#mat_"+filaExistencia).val("");
+  		}			
 	}
 }   // fin ... validarCantidad ...
 
@@ -146,7 +152,6 @@ function separadorMiles(n){
         while(rx.test(w)){
             w= w.replace(rx, '$1,$2');
         }
-        
         return w;
     });
 }
@@ -155,7 +160,7 @@ function separadorMiles(n){
 function filaVacia(posicionFila){
 	var filaAnterior= parseInt( posicionFila )-1;
 				
-	if($("#idMat_"+ filaAnterior).val()==""  && filaAnterior >=0 ){
+	if($("#cantMat_"+ filaAnterior).val()==""  && filaAnterior >=0 ){
 		return true;  // fila vac�a ...
 	}else{
 		return false; // fila llena ...
@@ -271,11 +276,11 @@ function filaVacia(posicionFila){
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<2; $x++){
+       		for($x=0; $x<10; $x++){
             	echo "<tr class='detalleMaterial' >";
 					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";
-					echo "<td class='letraDetalle'  style='width: 560px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:560px;border:none;background-color: #d9f9ec;'' /></textarea></td>";
+					echo "<td class='letraDetalle'  style='width: 560px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:560px;border:none;background-color: #d9f9ec;' onChange='validarDescripcion($x);' /></textarea></td>";
                 echo "</tr>";
              }
          ?>
@@ -288,7 +293,7 @@ function filaVacia(posicionFila){
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarPlantillaProduccion" ><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarPlantillaCotizacion" ><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarCotizacion" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
