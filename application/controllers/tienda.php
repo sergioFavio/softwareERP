@@ -100,9 +100,12 @@ class Tienda extends CI_Controller {
 	
 	
 	public function grabarCotizacion(){
+			
+/*		
 		$target_dir = "d:ayuda/";
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 		$uploadOk = 1;
+				
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		// Check if image file is a actual image or fake image
 		if(isset($_POST["submit"])) {
@@ -122,7 +125,6 @@ class Tienda extends CI_Controller {
 		    $uploadOk = 0;
 		}
 	
-		
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 900000) {
 		    echo "Error, el archivo es demasiado grande.";
@@ -134,6 +136,7 @@ class Tienda extends CI_Controller {
 		    echo "Error, solo son permitidos los siguientes formatos JPG, JPEG, PNG & GIF.";
 		    $uploadOk = 0;
 		}
+				
 		// Check if $uploadOk is set to 0 by an error
 		if ($uploadOk == 0) {
 		    echo "Error, el archivo no fue subido al servidor.";
@@ -146,7 +149,28 @@ class Tienda extends CI_Controller {
 		    }
 		}
 		
+		
+*/
+
+
+		foreach ($_FILES["fileToUpload"]["error"] as $clave => $error) {
+		    if ($error == UPLOAD_ERR_OK) {
+		        $nombre_tmp = $_FILES["fileToUpload"]["tmp_name"][$clave];
+		        // basename() puede evitar ataques de denegació del sistema de ficheros;
+		        // podría ser apropiado más validación/saneamiento del nombre de fichero
+		        $nombre = basename($_FILES["fileToUpload"]["name"][$clave]);
+		        move_uploaded_file($nombre_tmp, "d:ayuda//$nombre");
+		    }
+		}		//... fin foreach ...
+		
+		
+		
+		
+		
+		
+		
 	}	//... fin grabarCotizacion ...
+	
 	
 	public function realizarPedido(){
 		//... control de permisos de acceso ....

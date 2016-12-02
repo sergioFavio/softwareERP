@@ -118,6 +118,23 @@ function grabarCotizacion(){
 }	// ... fin funcion grabarCotizacion() ...
 		
 
+function validarTelefono(numero){
+	if (!/^([0-9])*$/.test(numero)){  			// ... solo numeros enteros ...  
+		alert("El valor " + numero + " no es un NUMERO TELEFONICO");
+		$("#telefono").val("");   // borra celda de cantidad
+    }
+}	//... fin validarTelefono ...
+
+
+function validarEmail(cadenaEmail){
+//	var cadenaEmail= $('#inputEmail').val();
+	if (cadenaEmail.indexOf('@')==-1 || cadenaEmail.indexOf('.')==-1) {				//... si no se encuentra la subcadena en la cadena ...
+		alert("¡¡¡ E R R O R !!! ... El contenido de CORREO ELECTRONICO no es válido");
+		$("#correo").val("");   // borra celda de correo elctronico ...
+	}
+}	//... fin validarEmail ...
+
+
 function validarDescripcion(filaExistencia){
 	if($("#cantMat_"+filaExistencia).val()==""){
 		alert("¡¡¡ ERROR !!! Primero ingrese la cantidad.");
@@ -127,7 +144,7 @@ function validarDescripcion(filaExistencia){
 
 		
 function validarCantidad(numero, filaExistencia){
-	var cantidad=parseFloat( numero ); // convierte de string to number 
+	var cantidad=parseInt( numero ); // convierte de string to number 
 			
 	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
 	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
@@ -135,6 +152,7 @@ function validarCantidad(numero, filaExistencia){
 		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
 	}else{					//... cantidad validada ...
 		if(!filaVacia(filaExistencia)){
+	    	$("#cantMat_"+filaExistencia).val( separadorMiles( cantidad.toFixed(0) ) );   //... actualiza cantHaber
 			$("#unidadMat_"+filaExistencia).val("pza");   // escribe celda de unidad ...
   		}else{
   			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.');// fila vacía ...
@@ -144,8 +162,7 @@ function validarCantidad(numero, filaExistencia){
   		}			
 	}
 }   // fin ... validarCantidad ...
-
-		
+	
 function separadorMiles(n){
     var rx=  /(\d+)(\d{3})/;
     return String(n).replace(/^\d+/, function(w){
@@ -156,7 +173,6 @@ function separadorMiles(n){
     });
 }
 
-		
 function filaVacia(posicionFila){
 	var filaAnterior= parseInt( posicionFila )-1;
 				
@@ -166,7 +182,6 @@ function filaVacia(posicionFila){
 		return false; // fila llena ...
 	}
 }  // ... fin validarFilaSeleccionada ...
-
 
 </script>
 
@@ -179,8 +194,8 @@ function filaVacia(posicionFila){
 		<div class="row-fluid">
 	    	<div class="col-xs-4">
 				<div class="input-group input-group-sm" >
-					<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span>
-					<input type="file" name="fileToUpload" id="fileToUpload" class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" >
+					<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span> 
+					<input type="file" name="fileToUpload[]"  class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" multiple="multiple" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -236,7 +251,7 @@ function filaVacia(posicionFila){
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-phone-alt"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="telefono" name="telefono"  placeholder="tel&eacute;fono/celular&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="telefono" name="telefono"  placeholder="tel&eacute;fono/celular&hellip;" style="width: 200px;font-size:11px;text-align:center;" onChange='validarTelefono(this.value);' >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -247,14 +262,12 @@ function filaVacia(posicionFila){
 		    <div class="col-xs-6">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-envelope"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="correo" name="correo"  placeholder="correo electr&oacute;nico&hellip;" style="font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="correo" name="correo"  placeholder="correo electr&oacute;nico&hellip;" style="font-size:11px;text-align:center;" onChange='validarEmail(this.value);'>
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
 		</div>  <!--fin de la fila -->
-		
-		
-		
+			
 	</div>		<!--fin de la cabecera -->
 	
 </div>		<!--fin de cuerpoCabecera -->
@@ -280,7 +293,7 @@ function filaVacia(posicionFila){
             	echo "<tr class='detalleMaterial' >";
 					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";
-					echo "<td class='letraDetalle'  style='width: 560px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:560px;border:none;background-color: #d9f9ec;' onChange='validarDescripcion($x);' /></textarea></td>";
+					echo "<td class='letraDetalle'  style='width: 557px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:557px;border:none;background-color: #d9f9ec;' onChange='validarDescripcion($x);' /></textarea></td>";
                 echo "</tr>";
              }
          ?>
