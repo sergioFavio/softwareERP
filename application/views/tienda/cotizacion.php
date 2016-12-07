@@ -91,26 +91,50 @@ function grabarCotizacion(){
 	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
-/*	
-	if($("#inputCodigo").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO DE PRODUCTO está vacío");
+	
+	if($("#fileToUpload").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... NO se han seleccionado imágenes de planos para subir");
+			var registrosValidos= false;	
+	}
+	
+	if($("#inputFecha").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... NO se ha seleccionado una FECHA");
+			var registrosValidos= false;	
+	}
+	
+	if($("#cliente").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CLIENTE está vacío");
+			var registrosValidos= false;	
+	}
+	
+	if($("#contacto").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CONTACTO está vacío");
+			var registrosValidos= false;	
+	}
+	
+	if($("#telefono").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO está vacío");
+			var registrosValidos= false;	
+	}
+	
+	if($("#cantMat_"+i).val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CANTIDAD está vacío");
 			var registrosValidos= false;	
 	}
 			
 	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
-	while($("#idMat_"+i).val()!= ""){
-		if($("#cantMat_"+i).val()==""){
-			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
+	while($("#cantMat_"+i).val()!= ""){
+		if($("#mat_"+i).val()==""){
+			alert("¡¡¡ E R R O R !!! ... El valor de DESCRIPCION está vacío");
 			var registrosValidos= false;	
 		}
-	
 		i++;
 	} // ... fin while ...
 		
 	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
-*/		
+		
 	if(!registrosValidos){
-		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
+		alert('Corrija los campos que están vacíos y/o registros que tienen DESCRIPCION vacía.');
 	}else{
 		$("#form_").submit(); // ...  graba registros ...
 	}
@@ -195,7 +219,7 @@ function filaVacia(posicionFila){
 	    	<div class="col-xs-4">
 				<div class="input-group input-group-sm" >
 					<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-export"></span></span> 
-					<input type="file" name="fileToUpload[]"  class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" multiple="multiple" >
+					<input type="file" id="fileToUpload" name="fileToUpload[]"  class="form-control input-sm" style="background-color:#d9f9ec;width:280px;font-size:11px;text-align:center;" multiple="multiple" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -204,7 +228,7 @@ function filaVacia(posicionFila){
 			</div>    	
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Cotización #: <?= strtoupper($local) ?> </span>
+	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Cotización No.: <?= strtoupper($numeroCotizacion) ?> </span>
 	    	</div> 
 	    	
 			<div class="col-xs-1">
@@ -293,7 +317,7 @@ function filaVacia(posicionFila){
             	echo "<tr class='detalleMaterial' >";
 					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";
-					echo "<td class='letraDetalle'  style='width: 557px; background-color: #d9f9ec;'' ><textarea rows='5' id='mat_".$x."' name='mat_".$x."'  style='width:557px;border:none;background-color: #d9f9ec;' onChange='validarDescripcion($x);' /></textarea></td>";
+					echo "<td class='letraDetalle'  style='width: 557px; background-color: #d9f9ec;'' ><textarea rows='6' id='mat_".$x."' name='mat_".$x."'  style='width:557px;border:none;background-color: #d9f9ec;' onChange='validarDescripcion($x);' /></textarea></td>";
                 echo "</tr>";
              }
          ?>
@@ -302,7 +326,7 @@ function filaVacia(posicionFila){
 	</table>
 	
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  nombreDeposito: almacen/bodega -->
+	<input type="hidden"  name="numeroCotizacion" value="<?= $numeroCotizacion ?>" />     <!--  nombreDeposito: almacen/bodega -->
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

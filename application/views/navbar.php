@@ -147,7 +147,7 @@
 					
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda/cotizacion?local=T"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
+							<li><a href="<?=base_url();?>tienda/cotizacion"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Ver Cotizaciones</a></li>
 						</ul>
 					</li>

@@ -78,19 +78,22 @@ class Tienda extends CI_Controller {
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
-			$datos['mensaje']='Usuario NO autorizado para hacer SOLICTUD DE COTIZACION';
+			$datos['mensaje']='Usuario NO autorizado para hacer SOLICITUD DE COTIZACION';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
-//			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nocotizacion'; // ... prefijoTabla
+	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de cotizacion ...
+			//////////////////////////////////////
+			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
+			$numeroCotizacion=$secuenciaPedido +1;
 			
-			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
-			$registros = $this->db->query($sql)->result_array();
-					
-			$datos['registros']=$registros;		
-			$datos['local']='tienda';	// ... T: tienda/ F: fabrica ...
+			$datos['numeroCotizacion']=$numeroCotizacion;	
 	
 			$this->load->view('header');
 			$this->load->view('tienda/cotizacion',$datos);
@@ -156,12 +159,65 @@ class Tienda extends CI_Controller {
 		foreach ($_FILES["fileToUpload"]["error"] as $clave => $error) {
 		    if ($error == UPLOAD_ERR_OK) {
 		        $nombre_tmp = $_FILES["fileToUpload"]["tmp_name"][$clave];
-		        // basename() puede evitar ataques de denegació del sistema de ficheros;
+		        // basename() puede evitar ataques de denegación del sistema de ficheros;
 		        // podría ser apropiado más validación/saneamiento del nombre de fichero
 		        $nombre = basename($_FILES["fileToUpload"]["name"][$clave]);
-		        move_uploaded_file($nombre_tmp, "d:ayuda//$nombre");
+		        move_uploaded_file($nombre_tmp, "d:ayuda/$nombre");
 		    }
 		}		//... fin foreach ...
+		
+		
+		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
+		$numeroCotizacion=$_POST['numeroCotizacion'];
+			
+		$cotizacionCabecera = array(
+	    	"numCotizacion"=>$_POST['numeroCotizacion'],
+		    "fechaCotizacion"=>$_POST['inputFecha'],
+		    "cliente"=>$_POST['cliente'],
+		    "contacto"=>$_POST['contacto'],
+		    "fonoCelular"=>$_POST['telefono'],
+		    "correoElectronico"=>$_POST['correo']
+		);
+		
+		// ... inserta registro tabla solcotizcabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+	    $this-> tablaGenerica_model -> grabar('solcotizcabecera', $cotizacionCabecera);
+	    
+		$secuencia=0;		//...secuencia ... para cada item ...
+        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    $secuencia=$i+1;
+				if($secuencia<10){
+					$secuencia='0'.$secuencia;
+				}
+          	    //... agrega registro tabla pedidoproducto ...      
+	            $plantillaDetalle = array(
+		           	"numeroCotizacion"=>$_POST['numeroCotizacion'],
+				    "cantidad"=>$_POST['cantMat_'.$i],
+				    "unidad"=>$_POST['unidadMat_'.$i],
+				    "descripcion"=>$_POST['mat_'.$i],
+				    "secuencia"=>$secuencia,
+				    "dCliente"=>$_POST['cliente'],
+				    "dContacto"=>$_POST['contacto'],
+				    "dcorreoElectronico"=>$_POST['correo']
+				);
+			
+				// ... inserta registro tabla transacciones ... cotizacionmaterial 
+				$this-> load -> model("tablaGenerica_model");		//carga modelo 
+	    		$this-> tablaGenerica_model -> grabar('solcotizdetalle',$plantillaDetalle);			
+				// ... fin de inserción  registro tabla transacciones ... solcotizdetalle
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR 
+		
+		// ... actualizar numero de cotizacion ...		
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
+		$nombreTabla='nocotizacion'; // ... prefijoTabla
+		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
+		// fin actualizar numero de cotizacion ...
 		
 		
 		

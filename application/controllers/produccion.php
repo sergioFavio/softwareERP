@@ -256,11 +256,13 @@ class Produccion extends CI_Controller {
 		$this-> tablaGenerica_model -> grabar('cotizacionvalores',$plantillaValores);			
 		// ... fin de inserción  registro tabla ... cotizacionManoObra
 		
+/*		
 		// ... actualizar numero de cotizacion ...		
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
 		$nombreTabla='nocotizacion'; // ... prefijoTabla
 		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
+*/		
 		
 		//... agrega registro tabla: productosfabrica ...      
         $plantillaProducto = array(
