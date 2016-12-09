@@ -793,13 +793,13 @@ class Tienda extends CI_Controller {
 		$this->load->library('tienda/SolicitudCotizacionPdf');
 		
 		// Se obtienen los registros de la base de datos
-		$sql ="SELECT cantidad,unidad,descripcion FROM solcotizcabecera WHERE numCotizacion='$numeroCotizacion' ";
+		$sql ="SELECT cantidad,unidad,descripcion FROM solcotizdetalle WHERE numeroCotizacion='$numeroCotizacion' ";
 		$regDetalles = $this->db->query($sql);
 						
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 		$registroCabecera= $this->tablaGenerica_model->buscar('solcotizcabecera','numCotizacion',$numeroCotizacion); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
 		
-		$fechaCotizacion= $registroCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaCotizacion= $registroCabecera["fechaCotizacion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$cliente= $registroCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$contacto= $registroCabecera["contacto"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fonoCelular= $registroCabecera["fonoCelular"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -825,7 +825,7 @@ class Tienda extends CI_Controller {
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new SolicitudCotizacionPdf();
 			
-			$this->pdf->numeroCotizacion=$numeroPedido;      						//...pasando variable para el header del PDF
+			$this->pdf->numeroCotizacion=$numeroCotizacion;      					//...pasando variable para el header del PDF
 			$this->pdf->fechaCotizacion=fechaMysqlParaLatina($fechaCotizacion); 	//...pasando variable para el header del PDF
 			$this->pdf->cliente=$cliente; 											//...pasando variable para el header del PDF
 			$this->pdf->contacto=$contacto; 										//...pasando variable para el header del PDF
@@ -850,51 +850,48 @@ class Tienda extends CI_Controller {
 		    //$this->pdf->SetFont('Arial', 'B', 9);
 		    $this->pdf->SetFont('Arial', '', 9);
 		    
-		    foreach ($regDetalles->result() as $producto) {
+		    foreach ($regDetalles->result() as $registroDetalle) {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
-
-				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
-				$this->pdf->Cell(94,5,utf8_decode(substr($producto->descripcion,0,56) ),'',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
-				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
-				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
-				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
+				$this->pdf->Cell(1);
+				$this->pdf->Cell(15,5,number_format($registroDetalle->cantidad,0),'',0,'R',0);
+				$this->pdf->Cell(9,5,$registroDetalle->unidad,'',0,'C',0);
+				$this->pdf->Cell(94,5,utf8_decode(substr($registroDetalle->descripcion,0,115) ),'',0,'L',0);
 				
-				if(substr($producto->descripcion,56,120)!=""){
+				if(substr($registroDetalle->descripcion,115,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,115,115) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,176,120)!=""){
+				if(substr($registroDetalle->descripcion,230,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,176,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,230,115) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,296,120)!=""){
+				if(substr($registroDetalle->descripcion,345,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,296,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,345,115) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,416,120)!=""){
+				if(substr($registroDetalle->descripcion,460,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,416,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,460,115) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,536,120)!=""){
+				if(substr($registroDetalle->descripcion,575,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,536,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,575,115) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,656,120)!=""){
+				if(substr($registroDetalle->descripcion,690,115)!=""){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,656,120) ),0,0,'L');
+					$this->pdf->Cell(20);
+					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,690,115) ),0,0,'L');
 				}
 				
 		    }

@@ -1255,7 +1255,7 @@ class Produccion extends CI_Controller {
 	//... funciones del CRUD pedidos ...//
 	/////////////////////////////////////////////
 	
-	public function crudVerPedidos()
+	public function verPedidos()
 	{
 		//... control de permisos de acceso ....
 		
@@ -1273,7 +1273,7 @@ class Produccion extends CI_Controller {
 			$this->load->model("tablaGenerica_model");
 			
 			/* URL a la que se desea agregar la paginación*/
-	    	$config['base_url'] = base_url().'produccion/crudVerPedidos';
+	    	$config['base_url'] = base_url().'produccion/verPedidos';
 			
 			/*Obtiene el total de registros a paginar */
 	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabecera');
@@ -1317,13 +1317,13 @@ class Produccion extends CI_Controller {
 				
 				/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');
-				$this->load->view('produccion/verPedidosCrud', $datos);
+				$this->load->view('tienda/verPedidos', $datos);
 				$this->load->view('footer');
 					
 			}//..fin IF contador registros mayor que cero ..
 		}	//... fin IF validar usuario ...
 		
-	} //... fin crudVerPedidos ...
+	} //... fin verPedidos ...
 	
 
 	public function eliminarPedidoCrud(){

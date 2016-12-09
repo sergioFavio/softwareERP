@@ -60,8 +60,8 @@ $route['produccion/(:num)'] = 'produccion/buscarCotizacionCrud';
 $route['produccion/(:num)'] = 'produccion/verOrdenesTrabajo';
 $route['produccion/(:num)'] = 'produccion/buscarOrdenTrabajo';
 
-$route['tienda/(:num)'] = 'tienda/crudVerPedidos';
-$route['tienda/(:num)'] = 'tienda/buscarPedidoCrud';
+$route['tienda/(:num)'] = 'tienda/verPedidos';
+$route['tienda/(:num)'] = 'tienda/buscarPedido';
 
 $route['tienda/(:num)'] = 'tienda/crudProducto';
 $route['tienda/(:num)'] = 'tienda/buscarProducto';

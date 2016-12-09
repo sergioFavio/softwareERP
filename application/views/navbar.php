@@ -76,7 +76,7 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Pedidos</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/realizarPedido?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido </a></li>
-							<li><a href="<?=base_url();?>produccion/crudVerPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
+							<li><a href="<?=base_url();?>produccion/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
 						</ul>
 					</li>
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
