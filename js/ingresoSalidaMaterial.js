@@ -262,8 +262,8 @@ function validarCantidad(numero, filaExistencia){
 		    		$("#cantMat_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantidad... 
 		    		cantidad=$("#cantMat_"+filaExistencia).val();
 					cantidad=cantidad.split(','); //... elimina ,
-					cantidad=cantidad[0]+cantidad[1];	
-					cantidad=parseFloat( cantidad	);
+					cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
+					cantidad=parseFloat(cantidad);
 	    		}
 	    	}
 	    		
@@ -285,18 +285,17 @@ function validarCantidadIngreso(numero, filaExistencia){
     		alert("El valor " + numero + " no es válido");
     		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
     	}else{    		
-    		var cantidad=$("#cantMat_"+filaExistencia).val();
+			var cantidad=$("#cantMat_"+filaExistencia).val();
     		cantidad=parseFloat(cantidad);
     		$("#cantMat_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantidad... 
     		cantidad=$("#cantMat_"+filaExistencia).val();
 			cantidad=cantidad.split(','); //... elimina ,
-			cantidad=cantidad[0]+cantidad[1];	
-			cantidad=parseFloat( cantidad	);
-    		
-    		 
+			cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
+			cantidad=parseFloat(cantidad);
+			
     		var precioCompra=$("#compraMat_"+filaExistencia).val();
     		precioCompra=precioCompra.split(','); //... elimina ,
-			precioCompra=precioCompra[0]+precioCompra[1];	
+			precioCompra=precioCompra[0]+precioCompra[1]+precioCompra[2];	
 			precioCompra=parseFloat(precioCompra);
     		
     		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe

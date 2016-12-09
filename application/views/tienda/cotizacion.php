@@ -91,11 +91,12 @@ function grabarCotizacion(){
 	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
-	
+/*	
 	if($("#fileToUpload").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... NO se han seleccionado imágenes de planos para subir");
 			var registrosValidos= false;	
 	}
+*/
 	
 	if($("#inputFecha").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... NO se ha seleccionado una FECHA");
@@ -112,10 +113,12 @@ function grabarCotizacion(){
 			var registrosValidos= false;	
 	}
 	
+/*
 	if($("#telefono").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO está vacío");
 			var registrosValidos= false;	
 	}
+*/
 	
 	if($("#cantMat_"+i).val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de CANTIDAD está vacío");
@@ -313,7 +316,7 @@ function filaVacia(posicionFila){
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<10; $x++){
+       		for($x=0; $x<15; $x++){
             	echo "<tr class='detalleMaterial' >";
 					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";

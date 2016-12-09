@@ -1,5 +1,5 @@
-
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>">
+<script type="text/javascript" src="<?= base_url("js/bootstrap.min.js")?>"></script>
 
 <style type="text/css" >
 
@@ -42,7 +42,8 @@
 <script>
 
 $(document).ready(function() {
-			
+	$('[data-toggle="tooltip"]').tooltip(); 
+	
 	$('#borrarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
 		var id = $(e.relatedTarget).data('item-id'); 
@@ -115,7 +116,7 @@ function pedidoPdf(nPedido){
 			   	     
 				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar No. pedido&hellip;">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar No. pedido&hellip;" data-toggle='tooltip' title="ingresar número de pedido sin ' / ' ">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
@@ -173,9 +174,42 @@ function pedidoPdf(nPedido){
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numePedido = $pedido->numPedido;	
-							
-					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$pedido->numPedido."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
+					$numePedido = $pedido->numPedido;
+					$anhoSistema = date("Y");	//... anho del sistema
+					
+					if(strlen($numePedido)==3){
+						$numePedidoAux=substr($numePedido,0,1).'/'.substr($numePedido,1,2);
+					}
+					
+					if(strlen($numePedido)==4){
+						$numePedidoAux=substr($numePedido,0,2).'/'.substr($numePedido,2,2);
+					}
+					
+					if(strlen($numePedido)==5){
+						if(substr($numePedido,1,4)==$anhoSistema){										//... pedido tienda ...
+							$numePedidoAux=substr($numePedido,0,1).'/'.substr($numePedido,1,4);
+						}else{																		//... pedido fabrica ...
+							$numePedidoAux=substr($numePedido,0,3).'/'.substr($numePedido,3,2);
+						}
+					}
+					
+					if(strlen($numePedido)==6){
+						if(substr($numePedido,2,4)==$anhoSistema){										//... pedido tienda ...
+							$numePedidoAux=substr($numePedido,0,2).'/'.substr($numePedido,2,4);
+						}else{																		//... pedido fabrica ...
+							$numePedidoAux=substr($numePedido,0,4).'/'.substr($numePedido,4,2);
+						}
+					}
+					
+					if(strlen($numePedido)==7){
+						if(substr($numePedido,3,4)==$anhoSistema){										//... pedido tienda ...
+							$numePedidoAux=substr($numePedido,0,3).'/'.substr($numePedido,3,4);
+						}else{																		//... pedido fabrica ...
+							$numePedidoAux=substr($numePedido,0,5).'/'.substr($numePedido,5,2);
+						}
+					}
+								
+					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numePedidoAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
 					 echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEntrega)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 							 

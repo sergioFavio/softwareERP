@@ -176,7 +176,8 @@ class Tienda extends CI_Controller {
 		    "cliente"=>$_POST['cliente'],
 		    "contacto"=>$_POST['contacto'],
 		    "fonoCelular"=>$_POST['telefono'],
-		    "correoElectronico"=>$_POST['correo']
+		    "correoElectronico"=>$_POST['correo'],
+		    "usuario"=>$this->session->userdata('userName')
 		);
 		
 		// ... inserta registro tabla solcotizcabecera ...
@@ -219,11 +220,7 @@ class Tienda extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
 		
-		
-		
-		
-		
-		
+		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numCotizacion");
 		
 	}	//... fin grabarCotizacion ...
 	
@@ -786,6 +783,146 @@ class Tienda extends CI_Controller {
 /////////////////////////////////////
 //... inicio funciones reportesPDF
 /////////////////////////////////////
+
+	public function generarSolicitudCotizacionPDF(){
+		//... genera reporte de salida en PDF
+
+		$numeroCotizacion= $_GET['numeroCotizacion']; 			//... lee numeroCotizacion que viene de grabarCotizacion ...
+		
+		// Se carga la libreria fpdf
+		$this->load->library('tienda/SolicitudCotizacionPdf');
+		
+		// Se obtienen los registros de la base de datos
+		$sql ="SELECT cantidad,unidad,descripcion FROM solcotizcabecera WHERE numCotizacion='$numeroCotizacion' ";
+		$regDetalles = $this->db->query($sql);
+						
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+		$registroCabecera= $this->tablaGenerica_model->buscar('solcotizcabecera','numCotizacion',$numeroCotizacion); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		
+		$fechaCotizacion= $registroCabecera["fechaPedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $registroCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$contacto= $registroCabecera["contacto"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fonoCelular= $registroCabecera["fonoCelular"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$correoElectronico= $registroCabecera["correoElectronico"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$usuario= $registroCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					
+		$sql ="SELECT * FROM solcotizcabecera WHERE numCotizacion='$numeroCotizacion' ";
+		$contador = $this->db->query($sql);	
+ 		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
+
+		if($contador==0){
+			$datos['mensaje']='No hay registro grabado con el n&uacute;mero de  cotización '.$numeroCotizacion.' en la tabla SOLCOTIZCABECERA.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new SolicitudCotizacionPdf();
+			
+			$this->pdf->numeroCotizacion=$numeroPedido;      						//...pasando variable para el header del PDF
+			$this->pdf->fechaCotizacion=fechaMysqlParaLatina($fechaCotizacion); 	//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 											//...pasando variable para el header del PDF
+			$this->pdf->contacto=$contacto; 										//...pasando variable para el header del PDF
+			$this->pdf->fonoCelular=$fonoCelular; 									//...pasando variable para el header del PDF
+			$this->pdf->correoElectronico=$correoElectronico; 						//...pasando variable para el header del PDF
+			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
+			
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    $this->pdf->SetFont('Arial', '', 9);
+		    
+		    foreach ($regDetalles->result() as $producto) {
+		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
+		        // Se imprimen los datos de cada registro
+
+				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
+				$this->pdf->Cell(94,5,utf8_decode(substr($producto->descripcion,0,56) ),'',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
+				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
+				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
+				
+				if(substr($producto->descripcion,56,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,176,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,176,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,296,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,296,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,416,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,416,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,536,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,536,120) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,656,120)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,656,120) ),0,0,'L');
+				}
+				
+		    }
+
+			
+		     /* PDF Output() settings
+		     * Se manda el pdf al navegador
+		     *
+		     * $this->pdf->Output(nombredelarchivo, destino);
+		     *
+		     * I = Muestra el pdf en el navegador
+		     * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+		     */
+			  
+			 $this->pdf->Output('pdfsArchivos/cotizaciones/solCotiz'.$numeroCotizacion.'.pdf', 'F');
+	
+			 redirect("menuController/index");			
+					
+		}
+	    
+	} //... fin funcion: generarSolicitudCotizacionPDF ...
+	
 
 	public function generarPedidoPDF(){
 		//... genera reporte de salida en PDF

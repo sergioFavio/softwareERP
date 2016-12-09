@@ -183,9 +183,8 @@ class Materiales extends CI_Controller {
 	            $material = array(
 	            	"numIng"=>$_POST['inputNumero'],
 				    "idMaterial"=>$codigoSinEspacio,
-				    "cantidad"=>$_POST['cantMat_'.$i],
-				    "precioCompra"=>$_POST['compraMat_'.$i],
-				    // "value"=>number_format($_POST['5_'.$i], 2, '.', '')
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]),
+				    "precioCompra"=>str_replace(",","",$_POST['compraMat_'.$i])
 				);
 				
 				
@@ -193,7 +192,7 @@ class Materiales extends CI_Controller {
 				 $insumo = array(
 				    "idMaterial"=>$codigoSinEspacio,
 				    "existencia"=>$_POST['existMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i]
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i])
 				);
 				
 				
@@ -261,15 +260,15 @@ class Materiales extends CI_Controller {
 	            	"numSal"=>$_POST['inputNumero'],
 				    "idMaterial"=>$codigoSinEspacio,
 				    "cantidad"=>$_POST['cantMat_'.$i]
-				    // "value"=>number_format($_POST['5_'.$i], 2, '.', '')
+					
+//					"aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 				);
 				
 				
 				//... actualiza registro tabla almacen/bodega
 				 $insumo = array(
 				    "idMaterial"=>$codigoSinEspacio,
-				    "existencia"=>$_POST['existMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i]
+				   "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i])
 				);
 				
 				
