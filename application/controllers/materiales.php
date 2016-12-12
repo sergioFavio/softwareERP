@@ -267,8 +267,9 @@ class Materiales extends CI_Controller {
 				
 				//... actualiza registro tabla almacen/bodega
 				 $insumo = array(
-				    "idMaterial"=>$codigoSinEspacio,
-				   "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i])
+				 	"idMaterial"=>$codigoSinEspacio,
+				    "existencia"=>$_POST['existMat_'.$i],
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i])
 				);
 				
 				

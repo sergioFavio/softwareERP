@@ -44,15 +44,11 @@
 	         *
 	         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
 	        */	 
-	        $this->Cell(15,7,utf8_decode('código'),'TBL',0,'C','0');
-	        $this->Cell(37,7,utf8_decode('producto'),'TB',0,'C','0');
-			$this->Cell(30,7,' ','TB',0,'R','0');
-			$this->Cell(30,7,' ','TB',0,'R','0');
-	        $this->Cell(18,7,'cantidad','TB',0,'C','0');
-			$this->Cell(14,7,'unidad','TB',0,'C','0');
-			$this->Cell(10,7,' ','TB',0,'R','0');
-			$this->Cell(15,7,'precio Bs.','TB',0,'C','0');
-			$this->Cell(19,7,'importe Bs.','TBR',0,'R','0');
+	        $this->Cell(13,7,utf8_decode('cantidad'),'TBL',0,'C','0');
+			$this->Cell(10,7,'unidad','TB',0,'C','0');
+			$this->Cell(55,7,'','TB',0,'C','0');
+			$this->Cell(39,7,utf8_decode('descripción'),'TB',0,'C','0');
+			$this->Cell(70,7,'','TBR',0,'R','0');
 	        $this->Ln(7);
        }
 

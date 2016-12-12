@@ -162,7 +162,7 @@ class Tienda extends CI_Controller {
 		        // basename() puede evitar ataques de denegación del sistema de ficheros;
 		        // podría ser apropiado más validación/saneamiento del nombre de fichero
 		        $nombre = basename($_FILES["fileToUpload"]["name"][$clave]);
-		        move_uploaded_file($nombre_tmp, "d:ayuda/$nombre");
+		        move_uploaded_file($nombre_tmp, "c:respaldoBD/$nombre");
 		    }
 		}		//... fin foreach ...
 		
@@ -220,7 +220,7 @@ class Tienda extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
 		
-		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numCotizacion");
+		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numeroCotizacion");
 		
 	}	//... fin grabarCotizacion ...
 	
@@ -799,7 +799,7 @@ class Tienda extends CI_Controller {
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 		$registroCabecera= $this->tablaGenerica_model->buscar('solcotizcabecera','numCotizacion',$numeroCotizacion); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
 		
-		$fechaCotizacion= $registroCabecera["fechaCotizacion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaCotizacion= $registroCabecera["fechaCotizacion"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$cliente= $registroCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$contacto= $registroCabecera["contacto"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fonoCelular= $registroCabecera["fonoCelular"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -854,7 +854,7 @@ class Tienda extends CI_Controller {
 		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
 				$this->pdf->Cell(1);
-				$this->pdf->Cell(15,5,number_format($registroDetalle->cantidad,0),'',0,'R',0);
+				$this->pdf->Cell(10,5,number_format($registroDetalle->cantidad,0),'',0,'R',0);
 				$this->pdf->Cell(9,5,$registroDetalle->unidad,'',0,'C',0);
 				$this->pdf->Cell(94,5,utf8_decode(substr($registroDetalle->descripcion,0,115) ),'',0,'L',0);
 				
@@ -894,9 +894,27 @@ class Tienda extends CI_Controller {
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,690,115) ),0,0,'L');
 				}
 				
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
 		    }
 
+			$this->pdf->Ln(5);
+			$this->pdf->Image('c:respaldoBD/DSC01566.jpg',20,96,176);
 			
+			for($x=0; $x<50; $x++){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
+			}
+			$this->pdf->Ln(5);
+			$this->pdf->Image('c:respaldoBD/DSC01572.jpg',20,96,176);
+			
+			for($x=0; $x<50; $x++){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
+			}
+			$this->pdf->Ln(5);
+			$this->pdf->Image('c:respaldoBD/DSC01576.jpg',20,96,176);
+			 
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
 		     *
