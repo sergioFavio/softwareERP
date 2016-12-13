@@ -155,7 +155,8 @@ class Tienda extends CI_Controller {
 		
 */
 
-
+		$foto=''; 		//... contador de fotos subidas al servidor ...
+		
 		foreach ($_FILES["fileToUpload"]["error"] as $clave => $error) {
 		    if ($error == UPLOAD_ERR_OK) {
 		        $nombre_tmp = $_FILES["fileToUpload"]["tmp_name"][$clave];
@@ -163,6 +164,9 @@ class Tienda extends CI_Controller {
 		        // podría ser apropiado más validación/saneamiento del nombre de fichero
 		        $nombre = basename($_FILES["fileToUpload"]["name"][$clave]);
 		        move_uploaded_file($nombre_tmp, "c:respaldoBD/$nombre");
+				
+				$foto=$foto.$nombre.'|';
+				
 		    }
 		}		//... fin foreach ...
 		
@@ -220,7 +224,7 @@ class Tienda extends CI_Controller {
 		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
 		
-		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numeroCotizacion");
+		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numeroCotizacion&foto=$foto");
 		
 	}	//... fin grabarCotizacion ...
 	
@@ -787,7 +791,8 @@ class Tienda extends CI_Controller {
 	public function generarSolicitudCotizacionPDF(){
 		//... genera reporte de salida en PDF
 
-		$numeroCotizacion= $_GET['numeroCotizacion']; 			//... lee numeroCotizacion que viene de grabarCotizacion ...
+		$numeroCotizacion= $_GET['numeroCotizacion']; 	//... lee numeroCotizacion que viene de grabarCotizacion ...
+		$foto= $_GET['foto']; 							//... lee foto que viene de grabarCotizacion ...
 		
 		// Se carga la libreria fpdf
 		$this->load->library('tienda/SolicitudCotizacionPdf');
@@ -898,22 +903,20 @@ class Tienda extends CI_Controller {
 				$this->pdf->Ln(5);
 		    }
 
-			$this->pdf->Ln(5);
-			$this->pdf->Image('c:respaldoBD/DSC01566.jpg',20,96,176);
-			
-			for($x=0; $x<50; $x++){
+			$plano='';
+			while(strlen($foto) > 0) {
+				$pos = strpos($foto, '|');
+			    $plano=substr($foto,0,$pos);
+				
 				$this->pdf->Ln(5);
-				$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
-			}
-			$this->pdf->Ln(5);
-			$this->pdf->Image('c:respaldoBD/DSC01572.jpg',20,96,176);
+				$this->pdf->Image('c:respaldoBD/'.$plano,20,96,176);
+				$foto=substr($foto,$pos+1,strlen($foto)-$pos);
+				for($x=0; $x<50; $x++){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
+				}
+			} 
 			
-			for($x=0; $x<50; $x++){
-				$this->pdf->Ln(5);
-				$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
-			}
-			$this->pdf->Ln(5);
-			$this->pdf->Image('c:respaldoBD/DSC01576.jpg',20,96,176);
 			 
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
