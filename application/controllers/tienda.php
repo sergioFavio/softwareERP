@@ -909,7 +909,7 @@ class Tienda extends CI_Controller {
 			    $plano=substr($foto,0,$pos);
 				
 				$this->pdf->Ln(5);
-				$this->pdf->Image('c:respaldoBD/'.$plano,20,96,176);
+				$this->pdf->Image('c:respaldoBD/'.$plano,20,52,176);
 				$foto=substr($foto,$pos+1,strlen($foto)-$pos);
 				for($x=0; $x<50; $x++){
 					$this->pdf->Ln(5);
