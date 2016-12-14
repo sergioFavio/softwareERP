@@ -855,9 +855,12 @@ class Tienda extends CI_Controller {
 		    //$this->pdf->SetFont('Arial', 'B', 9);
 		    $this->pdf->SetFont('Arial', '', 9);
 		    
+			$contadorLineas=1;		//.. para controlar la impresión de las imagenes de los planos ...
 		    foreach ($regDetalles->result() as $registroDetalle) {
-		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
 		        // Se imprimen los datos de cada registro
+		        
+		        $contadorLineas=$contadorLineas+1;
+				
 				$this->pdf->Cell(1);
 				$this->pdf->Cell(10,5,number_format($registroDetalle->cantidad,0),'',0,'R',0);
 				$this->pdf->Cell(9,5,$registroDetalle->unidad,'',0,'C',0);
@@ -867,54 +870,68 @@ class Tienda extends CI_Controller {
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,115,115) ),0,0,'L');
+					$contadorLineas=$contadorLineas+1;
 				}
 				
 				if(substr($registroDetalle->descripcion,230,115)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,230,115) ),0,0,'L');
+					$contadorLineas=$contadorLineas+1;
 				}
 				
 				if(substr($registroDetalle->descripcion,345,115)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,345,115) ),0,0,'L');
+					$contadorLineas=$contadorLineas+1;
 				}
 				
 				if(substr($registroDetalle->descripcion,460,115)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,460,115) ),0,0,'L');
+					$contadorLineas=$contadorLineas+1;
 				}
 				
 				if(substr($registroDetalle->descripcion,575,115)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,575,115) ),0,0,'L');
+				 	$contadorLineas=$contadorLineas+1;
 				}
 				
 				if(substr($registroDetalle->descripcion,690,115)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(20);
 					$this->pdf->Cell(85,5,utf8_decode(substr($registroDetalle->descripcion,690,115) ),0,0,'L');
+					$contadorLineas=$contadorLineas+1;
 				}
 				
 				$this->pdf->Ln(5);
 				$this->pdf->Ln(5);
+				$contadorLineas=$contadorLineas+2;
 		    }
+
+			while($contadorLineas<48){					//... rellena con lineas vacías la primera hoja ...
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(10,5,number_format($contadorLineas,0),'',0,'R',0);
+				$contadorLineas=$contadorLineas+1;
+			}
 
 			$plano='';
 			while(strlen($foto) > 0) {
 				$pos = strpos($foto, '|');
 			    $plano=substr($foto,0,$pos);
 				
-				$this->pdf->Ln(5);
-				$this->pdf->Image('c:respaldoBD/'.$plano,20,52,176);
-				$foto=substr($foto,$pos+1,strlen($foto)-$pos);
-				for($x=0; $x<50; $x++){
+				for($x=2; $x<47; $x++){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
 				}
+				
+				$this->pdf->Ln(5);
+				$this->pdf->Image('c:respaldoBD/'.$plano,20,52,176);
+				$foto=substr($foto,$pos+1,strlen($foto)-$pos);				
 			} 
 			
 			 
