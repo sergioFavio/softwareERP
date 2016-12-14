@@ -22,8 +22,7 @@
   			$this->Ln('7');        
             $this->SetFont('Arial','',13);
             $this->Cell(50);
-			
-			$this->Cell(90,10,utf8_decode($this->local.' Solicitud de Cotización No. ').$this->numeroCotizacion ,0,0,'C');	
+			$this->Cell(90,10,utf8_decode(' Solicitud de Cotización No. ').$this->numeCotizacion ,0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
@@ -51,7 +50,6 @@
 			$this->Cell(70,7,'','TBR',0,'R','0');
 	        $this->Ln(7);
        }
-
 
        // El pie del pdf
        public function Footer(){

@@ -830,7 +830,7 @@ class Tienda extends CI_Controller {
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
 		    $this->pdf = new SolicitudCotizacionPdf();
 			
-			$this->pdf->numeroCotizacion=$numeroCotizacion;      					//...pasando variable para el header del PDF
+			$this->pdf->numeCotizacion=$numeroCotizacion;      					//...pasando variable para el header del PDF
 			$this->pdf->fechaCotizacion=fechaMysqlParaLatina($fechaCotizacion); 	//...pasando variable para el header del PDF
 			$this->pdf->cliente=$cliente; 											//...pasando variable para el header del PDF
 			$this->pdf->contacto=$contacto; 										//...pasando variable para el header del PDF
@@ -934,9 +934,12 @@ class Tienda extends CI_Controller {
 		     */
 			  
 			 $this->pdf->Output('pdfsArchivos/cotizaciones/solCotiz'.$numeroCotizacion.'.pdf', 'F');
-	
-			 redirect("menuController/index");			
-					
+			 
+			 $datos['documento']='pdfsArchivos/cotizaciones/solCotiz'.$numeroCotizacion.'.pdf';	
+			 $datos['titulo']=' Solicitud de Cotización No. '.$numeroCotizacion;	// ... titulo ...		
+			 $this->load->view('header');
+			 $this->load->view('reportePdfSinFechas',$datos );
+			 $this->load->view('footer');			
 		}
 	    
 	} //... fin funcion: generarSolicitudCotizacionPDF ...
