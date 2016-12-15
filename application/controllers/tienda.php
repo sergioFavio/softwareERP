@@ -1247,41 +1247,84 @@ class Tienda extends CI_Controller {
 				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
 				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
 				
-				if(substr($producto->descripcion,56,120)!=""){
+				if(substr($producto->descripcion,56,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,56) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,176,120)!=""){
+				if(substr($producto->descripcion,112,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,176,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,112,56) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,296,120)!=""){
+				if(substr($producto->descripcion,178,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,296,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,178,56) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,416,120)!=""){
+				if(substr($producto->descripcion,234,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,416,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,234,56) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,536,120)!=""){
+				if(substr($producto->descripcion,290,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,536,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,290,56) ),0,0,'L');
 				}
 				
-				if(substr($producto->descripcion,656,120)!=""){
+				if(substr($producto->descripcion,346,56)!=""){
 					$this->pdf->Ln(5);
 					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,656,120) ),0,0,'L');
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,346,56) ),0,0,'L');
 				}
+				
+				if(substr($producto->descripcion,402,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,402,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,458,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,458,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,514,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,514,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,570,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,570,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,626,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,626,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,682,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,682,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,738,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,738,56) ),0,0,'L');
+				}
+				
 				
 				$this->pdf->Ln('5');
 				$this->pdf->Cell(15,5,'','',0,'L',0);

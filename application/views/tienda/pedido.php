@@ -167,11 +167,12 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 */	
-	if($("#telCel").val()=="" ){
-		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
+	if($("#telCel").val()!="" ){
+/*		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
 		registrosValidos= false;	
 	}
 	else{
+*/		
 		var numero= $('#telCel').val();
 		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
 		{
@@ -483,7 +484,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"inputTelCel");'>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"telCel");'>
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
