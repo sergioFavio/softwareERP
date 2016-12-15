@@ -83,6 +83,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>produccion/cotizar"><span class="glyphicon glyphicon-usd"></span> Armar Cotizaci&oacute;n</a></li>
 							<li><a href="<?=base_url();?>produccion/crudVerCotizaciones"><span class="glyphicon glyphicon-eye-open"></span> Ver Cotizaciones</a></li>
+							<li><a href="<?=base_url();?>tienda/verSolicitudesCotizacion"><span class="glyphicon glyphicon-eye-open"></span> Ver Solicitudes Cotización</a></li>
 						</ul>
 					</li>
 					
@@ -148,7 +149,7 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/cotizacion"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Ver Solicitudes Cotizaciones</a></li>
+							<li><a href="<?=base_url();?>tienda/verSolicitudesCotizacion"><span class="glyphicon glyphicon-eye-open"></span> Ver Solicitudes Cotización</a></li>
 						</ul>
 					</li>
 					<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> Consultar Stock</a></li>

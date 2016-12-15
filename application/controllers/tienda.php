@@ -566,8 +566,17 @@ class Tienda extends CI_Controller {
 		<embed src="<?= base_url('pdfsArchivos/pedidos/pedido'.$numePedido.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
 		<?php
 	}	
+	
+	
+	public function reporteSolicitudesCotizacionPdf(){
+		//... recupera la variable de numeCotizcion ...
+		$numeCotizacion=$_POST["numeCotizacion"];
+		?>
+		<embed src="<?= base_url('pdfsArchivos/cotizaciones/solcotiz'.$numeCotizacion.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}	
 
-		public function crudProducto(){
+	public function crudProducto(){
 		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -915,7 +924,8 @@ class Tienda extends CI_Controller {
 
 			while($contadorLineas<48){					//... rellena con lineas vacías la primera hoja ...
 				$this->pdf->Ln(5);
-				$this->pdf->Cell(10,5,number_format($contadorLineas,0),'',0,'R',0);
+//				$this->pdf->Cell(10,5,number_format($contadorLineas,0),'',0,'R',0);
+				$this->pdf->Cell(10,5,' ','',0,'R',0);
 				$contadorLineas=$contadorLineas+1;
 			}
 
@@ -926,7 +936,8 @@ class Tienda extends CI_Controller {
 				
 				for($x=2; $x<47; $x++){
 					$this->pdf->Ln(5);
-					$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
+//					$this->pdf->Cell(10,5,number_format($x,0),'',0,'R',0);
+					$this->pdf->Cell(10,5,' ','',0,'R',0);
 				}
 				
 				$this->pdf->Ln(5);
@@ -960,6 +971,168 @@ class Tienda extends CI_Controller {
 		}
 	    
 	} //... fin funcion: generarSolicitudCotizacionPDF ...
+	
+	
+	/////////////////////////////////////////////////////
+	//... funciones del visor solicitudesCotizacion ...//
+	////////////////////////////////////////////////////
+	
+	public function verSolicitudesCotizacion(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Producción';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$this->load->model("tablaGenerica_model");
+			$contador= $this->tablaGenerica_model->get_total_registros('solcotizcabecera');
+			
+			if($contador==0){  //...cuando NO hay registros ...
+				$datos['mensaje']='No hay registros grabados en la tabla de SOLICITUD DE COTIZACIONES.';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}
+			else{      //... cuando hay registros ...
+				
+				/* URL a la que se desea agregar la paginación*/
+		    	$config['base_url'] = base_url().'tienda/verSolicitudesCotizacion';
+				
+				/*Obtiene el total de registros a paginar */
+		    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('solcotizcabecera');
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+		    	$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+		    	$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+		    	$this->pagination->initialize($config);
+		
+				/* Se obtienen los registros a mostrar*/ 
+		   		$datos['listaCotizacion'] = $this->tablaGenerica_model->get_registros('solcotizcabecera',$config['per_page'], $desde); 
+		
+				$datos['consultaCotizacion'] ='';
+				
+		 		/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verSolicitudesCotizacion', $datos);
+				$this->load->view('footer');
+			}  // fin else cuando hay registros 
+		}	//... fin IF validar acceso usuario...
+	} //... fin verSolicitudesCotizacion ...
+	
+	
+	public function buscarSolicitudesCotizacion(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+		$campo1='cliente';   //... el campo por elcual se va hacer la búsqueda ...
+	 
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaCotizacion=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaCotizacion);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaCotizacion = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('solcotizcabecera',$campo1,$consultaCotizacion);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');		//.. si no encuentra registros vuelve menu principal
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarSolicitudesCotizacion';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('solcotizcabecera',$campo1,$consultaCotizacion);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaCotizacion'] = $this-> tablaGenerica_model -> buscarPaginacion('solcotizcabecera',$campo1,$consultaCotizacion, $config['per_page'], $desde );
+			$datos['consultaCotizacion'] =$consultaCotizacion;
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verSolicitudesCotizacion', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encontrados ...
+	}		//... fin buscarSolicitudesCotizacion ...
+	
+	
+	public function eliminarSolicitudCotizacion(){
+		//... elimina cotizacion de las tablas cotizacion[areamaterial/cabecera/manoobra/material] ...
+		$codigoCotizacion=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+		$this-> tablaGenerica_model -> eliminar('solcotizcabecera','numCotizacion',$codigoCotizacion);
+		$this-> tablaGenerica_model -> eliminar('solcotizdetalle','numeroCotizacion',$codigoCotizacion);
+		$archivoPDF='solCotiz'.$codigoCotizacion.'.pdf';
+		//$archivoPDF='cotizacion10077PDF.pdf';
+		$archivo ='pdfsArchivos/cotizaciones/solCotiz'.$codigoCotizacion.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verSolicitudesCotizacion");
+		echo $data;
+	}		//...fin eliminarSolicitudCotizacion ...
+	
 	
 
 	public function generarPedidoPDF(){
