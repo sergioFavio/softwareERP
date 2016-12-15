@@ -49,6 +49,7 @@
 			$this->Cell(39,7,utf8_decode('descripción'),'TB',0,'C','0');
 			$this->Cell(70,7,'','TBR',0,'R','0');
 	        $this->Ln(7);
+			$contadorLineas=0;		//.. para controlar la impresión de las imagenes de los planos ...
        }
 
        // El pie del pdf

@@ -316,7 +316,7 @@ function filaVacia(posicionFila){
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<15; $x++){
+       		for($x=0; $x<13; $x++){
             	echo "<tr class='detalleMaterial' >";
 					echo "<td style='width: 70px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 70px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width: 70px;border:none;'/></td>";
