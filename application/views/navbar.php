@@ -150,6 +150,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/cotizacion"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
 							<li><a href="<?=base_url();?>tienda/verSolicitudesCotizacion"><span class="glyphicon glyphicon-eye-open"></span> Ver Solicitudes Cotización</a></li>
+							<li><a href="<?=base_url();?>produccion/crudVerCotizaciones"><span class="glyphicon glyphicon-eye-open"></span> Ver Cotizaciones</a></li>
 						</ul>
 					</li>
 					<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> Consultar Stock</a></li>
