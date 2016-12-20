@@ -17,6 +17,15 @@ class Produccion extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
+			$sql="SELECT * FROM solcotizdetalle ";
+			$solicitudCotizacion=$this->db->query($sql);
+			if($solicitudCotizacion->num_rows==0){
+				//... mensaje de error ....
+			}
+		
+		
+		
+		
 			$this->load->model("numeroDocumento_model");
 			$nombreTabla='nocotizacion'; // ... prefijoTabla
 	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
@@ -25,21 +34,15 @@ class Produccion extends CI_Controller {
 			//////////////////////////////////////
 			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
 			$secuenciaPedido=$secuenciaPedido +1;
-/*			if($secuenciaPedido<10){
-				$secuenciaPedido='000'.$secuenciaPedido;
-			} elseif($secuenciaPedido<100){
-					$secuenciaPedido='00'.$secuenciaPedido;
-				} elseif($secuenciaPedido<1000){
-						$secuenciaPedido='0'.$secuenciaPedido;
-					}
-*/				
+		
 			$ingreso=$secuenciaPedido;  //... numero de comprobante ...
 			
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tablaGenerica
 			$insumos= $this->tablaGenerica_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..	
 			$materialesArea= $this->tablaGenerica_model->getTodos('materialarea'); //..una vez cargado el modelo de la tabla llama materialArea..
 			$trabajadores= $this->tablaGenerica_model->getTodos('prodmanoobra'); //..una vez cargado el modelo de la tabla llama prodmanoobra..
-							
+						
+			$datos['solicitudCotizacion']=$solicitudCotizacion;				
 			$datos['titulo']=$nombreDeposito;
 			$datos['ingreso']=$ingreso;
 			$datos['insumos']=$insumos;	

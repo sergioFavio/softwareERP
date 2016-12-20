@@ -7,10 +7,6 @@
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
 	
 <style type="text/css" >
-
-.solcotiz-dialog {width:950px;}
-#solcotizModal{padding-top:80px;padding-left:285px;}  /* ... baja la ventana modal más al centro vertical ... */
-
 /*  inicio de light box  material x area */
 .modalArea-dialog {width:940px;}
 .modalManoObra-dialog {width:790px;}
@@ -56,14 +52,6 @@ $(document).ready(function() {
         }
     });
     
-    
-    $('#inputCodigo').click(function(){
-  		var title = $(this).attr("title");
-		$('.modal-title').html(title);
-  		$('#solcotizModal').modal({show:true});
-	});
-	
-	
     $("#materialAreaModal").keypress(function(e) {			//... dseactiva la tecla ENTER ...
         if (e.which == 13) {
             return false;
@@ -177,22 +165,6 @@ $(document).ready(function() {
 //      }
         	
 	} ); // fin #tabla2 tbody
-	
-	$('#tabla3').dataTable();
-    
-    $('#tabla3 tbody').on('click', 'tr', function () {	
-    	var numCotizacion = $('td', this).eq(0).text();
-    	var secuencia = $('td', this).eq(1).text();
-    	var descripcion = $('td', this).eq(2).text();
-  		var cliente = $('td', this).eq(3).text();
-  		var correoElectronico = $('td', this).eq(4).text();
-  		
-		$('#inputCodigo').val(numCotizacion + '-' + secuencia);
-		$('#descripcion').val(descripcion);
-		$('#inputCliente').val(cliente);
-	
-    	$('#solcotizModal').modal('hide'); // cierra el lightBox
-	} ); // fin #tabla3 tbody
 	
 	
 	$('#tabla4').dataTable();
@@ -813,20 +785,11 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<!--div class="col-xs-1">
+	    	<div class="col-xs-1">
 	    	 	<span id="titulo" class="label label-default">Cotización No.: <?= $ingreso ?></span>
-	    	</div--> 
+	    	</div> 
 	    	
-	    	<div class="col-lg-2">
-				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" >Cotizaci&oacute;n </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputCodigo" name="inputCodigo" title='Seleccionar ítem de la tabla de SOLICITUDES DE COTIZACIÓN' readonly="readonly" placeholder="c&oacute;digo&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
-	    		</div>
-	    	</div><!-- /.col-lg-2 -->
-	    	
-	    	
-	    	
-			<div class="col-xs-1">
+			<div class="col-xs-2">
 			 	<span></span>
 			</div>	    	
 	    	
@@ -947,7 +910,20 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-xs-0">
 	 	<span></span>
 	</div>
-		
+	
+	
+	<!--div class="col-xs-2">
+		<div class="input-group input-group-sm">
+	    	 <button type="button" class="btn btn-success btn-sm" data-title='Descripción' id="btnDescripcion"><span class="glyphicon glyphicon-info-sign"></span> Descripci&oacute;n</button>&nbsp;
+       </div>
+	</div--><!-- /.col-md-2 -->
+	
+	
+	
+	
+	
+	
+	
 	<div class="totalBs">
 		<span class="label label-info">Total Bs.:</span>&nbsp;&nbsp;
 		<span class="label label-info">
@@ -1492,49 +1468,4 @@ function filaVacia(posicionFila, codPrefijo){
 <!-- ... fin  lightbox  valores ... -->
 
 
-<!-- ... lightbox  solcotizdetalle ... -->
-<div id="solcotizModal"  class="modal fade" tabindex="-1" role="dialog" >
-  <div class="solcotiz-dialog"  >
-  <div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h4 class="modal-title">cabecera de caja luz</h4>
-	</div>
-	<div class="modal-body">
-		
-		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla3">
-			<thead>
-				<tr class='letraDetalleLightBox'>
-					<th style='width:40px;text-align:center;'>Sol.Cotiz.</th>
-					<th style='width:550px;text-align:center;'>Descripci&oacute;n</th>
-					<th style='width:70px;text-align:center;'>Cliente</th>
-					<th style='width:30px;text-align:center;'>Telf./Celular</th>
-					<th style='width:30px;text-align:center;'>E-mail</th>
-				</tr>
-			</thead>
-			<tbody>			
-                <!--?php foreach($solicitudCotizacion->result() as $regSolCotiz):?-->
-                <?php foreach($solicitudCotizacion->result() as $regSolCotiz){?>
-                    <tr class='letraDetalleLightBox'>
-                        <td style='width:60px;'> <?= $regSolCotiz->numeroCotizacion ?></td>
-                        <td style='width:40px;'> <?= $regSolCotiz->secuencia ?></td>
-                        <td style='width:550px;'> <?= $regSolCotiz->descripcion ?></td>
-                        <td style='width:90px;'> <?= $regSolCotiz->dCliente ?></td>
-   						<td style='width:30px;' ><?= $regSolCotiz->dCorreoElectronico ?></td>
-                    </tr>
-                <?php } ?>
-                <!--?php endforeach ?-->
-                
-                
-			</tbody>
-		</table>
-		
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-	</div>
-   </div>
-  </div>
-</div>
-<!-- ... fin  lightbox solcotizdetalle ... -->
 
