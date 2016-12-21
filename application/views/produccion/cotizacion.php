@@ -18,8 +18,8 @@
 .modalValores-dialog {width:430px;}
 
 /*   light box descripcion */
-.descripcion-dialog {width:375px;}
-#descripcionModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
+.descripcion-dialog {width:450px;}
+#descripcionModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 .totalBsArea{font-size:16px;text-align:center; margin-left:700px; }   
 .totalBsManoObra{font-size:16px;text-align:center; margin-left:550px; }
@@ -181,16 +181,16 @@ $(document).ready(function() {
 	$('#tabla3').dataTable();
     
     $('#tabla3 tbody').on('click', 'tr', function () {	
-    	var numCotizacion = $('td', this).eq(0).text();
+    	var numCotizacion = $('td', this).eq(0).text();   	
     	var secuencia = $('td', this).eq(1).text();
     	var descripcion = $('td', this).eq(2).text();
   		var cliente = $('td', this).eq(3).text();
   		var correoElectronico = $('td', this).eq(4).text();
   		
-		$('#inputCodigo').val(numCotizacion + '-' + secuencia);
+		$('#inputCodigo').val(numCotizacion + '-'+ secuencia);
 		$('#descripcion').val(descripcion);
 		$('#inputCliente').val(cliente);
-	
+		$('#inputEmail').val(correoElectronico);
     	$('#solcotizModal').modal('hide'); // cierra el lightBox
 	} ); // fin #tabla3 tbody
 	
@@ -392,6 +392,11 @@ function grabarCotizacion(){
 	var k=0;  //... cuenta numeroFilasManoObra  del formulario mano de obra...
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
+	if($("#inputCodigo").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO COTIZACION está vacío");
+			registrosValidos= false;	
+	}
+	
 	if($("#inputFecha").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
 			registrosValidos= false;	
@@ -411,11 +416,7 @@ function grabarCotizacion(){
 		}
 	}
 
-	if($("#inputTelCel").val()=="" ){
-		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
-		registrosValidos= false;	
-	}
-	else{
+	if($("#inputTelCel").val!="" ){
 		var numero= $('#inputTelCel').val();
 		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
 		{
@@ -813,18 +814,12 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<!--div class="col-xs-1">
-	    	 	<span id="titulo" class="label label-default">Cotización No.: <?= $ingreso ?></span>
-	    	</div--> 
-	    	
 	    	<div class="col-lg-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" >Cotizaci&oacute;n </span>
 	    	 		<input type="text"  class="form-control input-sm" id="inputCodigo" name="inputCodigo" title='Seleccionar ítem de la tabla de SOLICITUDES DE COTIZACIÓN' readonly="readonly" placeholder="c&oacute;digo&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
-	    	
-	    	
 	    	
 			<div class="col-xs-1">
 			 	<span></span>
@@ -863,7 +858,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputCliente" name="inputCliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputCliente" name="inputCliente" readonly="readonly" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -875,7 +870,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-md-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-envelope"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputEmail" name="inputEmail" placeholder="email&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputEmail" name="inputEmail" readonly="readonly" placeholder="email&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -887,7 +882,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputTelCel" name="inputTelCel" placeholder="telf./cel.&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputTelCel" name="inputTelCel" readonly="readonly" placeholder="telf./cel.&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -957,7 +952,7 @@ function filaVacia(posicionFila, codPrefijo){
 		
 		
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="numeroCotizacion" value="<?= $ingreso ?>"/>
+	<!--input type="hidden"  name="numeroCotizacion" value="<?= $ingreso ?>"/-->
 	
 	<div style="text-align: right; padding-top: 5px;">  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
@@ -1268,8 +1263,7 @@ function filaVacia(posicionFila, codPrefijo){
 	</div>
 	<div class="modal-body">
 		<div class="input-group input-group-sm">
-	    	<!--span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span-->
-	 		<textarea rows='7'  id='descripcion' name='descripcion' placeholder="descripci&oacute;n&hellip;" style="width:335px;font-size:11px;text-align:center;" ></textarea>
+	 		<textarea rows='10'  id='descripcion' name='descripcion' placeholder="descripci&oacute;n&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
 		</div>
 	</div>
 	
@@ -1516,8 +1510,8 @@ function filaVacia(posicionFila, codPrefijo){
                 <!--?php foreach($solicitudCotizacion->result() as $regSolCotiz):?-->
                 <?php foreach($solicitudCotizacion->result() as $regSolCotiz){?>
                     <tr class='letraDetalleLightBox'>
-                        <td style='width:60px;'> <?= $regSolCotiz->numeroCotizacion ?></td>
-                        <td style='width:40px;'> <?= $regSolCotiz->secuencia ?></td>
+                        <td style='width:25px;'> <?= $regSolCotiz->numeroCotizacion ?></td>
+                        <td style='width:20px;'> <?= $regSolCotiz->secuencia ?></td>
                         <td style='width:550px;'> <?= $regSolCotiz->descripcion ?></td>
                         <td style='width:90px;'> <?= $regSolCotiz->dCliente ?></td>
    						<td style='width:30px;' ><?= $regSolCotiz->dCorreoElectronico ?></td>

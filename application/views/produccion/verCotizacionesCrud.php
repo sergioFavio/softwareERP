@@ -118,7 +118,7 @@ function reportePdf(nCotizacion){
 			   	     
 				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaCotizacion ?>' placeholder="buscar ...">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaCotizacion ?>' placeholder="buscar por cliente...">
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>

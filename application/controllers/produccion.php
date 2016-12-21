@@ -17,43 +17,45 @@ class Produccion extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
-			$sql="SELECT * FROM solcotizdetalle ";
+			$sql="SELECT * FROM solcotizdetalle WHERE estadoItem is NULL";
 			$solicitudCotizacion=$this->db->query($sql);
 			if($solicitudCotizacion->num_rows==0){
 				//... mensaje de error ....
+				$datos['mensaje']='No existen registros en la tabla de SOLICITUDES DE COTIZACIÓN para procesar';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
 			}
-		
-		
-		
-		
-			$this->load->model("numeroDocumento_model");
-			$nombreTabla='nocotizacion'; // ... prefijoTabla
-	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
-			///////////////////////////////////////
-			///...INICIO genera nuevo numero de cotizacion ...
-			//////////////////////////////////////
-			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
-			$secuenciaPedido=$secuenciaPedido +1;
-		
-			$ingreso=$secuenciaPedido;  //... numero de comprobante ...
+			else{
+				$this->load->model("numeroDocumento_model");
+				$nombreTabla='nocotizacion'; // ... prefijoTabla
+		    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+				///////////////////////////////////////
+				///...INICIO genera nuevo numero de cotizacion ...
+				//////////////////////////////////////
+				$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
+				$secuenciaPedido=$secuenciaPedido +1;
 			
-			$this->load->model("tablaGenerica_model");	//...carga el modelo tablaGenerica
-			$insumos= $this->tablaGenerica_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..	
-			$materialesArea= $this->tablaGenerica_model->getTodos('materialarea'); //..una vez cargado el modelo de la tabla llama materialArea..
-			$trabajadores= $this->tablaGenerica_model->getTodos('prodmanoobra'); //..una vez cargado el modelo de la tabla llama prodmanoobra..
-						
-			$datos['solicitudCotizacion']=$solicitudCotizacion;				
-			$datos['titulo']=$nombreDeposito;
-			$datos['ingreso']=$ingreso;
-			$datos['insumos']=$insumos;	
-			$datos['materialesArea']=$materialesArea;
-			$datos['trabajadores']=$trabajadores;
-			
-			$datos['nombreDeposito']=$nombreDeposito;	// ... egreso: almacen/bodega ...
-	
-			$this->load->view('header');
-			$this->load->view('produccion/cotizacion',$datos);
-			$this->load->view('footer');
+				$ingreso=$secuenciaPedido;  //... numero de comprobante ...
+				
+				$this->load->model("tablaGenerica_model");	//...carga el modelo tablaGenerica
+				$insumos= $this->tablaGenerica_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..	
+				$materialesArea= $this->tablaGenerica_model->getTodos('materialarea'); //..una vez cargado el modelo de la tabla llama materialArea..
+				$trabajadores= $this->tablaGenerica_model->getTodos('prodmanoobra'); //..una vez cargado el modelo de la tabla llama prodmanoobra..
+							
+				$datos['solicitudCotizacion']=$solicitudCotizacion;				
+				$datos['titulo']=$nombreDeposito;
+				$datos['ingreso']=$ingreso;
+				$datos['insumos']=$insumos;	
+				$datos['materialesArea']=$materialesArea;
+				$datos['trabajadores']=$trabajadores;
+				
+				$datos['nombreDeposito']=$nombreDeposito;	// ... egreso: almacen/bodega ...
+		
+				$this->load->view('header');
+				$this->load->view('produccion/cotizacion',$datos);
+				$this->load->view('footer');
+			}	//... fin IF contador== 0 ...
 		}	//... fin IF validar usuario ...
 	}	//... fin cotizar ...
 	
@@ -157,7 +159,7 @@ class Produccion extends CI_Controller {
 		$numeroFilasValidasArea=$_POST['numeroFilasArea']; //... formulario materiales X area ...
 		$numeroFilasValidasManoObra=$_POST['numeroFilasManoObra']; //... formulario mano de obra ...
 		
-		$numeroCotizacion=$_POST['numeroCotizacion'];
+		$numeroCotizacion=str_replace(" ","",$_POST['inputCodigo']); //...quita ' ' los espacios en blanco ...
 		
 		$cotizacionCabecera = array(
 	    	"numCotizacion"=>$numeroCotizacion,
@@ -258,18 +260,10 @@ class Produccion extends CI_Controller {
 		$this-> load -> model("tablaGenerica_model");		//carga modelo 
 		$this-> tablaGenerica_model -> grabar('cotizacionvalores',$plantillaValores);			
 		// ... fin de inserción  registro tabla ... cotizacionManoObra
-		
-/*		
-		// ... actualizar numero de cotizacion ...		
-		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='nocotizacion'; // ... prefijoTabla
-		$this-> numeroDocumento_model -> actualizar($numeroCotizacion,$nombreTabla);
-		// fin actualizar numero de cotizacion ...
-*/		
-		
+			
 		//... agrega registro tabla: productosfabrica ...      
         $plantillaProducto = array(
-        	"idProd"=>"Z-".$numeroCotizacion,
+        	"idProd"=>"X-".$numeroCotizacion,
 		    "nombreProd"=>$_POST['descripcion'],
 		    "precioVenta"=>$_POST['totalGral'],
 			"unidad"=>"pza"
