@@ -65,7 +65,7 @@ $(document).ready(function() {
 		var codPrefijo='#idMat_'; // para sleccionar material
 		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo,codPrefijo);			
  			
- 		if(!codigoRepetido){
+// 		if(!codigoRepetido){
 			$('#idMat_'+filaActual).val(codigoMaterial);
 			$('#mat_'+filaActual).val(nombreMaterial);
 			$('#unidadMat_'+filaActual).val(unidad);
@@ -76,10 +76,10 @@ $(document).ready(function() {
 			$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
 					
         	$('#myModal').modal('hide'); // cierra el lightBox
-    	}else{
-    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
-    		$('#myModal').modal('hide'); // cierra el lightbox
-      	}
+//    	}else{
+//    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
+//    		$('#myModal').modal('hide'); // cierra el lightbox
+//      	}
         	
 	} ); // fin #tabla2 tbody
 	
