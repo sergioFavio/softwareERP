@@ -174,7 +174,9 @@ function reportePdf(nCotizacion){
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numeCotizacion = $cotizacion->numCotizacion;	
+					$numeCotizacion = $cotizacion->numCotizacion;
+					$numeCotizSinGuion =str_replace("-","",$numeCotizacion); //...quita - como separador de codigo ...	
+						
 							
 					 echo"<td style='width:60px;'><input type='text' id='idMat_".$posicionFila."' name='idMat_".$posicionFila."' value='".$cotizacion->numCotizacion."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
@@ -186,7 +188,7 @@ function reportePdf(nCotizacion){
 						
 					 echo"<td style='width: 80px;'><input type='text' id='precioMat_".$posicionFila."' name='precioMat_".$posicionFila."' value='".$cotizacion->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
 								
-					 echo"<td style='width:98px;background-color:#b9e9ec;' width='98' align='left'><a href='#' onClick='reportePdf($numeCotizacion);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
+					 echo"<td style='width:98px;background-color:#b9e9ec;' width='98' align='left'><a href='#' onClick='reportePdf($numeCotizSinGuion);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 
 					 echo"<td style='width:95px;background-color:#a5d4da;' width='95' align='left'><a href='#' data-title='Eliminar cotizaci&oacute;n' data-item-id='".$cotizacion->numCotizacion."' data-cli='".$cotizacion->cliente."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 		

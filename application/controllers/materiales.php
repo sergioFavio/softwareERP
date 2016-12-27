@@ -1928,6 +1928,17 @@ class Materiales extends CI_Controller {
 	} //... fin funcion: generarReporteMensualsalida ...
 	
 	
+	public function listadoExistencias(){
+		$sql="SELECT codInsumo, nombreInsumo FROM almacen WHERE unidad=''"; //... selecciona grupo para listado de existencias ...		
+		$grupos=$this->db->query($sql);	
+		
+		$datos['grupos']=$grupos;
+		$this->load->view('header');
+		$this->load->view('inventarios/listadoExistenciasGrupo',$datos );
+		$this->load->view('footer');
+	}		//... fin  listadoExistencias ...
+	
+	
 	
 	public function reponerMateriales(){
 		//... genera reporte de reposicion de maetriales en PDF

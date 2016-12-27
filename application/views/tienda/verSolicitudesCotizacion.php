@@ -174,7 +174,7 @@ function reportePdf(nCotizacion){
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numeCotizacion = $cotizacion->numCotizacion;	
+					$numeCotizacion = $cotizacion->numCotizacion;
 							
 					 echo"<td style='width:60px;'><input type='text' id='idMat_".$posicionFila."' name='idMat_".$posicionFila."' value='".$cotizacion->numCotizacion."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						

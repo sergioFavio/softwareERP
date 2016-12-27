@@ -274,6 +274,8 @@ class Produccion extends CI_Controller {
 		$this-> tablaGenerica_model -> grabar('productosfabrica',$plantillaProducto);			
 		// ... fin de inserción  registro tabla: productosfabrica ...
 		
+		
+		
 		redirect("produccion/generarCotizacionPDF?numeroCotizacion=$numeroCotizacion");
 		
 	}	//... fin grabarCotizacion	
@@ -365,10 +367,12 @@ class Produccion extends CI_Controller {
 		$this-> tablaGenerica_model -> eliminar('cotizacionmaterial','numeroCotizacion',$codigoCotizacion);
 		$this-> tablaGenerica_model -> eliminar('cotizacionmanoobra','numCotizacion',$codigoCotizacion);
 		$this-> tablaGenerica_model -> eliminar('cotizacionvalores','idCotizacion',$codigoCotizacion);
+		
+		$numeCotizSinGuion =str_replace("-","",$codigoCotizacion); //...quita - como separador de codigo ...	
 
-		$archivoPDF='cotizacion'.$codigoCotizacion.'.pdf';
+		$archivoPDF='cotizacion'.$numeCotizSinGuion.'.pdf';
 		//$archivoPDF='cotizacion10077PDF.pdf';
-		$archivo ='pdfsArchivos/cotizaciones/cotizacion'.$codigoCotizacion.'.pdf';
+		$archivo ='pdfsArchivos/cotizaciones/cotizacion'.$numeCotizSinGuion.'.pdf';
 		$hacer = unlink($archivo);
  
 		if($hacer != true){
@@ -849,8 +853,8 @@ class Produccion extends CI_Controller {
 			 * $pdf->Output("example2.pdf", 'D');
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 		     */
-			  
-			 $this->pdf->Output('pdfsArchivos/cotizaciones/cotizacion'.$numeroCotizacion.'.pdf', 'F');
+			 $numeroCotizacionSinGuion= str_replace("-","",$numeroCotizacion); //...quita - como separador de codigo ...
+			 $this->pdf->Output('pdfsArchivos/cotizaciones/cotizacion'.$numeroCotizacionSinGuion.'.pdf', 'F');
 	
 			 redirect("menuController/index");			
 					

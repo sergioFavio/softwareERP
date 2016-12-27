@@ -167,20 +167,20 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 */	
-	if($("#telCel").val()!="" ){
+//	if($("#telCel").val()!="" ){
 /*		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
 		registrosValidos= false;	
 	}
 	else{
 */		
-		var numero= $('#telCel').val();
-		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-		{
-    		alert("El valor " + numero + " no es un número telefónico");
-    		$("#telCel").val("");   // borra celda de cantidad
-    		registrosValidos= false;
-    	}
-	}
+//		var numero= $('#telCel').val();
+//		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+//		{
+//    		alert("El valor " + numero + " no es un número telefónico");
+//    		$("#telCel").val("");   // borra celda de cantidad
+//    		registrosValidos= false;
+//    	}
+//	}
 	
 	if($("#localidad").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
@@ -362,8 +362,8 @@ function validarAcuenta(numero){
 function validarDescuento(numero){
    		
 	var descuento=parseFloat( numero ); // convierte de string to number 
-	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
-	//if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#comision").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
+//	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
+	if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#descuento").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
 		alert("El valor " + numero + " no es válido");
 		$("#descuento").val("");   // borra celda de descuento
 	}else{
@@ -375,11 +375,11 @@ function validarDescuento(numero){
 function calcularTotalBs(sufijo){
 	//...suma los importes del formularioIngreso
 	var i=0;
-	totalBs=0;
+	totalBs=0.00;
 	totalBs=parseFloat(totalBs);
-	saldo=0;
-	descuento=0;
-	aCuenta=0;
+	saldo=0.00;
+	descuento=0.00;
+	aCuenta=0.00;
 	while($("#idMat"+sufijo+i).val()!= ""){
 		var importe=$("#importeMat"+sufijo+i).val();
 
@@ -465,10 +465,10 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.' / '.$anhoSistema ?> </span>
+	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
 	    	</div> 
 	    	
-	    	<div class="col-md-1">
+	    	<div class="col-xs-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tags"></span> </span>
 	    	 		<input type="text"  class="form-control input-sm" id="cotizacionFabrica" name="cotizacionFabrica" placeholder="# cotiz.Fab. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
@@ -484,7 +484,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"telCel");'>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	

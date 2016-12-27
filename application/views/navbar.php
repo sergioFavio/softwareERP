@@ -53,6 +53,7 @@
 					</li>
                     
                     <li><a href="<?=base_url();?>materiales/datosKardex"><span class="glyphicon glyphicon-list-alt"></span> Kardex de Materiales</a></li>
+                    <li><a href="<?=base_url();?>materiales/listadoExistencias"><span class="glyphicon glyphicon-list-alt"></span> Listado de Existencias</a></li>
                     <li><a href="<?=base_url();?>materiales/reponerMateriales"><span class="glyphicon glyphicon-transfer"></span> Reponer Materiales</a></li>
                     
                 </ul>
@@ -148,7 +149,7 @@
 					
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Cotización</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda/cotizacion"><span class="glyphicon glyphicon-usd"></span> Cotizar</a></li>
+							<li><a href="<?=base_url();?>tienda/cotizacion"><span class="glyphicon glyphicon-usd"></span> Solicitud de Cotizaci&oacute;n</a></li>
 							<li><a href="<?=base_url();?>tienda/verSolicitudesCotizacion"><span class="glyphicon glyphicon-eye-open"></span> Ver Solicitudes Cotización</a></li>
 							<li><a href="<?=base_url();?>produccion/crudVerCotizaciones"><span class="glyphicon glyphicon-eye-open"></span> Ver Cotizaciones</a></li>
 						</ul>
