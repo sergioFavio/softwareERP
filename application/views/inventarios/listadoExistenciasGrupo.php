@@ -48,7 +48,7 @@ $(document).ready(function() {
 			    		<span class="input-group-addon" id="letraCabecera" >Grupo </span>
 				    	<select class = "form-control input-sm" id="grupo" name="grupo" style="width:300px;font-size:11px;text-align:center;">
 				    	<?php foreach($grupos->result() as $grupo){?>	
-							<option value="<?= $grupo->codInsumo ?>"><?= $grupo->nombreInsumo ?> </option>
+							<option value="<?= $grupo->codInsumo.'|'.$grupo->nombreInsumo; ?>"><?= $grupo->nombreInsumo; ?> </option>
 						<?php } ?>         	
 		        	</select>
 		        	
@@ -73,8 +73,7 @@ $(document).ready(function() {
 			    
 		</div><!-- /.row -->
 			
-			<!--input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />       <!--  nombreDeposito: almacen/bodega -->
-			<!--input type="hidden"  name="tipoTransaccion" value="<?= $tipoTransaccion ?>" />     <!-- tipoTransaccion: ingreso/salida -->
+			<!--input type="hidden"  name="nombreGrupo" value="<?= $nombreGrupo ?>" />       <!--  nombreDeposito: almacen/bodega -->
 			
 	    </form>
 	</div>

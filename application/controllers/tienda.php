@@ -1552,9 +1552,114 @@ class Tienda extends CI_Controller {
 		
 		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local");
 		
-	}	//... fin grabarDeposito ...	
+	}	//... fin grabarDeposito ...
+	
+	
+	public function consultarStock(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' ){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para CONSULTAR STOCK';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+//			redirect('menuController/index');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$sql="SELECT codInsumo,nombreInsumo,unidad,existencia FROM almacen WHERE codInsumo LIKE 'P%' AND unidad!='' ";
+			$registros = $this->db->query($sql);
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){  //...cuando NO hay registros ...
+				$datos['mensaje']='No hay registros de productos semi terminados en la tabla ALMACÉN';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}
+			else{      //... cuando hay registros ...
+				/* Se obtienen los registros a mostrar*/ 
+				$this->load->model("tablaGenerica_model");
+		   		$datos['registros'] = $registros;
+				
+		 		/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/consultarStock', $datos);
+				$this->load->view('footer');
+				
+			}  // fin else cuando hay registros 
+		}	//... fin IF validar usuario ...
+	} //... fin consultarStock ...	
+	
+	
+	public function verCotizaciones(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Producción';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$nombreDeposito='almacen';
+			$this->load->model("tablaGenerica_model");
+			$contador= $this->tablaGenerica_model->get_total_registros('cotizacioncabecera');
+			
+			if($contador==0){  //...cuando NO hay registros ...
+				$datos['mensaje']='No hay registros grabados en la tabla COTIZACIONcabecera.';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}
+			else{      //... cuando hay registros ...
+				
+				/* URL a la que se desea agregar la paginación*/
+		    	$config['base_url'] = base_url().'produccion/crudVerCotizaciones';
+				
+				/*Obtiene el total de registros a paginar */
+		    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('cotizacioncabecera');
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+		    	$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+		    	$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+		    	$this->pagination->initialize($config);
+		
+				/* Se obtienen los registros a mostrar*/ 
+		   		$datos['listaCotizacion'] = $this->tablaGenerica_model->get_registros('cotizacioncabecera',$config['per_page'], $desde); 
+		
+				$datos['consultaCotizacion'] ='';
+				
+		 		/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verCotizaciones', $datos);
+				$this->load->view('footer');
+			}  // fin else cuando hay registros 
+		}	//... fin IF validar acceso usuario...
+	} //... fin crudVerCotizaciones ...
  
 }
 
 
-/* End of file produccion.php */
+/* End of file tienda.php */

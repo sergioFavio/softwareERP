@@ -292,12 +292,11 @@ class Produccion extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName ...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Producción';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
 			$nombreDeposito='almacen';

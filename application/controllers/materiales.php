@@ -1939,6 +1939,94 @@ class Materiales extends CI_Controller {
 	}		//... fin  listadoExistencias ...
 	
 	
+	public function generarListadoExistencias(){
+		//... genera listadoExistencias por grupo en PDF
+		$posicionSeparador = strpos($_POST['grupo'], '|');
+		$codGrupo= substr($_POST['grupo'],0,$posicionSeparador); //... lee codigo de grupo ...
+		$nombreGrupo= substr($_POST['grupo'],$posicionSeparador+1,strlen($_POST['grupo'])); //... lee nombre de grupo ...
+		
+		// Se carga la libreria fpdf
+		$this->load->library('inventarios/ListadoExistenciasGrupoPdf');
+		
+		// Se obtienen los registros de la base de datos
+		$sql="SELECT codInsumo,nombreInsumo,unidad,existencia FROM almacen  WHERE codInsumo LIKE '$codGrupo%'";
+		
+		$registros = $this->db->query($sql);
+		 
+		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+		
+		if($contador==0){
+			$datos['mensaje']='No hay registros en la tabla ALMACEN';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new ListadoExistenciasGrupoPdf();
+			$this->pdf->nombreGrupo=$nombreGrupo; 										//...pasando variable para el header del PDF
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    $this->pdf->SetFont('Arial', '', 8);
+		    $espacio=1; 			//... epacio variable para imprimir ...
+		    foreach ($registros->result() as $registro) {
+		        // Se imprimen los datos de cada registro
+		       	
+	        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
+				$this->pdf->Cell($espacio,2,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$registro->codInsumo,'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($registro->nombreInsumo,0,55)),'',0,'L',0);
+	       		$this->pdf->Cell(15,5,utf8_decode($registro->unidad),'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,number_format($registro->existencia,2),'',0,'R',0);
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+				$this->pdf->Cell(5,5,'__________','',0,'L',0);
+				//Se agrega un salto de linea
+	        	$this->pdf->Ln(5);	
+		    }
+				
+			     /* PDF Output() settings
+			     * Se manda el pdf al navegador
+			     *
+			     * $this->pdf->Output(nombredelarchivo, destino);
+			     *
+			     * I = Muestra el pdf en el navegador
+			     * D = Envia el pdf para descarga
+				 * F: save to a local file
+				 * S: return the document as a string. name is ignored.
+				 * $pdf->Output(); //default output to browser
+				 * $pdf->Output('D:/example2.pdf','F');
+				 * $pdf->Output("example2.pdf", 'D');
+				 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+			     */
+			  
+			  	$this->pdf->Output('pdfsArchivos/inventarios/listadoExistenciasGrupo.pdf', 'F');
+				
+				$datos['documento']="pdfsArchivos/inventarios/listadoExistenciasGrupo.pdf";	
+				$datos['titulo']=' Listado Existencias por Grupo: '.$nombreGrupo;	// ... titulo ...
+				
+				$this->load->view('header');
+				$this->load->view('reportePdfSinFechas',$datos );
+				$this->load->view('footer');
+			}
+			 
+	} //... fin funcion: generarListadoexistencias ...
+	
 	
 	public function reponerMateriales(){
 		//... genera reporte de reposicion de maetriales en PDF

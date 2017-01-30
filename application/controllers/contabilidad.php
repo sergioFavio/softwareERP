@@ -817,7 +817,7 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->numeroComprobante=strtoupper($numeroComprobante);      		//...pasando variable para el header del PDF
 			$this->pdf->fechaComprobante=fechaMysqlParaLatina($fechaComprobante); 	//...pasando variable para el header del PDF
 			$this->pdf->clienteBanco=$clienteBanco; 								//...pasando variable para el header del PDF
-			$this->pdf->tipoComprobante=$tComprobante; 							//...pasando variable para el header del PDF
+			$this->pdf->tipoComprobante=$tComprobante; 								//...pasando variable para el header del PDF
 			$this->pdf->numeroCheque=$numeroCheque; 								//...pasando variable para el header del PDF
 			$this->pdf->concepto=$concepto; 										//...pasando variable para el header del PDF
 //			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
