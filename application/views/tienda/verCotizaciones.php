@@ -112,7 +112,7 @@ $(document).ready(function() {
 							 
 					 echo"<td style='width: 200px;'><input type='text' id='clienteMat_".$posicionFila."' name='clienteMat_".$posicionFila."' value='".$cotizacion->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
 						
-					 echo"<td style='width: 300px;'><input type='text' id='descripcionMat_".$posicionFila."' name='descripcionMat_".$posicionFila."' value='".$cotizacion->descripcion."' readonly='readonly' style='border:none; width:300px;' /></td>";
+					 echo"<td style='width: 300px;'><textarea rows='5' id='descripcionMat_".$posicionFila."' name='descripcionMat_".$posicionFila."' placeholder='".$cotizacion->descripcion."' readonly='readonly' style='border:none; width:300px;' /></textarea></td>";
 						
 					 echo"<td style='width: 80px;'><input type='text' id='fonoMat_".$posicionFila."' name='fonoMat_".$posicionFila."' value='".$cotizacion->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
 
