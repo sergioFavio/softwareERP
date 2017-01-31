@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>">
 
 <style type="text/css" >
@@ -15,9 +14,6 @@
 	th { height:10px;  width:850px;}                                    
 	td { height:10px;  width:850px; margin:0px; cell-spacing:0px;}
 	/*  fin de scrollbar  */
-	
-	#borrarModal{padding-top:90px;}  /* ... baja la ventana modal más al centro vertical ... */
-	#pdfModal{padding-top:60px;padding-left:261px;}  /* ... baja la ventana modal más al centro vertical ... */
 	
 	.cuerpoDetalle, {margin: 2px;} 
     
@@ -40,76 +36,14 @@
 <script>
 
 $(document).ready(function() {
-			
-	$('#borrarModal').on('show.bs.modal', function(e) {  
-		//aca recuperamos el id que pasaremos por tag al modal  
-		var id = $(e.relatedTarget).data('item-id'); 
-		var cli =$(e.relatedTarget).data('cli');
-		var title = $(e.relatedTarget).data('title');
-		//aca lo asignamos a un hidden dentro del form que esta en el modal
-	    $(e.currentTarget).find('input[name="codigo"]').val(id);
-		//esto solo pone el id pasado por tag para mostralo en el modal
-		$(e.currentTarget).find('#showCodigo').html(id);
-		$(e.currentTarget).find('#showCliente').html(cli);
-		$(e.currentTarget).find('.modal-title').html(title);		
-		
-	});
-	
-	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() {       
-		var form= $('#borrarModal').find("form");
-		var action=form.attr("action");
-		//aca recuperamos el id que paso por tag al modal
-		var idele=$(form).find('input[name="codigo"]').val();
-			
-		$.ajax({
-		    url: action,
-		    type: "POST",
-		    data: $(form).serialize(),
-		
-		    success: function(data){
-		        //alert(data);
-		       
-			    //  aca deberia poner la funcion que hace el refrescado del listado
-			    window.location.href=data;
-			}
-		});
-	 });
-	 
-		  
+					  
 }); // fin document.ready 
-
-
-
-function reportePdf(nCotizacion){
-	var cotizacion= parseInt( nCotizacion );
-    	
-	$.ajax({
-      url: "<?=base_url()?>produccion/reportePdfCrud",
-
-      type: "POST",
-      data: {numeCotizacion: cotizacion},
-
-      success: function(data){
-         //alert(data);
-       
-	    //  aca deberia poner la funcion que hace el refrescado del listado	    
-		$("#recargado").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
-
-	  }
-	      
-   });	
-
-  $('#pdfModal').modal({show:true});
-   
-}  // ... fin reportePdf ...
-
-
 		
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>produccion/buscarCotizacionCrud" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarCotizacion" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:10px;"></div>
 		    <div class="row">
 			   	<div class="col-xs-1"> 
@@ -147,8 +81,6 @@ function reportePdf(nCotizacion){
 	
 </div> <!-- fin ... cuerpoCabecera -->
 
-
-
 <div style="height:7px;"></div>
 
 <div class="jumbotron" id="cuerpoDetalle" >
@@ -161,9 +93,9 @@ function reportePdf(nCotizacion){
     			<th style="width: 80px;">Cotizaci&oacute;n</th>
     			<th style="width: 80px;">Fecha</th>
 				<th style="width: 250px;">Cliente</th>
-				<th style="width: 155px;">Email</th>
-				<th style="width: 160px;">Fono/Celular</th>
-				<th style="width: 165px;" colspan="2">Acciones</th>
+				<th style="width: 250px;">Descripci&oacute;n</th>
+				<th style="width: 100px;">Fono/Celular</th>
+				<th style="width: 100px;" colspan="2">Importe Bs.</th>
     		</tr>
  		</thead>
  		
@@ -173,24 +105,18 @@ function reportePdf(nCotizacion){
 				<tr class='letraDetalle'>
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
-		
-					$numeCotizacion = $cotizacion->numCotizacion;
-					$numeCotizSinGuion =str_replace("-","",$numeCotizacion); //...quita - como separador de codigo ...	
-						
-							
+								
 					 echo"<td style='width:60px;'><input type='text' id='idMat_".$posicionFila."' name='idMat_".$posicionFila."' value='".$cotizacion->numCotizacion."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
-					 echo"<td style='width: 60px;'><input type='text' id='mat_".$posicionFila."' name='mat_".$posicionFila."' value='".fechaMysqlParaLatina($cotizacion->fecha)."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width: 60px;'><input type='text' id='fechaMat_".$posicionFila."' name='fechaMat_".$posicionFila."' value='".fechaMysqlParaLatina($cotizacion->fecha)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 							 
-					 echo"<td style='width: 200px;'><input type='text' id='existMat_".$posicionFila."' name='existMat_".$posicionFila."' value='".$cotizacion->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
+					 echo"<td style='width: 200px;'><input type='text' id='clienteMat_".$posicionFila."' name='clienteMat_".$posicionFila."' value='".$cotizacion->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
 						
-					 echo"<td style='width: 200px;'><input type='text' id='unidadMat_".$posicionFila."' name='unidadMat_".$posicionFila."' value='".$cotizacion->email."' readonly='readonly' style='border:none; width:200px;' /></td>";
+					 echo"<td style='width: 300px;'><input type='text' id='descripcionMat_".$posicionFila."' name='descripcionMat_".$posicionFila."' value='".$cotizacion->descripcion."' readonly='readonly' style='border:none; width:300px;' /></td>";
 						
-					 echo"<td style='width: 80px;'><input type='text' id='precioMat_".$posicionFila."' name='precioMat_".$posicionFila."' value='".$cotizacion->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
-								
-					 echo"<td style='width:98px;background-color:#b9e9ec;' width='98' align='left'><a href='#' onClick='reportePdf($numeCotizSinGuion);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
-					 
-					 echo"<td style='width:95px;background-color:#a5d4da;' width='95' align='left'><a href='#' data-title='Eliminar cotizaci&oacute;n' data-item-id='".$cotizacion->numCotizacion."' data-cli='".$cotizacion->cliente."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+					 echo"<td style='width: 80px;'><input type='text' id='fonoMat_".$posicionFila."' name='fonoMat_".$posicionFila."' value='".$cotizacion->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
+
+					 echo"<td style='width: 80px;'><input type='text' id='totalMat_".$posicionFila."' name='totalMat_".$posicionFila."' value='".$cotizacion->totalCotizacion."' readonly='readonly' style='border:none; width:80px;text-align:right;' /></td>";
 		
 				   ?>						
 				</tr>
@@ -211,54 +137,4 @@ function reportePdf(nCotizacion){
     ?>
     </ul>
 </div>
-
-
-<!-- ...  lightbox borrar material ... -->
-
-<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-        <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>produccion/eliminarCotizacionCrud" method="POST">
-        ¿ Esta seguro de eliminar la cotizaci&oacute;n <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
-		<input type="hidden" value="" name="codigo" class="itemId">
-	  </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-        <button type="submit" id="eliminar" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-remove"></span> Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ... fin  lightbox borrar material ... -->
-
-
-<!-- ... inicio  lightbox reportePdf... -->
-
-<div class="modal fade" id="pdfModal" >
-  <div class="modalEditar-dialog">
-    <div class="modal-content">
-      <!--div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title">Modal title</h4>
-      </div-->
-      <div class="modal-body" >
-      	
-			<div id="recargado">Mi texto/variable sin recargar</div> <!--  se actualiza variable en la funcion php que llama el url de ajax-->
-	
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<!-- ... fin  lightbox reportePdf ... -->
 

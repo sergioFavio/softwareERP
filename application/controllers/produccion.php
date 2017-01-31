@@ -167,7 +167,8 @@ class Produccion extends CI_Controller {
 		    "cliente"=>$_POST['inputCliente'],
 		    "email"=>$_POST['inputEmail'],
 		    "fonoCel"=>$_POST['inputTelCel'],
-		    "descripcion"=>$_POST['descripcion']
+		    "descripcion"=>$_POST['descripcion'],
+		     "totalCotizacion"=>$_POST['totalGral']
 		);
 		
 		// ... inserta registro tabla cotizacioncabecera ...
