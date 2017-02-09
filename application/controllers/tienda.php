@@ -13,11 +13,58 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nodeposito'; // ... nombreTabla
+	    	$deposito = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			$anhoSistema = date("Y");	//... anho del sistema
+// 			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema = '2016';	//... anho del sistema
+ 				 					
+			if(strlen($deposito)==4 ){
+				$secuenciaDeposito= 0;  // toma los caracteres ... secuencia.
+				$anhoDeposito= substr($deposito, 0, 4);  // toma 4 caracteres ... anho.
+			}
+			
+			if(strlen($deposito)==5 ){
+				$secuenciaDeposito= substr($deposito, 0,1);  // toma los caracteres ... secuencia.
+				$anhoDeposito= substr($deposito, 1, 4);  // toma 4 caracteres ... anho.
+			}
+		
+			if(strlen($deposito)==6 ){
+				$secuenciaDeposito= substr($deposito, 0,2);  // toma los caracteres ... secuencia.
+				$anhoDeposito= substr($deposito, 2, 4);  // toma 4 caracteres ... anho.
+			}
+			
+			if(strlen($deposito)==7 ){
+				$secuenciaDeposito= substr($deposito, 0,3);  // toma los caracteres ... secuencia.
+				$anhoDeposito= substr($deposito, 3, 4);  // toma 4 caracteres ... anho.
+			}
+			
+			
+		
+			if($anhoDeposito!=$anhoSistema){
+				$secuenciaDeposito="1";
+			}else{		//... si anhoPedido==anhoSistema ...
+		     	$secuenciaDeposito=$secuenciaDeposito+1;
+			}
+			
+			$deposito=$secuenciaDeposito.$anhoSistema;	
+			
+			///////////////////////////////////////
+			///...FIN genera nuevo numero de Deposito ...
+			//////////////////////////////////////
+			
+			$datos['secuenciaDeposito']=$secuenciaDeposito;
+			$datos['anhoSistema']=$anhoSistema;
+			$datos['deposito']=$deposito;
+			
 			$this->load->view('header');
-			$this->load->view('tienda/registrarDeposito' );
+			$this->load->view('tienda/registrarDeposito',$datos);
 			$this->load->view('footer');
 		}		
-	}		//... fin function: registrarPedido ...
+	}		//... fin function: registrarDeposito ...
+	
 	
 	public function notaEntrega(){
 		//... control de permisos de acceso ....
@@ -276,8 +323,9 @@ class Tienda extends CI_Controller {
 				
 			}else{		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
- 					
+// 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema = '2016';	//... anho del sistema
+ 				 					
 				if(strlen($pedido)==4 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
 					$anhoPedido= substr($pedido, 0, 4);  // toma 4 caracteres ... anho.
@@ -425,7 +473,6 @@ class Tienda extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}			// ... fin control permiso de accesos...
 		else {
 			$this->load->model("tablaGenerica_model");
@@ -1480,77 +1527,40 @@ class Tienda extends CI_Controller {
 
 
 	public function grabarDeposito(){		
-		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
-		$local=$_POST['local'];
-		$numPedido=$_POST['numPedido'];
-			
-		$pedidoCabecera = array(
-	    	"numPedido"=>$_POST['numPedido'],
-	    	"local"=>$_POST['local'],
-		    "fechaPedido"=>$_POST['inputFecha'],
-		    "fechaEntrega"=>$_POST['inputEntrega'],
-		    "cliente"=>$_POST['cliente'],
-		    "contacto"=>$_POST['contacto'],
-		    "direccion"=>$_POST['direccion'],
-		    "telCel"=>$_POST['telCel'],
-		    "localidad"=>$_POST['localidad'],
-		    "cotizacionFabrica"=>$_POST['cotizacionFabrica'],
-		    "ordenCompra"=>$_POST['ordenCompra'],
-		    "facturarA"=>$_POST['facturarA'],
-		    "nit"=>$_POST['nit'],
-		    "montoTotal"=>str_replace(",","",$_POST['detalleTotalBs'])*(1-($_POST['descuento']/100)), //...quita , como separador de miles ...
-		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
-		    "descuento"=>$_POST['descuento'],
-		    "usuario"=>$this->session->userdata('userName'),
-		    "estado"=>"I",
-		    "fechaEstado"=>$_POST['inputFecha']
+		$numDeposito=$_POST['numDeposito'];
+		
+		$regDeposito = array(
+			"deposito"=>$_POST['numDeposito'],
+	    	"pedido"=>$_POST['numPedido'],
+		    "fechaAbono"=>$_POST['inputFecha'],
+		    "tipoPago"=>$_POST['inputTipoPago'],
+		    "banco"=>$_POST['inputBanco'],
+		    "nCheque"=>$_POST['numCheque'],
+		    "nDeposito"=>$_POST['numDeposito'],
+		    "tipoDocumento"=>$_POST['tipoDocumento'],
+		    "facturaRecibo"=>$_POST['facturaRecibo'], 
+		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), //...quita , como separador de miles ...
+		    "glosaDeposito"=>$_POST['glosaDeposito']
 		);
 		
 		// ... inserta registro tabla pedidocabecera ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-	    $this-> tablaGenerica_model -> grabar('pedidocabecera', $pedidoCabecera);
+	    $this-> tablaGenerica_model -> grabar('pagospedido', $regDeposito);
 		
-		$secuencia=0;		//...secuencia ... para cada item ...
-        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
-			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
-			
-        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
-          	    //... si cantidad mayor que cero  graba registro ... 
-          	    $secuencia=$i+1;
-				if($secuencia<10){
-					$secuencia='0'.$secuencia;
-				}
-          	    //... agrega registro tabla pedidoproducto ...      
-	            $plantillaProducto = array(
-	            	"numeroPedido"=>$numPedido,
-				    "idProducto"=>$codigoSinEspacio,
-				    "descripcion"=>$_POST['mat_'.$i],
-				    "color"=>$_POST['colorMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i],
-				    "unidad"=>$_POST['unidadMat_'.$i],
-				    "precio"=>$_POST['precioMat_'.$i],
-				    "secuencia"=>$secuencia,
-				    "cliente"=>$_POST['cliente'],
-				    "fechaEntrega"=>$_POST['inputEntrega']
-				);
-			
-				// ... inserta registro tabla transacciones ... cotizacionmaterial 
-				$this-> load -> model("tablaGenerica_model");		//carga modelo 
-	    		$this-> tablaGenerica_model -> grabar('pedidoproducto',$plantillaProducto);			
-				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
-				
-			}	// ... fin IF
-			
-		}  // ... fin  FOR 
-			
+// ... actualiza registro pedidocabecera ....	
+$this-> load -> model("tablaGenerica_model");
+$this-> tablaGenerica_model -> aumentarValorfloat('pedidocabecera','numPedido',$_POST['numPedido'],'abono',str_replace(",","",$_POST['montoDeposito']));
+
+
+	
 		// ... actualizar numero de cotizacion ...	
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$nombreTabla='nodeposito'; // ... prefijoTabla ... F: fabrica  T: tienda ...
 		
-		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
+		$this-> numeroDocumento_model -> actualizar($numDeposito,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
 		
-		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local");
+		 redirect("menuController/index");	
 		
 	}	//... fin grabarDeposito ...
 	

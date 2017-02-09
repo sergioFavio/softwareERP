@@ -64,13 +64,12 @@ class MaestroMaterial_model extends CI_Model{
   }
   
   public function aumentarExistencia($insumo,$nombreDeposito){
-   	   
    	   $this->db->update($nombreDeposito, 
 	   		array("existencia" => floatval($insumo['existencia'])+ floatval($insumo["cantidad"]) ),   // ... equivalente a SET campo= algo
 			array("codInsumo" => $insumo["idMaterial"])		 //... equivalente a WHERE id= otraTabla.id
 	   );
-	  
   }
+  
   
   public function disminuirExistencia($insumo,$nombreDeposito){
    	   

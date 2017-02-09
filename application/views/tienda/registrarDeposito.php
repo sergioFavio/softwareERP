@@ -143,7 +143,7 @@ $(document).ready(function() {
 	<div class="cuerpoCabeceraReporteSalida">
 	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDeposito' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-success"> Registrar Dep&oacute;sito No. XXXXXX - XX</span></p>
+			<p align="center" class="tituloReporte" ><span class="label label-success"> Registrar Dep&oacute;sito No. <?= $secuenciaDeposito.' / '.$anhoSistema ?></span></p>
 							
 			<div style="height:10px;"></div>
 			
@@ -303,10 +303,7 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		
-			
-			<!--input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
-			<!--input type="hidden"  name="tipoTransaccion" value="<?= $tipoTransaccion ?>" />     <!-- tipoTransaccion: ingreso/salida -->
+		   <input type="hidden"  name="numDeposito" value="<?= $deposito ?>" />     				<!--  numero deposito -->
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
