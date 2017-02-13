@@ -323,8 +323,8 @@ $anhoSistema = '2016';	//... anho del sistema
 				
 			}else{		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
-// 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-$anhoSistema = '2016';	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+//$anhoSistema = '2016';	//... anho del sistema
  				 					
 				if(strlen($pedido)==4 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.

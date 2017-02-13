@@ -1111,7 +1111,7 @@ class Produccion extends CI_Controller {
 	}	//... fin datosOrdenTrabajo ...
 		
 		
-		public function ordenTrabajo(){
+	public function ordenTrabajo(){
 		//... genera reporte de ordenTrabajo en PDF
 		$codigoPedido=str_replace(" ","",$_POST['inputCodigo']); 		//...lee y quita espacio en blanco a codigoPedido..
 		$codigoProducto=str_replace(" ","",$_POST['codigoProducto']); 	//...lee y quita espacio en blanco a codigoProducto..
@@ -1139,17 +1139,37 @@ class Produccion extends CI_Controller {
         
  		$sql ="UPDATE pedidoproducto SET codTrabajador='$codigoTrabajador', trabajador='$nombreTrabajador', fechaInicial='$fechaInicial', fechaFinal='$fechaFinal',estadoItem='P' WHERE numeroPedido='$codigoPedido' AND secuencia='$secuencia' "; //..tabla pedidoproducto..
  		$result = $this->db->query($sql);
+		
+		if(strlen($codigoPedido)<=4){		//..pedidos de fabrica ... 
+			$numeroOrden=substr($codigoPedido,0,strlen($codigoPedido)-2);
+			$anhoPedido=substr($codigoPedido,strlen($numeroOrden),2);
+		}		
+		
+		if(strlen($codigoPedido)==5){		//..pedidos de fabrica o de tienda ... 
+			if(substr($codigoPedido,1,4)==date("Y") ){
+				$numeroOrden=substr($codigoPedido,0,1);				//... cuando el pedido es de tienda ...
+				$anhoPedido=substr($codigoPedido,1,4);
+			}else{
+				$numeroOrden=substr($codigoPedido,0,3);				//... cuando el pedido es de fabrica ...
+				$anhoPedido=substr($codigoPedido,3,2);
+			}
+		}		
+				
+		if(strlen($codigoPedido)>=6){		//..pedidos de tienda ... 
+			$numeroOrden=substr($codigoPedido,0,strlen($codigoPedido)-4);
+			$anhoPedido=substr($codigoPedido,strlen($numeroOrden),4);
+		}			
+		
 	
 		// Creacion del PDF
         /*
         * Se crea un objeto de la clase OrdenTrabajoPdf, recordar que la clase Pdf
         * heredó todos las variables y métodos de fpdf
         */
-         
+     
         ob_clean(); // cierra si es se abrio el envio de pdf...
         $this->pdf = new OrdenTrabajo();
-		
-		$this->pdf->numero=$codigoPedido.'-'.$secuencia;      				//...pasando variable para el header del PDF
+		$this->pdf->numero=$numeroOrden.'-'.$secuencia.'/'.$anhoPedido;     //...pasando variable para el header del PDF
 		$this->pdf->nombreTrabajador=$nombreTrabajador;      				//...pasando variable para el header del PDF
 		$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 		//...pasando variable para el header del PDF
 		$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 			//...pasando variable para el header del PDF
@@ -1241,7 +1261,7 @@ class Produccion extends CI_Controller {
   		$this->pdf->Output('pdfsArchivos/ordenesTrabajo/ordenTrabajo'.$codigoPedido.$secuencia.'.pdf', 'F');
   		
 		$datos['documento']="pdfsArchivos/ordenesTrabajo/ordenTrabajo".$codigoPedido.$secuencia.".pdf";
-		$datos['titulo']=' Orden de Trabajo No.: '.$codigoPedido.'-'.$secuencia;	// ... titulo ...
+		$datos['titulo']=' Orden de Trabajo No.: '.$numeroOrden.'-'.$secuencia.'/'.$anhoPedido;	// ... titulo ...
 		$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
 		$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
 		$this->load->view('header');
