@@ -148,9 +148,22 @@ $anhoSistema = '2016';	//... anho del sistema
 				$this->pdf->Cell(15,5,'','',0,'L',0);
 	            $this->pdf->Cell(25,5,number_format($salida->montoAbono,2),'',0,'R',0);
 				$this->pdf->Cell(5,5,'','',0,'L',0);
-				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
-				$this->pdf->Cell(5,5,'','',0,'L',0);
-				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+				if($salida->tipoDocumento=='F'){
+					$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+					$this->pdf->Cell(5,5,'','',0,'L',0);
+					$this->pdf->Cell(10,5,'','',0,'L',0);
+//					$this->pdf->Cell(5,5,'','',0,'L',0)
+				}else{
+					$this->pdf->Cell(10,5,'','',0,'L',0);
+					$this->pdf->Cell(5,5,'','',0,'L',0);
+					$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+//					$this->pdf->Cell(5,5,'','',0,'L',0)	
+				}
+				
+				
+//				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+//				$this->pdf->Cell(5,5,'','',0,'L',0);
+//				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
 				$this->pdf->Cell(5,5,'','',0,'L',0);
 				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
 	            //Se agrega un salto de linea
@@ -164,6 +177,7 @@ $anhoSistema = '2016';	//... anho del sistema
         	$this->pdf->Cell(40,5,'','',0,'L',0);
         	$this->pdf->Cell(29,5,'Total Banco Bs. ','',0,'L',0);
             $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
+			$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
 			$totalBanco=0.00;
 			//Se agrega un salto de linea
         	$this->pdf->Ln(5);
