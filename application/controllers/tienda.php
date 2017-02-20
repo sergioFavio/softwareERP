@@ -41,8 +41,6 @@ $anhoSistema = '2016';	//... anho del sistema
 				$anhoDeposito= substr($deposito, 3, 4);  // toma 4 caracteres ... anho.
 			}
 			
-			
-		
 			if($anhoDeposito!=$anhoSistema){
 				$secuenciaDeposito="1";
 			}else{		//... si anhoPedido==anhoSistema ...
@@ -64,6 +62,151 @@ $anhoSistema = '2016';	//... anho del sistema
 			$this->load->view('footer');
 		}		
 	}		//... fin function: registrarDeposito ...
+	
+	public function fechasReporteDepositos(){		
+		$this->load->view('header');
+		$this->load->view('tienda/fechasReporteDepositos' );
+		$this->load->view('footer');
+	}
+	
+		
+	public function generarReporteDepositos(){
+		//... genera reporte de depositos en PDF
+		$fechaInicial=$_POST['inputFechaInicial']; //... viene de la vista fechasReporteSalida ...
+		$fechaFinal=$_POST['inputFechaFinal']; //... viene de la vista fechasReporteSalida ...
+		
+        // Se carga la libreria fpdf
+        $this->load->library('tienda/ReporteDepositosPdf');
+
+        // Se obtienen los registros de la base de datos
+        //$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
+	    $sql ="SELECT fechaAbono,pedido,banco,montoAbono,tipoDocumento,facturaRecibo,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY banco";
+
+ 		$salidas = $this->db->query($sql);
+ 
+ 		$contador= $salidas->num_rows; //...contador de registros que satisfacen la consulta ..
+ 		
+ 		if($contador==0){
+			$datos['mensaje']='No hay registros entre la fecha inicial '.fechaMysqlParaLatina($fechaInicial).' y la fecha final '.fechaMysqlParaLatina($fechaFinal).' seleccionadas.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+ 		}else{
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new ReporteDepositosPdf();
+			$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 	//...pasando variable para el header del PDF
+			$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 		//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage();
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 9);
+	        
+	        // La variable $bancoAnterior se utiliza para hacer corte de control por banco ...
+	        $bancoAnterior = 'X';
+			$totalBanco=0.00;
+			$totalGeneralBancos=0.00;
+	        foreach ($salidas->result() as $salida) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+	            if($bancoAnterior != 'X' && $bancoAnterior !=($salida->banco) ){   //...corte de control numero Salida
+	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
+	            	$this->pdf->Cell(40,5,'','',0,'L',0);
+	            	$this->pdf->Cell(29,5,'Total Banco Bs. ','',0,'L',0);
+		            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
+					$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
+					$totalBanco=0.00;
+					//Se agrega un salto de linea
+	            	$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+	            }
+				
+	       		$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(13,5,fechaMysqlParaLatina($salida->fechaAbono),'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$salida->pedido,'',0,'R',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,utf8_decode($salida->banco),'',0,'L',0);
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+	            $this->pdf->Cell(25,5,number_format($salida->montoAbono,2),'',0,'R',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
+	            //Se agrega un salto de linea
+	            $this->pdf->Ln(5); 
+
+ 				$bancoAnterior=$salida->banco;
+				$totalBanco= $totalBanco + $salida->montoAbono;
+	        }
+
+			$this->pdf->Ln(5);  //Se agrega un salto de linea
+        	$this->pdf->Cell(40,5,'','',0,'L',0);
+        	$this->pdf->Cell(29,5,'Total Banco Bs. ','',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
+			$totalBanco=0.00;
+			//Se agrega un salto de linea
+        	$this->pdf->Ln(5);
+			$this->pdf->Ln(5);
+			
+        	$this->pdf->Cell(40,5,'','',0,'L',0);
+        	$this->pdf->Cell(29,5,'Total Gral. Bs. ','',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalGeneralBancos,2),'',0,'R',0);
+			
+	        
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/reporteDepositosPdf.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/reporteDepositosPdf.pdf";	
+			$datos['titulo']='Reporte de Depósitos ';	// ... ingreso/salida ... almacen/bodega ...
+			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
+			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
+			$this->load->view('header');
+			$this->load->view('reportePdf',$datos );
+			$this->load->view('footer');	
+ 		}
+        
+	} //... fin funcion: generarReporteDepositos ...
+	
+	
+	
+	
+	
+	
 	
 	
 	public function notaEntrega(){
@@ -323,8 +466,8 @@ $anhoSistema = '2016';	//... anho del sistema
 				
 			}else{		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-//$anhoSistema = '2016';	//... anho del sistema
+// 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema = '2016';	//... anho del sistema
  				 					
 				if(strlen($pedido)==4 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
@@ -383,6 +526,12 @@ $anhoSistema = '2016';	//... anho del sistema
 		$numPedido=$_POST['numPedido'];
 		$secuenciaPedido=$_POST['secuenciaPedido'];
 		$anhoSistema=$_POST['anhoSistema'];
+		
+		// ... actualizar numero de cotizacion ...	
+		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
+		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
+		// fin actualizar numero de cotizacion ...
 			
 		$pedidoCabecera = array(
 	    	"numPedido"=>$_POST['numPedido'],
@@ -443,13 +592,6 @@ $anhoSistema = '2016';	//... anho del sistema
 			
 		}  // ... fin  FOR 
 			
-		// ... actualizar numero de cotizacion ...	
-		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
-		
-		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
-		// fin actualizar numero de cotizacion ...
-		
 		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
 		
 	}	//... fin grabarPedido	

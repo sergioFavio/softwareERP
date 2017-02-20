@@ -23,8 +23,71 @@ class Contabilidad extends CI_Controller {
 	//... funciones del CRUD contaplandectas ...//
 	/////////////////////////////////////////////
 	
-	public function crudCuenta()
-	{
+	public function actualizarCuentasDesdeCero(){
+		$sql="UPDATE contaplandectas SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
+		$result = $this->db->query($sql);
+		
+		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604007'";
+		$result = $this->db->query($sql);
+		
+		$debeHaber=''; 		//... D:debe  H:haber ...
+		$debeMonto=0.00;				
+		$haberMonto=0.00;
+		foreach ($result->result() as $registro){
+	  	    $clave=str_replace(" ","",$registro->cuentaComprobante); //...quita espacio en blanco ..
+		
+			if( $registro->debeHaber== "D"){
+				$debeMonto=$registro->monto;
+				$haberMonto=0.00; 
+			}else{
+				$haberMonto=$registro->monto;
+				$debeMonto=0.00; 
+			}
+								
+			if(substr($clave,6,2)=='00'){
+				$nivelCuenta=4;
+			}else{
+				$nivelCuenta=5;
+			}
+							
+			$k=0; 			//... cantidad de digitos a tomar de $clave ...
+				
+			for($j=1;$j<=$nivelCuenta; $j++){
+				$k=$j;
+				if($j==3){
+					$k=4;
+				}
+				
+				if($j==4){
+					$k=6;
+				}
+				
+				if($j==5){
+					$k=8;
+				}
+				
+				$cuentaAux=substr($clave,0,$k);	//... variable aux para generar cuentas de niveles anteriores a 4 y 5.
+			
+				for($l=1; $l<=8-$k; $l++){
+					$cuentaAux=$cuentaAux.'0';		//... genera cuenta los niveles anteriores ..1,2,3..4
+				}	// ... fin FOR l
+				
+				// ... actualiza registro tabla maestra[almacen/bodega]	
+				$this-> load -> model("tablaGenerica_model");
+	    		$this-> tablaGenerica_model -> aumentarSaldosContables('contaplandectas',$cuentaAux,$debeMonto,$haberMonto);  
+								
+				// ... fin de inserción  registro tabla transacciones y actualizacion tabla maestra...
+					
+			}	//... fin FOR j	
+				
+		}  // ... fin  FOR  i
+			
+//		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");	
+
+	}	//... fin actualizarCuentasDesdeCero ...
+	
+	
+	public function crudCuenta(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -404,8 +467,7 @@ class Contabilidad extends CI_Controller {
 	}	//.. fin funcion comprobante ...
 
 
-	public function grabarComprobante()
-	{
+	public function grabarComprobante(){
 		$tipoComprobante=$_POST['tipoComprobante']; //... formulario tipoComprobante [ingreso/egreso/traspaso] ...
 		
 		if($tipoComprobante!='egreso'){
@@ -443,37 +505,37 @@ class Contabilidad extends CI_Controller {
 	    $this-> tablaGenerica_model -> grabar('comprobantecabecera',$cabecera);
 		// ...fin de insertar registro en tabla comprobantecabecera ...	
 		
- 	    $debeHaber=''; 		//... D:debe  H:haber ...
-        for($i=0; $i<$numeroFilasValidas; $i++){
-       
-        	if( $_POST['cantDebe_'.$i] != "0" || $_POST['cantDebe_'.$i] != "0.00" || $_POST['cantHaber_'.$i] != "0" || $_POST['cantHaber_'.$i] != "0.00"  ){
-          	    //... si cantidad mayor que cero  graba registro ... 
-          	    //... agrega registro tabla librodiario ...  
-          	    
-          	    if($_POST['cantDebe_'.$i]>0 ){
-          	    	$debeHaber='D';
+		$debeHaber=''; 		//... D:debe  H:haber ...
+		    for($i=0; $i<$numeroFilasValidas; $i++){
+		   
+		    	if( $_POST['cantDebe_'.$i] != "0" || $_POST['cantDebe_'.$i] != "0.00" || $_POST['cantHaber_'.$i] != "0" || $_POST['cantHaber_'.$i] != "0.00"  ){
+		  	    //... si cantidad mayor que cero  graba registro ... 
+		  	    //... agrega registro tabla librodiario ...  
+		  	    
+		  	    if($_POST['cantDebe_'.$i]>0 ){
+		  	    	$debeHaber='D';
 					$monto= $_POST['cantDebe_'.$i];
-          	    } else{
-          	    	$debeHaber='H';
+		  	    } else{
+		  	    	$debeHaber='H';
 					$monto=$_POST['cantHaber_'.$i];
-          	    }
-	
+		  	    }
+		
 				$monto=str_replace(",","",$monto); //...quita comas de separacion ..
-          	    
-          	    $codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
+		  	    
+		  	    $codigoSinEspacio=str_replace(" ","",$_POST['idCta_'.$i]); //...quita espacio en blanco ..
 			
-	            $detalle = array(
-	            	"idComprobante"=>$numComprobante,
-	            	"tComprobante"=>strtoupper($tipoComprobante),
-	            	"fechaComprobante"=>$_POST['inputFecha'],
-	            	"cuentaComprobante"=>$codigoSinEspacio,
+		        $detalle = array(
+		        	"idComprobante"=>$numComprobante,
+		        	"tComprobante"=>strtoupper($tipoComprobante),
+		        	"fechaComprobante"=>$_POST['inputFecha'],
+		        	"cuentaComprobante"=>$codigoSinEspacio,
 				    "debeHaber"=>$debeHaber,
 				    "monto"=>$monto,
 				    "glosa"=>$_POST['glosa_'.$i]
 				);
 				
 				$this-> load -> model("tablaGenerica_model");	//... carga modelo tablaGenerica
-	    		$this-> tablaGenerica_model -> grabar('comprobantedetalle',$detalle);
+				$this-> tablaGenerica_model -> grabar('comprobantedetalle',$detalle);
 				// ...fin de insertar registro en tabla comprobantedetalle ...	
 							
 				$clave=$codigoSinEspacio;
@@ -1679,37 +1741,37 @@ class Contabilidad extends CI_Controller {
 			    /* Se define el titulo, márgenes izquierdo, derecho y
 			    * el color de relleno predeterminado
 			    */
-			         
-			    // Se define el formato de fuente: Arial, negritas, tamaño 9
-			    //$this->pdf->SetFont('Arial', 'B', 9);
-			    $this->pdf->SetFont('Arial', '', 9);
-			    $espacio=1; 			//... epacio variable para imprimir ...
-			    $cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
-			    $nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
-			    $saldoSubGrupo=0.00;			//...saldoSubGrupo ...
-			    $totalActivo=0.00;				//...acumula saldos cuentas del activo ...
-			    $totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
-			    $numeroLineas=0; 	//...numero de lineas de impresion ...
-			    
-			    foreach ($registros->result() as $registro) {
-			        // Se imprimen los datos de cada registro
-			        $numeroLineas = $numeroLineas +1;
+				     
+				// Se define el formato de fuente: Arial, negritas, tamaño 9
+				//$this->pdf->SetFont('Arial', 'B', 9);
+				$this->pdf->SetFont('Arial', '', 9);
+				$espacio=1; 			//... epacio variable para imprimir ...
+				$cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
+				$nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
+				$saldoSubGrupo=0.00;			//...saldoSubGrupo ...
+				$totalActivo=0.00;				//...acumula saldos cuentas del activo ...
+				$totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+				$numeroLineas=0; 	//...numero de lineas de impresion ...
+				
+				foreach ($registros->result() as $registro) {
+				    // Se imprimen los datos de cada registro
+				    $numeroLineas = $numeroLineas +1;
 					
-			        if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
+				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
 						$this->pdf->Cell(12,5,'','',0,'L',0);
 						$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-			        }
+				    }
 					if($cuentaAnteriorSubGrupo!=''){
 						 $this->pdf->Ln(5);
 					}
-			       
-			       	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+				   
+				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
-			       	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
-			       		$this->pdf->Cell(67,5,strtoupper(utf8_decode($registro->descripcion)),'',0,'L',0);
-			       	}else{
-			       		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
-			       	}
+				   	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
+				   		$this->pdf->Cell(67,5,strtoupper(utf8_decode($registro->descripcion)),'',0,'L',0);
+				   	}else{
+				   		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+				   	}
 					
 					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
 						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
@@ -1720,41 +1782,41 @@ class Contabilidad extends CI_Controller {
 						}			
 					}
 					
-		       		if($registro->nivel=='3'){
-		       			if($registro->cuenta<='19999999'){
-			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-			        	}else{
-			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-			        	}
+					if($registro->nivel=='3'){
+						if($registro->cuenta<='19999999'){
+				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+				    	}else{
+				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+				    	}
 						
-		       			$this->pdf->Cell(6,5,'','',0,'L',0);
+						$this->pdf->Cell(6,5,'','',0,'L',0);
 						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
-		       		}
-		         
+					}
+				 
 				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
 				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
 				  							
-			    }			//... fin foreach ....
-			    
-			    
-			    $this->pdf->Cell(12,5,'','',0,'L',0);
+				}			//... fin foreach ....
+				
+				
+				$this->pdf->Cell(12,5,'','',0,'L',0);
 				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-			    
-			    //... imprime totales ........
-			    $this->pdf->Ln(5);
-			    $this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
 				$this->pdf->Ln(3);		//Se agrega un salto de linea
 				$this->pdf->Cell(18,5,'','',0,'L',0);
 				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
 				$this->pdf->Cell(44,5,'','',0,'L',0);
 				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
 				$this->pdf->Cell(37,5,'','',0,'L',0);
-	       		$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
+				$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
-	        	$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
 				
-				
+
 				for($x=$numeroLineas; $x<45; $x++){
 					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
 				}

@@ -135,12 +135,14 @@
 						</ul>
 					</li>
 					
-					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Depósitos PENDIENTE</a>
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-usd"></span> Depósitos </a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/registrarDeposito"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito </a></li>
-							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Depósitos</a></li>
+							<li><a href="<?=base_url();?>tienda/fechasReporteDepositos"><span class="glyphicon glyphicon-list-alt"></span> Reporte de Depósitos</a></li>
 						</ul>
 					</li>
+					
+					<li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar PENDIENTE</a></li>
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
 						<ul class="dropdown-menu">
