@@ -19,18 +19,18 @@
             $this->Cell(45);
 			
 			$this->Cell(100,10,utf8_decode('BALANCE DE SUMAS Y SALDOS'),0,0,'C');	
-			
-            $this->Ln('8');
-            //$this->SetFont('Arial','B',8);
-            $this->SetFont('Arial','',8);
-			
+						
+			$this->Ln('8');
+			//$this->SetFont('Arial','B',8);
+			$this->SetFont('Arial','',8);
 			$this->Cell(60,10,utf8_decode('Período de gestión: ').$this->gestion,0,0,'L');
-			$this->Cell(20);
-			 $this->Cell(60,10,utf8_decode('Expresado en bolivianos '),0,0,'L');
+			$this->Cell(10);
+			$this->Cell(20,10,utf8_decode('Al ').$this->ultimaFecha,0,0,'L');
+			$this->Cell(50,10,utf8_decode('Expresado en bolivianos '),0,0,'L');	
 			$this->Cell(10);
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
             $this->Ln(7);
-	
+			
 			$sTxt1 = "  CUENTA                        D E S C R I P C I O N                     S U M A S    M E N S U A L E S     S U M A S    A C U M U L A D A S              ";
 			$sTxt2 = "SALDO                                                                                                            D E B E            H A B E R                 D E B E            H A B E R";
 			//create an advanced multicell

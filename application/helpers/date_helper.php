@@ -9,7 +9,6 @@ function fechaMysqlParaLatina($fechaMysql){
 	return $data-> format("d-m-Y");
 }
 
-
 function mesLiteral($mesNum){
 	$mes[0]="-";
 	$mes[1]="Enero";
@@ -25,4 +24,14 @@ function mesLiteral($mesNum){
 	$mes[11]="Noviembre";
 	$mes[12]="Deciembre";
 	return $mes[$mesNum];
+}
+
+function ultimaFechaPeriodoGestion($mesGestion,$anhoGestion){ 	//...sistema de contabilidad ...
+	$sql="SELECT MAX(fechaComprobante) AS ultimaFecha FROM comprobantedetalle WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion'";		
+	$regFechas= mysql_query($sql);	
+	while ($fila = mysql_fetch_assoc($regFechas)) {
+	    $ultimaFecha=$fila["ultimaFecha"];
+	}
+	$ultimaFecha= substr($ultimaFecha,8,2).substr($ultimaFecha,4,4).substr($ultimaFecha,0,4);
+	return $ultimaFecha;		
 }

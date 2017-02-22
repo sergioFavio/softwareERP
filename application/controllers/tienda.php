@@ -152,18 +152,12 @@ $anhoSistema = '2016';	//... anho del sistema
 					$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
 					$this->pdf->Cell(5,5,'','',0,'L',0);
 					$this->pdf->Cell(10,5,'','',0,'L',0);
-//					$this->pdf->Cell(5,5,'','',0,'L',0)
 				}else{
 					$this->pdf->Cell(10,5,'','',0,'L',0);
 					$this->pdf->Cell(5,5,'','',0,'L',0);
 					$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
-//					$this->pdf->Cell(5,5,'','',0,'L',0)	
 				}
 				
-				
-//				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
-//				$this->pdf->Cell(5,5,'','',0,'L',0);
-//				$this->pdf->Cell(10,5,$salida->facturaRecibo,'',0,'L',0);
 				$this->pdf->Cell(5,5,'','',0,'L',0);
 				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
 	            //Se agrega un salto de linea
@@ -480,8 +474,7 @@ $anhoSistema = '2016';	//... anho del sistema
 				
 			}else{		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
-// 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-$anhoSistema = '2016';	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
  				 					
 				if(strlen($pedido)==4 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.

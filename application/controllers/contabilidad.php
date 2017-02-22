@@ -27,7 +27,7 @@ class Contabilidad extends CI_Controller {
 		$sql="UPDATE contaplandectas SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
 		$result = $this->db->query($sql);
 		
-		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604007'";
+		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604004'";
 		$result = $this->db->query($sql);
 		
 		$debeHaber=''; 		//... D:debe  H:haber ...
@@ -1045,6 +1045,8 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
  		}else{
+ 			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
+			
  			// Se carga la libreria fpdf
         	$this->load->library('contabilidad/DiarioGeneralPdf');
 		
@@ -1058,7 +1060,8 @@ class Contabilidad extends CI_Controller {
 	        $this->pdf = new DiarioGeneralPdf('L');		//... ('L') sentido horizontal de la hoja ...
 			
 			$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
-			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4);	//...pasando variable para el header del PDF
+			$this->pdf->ultimaFecha= $ultimaFecha; 		 											 	//...pasando variable para el header del PDF
 			
 	        // Agregamos una página
 	        $this->pdf->AddPage('L');
@@ -1215,6 +1218,8 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
  		}else{
+ 			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
+			
  			// Se carga la libreria fpdf
         	$this->load->library('contabilidad/MayorPdf');
 		
@@ -1228,7 +1233,8 @@ class Contabilidad extends CI_Controller {
 	        $this->pdf = new MayorPdf();		//... ('L') sentido horizontal de la hoja ...
 			
 			$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
-			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+			$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
+			$this->pdf->ultimaFecha= $ultimaFecha; 		 											 //...pasando variable para el header del PDF
 			
 	        // Agregamos una página
 	        $this->pdf->AddPage();			//... ('L') sentido horizontal de la hoja ...
@@ -1437,6 +1443,9 @@ class Contabilidad extends CI_Controller {
 			$fechaGestion= $_POST['fechaDeGestion']; 	//... lee fechaGestion ...
 			$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 			$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+			
+			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
+			
 			// Se carga la libreria fpdf
 			$this->load->library('contabilidad/SumasSaldosPdf');
 			
@@ -1462,10 +1471,10 @@ class Contabilidad extends CI_Controller {
 			    ob_clean(); // cierra si es se abrio el envio de pdf...
 			    $this->pdf = new SumasSaldosPdf();
 				
-				$this->pdf->fechaGestion=$fechaGestion;      			//...pasando variable para el header del PDF
-				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 		 	//...pasando variable para el header del PDF
+				$this->pdf->fechaGestion=$fechaGestion;      												//...pasando variable para el header del PDF
+				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); 	//...pasando variable para el header del PDF
+				$this->pdf->ultimaFecha= $ultimaFecha; 														//...pasando variable para el header del PDF
 		
-				
 			    // Agregamos una página
 			    $this->pdf->AddPage();
 			    // Define el alias para el número de página que se imprimirá en el pie
@@ -1696,10 +1705,9 @@ class Contabilidad extends CI_Controller {
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
 
-        		//... control de permisos de acceso ....
+        //... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso3=$this->session->userdata('usuarioProceso3');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
 			$this->load->view('header');
@@ -1707,6 +1715,9 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
+		
+			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
+
 			// Se carga la libreria fpdf
 			$this->load->library('contabilidad/BalanceGeneralPdf');
 			
@@ -1732,7 +1743,13 @@ class Contabilidad extends CI_Controller {
 			    $this->pdf = new BalanceGeneralPdf();
 				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
 				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
-		
+
+				
+				
+$this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del PDF
+
+
+								
 			    // Agregamos una página
 			    $this->pdf->AddPage();
 			    // Define el alias para el número de página que se imprimirá en el pie
@@ -1869,7 +1886,7 @@ class Contabilidad extends CI_Controller {
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
 
-        		//... control de permisos de acceso ....
+        //... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso3=$this->session->userdata('usuarioProceso3');
@@ -1880,6 +1897,9 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
+		
+			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
+			
 			// Se carga la libreria fpdf
 			$this->load->library('contabilidad/EstadoResultadosPdf');
 			
@@ -1905,6 +1925,7 @@ class Contabilidad extends CI_Controller {
 			    $this->pdf = new EstadoResultadosPdf();
 				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
 				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
+				$this->pdf->ultimaFecha= $ultimaFecha; 													 //...pasando variable para el header del PDF
 		
 			    // Agregamos una página
 			    $this->pdf->AddPage();
