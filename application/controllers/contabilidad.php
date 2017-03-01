@@ -27,7 +27,7 @@ class Contabilidad extends CI_Controller {
 		$sql="UPDATE contaplandectas SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
 		$result = $this->db->query($sql);
 		
-		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604004'";
+		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604005'";
 		$result = $this->db->query($sql);
 		
 		$debeHaber=''; 		//... D:debe  H:haber ...
@@ -353,8 +353,7 @@ class Contabilidad extends CI_Controller {
 		redirect("menuController/index");	//... vuelve menu principal ...
 	}
 	
-	public function buscarComprobante()
-	{		
+	public function buscarComprobante(){		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -605,8 +604,7 @@ class Contabilidad extends CI_Controller {
 	}	//... fin grabarComprobante
 	
 	
-	public function modificarComprobante()
-	{
+	public function modificarComprobante(){
 		$numComprobante= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
 		$fecha= $_POST['inputFecha']; 				//... lee fecha ...	
 		$concepto= $_POST['inputConcepto']; 		//... lee concepto ...
@@ -1204,10 +1202,6 @@ class Contabilidad extends CI_Controller {
         
         $sql=$sql."))='$mesConsulta' AND cast(YEAR(fechaComprobante) as CHAR(4))='$anhoGestion' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
      
-       
-//		$sql="SELECT cuentaComprobante,fechaComprobante,idComprobante,glosa,debeHaber,monto,cuenta,descripcion,debeAcumulado,haberAcumulado,debeMes,haberMes
-//		 FROM comprobantedetalle,contaplandectas WHERE cast(MONTH(fechaComprobante) as CHAR(1))='$mesConsulta' AND cast(YEAR(fechaComprobante) as CHAR(4))='$anhoGestion' AND cuentaComprobante=cuenta ORDER BY cuentaComprobante, idComprobante ASC";
-
  		$registros = $this->db->query($sql);
  
  		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
@@ -1361,7 +1355,7 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(1,5,'','',0,'L',0);
 				$this->pdf->Cell(15,5,fechaMysqlParaLatina($reg->fechaComprobante),'',0,'L',0);
 	            $this->pdf->Cell(5,5,'','',0,'L',0);
-				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,5,3),'',0,'L',0);
+				$this->pdf->Cell(15,5,substr($reg->idComprobante,0,6).'-'.substr($reg->idComprobante,6,3),'',0,'L',0);
 				$this->pdf->Cell(5,5,'','',0,'L',0);
 				$this->pdf->Cell(60,5,utf8_decode($reg->glosa),'',0,'L',0);
 				
@@ -1743,13 +1737,8 @@ class Contabilidad extends CI_Controller {
 			    $this->pdf = new BalanceGeneralPdf();
 				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
 				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
-
-				
-				
-$this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del PDF
-
-
-								
+				$this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del PDF
+							
 			    // Agregamos una página
 			    $this->pdf->AddPage();
 			    // Define el alias para el número de página que se imprimirá en el pie
@@ -1776,8 +1765,14 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 					
 				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
 						$this->pdf->Cell(12,5,'','',0,'L',0);
-						$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+						
+						if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+						}else{
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
+						}
 				    }
+					
 					if($cuentaAnteriorSubGrupo!=''){
 						 $this->pdf->Ln(5);
 					}
@@ -1802,12 +1797,15 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 					if($registro->nivel=='3'){
 						if($registro->cuenta<='19999999'){
 				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 				    	}else{
 				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+							
 				    	}
 						
-						$this->pdf->Cell(6,5,'','',0,'L',0);
-						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 					}
 				 
 				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
@@ -1815,9 +1813,15 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 				  							
 				}			//... fin foreach ....
 				
+				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
+					$this->pdf->Cell(12,5,'','',0,'L',0);
+					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
+				}else{
+					$this->pdf->Cell(12,5,'','',0,'L',0);
+					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
+				}
 				
-				$this->pdf->Cell(12,5,'','',0,'L',0);
-				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
+				
 				
 				//... imprime totales ........
 				$this->pdf->Ln(5);
@@ -1828,7 +1832,7 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 				$this->pdf->Cell(44,5,'','',0,'L',0);
 				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
 				$this->pdf->Cell(37,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
+				$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio*(-1) ,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
@@ -1879,6 +1883,266 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
         
 	} //... fin funcion: generarReporteBalanceGeneral ...
 	
+		
+	public function generarReporteBalanceInicial(){
+		//... genera reporte de balance inicial en PDF
+//		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+		$fechaGestion=periodoGestionInicial();		//... lee fechaGestionInicial ...
+		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
+		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
+
+        //... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+		
+			$ultimaFecha=fechaInicioGestion($mesGestion,$anhoGestion,$anhoGestion.$mesGestion.'004');		//... recupera ultima fecha del periodo de gestion...
+			
+			$sql="DROP TABLE contaaux";
+			$result =$this->db->query($sql);
+			
+			$sql="CREATE TABLE contaaux SELECT * FROM contaplandectas";
+			$result =$this->db->query($sql);
+
+			$sql="ALTER TABLE contaaux ADD PRIMARY KEY (cuenta)";
+			$result =$this->db->query($sql);
+			
+			$sql="UPDATE contaaux SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
+			$result =$this->db->query($sql);
+			
+			$secuencia=$anhoGestion.$mesGestion.'004';			
+			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='$secuencia'";
+			$result = $this->db->query($sql);
+			
+			$debeHaber=''; 		//... D:debe  H:haber ...
+			$debeMonto=0.00;				
+			$haberMonto=0.00;
+			foreach ($result->result() as $registro){
+		  	    $clave=str_replace(" ","",$registro->cuentaComprobante); //...quita espacio en blanco ..
+			
+				if( $registro->debeHaber== "D"){
+					$debeMonto=$registro->monto;
+					$haberMonto=0.00; 
+				}else{
+					$haberMonto=$registro->monto;
+					$debeMonto=0.00; 
+				}
+									
+				if(substr($clave,6,2)=='00'){
+					$nivelCuenta=4;
+				}else{
+					$nivelCuenta=5;
+				}
+								
+				$k=0; 			//... cantidad de digitos a tomar de $clave ...
+					
+				for($j=1;$j<=$nivelCuenta; $j++){
+					$k=$j;
+					if($j==3){
+						$k=4;
+					}
+					
+					if($j==4){
+						$k=6;
+					}
+					
+					if($j==5){
+						$k=8;
+					}
+					
+					$cuentaAux=substr($clave,0,$k);	//... variable aux para generar cuentas de niveles anteriores a 4 y 5.
+				
+					for($l=1; $l<=8-$k; $l++){
+						$cuentaAux=$cuentaAux.'0';		//... genera cuenta los niveles anteriores ..1,2,3..4
+					}	// ... fin FOR l
+					
+					// ... actualiza registro tabla maestra[almacen/bodega]	
+					$this-> load -> model("tablaGenerica_model");
+		    		$this-> tablaGenerica_model -> aumentarSaldosContables('contaaux',$cuentaAux,$debeMonto,$haberMonto);  
+									
+					// ... fin de inserción  registro tabla transacciones y actualizacion tabla maestra...
+						
+				}	//... fin FOR j	
+					
+			}  // ... fin  FOR  i
+				
+			
+			// Se carga la libreria fpdf
+			$this->load->library('contabilidad/BalanceInicialPdf');
+			
+			// Se obtienen los registros de la base de datos
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			$registros = $this->db->query($sql);
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros seleccionados para el BALANCE INICIAL.'.$contador;
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				// Creacion del PDF
+			    /*
+			    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+			    * heredó todos las variables y métodos de fpdf
+			    */
+			     
+			    ob_clean(); // cierra si es se abrio el envio de pdf...
+			    $this->pdf = new BalanceInicialPdf();
+				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
+				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
+				$this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del PDF
+							
+			    // Agregamos una página
+			    $this->pdf->AddPage();
+			    // Define el alias para el número de página que se imprimirá en el pie
+			    $this->pdf->AliasNbPages();
+			 
+			    /* Se define el titulo, márgenes izquierdo, derecho y
+			    * el color de relleno predeterminado
+			    */
+				     
+				// Se define el formato de fuente: Arial, negritas, tamaño 9
+				//$this->pdf->SetFont('Arial', 'B', 9);
+				$this->pdf->SetFont('Arial', '', 9);
+				$espacio=1; 			//... epacio variable para imprimir ...
+				$cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
+				$nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
+				$saldoSubGrupo=0.00;			//...saldoSubGrupo ...
+				$totalActivo=0.00;				//...acumula saldos cuentas del activo ...
+				$totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+				$numeroLineas=0; 	//...numero de lineas de impresion ...
+				
+				foreach ($registros->result() as $registro) {
+				    // Se imprimen los datos de cada registro
+				    $numeroLineas = $numeroLineas +1;
+					
+				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
+						$this->pdf->Cell(12,5,'','',0,'L',0);
+						
+						if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+						}else{
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
+						}
+				    }
+					
+					if($cuentaAnteriorSubGrupo!=''){
+						 $this->pdf->Ln(5);
+					}
+				   
+				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+					
+				   	if($registro->nivel=='1'){		//... si es nivel=1 imprime en mayusculas ...
+				   		$this->pdf->Cell(67,5,strtoupper(utf8_decode($registro->descripcion)),'',0,'L',0);
+				   	}else{
+				   		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+				   	}
+					
+					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
+						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
+						if($registro->cuenta<='19999999'){
+							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
+						}else{
+							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
+						}			
+					}
+					
+					if($registro->nivel=='3'){
+						if($registro->cuenta<='19999999'){
+				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+				    	}else{
+				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+							
+				    	}
+						
+					}
+				 
+				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
+				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
+				  							
+				}			//... fin foreach ....
+				
+				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
+					$this->pdf->Cell(12,5,'','',0,'L',0);
+					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
+				}else{
+					$this->pdf->Cell(12,5,'','',0,'L',0);
+					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
+				}
+				
+				
+				
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(18,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
+				$this->pdf->Cell(44,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
+				$this->pdf->Cell(37,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio*(-1) ,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+
+				for($x=$numeroLineas; $x<45; $x++){
+					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
+				}
+				
+				$this->pdf->Cell(40,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
+				
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
+				$this->pdf->Cell(50,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				
+					
+					
+				     /* PDF Output() settings
+				     * Se manda el pdf al navegador
+				     *
+				     * $this->pdf->Output(nombredelarchivo, destino);
+				     *
+				     * I = Muestra el pdf en el navegador
+				     * D = Envia el pdf para descarga
+					 * F: save to a local file
+					 * S: return the document as a string. name is ignored.
+					 * $pdf->Output(); //default output to browser
+					 * $pdf->Output('D:/example2.pdf','F');
+					 * $pdf->Output("example2.pdf", 'D');
+					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+				     */
+				  
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/balanceInicial.pdf', 'F');
+					
+					$datos['documento']="pdfsArchivos/contabilidad/balanceInicial.pdf";	
+					$datos['titulo']=' BALANCE INICIAL período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
+					
+					$this->load->view('header');
+					$this->load->view('reportePdfSinFechas',$datos );
+					$this->load->view('footer');	
+				}
+			}	//.. fin IF validar usuario ...
+        
+	} //... fin funcion: generarReporteBalanceInicial ...
+	
 	
 	public function generarReporteEstadoResultados(){
 		//... genera reporte de diarioGeneral en PDF
@@ -1889,7 +2153,6 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
         //... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso3=$this->session->userdata('usuarioProceso3');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
 			$this->load->view('header');
@@ -1953,8 +2216,13 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 					
 			        if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
 						$this->pdf->Cell(12,5,'','',0,'L',0);
-						$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+						if($cuentaAnteriorSubGrupo<='49999999'){
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
+						}else{
+							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
+						}	
 			        }
+					
 					if($cuentaAnteriorSubGrupo!=''){
 						 $this->pdf->Ln(5);
 					}
@@ -1979,12 +2247,13 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 		       		if($registro->nivel=='3'){
 		       			if($registro->cuenta<='49999999'){
 			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 			        	}else{
 			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-			        	}
-						
-		       			$this->pdf->Cell(6,5,'','',0,'L',0);
-						$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(6,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+			        	}	
 		       		}
 		         
 				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
@@ -2003,7 +2272,7 @@ $this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del 
 				$this->pdf->Cell(18,5,'','',0,'L',0);
 				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
 				$this->pdf->Cell(44,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
+				$this->pdf->Cell(17,5,number_format($totalActivo*(-1),2),'',0,'R',0);
 				$this->pdf->Cell(37,5,'','',0,'L',0);
 	       		$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea

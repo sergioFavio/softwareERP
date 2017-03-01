@@ -35,3 +35,22 @@ function ultimaFechaPeriodoGestion($mesGestion,$anhoGestion){ 	//...sistema de c
 	$ultimaFecha= substr($ultimaFecha,8,2).substr($ultimaFecha,4,4).substr($ultimaFecha,0,4);
 	return $ultimaFecha;		
 }
+
+function fechaInicioGestion($mesGestion,$anhoGestion,$nuComprobante){ 	//...sistema de contabilidad ...
+	$sql="SELECT MAX(fechaComprobante) AS ultimaFecha FROM comprobantedetalle WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion' AND idComprobante<='$nuComprobante'";		
+	$regFechas= mysql_query($sql);	
+	while ($fila = mysql_fetch_assoc($regFechas)) {
+	    $ultimaFecha=$fila["ultimaFecha"];
+	}
+	$ultimaFecha= substr($ultimaFecha,8,2).substr($ultimaFecha,4,4).substr($ultimaFecha,0,4);
+	return $ultimaFecha;		
+}
+
+function periodoGestionInicial(){ 	//...sistema de contabilidad ...
+	$sql="SELECT MIN(gestion) AS gestionInicial FROM contagestion";		
+	$reg= mysql_query($sql);	
+	while ($fila = mysql_fetch_assoc($reg)) {
+	    $gestionInicial=$fila["gestionInicial"];
+	}
+	return $gestionInicial;		
+}

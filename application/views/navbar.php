@@ -122,7 +122,7 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Pedidos</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido </a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido PENDIENTE</a></li>
+							<li><a href="<?=base_url();?>tienda/ubicarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido </a></li>
 
 							<li><a href="<?=base_url();?>tienda/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
 						</ul>
@@ -186,6 +186,8 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=SS"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Balance Sumas y Saldos</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BG"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance General</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=ER"><span class="glyphicon glyphicon-usd"></span><span class="glyphicon glyphicon-ok"></span> Estado de Resultados</a></li>
+							
+							<li><a href="<?=base_url();?>contabilidad/generarReporteBalanceInicial"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Inicial</a></li>
 							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>

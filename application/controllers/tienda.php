@@ -431,7 +431,6 @@ $anhoSistema = '2016';	//... anho del sistema
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso1=$this->session->userdata('usuarioProceso1');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
 			$this->load->view('header');
@@ -525,7 +524,125 @@ $anhoSistema = '2016';	//... anho del sistema
 		}		//... fin IF validar usuario ...
 	}	//..fin realizarPedido ...
 	
+	
+	public function ubicarPedido(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}
+		else{		//... fin control de permisos de acceso ....
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+			$sql ="SELECT * FROM pedidocabecera WHERE local='$local'";	
+			$cabeceraPedido = $this->db->query($sql)->result_array();
+			 	
+			$datos['titulo']='Modificar PEDIDO';
+			$datos['cabeceraPedido']=$cabeceraPedido;	
+			$datos['local']=$local;
+	
+			$this->load->view('header');
+			$this->load->view('tienda/buscarPedido',$datos);
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
+	}	//..fin ubicarPedido ...
+	
+	
+	public function modificarPedido(){
+		$numeroPedido= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
 
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+		$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		
+		$local= $pedidoCabecera["local"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaPedido= $pedidoCabecera["fechaPedido"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaEntrega= $pedidoCabecera["fechaEntrega"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$contacto= $pedidoCabecera["contacto"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$direccion= $pedidoCabecera["direccion"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fono= $pedidoCabecera["telCel"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$localidad= $pedidoCabecera["localidad"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cotizacionFabrica= $pedidoCabecera["cotizacionFabrica"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$ordenCompra= $pedidoCabecera["ordenCompra"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$facturarA= $pedidoCabecera["facturarA"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		
+		if(strlen($numeroPedido)==3){
+			$secuenciaPedido=substr($numeroPedido,0,1);
+			$anhoSistema=substr($numeroPedido,1,2);
+		}
+		
+		if(strlen($numeroPedido)==4){
+			$secuenciaPedido=substr($numeroPedido,0,2);
+			$anhoSistema=substr($numeroPedido,2,2);
+		}
+		
+		if(strlen($numeroPedido)==5){
+			if($local=='F'){		//..local:Fabrica ..
+				$secuenciaPedido=substr($numeroPedido,0,3);
+				$anhoSistema=substr($numeroPedido,3,2);
+			}else{					//..local:tienda ..
+				$secuenciaPedido=substr($numeroPedido,0,1);
+				$anhoSistema=substr($numeroPedido,1,4);
+			}
+		}
+		
+		if(strlen($numeroPedido)==6){
+			$secuenciaPedido=substr($numeroPedido,0,2);
+			$anhoSistema=substr($numeroPedido,2,4);
+		}
+		
+		if(strlen($numeroPedido)==7){
+			$secuenciaPedido=substr($numeroPedido,0,3);
+			$anhoSistema=substr($numeroPedido,3,4);
+		}
+		
+	
+//		$sql="SELECT cuentaComprobante,descripcion,debeHaber,monto,glosa FROM comprobantedetalle,contaplandectas WHERE idComprobante='$numComprobante' AND cuentaComprobante=cuenta";
+//		$regComprobante=mysql_query($sql);
+//		$nRegistrosComprobante= mysql_num_rows($regComprobante); 	//... numero registros salida que satisfacen la consulta ...
+			
+//		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
+//		$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
+						
+		$datos['titulo']='mPedido:';
+		$datos['secuenciaPedido']=$secuenciaPedido;		//... dato cabecera pedido ..
+		$datos['anhoSistema']=$anhoSistema;				//... dato cabecera pedido ..
+		$datos['numPedido']=$numeroPedido; 				//... dato cabecera pedido ..
+		$datos['local']=$local;							//... dato cabecera pedido ..
+		$datos['fechaPedido']=$fechaPedido;				//... dato cabecera pedido ..
+		$datos['fechaEntrega']=$fechaEntrega;			//... dato cabecera pedido ..
+		$datos['cliente']=$cliente;						//... dato cabecera pedido ..
+		$datos['contacto']=$contacto;					//... dato cabecera pedido ..
+		$datos['direccion']=$direccion;					//... dato cabecera pedido ..
+		$datos['fono']=$fono;							//... dato cabecera pedido ..
+		$datos['localidad']=$localidad;					//... dato cabecera pedido ..
+		$datos['cotizacionFabrica']=$cotizacionFabrica;	//... dato cabecera pedido ..
+		$datos['ordenCompra']=$ordenCompra;				//... dato cabecera pedido ..
+		$datos['facturarA']=$facturarA;					//... dato cabecera pedido ..
+		$datos['nit']=$nit;								//... dato cabecera pedido ..
+		$datos['aCuenta']=$aCuenta;						//... dato cabecera pedido ..
+		$datos['descuento']=$descuento;					//... dato cabecera pedido ..
+		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
+		
+		
+		
+//		$datos['nRegistrosComprobante']=$nRegistrosComprobante;	
+//		$datos['regComprobante']=$regComprobante;	
+//		$datos['cuentas']=$cuentas;	
+
+		$this->load->view('header');
+		$this->load->view('tienda/modificarPedido',$datos);
+		$this->load->view('footer');
+	}		//... fin funcion: modificarPedido ...
+	
+	
 	public function grabarPedido()
 	{		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
