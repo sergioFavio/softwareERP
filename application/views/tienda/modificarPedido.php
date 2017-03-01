@@ -519,7 +519,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span> </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?= $fechaPedido ?>"  style="width: 130px;" >
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
 	    	
@@ -530,7 +530,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar" > entrega</span> </span>
-	    			<input type="date" class="form-control input-sm" id="inputEntrega" name="inputEntrega" value="<?=date('d-m-Y')?>"  style="width: 130px;" onChange='validarFechaMayor();'>
+	    			<input type="date" class="form-control input-sm" id="inputEntrega" name="inputEntrega" value="<?= $fechaEntrega ?>"  style="width: 130px;" onChange='validarFechaMayor();'>
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
 	    	
@@ -558,8 +558,32 @@ function filaVacia(posicionFila, codPrefijo){
     <tbody >
     		
     	<?php
-        //if ciclo de impresion de filas 
-       		for($x=0; $x<25; $x++){
+        //if ciclo de impresion de filas
+        	$x=0;
+			while($reg = mysql_fetch_row($regPedido)){
+            	echo "<tr class='detalleMaterial' >";
+           			
+					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$reg[1]' readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+					
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' placeholder='$reg[2]' readonly='readonly' style='width:300px;border:none;' /></textarea></td>";
+                    
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  value='$reg[3]' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
+								
+                    echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+					          
+                    echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$reg[5]' readonly='readonly' style='width:80px;border:none;'/></td>";
+					
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' readonly='readonly' style='width:70px;border:none;' onChange='validarPrecio(this.value,$x);' /></td>";
+					  
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' readonly='readonly' style='width:80px;border:none;'/></td>";
+					
+                echo "</tr>";
+				
+            }
+         
+		 
+       		for($x=$nRegistrosPedido; $x<25; $x++){
             	echo "<tr class='detalleMaterial' >";
            			
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
