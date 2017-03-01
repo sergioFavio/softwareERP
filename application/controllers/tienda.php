@@ -603,19 +603,13 @@ $anhoSistema = '2016';	//... anho del sistema
 			$anhoSistema=substr($numeroPedido,3,4);
 		}
 		
-//		$sql="SELECT cuentaComprobante,descripcion,debeHaber,monto,glosa FROM comprobantedetalle,contaplandectas WHERE idComprobante='$numComprobante' AND cuentaComprobante=cuenta";
-//		$regComprobante=mysql_query($sql);
-//		$nRegistrosComprobante= mysql_num_rows($regComprobante); 	//... numero registros salida que satisfacen la consulta ...
-
 		$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$numeroPedido'";
 		$regPedido=mysql_query($sql);
 		$nRegistrosPedido= mysql_num_rows($regPedido); 	//... numero registros salida que satisfacen la consulta ...
 		
-
-			
-//		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
-//		$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
-						
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla maestra[almacen/bodega]
+		$insumos= $this->tablaGenerica_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama productosfabrica..
+									
 		$datos['titulo']='mPedido:';
 		$datos['secuenciaPedido']=$secuenciaPedido;		//... dato cabecera pedido ..
 		$datos['anhoSistema']=$anhoSistema;				//... dato cabecera pedido ..
@@ -636,11 +630,9 @@ $anhoSistema = '2016';	//... anho del sistema
 		$datos['descuento']=$descuento;					//... dato cabecera pedido ..
 		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
 		
-		
-		
 		$datos['nRegistrosPedido']=$nRegistrosPedido;	
 		$datos['regPedido']=$regPedido;	
-//		$datos['cuentas']=$cuentas;	
+		$datos['insumos']=$insumos;	
 
 		$this->load->view('header');
 		$this->load->view('tienda/modificarPedido',$datos);
@@ -725,8 +717,6 @@ $anhoSistema = '2016';	//... anho del sistema
 		
 	}	//... fin grabarPedido	
 
-	
-	
 			
 	/////////////////////////////////////////////
 	//... funciones del CRUD pedidos ...//

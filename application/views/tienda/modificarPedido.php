@@ -126,6 +126,8 @@ function borrarFormularioIngreso(){
 		$("#unidadMat_"+i).val("");
 		$("#precioMat_"+i).val("");
 		$("#importeMat_"+i).val("");
+		document.getElementById("mat_"+i).placeholder = "";
+		document.getElementById("colorMat_"+i).placeholder = "";
 	} // fin ciclo FOR
 	document.form_.detalleTotalBs.value="";
 	$("#saldo").val("");
@@ -568,18 +570,18 @@ function filaVacia(posicionFila, codPrefijo){
 					
                     echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' placeholder='$reg[2]' readonly='readonly' style='width:300px;border:none;' /></textarea></td>";
                     
-					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  value='$reg[3]' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  placeholder='$reg[3]' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' ></textarea></td>";
 								
-                    echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+                    echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$reg[4]' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
 					          
                     echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$reg[5]' readonly='readonly' style='width:80px;border:none;'/></td>";
 					
-					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' readonly='readonly' style='width:70px;border:none;' onChange='validarPrecio(this.value,$x);' /></td>";
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$reg[6]' readonly='readonly' style='width:70px;border:none;' onChange='validarPrecio(this.value,$x);' /></td>";
 					  
 					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' readonly='readonly' style='width:80px;border:none;'/></td>";
 					
                 echo "</tr>";
-				
+				$x=$x+1;
             }
          
 		 
