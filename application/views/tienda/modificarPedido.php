@@ -308,10 +308,30 @@ function validarCantidadIngreso(numero, filaExistencia){
     		var precioCompra=$("#precioMat_"+filaExistencia).val();
     		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe
     		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
-    	}
-	    		
+    	}		
 	}
 }   // fin ... validarCantidadIngreso ...
+
+
+function validarCantidadIngresoM(numero, filaExistencia){
+   
+	if($("#idMat_"+filaExistencia).val()==""){
+		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
+		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+					
+	}else{	
+		var cantidad=parseFloat( numero ); // convierte de string to number 
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		var cantidad=$("#cantMat_"+filaExistencia).val();
+    		var precioCompra=$("#precioMat_"+filaExistencia).val();
+    		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe...
+    	}		
+	}
+}   // fin ... validarCantidadIngresoM ...
 
 
 function validarPrecio(numero, filaExistencia){
@@ -417,7 +437,6 @@ function separadorMiles(n){
         while(rx.test(w)){
             w= w.replace(rx, '$1,$2');
         }
-        
         return w;
     });
 }
@@ -438,7 +457,7 @@ function filaVacia(posicionFila, codPrefijo){
 
 <div class="jumbotron" id="cuerpoIngreso">	
 	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedidoModificado" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
@@ -562,6 +581,8 @@ function filaVacia(posicionFila, codPrefijo){
     	<?php
         //if ciclo de impresion de filas
         	$x=0;
+			$totalBs=0.00;
+			$saldo=0.00;
 			while($reg = mysql_fetch_row($regPedido)){
             	echo "<tr class='detalleMaterial' >";
            			
@@ -573,19 +594,26 @@ function filaVacia(posicionFila, codPrefijo){
 					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  placeholder='$reg[3]' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' ></textarea></td>";
 								
                     echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$reg[4]' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
-					          
+						          
                     echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$reg[5]' readonly='readonly' style='width:80px;border:none;'/></td>";
 					
-					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$reg[6]' readonly='readonly' style='width:70px;border:none;' onChange='validarPrecio(this.value,$x);' /></td>";
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$reg[6]' readonly='readonly' style='width:70px;border:none;'  /></td>";
 					  
-					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' readonly='readonly' style='width:80px;border:none;'/></td>";
+					$importe=($reg[4] * $reg[6]);
+					$totalBs=$totalBs+$importe;
+					$saldo= $totalBs*(1 -(1*$descuento/100) )- $aCuenta; 
+					
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='$importe' readonly='readonly' style='width:80px;border:none;'/></td>";
+					echo "<script>";
+					echo "validarCantidadIngresoM($importe,$x);";
+					echo "</script>";
 					
                 echo "</tr>";
 				$x=$x+1;
             }
          
 		 
-       		for($x=$nRegistrosPedido; $x<25; $x++){
+       		for($x=$nRegistrosPedido; $x<24; $x++){
             	echo "<tr class='detalleMaterial' >";
            			
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
@@ -644,7 +672,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="totalBs">
 		<span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' value='<?= number_format($totalBs,2) ?>' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		
@@ -682,7 +710,7 @@ function filaVacia(posicionFila, codPrefijo){
     	<div class="col-md-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> Saldo</span> </span>
-    	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+    	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" value="<?= number_format($saldo,2) ?>" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
     		</div>
     	</div><!-- /.col-md-1 -->
 		
