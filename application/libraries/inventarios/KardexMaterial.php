@@ -16,17 +16,15 @@
             $this->Image('assets/img/logo.jpg',10,8,22);
             //$this->SetFont('Arial','B',13); // 'B' es negrita
             $this->SetFont('Arial','',13);
-            $this->Cell(30);
+            $this->Cell(30); 
 			
-     		//$this->Cell(120,10,'Reporte de Salida de '.$titulo,0,0,'C');
-		
 			$this->Cell(120,10,utf8_decode('Kardex Material: ').$this->descripcionMaterial,0,0,'C');	
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
             $this->SetFont('Arial','',8);
-            $this->Cell(30);
-            //$this->Cell(120,10,'Desde 26/09/2014 al 30/09/2014',0,0,'C');
+            $this->Cell(1);
+    		$this->Cell(30,10,utf8_decode('Código: ').$this->codigoMaterial,0,0,'L');
             
     		$this->Cell(120,10,'Desde: '.$this->fechaInicial.'     Hasta: '. $this->fechaFinal,0,0,'C');
 			

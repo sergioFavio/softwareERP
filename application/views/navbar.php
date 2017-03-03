@@ -143,7 +143,7 @@
 						</ul>
 					</li>
 					
-					<li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar PENDIENTE</a></li>
+					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
 						<ul class="dropdown-menu">

@@ -1331,8 +1331,7 @@ class Materiales extends CI_Controller {
 	
 	public function kardexMaterial(){
 		//... genera reporte de kardexMaterial en PDF
-		$codigoSinEspacio=str_replace(" ","",$_POST['inputCodigo']);  //...quita espacio en blanco ..
-		$codigoMaterial= $codigoSinEspacio; 			//... lee codigo del material ...
+		$codigoMaterial=str_replace(" ","",$_POST['inputCodigo']);  //...quita espacio en blanco ..
 		$descripcionMaterial= $_POST['inputDescripcion']; 	//... lee descripcion del material ...
 		$fechaInicial= $_POST['inputFechaInicial']; 		//... lee fecha inicial ...
 		$fechaFinal= $_POST['inputFechaFinal']; 			//... lee fecha final ...
@@ -1427,6 +1426,7 @@ class Materiales extends CI_Controller {
 	        ob_clean(); // cierra si es se abrio el envio de pdf...
 	        $this->pdf = new KardexMaterial();
 			
+			$this->pdf->codigoMaterial=$codigoMaterial;      					//...pasando variable para el header del PDF
 			$this->pdf->descripcionMaterial=$descripcionMaterial;      			//...pasando variable para el header del PDF
 			$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 		//...pasando variable para el header del PDF
 			$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 			//...pasando variable para el header del PDF
