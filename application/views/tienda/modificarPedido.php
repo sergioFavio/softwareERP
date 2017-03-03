@@ -589,9 +589,9 @@ function filaVacia(posicionFila, codPrefijo){
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$reg[1]' readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' placeholder='$reg[2]' readonly='readonly' style='width:300px;border:none;' /></textarea></td>";
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' />".$reg[2]."</textarea></td>";
                     
-					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  placeholder='$reg[3]' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' ></textarea></td>";
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' >".$reg[3]."</textarea></td>";
 								
                     echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$reg[4]' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
 						          
