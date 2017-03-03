@@ -1,3 +1,9 @@
+<link rel="stylesheet" type="text/css"  href="<?=base_url(); ?>css/ingresoSalidaMaterial.css" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.css"/>
+<script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
+
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>">
 
 <style type="text/css" >
@@ -15,12 +21,31 @@
 	
 	#titulo{font-size:16px;margin-top:1px;  text-align:right; font-weight:bold} 
 	
+	.cabecera-dialog {width:750px;}
+	#cabeceraModal{padding-left:330px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
+
 </style>
 
 <script>
 
 $(document).ready(function() {
+		/*  inicio de light box  producto javascript */
+	$('#numPedido').click(function(){
+  		var title = $(this).attr("title");
+		$('.modal-title').html(title);
+  		$('#cabeceraModal').modal({show:true});
+	});
+	/*  fin de light box producto javascript  */	
 	
+	$('#tabla1').dataTable();
+    
+    $('#tabla1 tbody').on('click', 'tr', function () {	
+    	var numeroComprobante = $('td', this).eq(0).text();
+		$('#numPedido').val(numeroComprobante);
+    	$('#cabeceraModal').modal('hide'); // cierra el lightBox
+	} ); // fin #tabla1 tbody
+	
+
 	$("#btnBorrarDeposito").click(function(){
         	borrarFormularioDeposito();
     });	
@@ -243,7 +268,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="numPedido" name="numPedido" placeholder="pedido No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numPedido");' >
+	    	 		<input type="text"  class="form-control input-sm" id="numPedido" name="numPedido" title='Seleccione un número de pedido' readonly="readonly" placeholder="pedido No.&hellip;" style="background-color:#d9f9ec;width: 120px;font-size:11px;text-align:center;"  >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -317,5 +342,46 @@ $(document).ready(function() {
 	
 </div>
 
+<!-- ... inicio  lightbox cabecerapedido... -->
 
+<div id="cabeceraModal"  class="modal fade" tabindex="-1" role="dialog" >
+  <div class="cabecera-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h4 class="modal-title">cabecera de caja luz</h4>
+	</div>
+	<div class="modal-body">
+		
+		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla1">
+			<thead>
+				<tr class='letraDetalleLightBox'>
+					<th style='width:50px;'>pedido</th>
+					<th style='width:45px;'>fecha</th>
+					<th style='width:180px;'>cliente</th>
+					<th style='width:180px;'>dirección</th>
+					<th style='width:80px;'>teléf./cel.</th>
+				</tr>
+			</thead>
+			<tbody>			
+                <?php foreach($cabeceraPedido as $cabecera):?>
+                    <tr class='letraDetalleLightBox'>
+                        <td style='width:55px;'> <?= $cabecera["numPedido"] ?></td>
+                        <td style='width:60px;'> <?= fechaMysqlParaLatina($cabecera["fechaPedido"])?></td>
+   						<td style='width:200px;' ><?= $cabecera['cliente']  ?></td>	
+   						<td style='width:200px;' ><?= $cabecera['direccion']  ?></td>
+   						<td style='width:90px;' ><?= $cabecera['telCel']  ?></td>
+                    </tr>
+                <?php endforeach ?>
+			</tbody>
+		</table>
+		
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
+	</div>
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox cabecerapedido... -->
 

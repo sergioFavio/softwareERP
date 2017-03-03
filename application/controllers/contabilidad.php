@@ -811,9 +811,6 @@ class Contabilidad extends CI_Controller {
 			
 		}  // ... fin  FOR  i
 		
-		$datos['numeroComprobante']=$numComprobante;
-		$datos['valorLiteral']=$valorLiteral;		
-		
 		redirect("contabilidad/generarComprobantePDF?numeroComprobante=$numComprobante&valorLiteral=$valorLiteral");	
 
 	}	//... fin grabarComprobanteModificado ...

@@ -86,9 +86,7 @@ class TablaGenerica_model extends CI_Model{
   }
   
   public function aumentarValorFloat($nombreTabla,$clave,$patron,$campo,$valor){
-   	   $this->db->update($nombreTabla, 
-	   		array($campo => floatval($campo)+ floatval($valor) ),    // ... equivalente a SET campo= algo
-			array($clave => $patron)					 //... equivalente a WHERE id= otraTabla.id
-	   );
+  	$sql="UPDATE $nombreTabla SET $campo=$campo + $valor  WHERE $clave=$patron";
+  	return $this->db->query($sql);
   }
 }

@@ -52,6 +52,11 @@ $anhoSistema = '2016';	//... anho del sistema
 			///////////////////////////////////////
 			///...FIN genera nuevo numero de Deposito ...
 			//////////////////////////////////////
+					
+			$sql ="SELECT * FROM pedidocabecera";	
+			$cabeceraPedido = $this->db->query($sql)->result_array();
+			$datos['cabeceraPedido']=$cabeceraPedido;
+			
 			
 			$datos['secuenciaDeposito']=$secuenciaDeposito;
 			$datos['anhoSistema']=$anhoSistema;
@@ -1863,6 +1868,8 @@ $anhoSistema = '2016';	//... anho del sistema
 
 	public function grabarDeposito(){		
 		$numDeposito=$_POST['numDeposito'];
+		$numPedido=str_replace(" ","",$_POST['numPedido']);
+		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
 		
 		$regDeposito = array(
 			"deposito"=>$_POST['numDeposito'],
@@ -1882,12 +1889,11 @@ $anhoSistema = '2016';	//... anho del sistema
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
 	    $this-> tablaGenerica_model -> grabar('pagospedido', $regDeposito);
 		
-// ... actualiza registro pedidocabecera ....	
-$this-> load -> model("tablaGenerica_model");
-$this-> tablaGenerica_model -> aumentarValorfloat('pedidocabecera','numPedido',$_POST['numPedido'],'abono',str_replace(",","",$_POST['montoDeposito']));
+		
+		// ... actualiza registro pedidocabecera ....	
+		$this-> load -> model("tablaGenerica_model");
+		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
 
-
-	
 		// ... actualizar numero de cotizacion ...	
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
 		$nombreTabla='nodeposito'; // ... prefijoTabla ... F: fabrica  T: tienda ...

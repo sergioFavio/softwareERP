@@ -175,7 +175,7 @@ function buscarComprobante(){
  </form>
 </div>
 
-<!-- ... inicio  lightbox cabeceracomprobante... -->
+<!-- ... inicio  lightbox cabecerapedido... -->
 
 <div id="cabeceraModal"  class="modal fade" tabindex="-1" role="dialog" >
   <div class="cabecera-dialog"  >
@@ -216,4 +216,4 @@ function buscarComprobante(){
    </div>
   </div>
 </div>
-<!-- ... fin  lightbox cabeceracomprobante... -->
+<!-- ... fin  lightbox cabecerapedido... -->
