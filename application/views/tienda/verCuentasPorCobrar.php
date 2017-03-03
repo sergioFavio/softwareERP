@@ -106,7 +106,7 @@ function pedidoPdf(nPedido){
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarPedido" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarPedidoCtasPorCobrar" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:10px;"></div>
 			
 			<div class="row">
@@ -123,12 +123,16 @@ function pedidoPdf(nPedido){
                     	</div>
 			    	</div>
 			    </div><!-- /.col-xs-3 -->	
+			    
+			    <div class="col-xs-1"> 
+					<span></span>
+			   	</div>
 			     	
 			   	<div class="col-xs-2"> 
-					<span  id="titulo" class="label label-success"> Ver Cuentas por Cobrar</span>
+					<span  id="titulo" class="label label-success"> Cuentas por Cobrar</span>
 			   	</div>
 			    
-			    <div class="col-xs-2"> 
+			    <div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 			   			     	
