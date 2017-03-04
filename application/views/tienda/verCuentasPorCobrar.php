@@ -16,7 +16,6 @@
 	td{ height:10px;  width:780px; margin:0px; cell-spacing:0px;}
 	/*  fin de scrollbar  */
 	
-	#borrarModal{padding-top:90px;}  /* ... baja la ventana modal más al centro vertical ... */
 	#pdfModal{padding-top:60px;padding-left:261px;}  /* ... baja la ventana modal más al centro vertical ... */
 	
 	.cuerpoDetalle, {margin: 2px;} 
@@ -43,42 +42,30 @@
 
 $(document).ready(function() {
 	$('[data-toggle="tooltip"]').tooltip(); 
-	
-	$('#borrarModal').on('show.bs.modal', function(e) {  
-		//aca recuperamos el id que pasaremos por tag al modal  
-		var id = $(e.relatedTarget).data('item-id'); 
-		var cli =$(e.relatedTarget).data('cli');
-		var title = $(e.relatedTarget).data('title');
-		//aca lo asignamos a un hidden dentro del form que esta en el modal
-	    $(e.currentTarget).find('input[name="codigo"]').val(id);
-		//esto solo pone el id pasado por tag para mostralo en el modal
-		$(e.currentTarget).find('#showCodigo').html(id);
-		$(e.currentTarget).find('#showCliente').html(cli);
-		$(e.currentTarget).find('.modal-title').html(title);		
-		
-	});
-	
-	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() {       
-		var form= $('#borrarModal').find("form");
-		var action=form.attr("action");
-		//aca recuperamos el id que paso por tag al modal
-		var idele=$(form).find('input[name="codigo"]').val();
-			
-		$.ajax({
-		    url: action,
-		    type: "POST",
-		    data: $(form).serialize(),
-		
-		    success: function(data){
-		        //alert(data);
-		       
-			    //  aca deberia poner la funcion que hace el refrescado del listado
-			    window.location.href=data;
-			}
-		});
-	 });
 	 		  
  }); // fin document.ready 
+
+
+function ctasCobrarPdf(nPedido){
+    var pedido= nPedido;
+  
+	$.ajax({
+      url: "<?=base_url()?>tienda/cuentasPorCobrarPdf",
+
+      type: "POST",
+      data: {numePedido: pedido},
+
+      success: function(data){
+         //alert(data);
+	    //  aca deberia poner la funcion que hace el refrescado del listado	    
+		$("#recargado").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
+	  }
+	      
+   });	
+
+  $('#pdfModal').modal({show:true});
+   
+}  // ... fin pedidoPdf ...
 
 
 function pedidoPdf(nPedido){
@@ -94,8 +81,7 @@ function pedidoPdf(nPedido){
          //alert(data);
 	    //  aca deberia poner la funcion que hace el refrescado del listado	    
 		$("#recargado").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
-	  }
-	      
+	  }     
    });	
 
   $('#pdfModal').modal({show:true});
@@ -137,7 +123,7 @@ function pedidoPdf(nPedido){
 			   	</div>
 			   			     	
 			    <div class="col-xs-1"> 
-			    	<button type="button" id="btnSalir" class="btn btn-default btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-print"></span> PDF</button>
+			    	<button type="button" id="btnSalir" class="btn btn-default btn-sm" onClick="ctasCobrarPdf('1002016')"><span class="glyphicon glyphicon-print"></span> PDF</button>
 				</div>
 				
 				<div class="col-xs-1"> 
@@ -218,22 +204,20 @@ function pedidoPdf(nPedido){
 								
 					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numePedidoAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
-					 echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEntrega)."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width: 60px;'><input type='text' id='fechaPedido_".$posicionFila."' name='fechaPedido_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaPedido)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 							 
-					 echo"<td style='width: 200px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$pedido->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
+					 echo"<td style='width: 200px;'><input type='text' id='cliente_".$posicionFila."' name='cliente_".$posicionFila."' value='".$pedido->cliente."' readonly='readonly' style='border:none; width:200px;' /></td>";
 						
 					 echo"<td style='width: 80px;'><input type='text' id='telCel_".$posicionFila."' name='telCel_".$posicionFila."' value='".$pedido->telCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
 
-					 echo"<td style='width: 70px;'><input type='text' id='fechaPedido_".$posicionFila."' name='fechaPedido_".$posicionFila."' value='".number_format($pedido->montoTotal,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
+					 echo"<td style='width: 70px;'><input type='text' id='importe_".$posicionFila."' name='importe_".$posicionFila."' value='".number_format($pedido->montoTotal,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 					
-					 echo"<td style='width: 70px;'><input type='text' id='estado_".$posicionFila."' name='estado_".$posicionFila."' value='".number_format($pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
+					 echo"<td style='width: 70px;'><input type='text' id='abono_".$posicionFila."' name='abono_".$posicionFila."' value='".number_format($pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 					
-					 echo"<td style='width: 70px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".number_format($pedido->montoTotal - $pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
+					 echo"<td style='width: 70px;'><input type='text' id='saldo_".$posicionFila."' name='saldo_".$posicionFila."' value='".number_format($pedido->montoTotal - $pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 													
 					 echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numePedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
-					 	
-		//			 echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->numPedido."' data-cli='".$pedido->contacto."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
-		
+	
 				   ?>						
 				</tr>
 	        <?php endforeach ?>
@@ -255,33 +239,8 @@ function pedidoPdf(nPedido){
 </div>
 
 
-<!-- ...  lightbox borrar material ... -->
 
-<div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-        <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarPedidoCrud" method="POST">
-        ¿ Esta seguro de eliminar el pedido <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
-		<input type="hidden" value="" name="codigo" class="itemId">
-	  </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-        <button type="submit" id="eliminar" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-remove"></span> Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ... fin  lightbox borrar material ... -->
-
-
-<!-- ... inicio  lightbox pedidoPdf... -->
+<!-- ... inicio  lightbox Pdf... -->
 
 <div class="modal fade" id="pdfModal" >
   <div class="modalEditar-dialog">
@@ -302,6 +261,6 @@ function pedidoPdf(nPedido){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- ... fin  lightbox pedidoPdf ... -->
+<!-- ... fin  lightbox Pdf ... -->
 
 

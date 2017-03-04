@@ -143,6 +143,90 @@ class Tienda extends CI_Controller {
 		
 	}		//... fin funcion: buscarPedidoCtasPorCobrar ...
 	
+		
+	public function cuentasPorCobrarPdf(){
+		//... recupera la variable de numePedido ...
+//		$numePedido=$_POST["numePedido"];
+		
+		
+		// Se carga la libreria fpdf
+		$this->load->library('tienda/CuentasPorCobrarPdf');
+		
+		// Se obtienen los registros de la base de datos
+		$sql="SELECT idProd,nombreProd,medidas,unidad,precioVenta FROM productosfabrica";
+		
+		$registros = $this->db->query($sql);
+		 
+		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+		
+		if($contador==0){
+			$datos['mensaje']='No hay registros en la tabla de PEDIDOS CABECERA.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new CuentasPorCobrarPdf();
+			
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    $this->pdf->SetFont('Arial', '', 8);
+		    $espacio=1; 			//... epacio variable para imprimir ...
+		    foreach ($registros->result() as $registro) {
+		        // Se imprimen los datos de cada registro
+		       	
+	        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
+				$this->pdf->Cell($espacio,5,'','',0,'L',0);
+				$this->pdf->Cell(2,5,$registro->idProd,'',0,'L',0);
+				$this->pdf->Cell(20,5,'','',0,'L',0);
+				$this->pdf->Cell(95,5,utf8_decode(substr($registro->nombreProd,0,55)),'',0,'L',0);
+	       		$this->pdf->Cell(30,5,utf8_decode($registro->medidas),'',0,'L',0);
+				$this->pdf->Cell(20,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($registro->precioVenta,2),'',0,'R',0);
+				
+				//Se agrega un salto de linea
+	        	$this->pdf->Ln(5);	
+		    }
+				
+			     /* PDF Output() settings
+			     * Se manda el pdf al navegador
+			     *
+			     * $this->pdf->Output(nombredelarchivo, destino);
+			     *
+			     * I = Muestra el pdf en el navegador
+			     * D = Envia el pdf para descarga
+				 * F: save to a local file
+				 * S: return the document as a string. name is ignored.
+				 * $pdf->Output(); //default output to browser
+				 * $pdf->Output('D:/example2.pdf','F');
+				 * $pdf->Output("example2.pdf", 'D');
+				 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+			     */
+			  
+			  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
+	
+			}	//... fin IF contador registros		
+
+		?>
+		<embed src="<?= base_url('pdfsArchivos/ventas/listaPrecios.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}
+	
 	
 	public function registrarDeposito(){
 		//... control de permisos de acceso ....
