@@ -174,40 +174,39 @@ function pedidoPdf(nPedido){
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numePedido = $pedido->numPedido;
-					$anhoSistema = date("Y");	//... anho del sistema
-					
-					if(strlen($numePedido)==3){
-						$numePedidoAux=substr($numePedido,0,1).'/'.substr($numePedido,1,2);
+					$numeroPedido = $pedido->numPedido;
+					$local = $pedido->local;							
+					if(strlen($numeroPedido)==3){
+						$secuenciaPedido=substr($numeroPedido,0,1);
+						$anhoSistema=substr($numeroPedido,1,2);
 					}
 					
-					if(strlen($numePedido)==4){
-						$numePedidoAux=substr($numePedido,0,2).'/'.substr($numePedido,2,2);
+					if(strlen($numeroPedido)==4){
+						$secuenciaPedido=substr($numeroPedido,0,2);
+						$anhoSistema=substr($numeroPedido,2,2);
 					}
 					
-					if(strlen($numePedido)==5){
-						if(substr($numePedido,1,4)==$anhoSistema){										//... pedido tienda ...
-							$numePedidoAux=substr($numePedido,0,1).'/'.substr($numePedido,1,4);
-						}else{																		//... pedido fabrica ...
-							$numePedidoAux=substr($numePedido,0,3).'/'.substr($numePedido,3,2);
+					if(strlen($numeroPedido)==5){
+						if($local=='F'){		//..local:Fabrica ..
+							$secuenciaPedido=substr($numeroPedido,0,3);
+							$anhoSistema=substr($numeroPedido,3,2);
+						}else{					//..local:tienda ..
+							$secuenciaPedido=substr($numeroPedido,0,1);
+							$anhoSistema=substr($numeroPedido,1,4);
 						}
 					}
 					
-					if(strlen($numePedido)==6){
-						if(substr($numePedido,2,4)==$anhoSistema){										//... pedido tienda ...
-							$numePedidoAux=substr($numePedido,0,2).'/'.substr($numePedido,2,4);
-						}else{																		//... pedido fabrica ...
-							$numePedidoAux=substr($numePedido,0,4).'/'.substr($numePedido,4,2);
-						}
+					if(strlen($numeroPedido)==6){
+						$secuenciaPedido=substr($numeroPedido,0,2);
+						$anhoSistema=substr($numeroPedido,2,4);
 					}
 					
-					if(strlen($numePedido)==7){
-						if(substr($numePedido,3,4)==$anhoSistema){										//... pedido tienda ...
-							$numePedidoAux=substr($numePedido,0,3).'/'.substr($numePedido,3,4);
-						}else{																		//... pedido fabrica ...
-							$numePedidoAux=substr($numePedido,0,5).'/'.substr($numePedido,5,2);
-						}
+					if(strlen($numeroPedido)==7){
+						$secuenciaPedido=substr($numeroPedido,0,3);
+						$anhoSistema=substr($numeroPedido,3,4);
 					}
+					
+			  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
 								
 					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numePedidoAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
@@ -225,7 +224,7 @@ function pedidoPdf(nPedido){
 					
 					 echo"<td style='width: 40px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:40px;' /></td>";
 								
-					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numePedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
+					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroPedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	
 					 echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->numPedido."' data-cli='".$pedido->contacto."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 		

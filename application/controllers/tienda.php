@@ -153,7 +153,7 @@ class Tienda extends CI_Controller {
 		$this->load->library('tienda/CuentasPorCobrarPdf');
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera";
+		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido ASC";
 		
 		$registros = $this->db->query($sql);
 		 
@@ -190,11 +190,43 @@ class Tienda extends CI_Controller {
 		    $totalImporte=0.00;			//... acumula el total de importes ...
 		    $totalAbono=0.00;			//... acumula el total de abonos ...
 		    foreach ($registros->result() as $registro) {
+	    		$numeroPedido = $registro->numPedido;
+				$local = $registro->local;							
+				if(strlen($numeroPedido)==3){
+					$secuenciaPedido=substr($numeroPedido,0,1);
+					$anhoSistema=substr($numeroPedido,1,2);
+				}
+				
+				if(strlen($numeroPedido)==4){
+					$secuenciaPedido=substr($numeroPedido,0,2);
+					$anhoSistema=substr($numeroPedido,2,2);
+				}
+				
+				if(strlen($numeroPedido)==5){
+					if($local=='F'){		//..local:Fabrica ..
+						$secuenciaPedido=substr($numeroPedido,0,3);
+						$anhoSistema=substr($numeroPedido,3,2);
+					}else{					//..local:tienda ..
+						$secuenciaPedido=substr($numeroPedido,0,1);
+						$anhoSistema=substr($numeroPedido,1,4);
+					}
+				}
+				
+				if(strlen($numeroPedido)==6){
+					$secuenciaPedido=substr($numeroPedido,0,2);
+					$anhoSistema=substr($numeroPedido,2,4);
+				}
+				
+				if(strlen($numeroPedido)==7){
+					$secuenciaPedido=substr($numeroPedido,0,3);
+					$anhoSistema=substr($numeroPedido,3,4);
+				}
+				
+		  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
+				
 		        // Se imprimen los datos de cada registro
-		       	
-	        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
 				$this->pdf->Cell($espacio,5,'','',0,'L',0);
-				$this->pdf->Cell(10,5,$registro->numPedido,'',0,'L',0);
+				$this->pdf->Cell(10,5,$numePedidoAux,'',0,'L',0);
 				$this->pdf->Cell(7,5,'','',0,'L',0);
 				$this->pdf->Cell(10,5,fechaMysqlParaLatina($registro->fechaPedido),'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
