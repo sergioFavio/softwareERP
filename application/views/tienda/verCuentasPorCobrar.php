@@ -58,7 +58,7 @@ function ctasCobrarPdf(nPedido){
       success: function(data){
          //alert(data);
 	    //  aca deberia poner la funcion que hace el refrescado del listado	    
-		$("#recargado").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
+		$("#cargarpdf").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
 	  }
 	      
    });	
@@ -80,7 +80,7 @@ function pedidoPdf(nPedido){
       success: function(data){
          //alert(data);
 	    //  aca deberia poner la funcion que hace el refrescado del listado	    
-		$("#recargado").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
+		$("#cargarpdf").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
 	  }     
    });	
 
@@ -238,8 +238,6 @@ function pedidoPdf(nPedido){
     </ul>
 </div>
 
-
-
 <!-- ... inicio  lightbox Pdf... -->
 
 <div class="modal fade" id="pdfModal" >
@@ -251,7 +249,7 @@ function pedidoPdf(nPedido){
       </div-->
       <div class="modal-body" >
       	
-			<div id="recargado">Mi texto/variable sin recargar</div> <!--  se actualiza variable en la funcion php que llama el url de ajax-->
+			<div id="cargarpdf">Mi texto/variable sin recargar</div> <!--  se actualiza variable en la funcion php que llama el url de ajax-->
 	
       </div>
       <div class="modal-footer">

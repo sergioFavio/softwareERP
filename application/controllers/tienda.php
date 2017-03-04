@@ -153,7 +153,7 @@ class Tienda extends CI_Controller {
 		$this->load->library('tienda/CuentasPorCobrarPdf');
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT idProd,nombreProd,medidas,unidad,precioVenta FROM productosfabrica";
+		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera";
 		
 		$registros = $this->db->query($sql);
 		 
@@ -192,13 +192,19 @@ class Tienda extends CI_Controller {
 		       	
 	        	//$this->pdf->Cell(12,5,$registro->cuenta,'',0,'L',0);
 				$this->pdf->Cell($espacio,5,'','',0,'L',0);
-				$this->pdf->Cell(2,5,$registro->idProd,'',0,'L',0);
-				$this->pdf->Cell(20,5,'','',0,'L',0);
-				$this->pdf->Cell(95,5,utf8_decode(substr($registro->nombreProd,0,55)),'',0,'L',0);
-	       		$this->pdf->Cell(30,5,utf8_decode($registro->medidas),'',0,'L',0);
-				$this->pdf->Cell(20,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($registro->precioVenta,2),'',0,'R',0);
-				
+				$this->pdf->Cell(10,5,$registro->numPedido,'',0,'L',0);
+				$this->pdf->Cell(7,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,fechaMysqlParaLatina($registro->fechaPedido),'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(43,5,utf8_decode($registro->cliente),'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+	       		$this->pdf->Cell(22,5,utf8_decode($registro->telCel),'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,number_format($registro->montoTotal,2),'',0,'R',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,number_format($registro->abono,2),'',0,'R',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,number_format($registro->montoTotal - $registro->abono,2),'',0,'R',0);
 				//Se agrega un salto de linea
 	        	$this->pdf->Ln(5);	
 		    }
@@ -223,7 +229,7 @@ class Tienda extends CI_Controller {
 			}	//... fin IF contador registros		
 
 		?>
-		<embed src="<?= base_url('pdfsArchivos/ventas/listaPrecios.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<embed src="<?= base_url('pdfsArchivos/ventas/listaPrecios.pdf') ?>" width="820" height="455" id="cargarpdf"> <!-- documento embebido PDF -->
 		<?php
 	}
 	

@@ -35,12 +35,19 @@
 	         *
 	         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
 	        */	 
-	        $this->Cell(18,7,utf8_decode('código'),'TBL',0,'C','0');
+	        $this->Cell(15,7,utf8_decode('pedido'),'TBL',0,'C','0');
+			$this->Cell(7,7,'','TB',0,'C','0');
+			$this->Cell(10,7,utf8_decode('fecha'),'TB',0,'C','0');
+			$this->Cell(10,7,'','TB',0,'C','0');
+	        $this->Cell(18,7,utf8_decode('cliente'),'TB',0,'C','0');
 			$this->Cell(30,7,'','TB',0,'C','0');
-	        $this->Cell(18,7,utf8_decode('producto'),'TB',0,'C','0');
-			$this->Cell(30,7,'','TB',0,'C','0');
-			$this->Cell(72,7,'medidas','TB',0,'C','0');
-			$this->Cell(18,7,'precio Bs.','TB',0,'R','0');
+			$this->Cell(18,7,utf8_decode('teléfono'),'TB',0,'C','0');
+			$this->Cell(15,7,'','TB',0,'C','0');
+			$this->Cell(15,7,'importe Bs.','TB',0,'C','0');
+			$this->Cell(10,7,'','TB',0,'C','0');
+			$this->Cell(15,7,'abono Bs.','TB',0,'R','0');
+			$this->Cell(10,7,'','TB',0,'C','0');
+			$this->Cell(13,7,'saldo Bs.','TB',0,'R','0');
 			$this->Cell(2,7,'','TBR',0,'R','0');
 	        $this->Ln(7);
        }
