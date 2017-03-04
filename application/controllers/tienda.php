@@ -187,6 +187,8 @@ class Tienda extends CI_Controller {
 		    //$this->pdf->SetFont('Arial', 'B', 9);
 		    $this->pdf->SetFont('Arial', '', 8);
 		    $espacio=1; 			//... epacio variable para imprimir ...
+		    $totalImporte=0.00;			//... acumula el total de importes ...
+		    $totalAbono=0.00;			//... acumula el total de abonos ...
 		    foreach ($registros->result() as $registro) {
 		        // Se imprimen los datos de cada registro
 		       	
@@ -205,28 +207,40 @@ class Tienda extends CI_Controller {
 				$this->pdf->Cell(15,5,number_format($registro->abono,2),'',0,'R',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
 				$this->pdf->Cell(15,5,number_format($registro->montoTotal - $registro->abono,2),'',0,'R',0);
+				$totalImporte=$totalImporte+ $registro->montoTotal;
+				$totalAbono=$totalAbono+ $registro->abono;
 				//Se agrega un salto de linea
 	        	$this->pdf->Ln(5);	
 		    }
-				
-			     /* PDF Output() settings
-			     * Se manda el pdf al navegador
-			     *
-			     * $this->pdf->Output(nombredelarchivo, destino);
-			     *
-			     * I = Muestra el pdf en el navegador
-			     * D = Envia el pdf para descarga
-				 * F: save to a local file
-				 * S: return the document as a string. name is ignored.
-				 * $pdf->Output(); //default output to browser
-				 * $pdf->Output('D:/example2.pdf','F');
-				 * $pdf->Output("example2.pdf", 'D');
-				 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
-			     */
-			  
-			  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
-	
-			}	//... fin IF contador registros		
+
+			$this->pdf->Ln(5);
+			
+			$this->pdf->Cell(93,5,'','',0,'L',0);
+			$this->pdf->Cell(30,5,'Totales Bs.','',0,'L',0);
+			$this->pdf->Cell(15,5,number_format($totalImporte,2),'',0,'R',0);
+			$this->pdf->Cell(10,5,'','',0,'L',0);
+			$this->pdf->Cell(15,5,number_format($totalAbono,2),'',0,'R',0);
+			$this->pdf->Cell(10,5,'','',0,'L',0);
+			$this->pdf->Cell(15,5,number_format($totalImporte - $totalAbono,2),'',0,'R',0);
+		
+		     /* PDF Output() settings
+		     * Se manda el pdf al navegador
+		     *
+		     * $this->pdf->Output(nombredelarchivo, destino);
+		     *
+		     * I = Muestra el pdf en el navegador
+		     * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+		     */
+		  
+		  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
+
+		}	//... fin IF contador registros		
 
 		?>
 		<embed src="<?= base_url('pdfsArchivos/ventas/listaPrecios.pdf') ?>" width="820" height="455" id="cargarpdf"> <!-- documento embebido PDF -->
