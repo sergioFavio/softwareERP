@@ -148,10 +148,6 @@ class Tienda extends CI_Controller {
 		//... recupera la variable de numePedido ...
 //		$numePedido=$_POST["numePedido"];
 		
-		
-		// Se carga la libreria fpdf
-		$this->load->library('tienda/CuentasPorCobrarPdf');
-		
 		// Se obtienen los registros de la base de datos
 		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido ASC";
 		
@@ -165,6 +161,9 @@ class Tienda extends CI_Controller {
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
 		}else{
+			// Se carga la libreria fpdf
+			$this->load->library('tienda/CuentasPorCobrarPdf');
+		
 			// Creacion del PDF
 		    /*
 		    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
@@ -270,14 +269,177 @@ class Tienda extends CI_Controller {
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 		     */
 		  
-		  	$this->pdf->Output('pdfsArchivos/ventas/listaPrecios.pdf', 'F');
+		  	$this->pdf->Output('pdfsArchivos/ventas/cuentasPorCobrar.pdf', 'F');
 
 		}	//... fin IF contador registros		
 
 		?>
-		<embed src="<?= base_url('pdfsArchivos/ventas/listaPrecios.pdf') ?>" width="820" height="455" id="cargarpdf"> <!-- documento embebido PDF -->
+		<embed src="<?= base_url('pdfsArchivos/ventas/cuentasPorCobrar.pdf') ?>" width="820" height="455" id="cargarpdf"> <!-- documento embebido PDF -->
 		<?php
-	}
+	}			//... fin reporte PDF cuentas por cobrar ....
+	
+	
+	public function pedidoCuentaPdf(){
+		//... recupera la variable de numePedido ...
+		$numeroPedido=str_replace(" ","",$_POST['numePedido']); //...quita espacios en blanco ...
+		
+		$importe=0.00;			//... montoTotal ...
+		$fechaPedido='';
+		$cliente='';
+		$telCel='';
+		$abono=0.00;
+		$local='';
+		
+		// Se obtienen los registros de la base de datos
+		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE numPedido= '$numeroPedido' ";
+		$registros = $this->db->query($sql);
+		
+		$sql="SELECT * FROM pagospedido WHERE pedido='$numeroPedido' ";
+		$regPagos = $this->db->query($sql);
+		
+		foreach ($registros->result() as $registro) {
+			$importe=$registro->montoTotal;			
+			$fechaPedido=$registro->fechaPedido;
+			$cliente=$registro->cliente;
+			$telCel=$registro->telCel;
+			$abono=$registro->abono;
+			$local=$registro->local;
+		}
+	
+ 
+		if(strlen($numeroPedido)==3){
+			$secuenciaPedido=substr($numeroPedido,0,1);
+			$anhoSistema=substr($numeroPedido,1,2);
+		}
+		
+		if(strlen($numeroPedido)==4){
+			$secuenciaPedido=substr($numeroPedido,0,2);
+			$anhoSistema=substr($numeroPedido,2,2);
+		}
+		
+		if(strlen($numeroPedido)==5){
+			if($local=='F'){		//..local:Fabrica ..
+				$secuenciaPedido=substr($numeroPedido,0,3);
+				$anhoSistema=substr($numeroPedido,3,2);
+			}else{					//..local:tienda ..
+				$secuenciaPedido=substr($numeroPedido,0,1);
+				$anhoSistema=substr($numeroPedido,1,4);
+			}
+		}
+		
+		if(strlen($numeroPedido)==6){
+			$secuenciaPedido=substr($numeroPedido,0,2);
+			$anhoSistema=substr($numeroPedido,2,4);
+		}
+		
+		if(strlen($numeroPedido)==7){
+			$secuenciaPedido=substr($numeroPedido,0,3);
+			$anhoSistema=substr($numeroPedido,3,4);
+		}
+		
+  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
+		
+		 
+		// Se carga la libreria fpdf
+		$this->load->library('tienda/PedidoCuentaPdf');
+		
+		// Creacion del PDF
+	    /*
+	    * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	    * heredó todos las variables y métodos de fpdf
+	    */
+	     
+	    ob_clean(); // cierra si es se abrio el envio de pdf...
+	    $this->pdf = new PedidoCuentaPdf();
+		
+		$this->pdf->numeroPedido=$numePedidoAux;      		//...pasando variable para el header del PDF
+		$this->pdf->cliente=$cliente;      					//...pasando variable para el header del PDF
+		$this->pdf->fechaPedido=$fechaPedido;      			//...pasando variable para el header del PDF
+		$this->pdf->importe=$importe;      					//...pasando variable para el header del PDF
+		
+	    // Agregamos una página
+	    $this->pdf->AddPage();
+	    // Define el alias para el número de página que se imprimirá en el pie
+	    $this->pdf->AliasNbPages();
+	 
+	    /* Se define el titulo, márgenes izquierdo, derecho y
+	    * el color de relleno predeterminado
+	    */
+	         
+	    // Se define el formato de fuente: Arial, negritas, tamaño 9
+	    //$this->pdf->SetFont('Arial', 'B', 9);
+	    $this->pdf->SetFont('Arial', '', 8);
+	    $totalEfectivo=0.00;		//... acumula el total de efectivo ...
+	    $totalCheque=0.00;			//... acumula el total de cheques ...
+	    $saldo=$importe;			//...saldo de cuenta pedido...
+	    foreach ($regPagos->result() as $registro) {
+	        // Se imprimen los datos de cada registro
+			$this->pdf->Cell(1,5,'','',0,'L',0);
+			$this->pdf->Cell(10,5,fechaMysqlParaLatina($registro->fechaAbono),'',0,'L',0);
+			$this->pdf->Cell(10,5,'','',0,'L',0);
+			$this->pdf->Cell(30,5,utf8_decode($registro->banco),'',0,'L',0);
+			$this->pdf->Cell(7,5,'','',0,'L',0);
+       		$this->pdf->Cell(10,5,utf8_decode($registro->nCheque),'',0,'L',0);
+			
+			if($registro->tipoDocumento=='F'){			//... para el espaciado ...
+				$this->pdf->Cell(8,5,'','',0,'L',0);
+				$this->pdf->Cell(12,5,utf8_decode($registro->facturaRecibo),'',0,'L',0);
+				$this->pdf->Cell(17,5,'','',0,'L',0);
+			}else{
+				$this->pdf->Cell(25,5,'','',0,'L',0);
+				$this->pdf->Cell(12,5,utf8_decode($registro->facturaRecibo),'',0,'L',0);
+			}
+			
+			if($registro->tipoPago=='E'){
+				$this->pdf->Cell(16,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+				$this->pdf->Cell(34,5,'','',0,'L',0);
+				$totalEfectivo=$totalEfectivo+$registro->montoAbono;
+			}else{
+				$this->pdf->Cell(40,5,'','',0,'L',0);
+				$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$totalCheque=$totalCheque+$registro->montoAbono ;
+			}
+			
+			$saldo= $saldo - $registro->montoAbono;
+			
+			$this->pdf->Cell(15,5,number_format($saldo,2),'',0,'R',0);
+			
+			//Se agrega un salto de linea
+        	$this->pdf->Ln(5);	
+	    }
+
+		$this->pdf->Ln(5);
+		$this->pdf->Cell(105,5,'','',0,'L',0);
+		$this->pdf->Cell(16,5,'Totales','',0,'L',0);
+		$this->pdf->Cell(17,5,number_format($totalEfectivo,2),'',0,'R',0);
+		$this->pdf->Cell(7,5,'','',0,'L',0);
+		$this->pdf->Cell(17,5,number_format($totalCheque,2),'',0,'R',0);		
+	     /* PDF Output() settings
+	     * Se manda el pdf al navegador
+	     *
+	     * $this->pdf->Output(nombredelarchivo, destino);
+	     *
+	     * I = Muestra el pdf en el navegador
+	     * D = Envia el pdf para descarga
+		 * F: save to a local file
+		 * S: return the document as a string. name is ignored.
+		 * $pdf->Output(); //default output to browser
+		 * $pdf->Output('D:/example2.pdf','F');
+		 * $pdf->Output("example2.pdf", 'D');
+		 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	     */
+	  
+	  	$this->pdf->Output('pdfsArchivos/ventas/pedidoCuenta.pdf', 'F');
+
+		
+
+		?>
+		<embed src="<?= base_url('pdfsArchivos/ventas/pedidoCuenta.pdf') ?>" width="820" height="455" id="pedidocuenta"> <!-- documento embebido PDF -->
+		<?php
+	}			//... fin reporte PDF pedidoCuentaPdf ....
+	
 	
 	
 	public function registrarDeposito(){
@@ -2151,7 +2313,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		
 		$regDeposito = array(
 			"deposito"=>$_POST['numDeposito'],
-	    	"pedido"=>$_POST['numPedido'],
+	    	"pedido"=>str_replace(" ","",$_POST['numPedido']), //...quita los espacios en blanco ...
 		    "fechaAbono"=>$_POST['inputFecha'],
 		    "tipoPago"=>$_POST['inputTipoPago'],
 		    "banco"=>$_POST['inputBanco'],

@@ -68,11 +68,11 @@ function ctasCobrarPdf(nPedido){
 }  // ... fin pedidoPdf ...
 
 
-function pedidoPdf(nPedido){
+function pedidoCtaCobrarPdf(nPedido){
     var pedido= nPedido;
   
 	$.ajax({
-      url: "<?=base_url()?>produccion/pedidoPdfCrud",
+      url: "<?=base_url()?>tienda/pedidoCuentaPdf",
 
       type: "POST",
       data: {numePedido: pedido},
@@ -202,7 +202,6 @@ function pedidoPdf(nPedido){
 					
 			  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
  
-								
 					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numePedidoAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
 					 echo"<td style='width: 60px;'><input type='text' id='fechaPedido_".$posicionFila."' name='fechaPedido_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaPedido)."' readonly='readonly' style='border:none; width:60px;' /></td>";
@@ -217,7 +216,7 @@ function pedidoPdf(nPedido){
 					
 					 echo"<td style='width: 70px;'><input type='text' id='saldo_".$posicionFila."' name='saldo_".$posicionFila."' value='".number_format($pedido->montoTotal - $pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 													
-					 echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroPedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
+					 echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
 	
 				   ?>						
 				</tr>
