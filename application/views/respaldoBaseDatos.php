@@ -68,7 +68,7 @@ $(document).ready(function(){
 					$fuente = "c:/xampp\htdocs/irba/pdfsArchivos";
 					$destino = "c:/respaldoBD/pdfsArchivos";
 					 
-					copiar($fuente, $destino);		//... copia carpetas
+					copiar($fuente, $destino);		//... copia carpetas y archivos ...
 
                     echo img('/assets/img/loading.gif');
                 ?>    

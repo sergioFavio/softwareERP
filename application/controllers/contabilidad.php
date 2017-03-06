@@ -2262,22 +2262,23 @@ class Contabilidad extends CI_Controller {
 			    $this->pdf->Cell(12,5,'','',0,'L',0);
 				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
 			    
-			    //... imprime totales ........
-			    $this->pdf->Ln(5);
-			    $this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
-				$this->pdf->Ln(3);		//Se agrega un salto de linea
-				$this->pdf->Cell(18,5,'','',0,'L',0);
-				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
-				$this->pdf->Cell(44,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($totalActivo*(-1),2),'',0,'R',0);
-				$this->pdf->Cell(37,5,'','',0,'L',0);
-	       		$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio ,2),'',0,'R',0);
+				$this->pdf->Ln(5);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'RESULTADO DE LA GESTION' ),'',0,'L',0);
+				
+				$resultadoGestion= ($totalActivo*(-1))- $totalPasivoPatrimonio;
+				
+				if($resultadoGestion>0.00){				//... si hay ganancia ...
+					$this->pdf->Cell(62,5,'','',0,'L',0);
+					$this->pdf->Cell(17,5,number_format($resultadoGestion),'',0,'R',0);
+				}else{									//... si hay perdida ...
+					$this->pdf->Cell(115,5,'','',0,'L',0);
+	       			$this->pdf->Cell(17,5,number_format($resultadoGestion,2),'',0,'R',0);
+				}
+				
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
-	        	$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
-				//... fin impresion totales  ........
-				
-				
-				for($x=$numeroLineas; $x<45; $x++){
+	        	
+				for($x=$numeroLineas; $x<46; $x++){
 					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
 				}
 				
