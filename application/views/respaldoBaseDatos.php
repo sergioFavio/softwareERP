@@ -64,6 +64,12 @@ $(document).ready(function(){
             <div class="modal-body" >
             	<?php
             		shell_exec('c:\xampp\mysql\bin\mysqldump -u root irbadb>c:\respaldoBD\irbaDB'.date("d-m-Y").'.sql');
+					
+					$fuente = "c:/xampp\htdocs/irba/pdfsArchivos";
+					$destino = "c:/respaldoBD/pdfsArchivos";
+					 
+					copiar($fuente, $destino);		//... copia carpetas
+
                     echo img('/assets/img/loading.gif');
                 ?>    
                 <h4>Procesando... <button type="button" class="close" style="float:none;" data-dismiss="modal" aria-hidden="true"  onClick="window.location.href='<?=base_url();?>menuController/index'" >×</button></h4>
