@@ -27,7 +27,7 @@ class Contabilidad extends CI_Controller {
 		$sql="UPDATE contaplandectas SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
 		$result = $this->db->query($sql);
 		
-		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604005'";
+		$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='201604007'";
 		$result = $this->db->query($sql);
 		
 		$debeHaber=''; 		//... D:debe  H:haber ...
@@ -1713,6 +1713,14 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/BalanceGeneralPdf');
 			
 			// Se obtienen los registros de la base de datos
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel='3' AND cuenta>='40000000' AND cuenta<='69999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			$registros = $this->db->query($sql);
+			$resultadoGestion=0.00; 			//... acumulael resultado de la gestión ...
+			foreach ($registros->result() as $registro) {
+				$resultadoGestion=$resultadoGestion+($registro->debeacumulado - $registro->haberacumulado);
+			}
+			$resultadoGestion=$resultadoGestion*(-1);	
+				
 			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 			
 			$registros = $this->db->query($sql);
@@ -1799,7 +1807,14 @@ class Contabilidad extends CI_Controller {
 				    	}else{
 				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+
+							if($registro->cuenta=='31050000'){										//... cta. mayor RESULTADOS DE LA GESTION
+								$this->pdf->Cell(16,5,number_format($resultadoGestion ,2),'',0,'R',0);
+								$saldoSubGrupo=$saldoSubGrupo+ ($resultadoGestion*(-1));
+								$totalPasivoPatrimonio= $totalPasivoPatrimonio + (($resultadoGestion)*(-1));
+							}else{																			 //... otras cuentas ...
+								$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+							}	
 							
 				    	}
 						
@@ -1813,12 +1828,10 @@ class Contabilidad extends CI_Controller {
 				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
 					$this->pdf->Cell(12,5,'','',0,'L',0);
 					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}else{
+				}else{				
 					$this->pdf->Cell(12,5,'','',0,'L',0);
 					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
 				}
-				
-				
 				
 				//... imprime totales ........
 				$this->pdf->Ln(5);
@@ -2270,7 +2283,7 @@ class Contabilidad extends CI_Controller {
 				
 				if($resultadoGestion>0.00){				//... si hay ganancia ...
 					$this->pdf->Cell(62,5,'','',0,'L',0);
-					$this->pdf->Cell(17,5,number_format($resultadoGestion),'',0,'R',0);
+					$this->pdf->Cell(17,5,number_format($resultadoGestion,2),'',0,'R',0);
 				}else{									//... si hay perdida ...
 					$this->pdf->Cell(115,5,'','',0,'L',0);
 	       			$this->pdf->Cell(17,5,number_format($resultadoGestion,2),'',0,'R',0);
