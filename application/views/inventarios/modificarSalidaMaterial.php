@@ -121,7 +121,7 @@ $(document).ready(function() {
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' value='$regSalida[2]' readonly='readonly' style='border:none;' /></td>";
 					
                     echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$regSalida[3]' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
-					          
+							         
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' value='$regSalida[4]' readonly='readonly' style='border:none;'/></td>";
                 echo "</tr>";
         		$x=$x+1;

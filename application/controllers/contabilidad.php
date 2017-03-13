@@ -2276,6 +2276,8 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
 			    
 				$this->pdf->Ln(5);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(5);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'','',0,'L',0);
 				$this->pdf->Cell(56,5,utf8_decode( 'RESULTADO DE LA GESTION' ),'',0,'L',0);
 				
@@ -2291,7 +2293,7 @@ class Contabilidad extends CI_Controller {
 				
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 	        	
-				for($x=$numeroLineas; $x<46; $x++){
+				for($x=$numeroLineas; $x<45; $x++){
 					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
 				}
 				

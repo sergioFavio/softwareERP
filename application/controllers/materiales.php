@@ -313,14 +313,14 @@ class Materiales extends CI_Controller {
 		//... incrementar existencias en tabla: almacen ...
 		foreach ($regSalidas->result() as $regSalida) {
 			$codigoSinEspacio=str_replace(" ","",$regSalida->idMaterial); //...quita espacio en blanco ..
-			$insumo = array(
+			$reg = array(
 				    "idMaterial"=>$codigoSinEspacio,
 				    "existencia"=>$regSalida->existencia,
 				    "cantidad"=>$regSalida->cantidad
 			);
 			// ... actualiza registro tabla maestra[almacen/bodega]	
 			$this-> load -> model("inventarios/maestroMaterial_model");
-	    	$this-> maestroMaterial_model -> aumentarExistencia($insumo,'almacen');	
+	    	$this-> maestroMaterial_model -> aumentarExistencia($reg,'almacen');	
 	    	// fin incrementar existencias en tabla: almacen ...
 	    	
 	    	$materialBitacora = array(
@@ -335,8 +335,6 @@ class Materiales extends CI_Controller {
 	    	// ... fin inserta registro tabla salmacenbitacora ...
 		}	 
 		
-		
-		
         for($i=0; $i<$numeroFilasValidas; $i++){
        
 			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
@@ -347,27 +345,23 @@ class Materiales extends CI_Controller {
 	            $material = array(
 	            	"numSal"=>$_POST['inputNumero'],
 				    "idMaterial"=>$codigoSinEspacio,
-				    "cantidad"=>$_POST['cantMat_'.$i]
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]) //...quita , ..
 				);
 				
+				// ... inserta registro tabla transacciones[salalmacen/salbodega]
+				$this-> load -> model("inventarios/ingresoSalidaMaterial_model");		//carga modelo salidaMaterial[salalmacen/salbodega]_model
+	    		$this-> ingresoSalidaMaterial_model -> grabar($material,$nombreDeposito,'sal');
 				
 				//... actualiza registro tabla almacen/bodega
 				 $insumo = array(
 				    "idMaterial"=>$codigoSinEspacio,
 				    "existencia"=>$_POST['existMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i]
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]) //...quita , ..
 				);
 				
-				
-				// ... inserta registro tabla transacciones[salalmacen/salbodega]
-				$this-> load -> model("inventarios/ingresoSalidaMaterial_model");		//carga modelo salidaMaterial[salalmacen/salbodega]_model
-	    		$this-> ingresoSalidaMaterial_model -> grabar($material,$nombreDeposito,'sal');
-					
-					
 				// ... actualiza registro tabla maestra[almacen/bodega]	
-				$this-> load -> model("inventarios/maestroMaterial_model");
-	    		$this-> maestroMaterial_model -> disminuirExistencia($insumo,$nombreDeposito);
-								
+				$this-> maestroMaterial_model -> disminuirExistenciaM('almacen',$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i])  );
+
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
 				
 			}	// ... fin IF

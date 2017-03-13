@@ -293,7 +293,9 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"facturaRecibo");' >
+	    	 		<!--input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"facturaRecibo");' -->
+	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;"  >
+	    	 		
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
