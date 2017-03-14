@@ -1118,7 +1118,8 @@ $anhoSistema = '2016';	//... anho del sistema
 		    "descuento"=>$_POST['descuento'],
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
-		    "fechaEstado"=>$_POST['inputFecha']
+		    "fechaEstado"=>$_POST['inputFecha'],
+		    "notaComentario"=>$_POST['nota']
 		);
 		
 		// ... inserta registro tabla pedidocabecera ...
@@ -2003,6 +2004,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nota= $pedidoCabecera["notaComentario"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					
 		$sql ="SELECT * FROM pedidocabecera WHERE numPedido='$numeroPedido' ";
 		$contador = $this->db->query($sql);	
@@ -2179,7 +2181,48 @@ $anhoSistema = '2016';	//... anho del sistema
 			$this->pdf->Cell(147,5,'','',0,'L',0);
     		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido*(1-($descuento/100))-$aCuenta,2),0,0,'R');
 			
-			
+			if($nota!=""){
+				$this->pdf->Ln('5');
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(1,5,'N O T A :','',0,'L',0);
+				
+				if(substr($nota,0,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,0,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,124,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,124,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,248,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,248,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,372,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,372,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,496,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,496,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,620,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,620,124) ),0,0,'L');
+				}
+				
+			}
 			
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
