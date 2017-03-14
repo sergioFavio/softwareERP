@@ -65,7 +65,7 @@ $(document).ready(function() {
 		var codPrefijo='#idMat_'; // para sleccionar material
 		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo,codPrefijo);			
  			
- 		if(!codigoRepetido){
+// 		if(!codigoRepetido){
 			$('#idMat_'+filaActual).val(codigoMaterial);
 			$('#mat_'+filaActual).val(nombreMaterial);
 			$('#unidadMat_'+filaActual).val(unidad);
@@ -76,10 +76,10 @@ $(document).ready(function() {
 			$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
 					
         	$('#myModal').modal('hide'); // cierra el lightBox
-    	}else{
-    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
-    		$('#myModal').modal('hide'); // cierra el lightbox
-      	}
+//    	}else{
+//    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
+//    		$('#myModal').modal('hide'); // cierra el lightbox
+//      	}
         	
 	} ); // fin #tabla2 tbody
 	
@@ -167,19 +167,20 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 */	
-	if($("#telCel").val()=="" ){
-		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
+//	if($("#telCel").val()!="" ){
+/*		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
 		registrosValidos= false;	
 	}
 	else{
-		var numero= $('#telCel').val();
-		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-		{
-    		alert("El valor " + numero + " no es un número telefónico");
-    		$("#telCel").val("");   // borra celda de cantidad
-    		registrosValidos= false;
-    	}
-	}
+*/		
+//		var numero= $('#telCel').val();
+//		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+//		{
+//    		alert("El valor " + numero + " no es un número telefónico");
+//    		$("#telCel").val("");   // borra celda de cantidad
+//    		registrosValidos= false;
+//    	}
+//	}
 	
 	if($("#localidad").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
@@ -206,10 +207,10 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 
-	if($("#nit").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de NIT está vacío");
-			registrosValidos= false;	
-	}
+//	if($("#nit").val()=="" ){
+//			alert("¡¡¡ E R R O R !!! ... El contenido de NIT está vacío");
+//			registrosValidos= false;	
+//	}
 
 	if($("#descuento").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");
@@ -361,8 +362,8 @@ function validarAcuenta(numero){
 function validarDescuento(numero){
    		
 	var descuento=parseFloat( numero ); // convierte de string to number 
-	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
-	//if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#comision").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
+//	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
+	if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#descuento").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
 		alert("El valor " + numero + " no es válido");
 		$("#descuento").val("");   // borra celda de descuento
 	}else{
@@ -374,11 +375,11 @@ function validarDescuento(numero){
 function calcularTotalBs(sufijo){
 	//...suma los importes del formularioIngreso
 	var i=0;
-	totalBs=0;
+	totalBs=0.00;
 	totalBs=parseFloat(totalBs);
-	saldo=0;
-	descuento=0;
-	aCuenta=0;
+	saldo=0.00;
+	descuento=0.00;
+	aCuenta=0.00;
 	while($("#idMat"+sufijo+i).val()!= ""){
 		var importe=$("#importeMat"+sufijo+i).val();
 
@@ -464,10 +465,10 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span id="titulo" class="label label-default">Pedido:<?= $pedido ?> </span>
+	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
 	    	</div> 
 	    	
-	    	<div class="col-md-1">
+	    	<div class="col-xs-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tags"></span> </span>
 	    	 		<input type="text"  class="form-control input-sm" id="cotizacionFabrica" name="cotizacionFabrica" placeholder="# cotiz.Fab. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
@@ -483,7 +484,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"inputTelCel");'>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
@@ -564,9 +565,9 @@ function filaVacia(posicionFila, codPrefijo){
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' /></td>";
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' /></textarea></td>";
                     
-					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='1' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
 								
                     echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
 					          
@@ -623,8 +624,10 @@ function filaVacia(posicionFila, codPrefijo){
 		
 		
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     <!--  numero pedido -->
-	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  local  F: fabrica  T: tienda -->
+	<input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     				<!--  numero pedido -->
+	<input type="hidden"  name="local" value="<?= $local ?>" />     					<!--  local  F: fabrica  T: tienda -->
+	<input type="hidden"  name="secuenciaPedido" value="<?= $secuenciaPedido ?>" />     <!--  secuenciaPedido -->
+	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
 	
 	<div style="text-align: right; padding-top: 15px;"> 
 		

@@ -17,6 +17,9 @@ th { height:10px;  width:840px;}
 td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 /*  fin de scrollbar  */
 
+/*   light box descripcion */
+.nota-dialog {width:450px;}
+#notaModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 #cuerpoIngreso{margin:0 auto;  padding:0; width:920px; background:#f4f4f4;}
 .cabeceraIngreso{margin:5px;}
@@ -92,6 +95,17 @@ $(document).ready(function() {
 	// grabar cotizacion...
     	grabarPedido();
 	});
+	
+	
+	$('#btnNota').click(function(){	
+		var title = $(this).attr("data-title");
+		$('.modal-title').html(title);		
+  		$('#notaModal').modal({show:true});
+	});	//...fin btnNota ...
+	
+	$("#btnBorrarNota").click(function(){
+        	$("#nota").val("");
+    });
 		
 }); // fin document.ready 
 		
@@ -631,29 +645,32 @@ function filaVacia(posicionFila, codPrefijo){
 	
 	<div style="text-align: right; padding-top: 15px;"> 
 		
-		<div class="col-md-1">
+		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 	    		<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"> Nit</span> </span>
 	 			<input type="text"  class="form-control input-sm" id="nit" name="nit" placeholder="nit&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"nit");'>
 			</div>
 		</div><!-- /.col-md-1 --> 
 		
-		<div class="col-md-3">
+		<div class="col-xs-1">
 		 	<span></span>
 		</div>
-		
-		<div class="col-md-1">
+		<div class="col-xs-2">
+			<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
+		</div>
+			
+		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-minus"></span> </span>
     	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" placeholder="% descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarDescuento(this.value);'>
     		</div>
     	</div><!-- /.col-md-1 --> 
 		
-		<div class="col-md-1">
+		<div class="col-xs-1">
 		 	<span></span>
 		</div>
 		
-    	<div class="col-md-1">
+    	<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> Saldo</span> </span>
     	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
@@ -711,3 +728,27 @@ function filaVacia(posicionFila, codPrefijo){
   </div>
 </div>
 <!-- ... fin  lightbox ... -->
+
+<!-- ... inicio  lightbox nota... -->
+<div id="notaModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="nota-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h5 class="modal-title">cabecera de caja luz</h5>
+	</div>
+	<div class="modal-body">
+		<div class="input-group input-group-sm">
+	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarNota"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
+	</div>
+	
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox descripcion... -->
