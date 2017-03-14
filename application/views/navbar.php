@@ -189,6 +189,7 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=ER"><span class="glyphicon glyphicon-usd"></span><span class="glyphicon glyphicon-ok"></span> Estado de Resultados</a></li>
 							
 							<li><a href="<?=base_url();?>contabilidad/generarReporteBalanceInicial"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Inicial</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera PENDIENTE</a></li>
 							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>
