@@ -1017,6 +1017,8 @@ $anhoSistema = '2016';	//... anho del sistema
 		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$notaComentario= $pedidoCabecera["notaComentario"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		
 		
 		if(strlen($numeroPedido)==3){
 			$secuenciaPedido=substr($numeroPedido,0,1);
@@ -1074,6 +1076,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		$datos['aCuenta']=$aCuenta;						//... dato cabecera pedido ..
 		$datos['descuento']=$descuento;					//... dato cabecera pedido ..
 		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
+		$datos['notaComentario']=$notaComentario;		//... dato cabecera pedido ..	
 		
 		$datos['nRegistrosPedido']=$nRegistrosPedido;	
 		$datos['regPedido']=$regPedido;	
@@ -1188,7 +1191,8 @@ $anhoSistema = '2016';	//... anho del sistema
 		    "descuento"=>$_POST['descuento'],
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
-		    "fechaEstado"=>$_POST['inputFecha']
+		    "fechaEstado"=>$_POST['inputFecha'],
+		    "notaComentario"=>$_POST['nota']
 		);
 		
 		// ... edita registro tabla pedidocabecera ...

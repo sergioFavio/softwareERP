@@ -17,7 +17,7 @@ th { height:10px;  width:840px;}
 td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 /*  fin de scrollbar  */
 
-/*   light box descripcion */
+/*   light box nota */
 .nota-dialog {width:450px;}
 #notaModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
@@ -751,4 +751,4 @@ function filaVacia(posicionFila, codPrefijo){
    </div>
   </div>
 </div>
-<!-- ... fin  lightbox descripcion... -->
+<!-- ... fin  lightbox nota... -->
