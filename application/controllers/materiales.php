@@ -2,8 +2,7 @@
 
 class Materiales extends CI_Controller {
 	
-	public function ingresoMaterial()
-	{
+	public function ingresoMaterial(){
 		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...		
 		
 		//... control de permisos de acceso ....
@@ -1375,6 +1374,7 @@ class Materiales extends CI_Controller {
 		foreach ($result1->result() as $material) {                 //... carga registros de la tabla ingAlmacen ...
 			$registroI=array(
 	       		"codMaterial"=>$material->idMaterial,
+	       		"material"=>$descripcionMaterial,
 	        	"fecha"=>$material->fecha,
 	        	"nFactura"=>$material->numFactura,
 	        	"ingreso"=>$material->cantidad
@@ -1390,6 +1390,7 @@ class Materiales extends CI_Controller {
 		foreach ($result2->result() as $material) {                  //... carga registros de la tabla salAlmacen ...
 			$registroS=array(
 	       		"codMaterial"=>$material->idMaterial,
+	       		"material"=>$descripcionMaterial,
 	        	"fecha"=>$material->fecha,
 	        	"nOrden"=>$material->numOrden,
 	        	"nSalida"=>$material->numSal,
@@ -1500,7 +1501,7 @@ class Materiales extends CI_Controller {
 			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
 			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
 			$this->load->view('header');
-			$this->load->view('reportePdf',$datos );
+			$this->load->view('reporteExcelPdf',$datos );
 			$this->load->view('footer');	
  		}
         
@@ -2119,6 +2120,12 @@ class Materiales extends CI_Controller {
 			}	//.. fin IF validar usuario ...
 	    
 	} //... fin funcion: reponerMateriales ...
+	
+	
+	public function archivoExcel(){
+		$this->load->model("TablaGenerica_model");
+		to_excel($this->TablaGenerica_model->getParaExcel('kardexmaterial'),"archivoexcel" );
+	}
 	
 	
 }

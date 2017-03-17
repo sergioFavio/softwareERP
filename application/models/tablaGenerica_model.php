@@ -89,4 +89,11 @@ class TablaGenerica_model extends CI_Model{
   	$sql="UPDATE $nombreTabla SET $campo=$campo + $valor  WHERE $clave=$patron";
   	return $this->db->query($sql);
   }
+  
+  public function getParaExcel($nombreTabla){
+		$fields = $this->db->field_data($nombreTabla);
+		$query = $this->db->select('*')->get($nombreTabla);
+		return array("fields" => $fields, "query" => $query);
+  }
+  
 }
