@@ -77,6 +77,7 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Pedidos</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/realizarPedido?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido </a></li>
+							<li><a href="<?=base_url();?>tienda/ubicarPedido?local=F"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido </a></li>
 							<li><a href="<?=base_url();?>produccion/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
 						</ul>
 					</li>
@@ -123,7 +124,6 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido </a></li>
 							<li><a href="<?=base_url();?>tienda/ubicarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido </a></li>
-
 							<li><a href="<?=base_url();?>tienda/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
 						</ul>
 					</li>
