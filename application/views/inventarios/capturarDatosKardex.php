@@ -52,11 +52,13 @@ $(document).ready(function() {
     	var nombreProducto = $('td', this).eq(1).text();
     	var existencia = $('td', this).eq(2).text();
   		var unidad = $('td', this).eq(3).text();
+  		var precioUnidad = $('td', this).eq(4).text();
   		
 		$('#inputCodigo').val(codigoProducto);
 		$('#inputDescripcion').val(nombreProducto);
 		document.form_.existencia.value=existencia;  // ... existencia  variable hidden formulario...
 		document.form_.unidad.value=unidad;  		 // ... unidad  variable hidden formulario...
+		document.form_.precioUnidad.value=precioUnidad;  	 // ... precioUnidad  variable hidden formulario...
 		
     	$('#materialModal').modal('hide'); // cierra el lightBox
   
@@ -165,6 +167,7 @@ $(document).ready(function() {
 			
 			<input type="hidden"  name="existencia"  />			<!--  existencia  -->
 			<input type="hidden"  name="unidad"  />				<!--  unidad  -->
+			<input type="hidden"  name="precioUnidad"  />				<!--  unidad  -->
 	    </form>
 	</div>
 	
@@ -185,10 +188,11 @@ $(document).ready(function() {
 		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla1">
 			<thead>
 				<tr class='letraDetalleLightBox'>
-					<th style='width:40px;'>Cod Material</th>
+					<th style='width:40px;'>Código</th>
 					<th style='width:450px;'>Material</th>
 					<th style='width:60px;'>Existencia</th>
 					<th style='width:30px;'>Unidad</th>
+					<th style='width:30px;'>P.Unidad</th>
 				</tr>
 			</thead>
 			<tbody>			
@@ -198,6 +202,7 @@ $(document).ready(function() {
                         <td style='width:450px;'> <?= $material["nombreInsumo"]?></td>
                         <td style='width:70px;'> <?= $material["existencia"]?></td>
    						<td style='width:30px;' ><?= $material['unidad']  ?></td>
+   						<td style='width:30px;text-align:right;' ><?= $material['precioUnidad']  ?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>

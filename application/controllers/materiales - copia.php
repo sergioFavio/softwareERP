@@ -1328,10 +1328,9 @@ class Materiales extends CI_Controller {
 		$descripcionMaterial= $_POST['inputDescripcion']; 	//... lee descripcion del material ...
 		$fechaInicial= $_POST['inputFechaInicial']; 		//... lee fecha inicial ...
 		$fechaFinal= $_POST['inputFechaFinal']; 			//... lee fecha final ...
-		$unidad= $_POST['unidad']; 							//... lee unidad ...
-		$existencia= $_POST['existencia']; 					//... lee existencia ...
-		$precioUnidad= $_POST['precioUnidad']; 					//... lee precio unidad ...	
-		
+		$unidad= $_POST['unidad']; 							//... lee fecha final ...
+		$existencia= $_POST['existencia']; 					//... lee fecha final ...
+			
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -1350,21 +1349,6 @@ class Materiales extends CI_Controller {
         
         $sql ="DELETE FROM kardexmaterial";				//... borra los registros anteriores de KARDEXmaterial antes de cargar los de la nueva consulta... 
  		$result = $this->db->query($sql);
-		
-		$this-> load -> model("tablaGenerica_model");
-		
-		$registro=array(
-	       		"codMaterial"=>$codigoMaterial,
-	       		"material"=>$descripcionMaterial,
-	       		"unidad"=>$unidad,
-	        	"precioUnidad"=>$precioUnidad,
-	        	"saldovalor"=>$precioUnidad*$existencia,
-//	        	"nFactura"=>$material->numFactura,
-	        	"saldo"=>$existencia,
-	        	"responsable"=>"s a l d o   a n t e r i o r"
-       	);
-                        
-        $this-> tablaGenerica_model -> grabar('kardexmaterial',$registro);	
         
 		$sqlI ="SELECT idMaterial,fecha,numFactura,cantidad FROM ingalmacen,ingresoalmacencabecera WHERE idMaterial='$codigoMaterial' AND numIng=numero AND fecha>='$fechaInicial' ORDER BY fecha";
  		$resultI = $this->db->query($sqlI);
@@ -1382,19 +1366,18 @@ class Materiales extends CI_Controller {
 			$qSalida=$qSalida + $material->cantidad;
         };
 		
-		$sql1 ="SELECT idMaterial,fecha,numFactura,cantidad,precioCompra FROM ingalmacen,ingresoalmacencabecera WHERE idMaterial='$codigoMaterial' AND numIng=numero AND fecha>='$fechaInicial' AND fecha<='$fechaFinal' ORDER BY fecha";
+		$sql1 ="SELECT idMaterial,fecha,numFactura,cantidad FROM ingalmacen,ingresoalmacencabecera WHERE idMaterial='$codigoMaterial' AND numIng=numero AND fecha>='$fechaInicial' AND fecha<='$fechaFinal' ORDER BY fecha";
  		$result1 = $this->db->query($sql1);
+		
+		$this-> load -> model("tablaGenerica_model");
 														//... acumula cantidad ingresada ...
 		foreach ($result1->result() as $material) {                 //... carga registros de la tabla ingAlmacen ...
 			$registroI=array(
 	       		"codMaterial"=>$material->idMaterial,
 	       		"material"=>$descripcionMaterial,
-	       		"unidad"=>$unidad,
 	        	"fecha"=>$material->fecha,
 	        	"nFactura"=>$material->numFactura,
-	        	"ingreso"=>$material->cantidad,
-	        	"precioUnidad"=>$material->precioCompra,
-	        	"ingresoValor"=>$material->precioCompra*$material->cantidad
+	        	"ingreso"=>$material->cantidad
        		);
                         
             $this-> tablaGenerica_model -> grabar('kardexmaterial',$registroI);	        
@@ -1408,14 +1391,11 @@ class Materiales extends CI_Controller {
 			$registroS=array(
 	       		"codMaterial"=>$material->idMaterial,
 	       		"material"=>$descripcionMaterial,
-	       		"unidad"=>$unidad,
 	        	"fecha"=>$material->fecha,
 	        	"nOrden"=>$material->numOrden,
 	        	"nSalida"=>$material->numSal,
 	        	"salida"=>$material->cantidad,
-	        	"responsable"=>$material->glosa,
-	        	"precioUnidad"=>$precioUnidad,
-	        	"salidaValor"=>$precioUnidad*$material->cantidad
+	        	"responsable"=>$material->glosa
        		);
                         
             $this-> tablaGenerica_model -> grabar('kardexmaterial',$registroS);	        
@@ -1426,59 +1406,62 @@ class Materiales extends CI_Controller {
  		
  		$contador= $result->num_rows; //...contador de registros que satisfacen la consulta ..
  		
-		// Creacion del PDF
-        /*
-        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
-        * heredó todos las variables y métodos de fpdf
-        */
-         
-        ob_clean(); // cierra si es se abrio el envio de pdf...
-        $this->pdf = new KardexMaterial();
-		
-		$this->pdf->codigoMaterial=$codigoMaterial;      					//...pasando variable para el header del PDF
-		$this->pdf->descripcionMaterial=$descripcionMaterial;      			//...pasando variable para el header del PDF
-		$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 		//...pasando variable para el header del PDF
-		$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 			//...pasando variable para el header del PDF
-		
-        // Agregamos una página
-        $this->pdf->AddPage();
-        // Define el alias para el número de página que se imprimirá en el pie
-        $this->pdf->AliasNbPages();
- 
-        /* Se define el titulo, márgenes izquierdo, derecho y
-         * el color de relleno predeterminado
-         */
-         
-        $this->pdf->SetLeftMargin(10);
-        $this->pdf->SetRightMargin(10);
-        $this->pdf->SetFillColor(200,200,200);
- 
-        // Se define el formato de fuente: Arial, negritas, tamaño 9
-        //$this->pdf->SetFont('Arial', 'B', 9);
-        $this->pdf->SetFont('Arial', '', 7);
-        
-        // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
-        $saldo= $existencia - ($qIngreso - $qSalida);					//... calcula el saldo anterior ...
-        
-        $sql ="UPDATE kardexmaterial  SET saldo=$saldo, saldoValor=$saldo*precioUnidad WHERE fecha='0000-00-00'";
- 		$this->db->query($sql);
-        
-        $primeraLinea = 0;							//... bandera para imprimir una sola vez linea... saldo anterior 999 unidad ...
-        foreach ($result->result() as $salida) {
-            // se imprime el numero actual y despues se incrementa el valor de $x en uno
-            // Se imprimen los datos de cada registro
-            
-            //$this->pdf->Cell(5,5,'','',0,'L',0);
-            if($primeraLinea==0){					//... imprime... saldo anterior 999 unidad .... una sola vez
-            	$this->pdf->Cell(85,5,' ','',0,'R',0);
-            	$this->pdf->Cell(15,5,'Saldo anterior ...','',0,'L',0);
-				$this->pdf->Cell(3,5,' ','',0,'R',0);
-				$this->pdf->Cell(23,5,number_format($saldo,2),'',0,'R',0);
-				$this->pdf->Cell(5,5,' ','',0,'R',0);
-				$this->pdf->Cell(10,5,$unidad,'',0,'R',0);
-				$primeraLinea = 1;	
-				$this->pdf->Ln(5);
-            }else{
+ //		if($contador==0){
+//			$datos['mensaje']='No hay registros entre la fecha inicial '.fechaMysqlParaLatina($fechaInicial).' y la fecha final '.fechaMysqlParaLatina($fechaFinal).' seleccionadas.';
+//			$this->load->view('header');
+//			$this->load->view('mensaje',$datos );
+//			$this->load->view('footer');
+// 		}else{
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new KardexMaterial();
+			
+			$this->pdf->codigoMaterial=$codigoMaterial;      					//...pasando variable para el header del PDF
+			$this->pdf->descripcionMaterial=$descripcionMaterial;      			//...pasando variable para el header del PDF
+			$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 		//...pasando variable para el header del PDF
+			$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 			//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage();
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 7);
+	        
+	        // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
+	        $saldo= $existencia - ($qIngreso - $qSalida);					//... calcula el saldo anterior ...
+	        $primeraLinea = 0;							//... bandera para imprimir una sola vez linea... saldo anterior 999 unidad ...
+	        foreach ($result->result() as $salida) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+	            
+	           
+	            //$this->pdf->Cell(5,5,'','',0,'L',0);
+	            if($primeraLinea==0){					//... imprime... saldo anterior 999 unidad .... una sola vez
+	            	$this->pdf->Cell(85,5,' ','',0,'R',0);
+	            	$this->pdf->Cell(15,5,'Saldo anterior ...','',0,'L',0);
+					$this->pdf->Cell(3,5,' ','',0,'R',0);
+					$this->pdf->Cell(23,5,number_format($saldo,2),'',0,'R',0);
+					$this->pdf->Cell(5,5,' ','',0,'R',0);
+					$this->pdf->Cell(10,5,$unidad,'',0,'R',0);
+					$primeraLinea = 1;	
+					$this->pdf->Ln(5);
+	            }
 				$saldo= $saldo + ( $salida->ingreso )- ( $salida->salida );
 				$this->pdf->Cell(1,5,fechaMysqlParaLatina($salida->fecha),'',0,'L',0);
 				$this->pdf->Cell(15,5,' ','',0,'L',0);
@@ -1494,34 +1477,33 @@ class Materiales extends CI_Controller {
 				$this->pdf->Cell(34,5,$salida->responsable,'',0,'L',0);
 	            //Se agrega un salto de linea
 	            $this->pdf->Ln(5);
-			}
-        }
-        
-         /* PDF Output() settings
-         * Se manda el pdf al navegador
-         *
-         * $this->pdf->Output(nombredelarchivo, destino);
-         *
-         * I = Muestra el pdf en el navegador
-         * D = Envia el pdf para descarga
-		 * F: save to a local file
-		 * S: return the document as a string. name is ignored.
-		 * $pdf->Output(); //default output to browser
-		 * $pdf->Output('D:/example2.pdf','F');
-		 * $pdf->Output("example2.pdf", 'D');
-		 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
-         */
-  
-  		$this->pdf->Output('pdfsArchivos/inventarios/kardexMaterial.pdf', 'F');
-  		
-		$datos['documento']="pdfsArchivos/inventarios/kardexMaterial.pdf";	
-		$datos['titulo']=' Kardex Material: '.$descripcionMaterial;	// ... titulo ...
-		$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
-		$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
-		$this->load->view('header');
-		$this->load->view('reporteExcelPdf',$datos );
-		$this->load->view('footer');	
-
+	        }
+	        
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/inventarios/kardexMaterial.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/inventarios/kardexMaterial.pdf";	
+			$datos['titulo']=' Kardex Material: '.$descripcionMaterial;	// ... titulo ...
+			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
+			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
+			$this->load->view('header');
+			$this->load->view('reporteExcelPdf',$datos );
+			$this->load->view('footer');	
+// 		}		//fin IF contador != 0....
         
 	} //... fin funcion: generarReporte kardexMaterial ...
 	
