@@ -1620,6 +1620,31 @@ class Produccion extends CI_Controller {
 		
 		}     //... fin IF total registros encontrados ...
 	}	//..fin buscarOrdenTrabajo ...
+	
+	
+	public function ordenStock(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Producción';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...	
+			
+			$this->load->model("TablaGenerica_model");	
+			$empleados= $this->TablaGenerica_model->getTodos('prodmanoobra'); 
+					
+	      	$datos['empleados']=$empleados;	
+	
+			$this->load->view('header');
+			$this->load->view('produccion/ordenStock',$datos);
+			$this->load->view('footer');
+		}	//... fin validar acceso usuario ...
+	}	//... fin ordenStock ...
 
 }
 

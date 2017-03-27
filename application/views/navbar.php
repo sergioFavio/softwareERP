@@ -108,7 +108,7 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Ordenes de Stock</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>produccion/datosOrdenStock"><span class="glyphicon glyphicon-tag"></span> Asignar Orden de Stock</a></li>
+							<li><a href="<?=base_url();?>produccion/ordenStock"><span class="glyphicon glyphicon-tag"></span> Asignar Orden de Stock</a></li>
 							<li><a href="<?=base_url();?>produccion/verOrdenesStock"><span class="glyphicon glyphicon-eye-open"></span> Ver Órdenes de Stock</a></li>
 						</ul>
 					</li>
@@ -187,8 +187,10 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=SS"><span class="glyphicon glyphicon-plus-sign"></span><span class="glyphicon glyphicon-minus-sign"></span> Balance Sumas y Saldos</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BG"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance General</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=ER"><span class="glyphicon glyphicon-usd"></span><span class="glyphicon glyphicon-ok"></span> Estado de Resultados</a></li>
-							
 							<li><a href="<?=base_url();?>contabilidad/generarReporteBalanceInicial"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Inicial</a></li>
+			
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BC"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Comparativo</a></li>
+			
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera PENDIENTE</a></li>
 							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
