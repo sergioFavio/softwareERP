@@ -103,19 +103,19 @@ function grabarPlantilla(){
 }	// ... fin funcion grabarSalida() ...
 		
 		
-function validarCantidad(numero, filaExistencia){
-			
-	if($("#idMat_"+filaExistencia).val()==""){
-		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
-		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-				
+function validarCantidad(numero){
+	if($("#empleado").val()==""){
+		alert("¡¡¡ ERROR !!! Primero seleccione un empleado para ingresar cantidad.");
+		$("#cantidad").val("");   // borra celda de cantidad	
 	}else{
-		var existenciaAlmacen=parseFloat($('#existMat_'+filaExistencia).val()   );
-		var cantidad=parseFloat( numero ); // convierte de string to number 
-	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-	    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+		var cantidad=parseInt( numero ); // convierte de string to number 
+	    	if (!/^([0-9])*$/.test(numero)){  // ... solo numeros enteros ...  
+	    	//if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
 	    		alert("El valor " + numero + " no es una cantidad válida");
-	    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+	    		$("#cantidad").val("");   // borra celda de cantidad
+	    	}
+	    	else{
+	    		$("#cantidad").val( separadorMiles( cantidad.toFixed(0) ) );   //... actualiza cantHaber
 	    	}	
 	}
 }   // fin ... validarCantidad ...
@@ -127,7 +127,6 @@ function separadorMiles(n){
         while(rx.test(w)){
             w= w.replace(rx, '$1,$2');
         }
-        
         return w;
     });
 }
@@ -147,7 +146,7 @@ function separadorMiles(n){
 			</div>    	
 	    	
 	    	<div class="col-md-4">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Orden Stock <?= strtoupper('No. ....') ?> </span>
+	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Orden Stock No.:<?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
 	    	</div> 
 	    		
 		</div>
@@ -176,7 +175,7 @@ function separadorMiles(n){
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-sound-5-1"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="cantidad" name="cantidad"  placeholder="cantidad&hellip;" style="width: 150px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="cantidad" name="cantidad"  placeholder="cantidad&hellip;" style="width: 150px;font-size:11px;text-align:center;" onChange="validarCantidad(this.value);" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -187,7 +186,10 @@ function separadorMiles(n){
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="unidad" name="unidad" placeholder="unidad&hellip;" style="width:150px;font-size:11px;text-align:center;" >
+	    	 		<select  class="form-control input-sm" id="unidad" name="unidad" placeholder="unidad&hellip;" style="width:150px;font-size:11px;text-align:center;" >
+	    	 		    <option value="pieza">Pieza</option>
+				         <option value="juego">Juego</option>
+		        	</select>	
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -210,7 +212,10 @@ function separadorMiles(n){
 		
 	</div>
 
-	<!--input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
+	<input type="hidden"  name="numStock" value="<?= $pedido ?>" />     				<!--  numero orden stock -->
+	<input type="hidden"  name="secuenciaStock" value="<?= $secuenciaPedido ?>" />      <!--  secuenciaStock -->
+	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
+	
 	<div style="height:80px;"></div>
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

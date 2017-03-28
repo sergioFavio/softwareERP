@@ -90,7 +90,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 				         <option value="Banco Unión M.N.">Banco Unión M.N.</option>
 				         <option value="Caja Mayor">Caja Mayor</option>
 				         <option value="Caja Chica Fábrica">Caja Chica Fábrica</option>
-				          <option value="Caja Chica Tienda">Caja Chica Tienda</option>
+				         <option value="Caja Chica Tienda">Caja Chica Tienda</option>
 		        	</select>
 	    		</div>
 	    	</div><!-- /.col-xs-2 -->

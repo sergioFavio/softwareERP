@@ -1634,11 +1634,51 @@ class Produccion extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...	
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nostock'; // ... prefijoTabla
+	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+			
+			if(strlen($pedido)==2 ){
+				$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
+			}
+			
+			if(strlen($pedido)==3 ){
+				$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
+			}
+			
+			if(strlen($pedido)==4 ){
+				$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
+			}
+			
+			if(strlen($pedido)==5 ){
+				$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
+			}
+			
+			if($anhoPedido!=$anhoSistema){
+				$secuenciaPedido="1";
+			}else{		//... si anhoPedido==anhoSistema ...
+		     	$secuenciaPedido=$secuenciaPedido+1;
+			}
+			
+			$pedido=$secuenciaPedido.$anhoSistema;
+			
+				
 			
 			$this->load->model("TablaGenerica_model");	
 			$empleados= $this->TablaGenerica_model->getTodos('prodmanoobra'); 
 					
 	      	$datos['empleados']=$empleados;	
+			
+			$datos['secuenciaPedido']=$secuenciaPedido;
+			$datos['anhoSistema']=$anhoSistema;
+			$datos['pedido']=$pedido;
 	
 			$this->load->view('header');
 			$this->load->view('produccion/ordenStock',$datos);
