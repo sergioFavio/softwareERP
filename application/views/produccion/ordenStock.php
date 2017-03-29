@@ -146,7 +146,7 @@ function separadorMiles(n){
 			</div>    	
 	    	
 	    	<div class="col-md-4">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Orden Stock No.:<?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
+	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Orden Stock No.: <?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
 	    	</div> 
 	    		
 		</div>

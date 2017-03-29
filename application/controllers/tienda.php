@@ -525,7 +525,7 @@ class Tienda extends CI_Controller {
 
         // Se obtienen los registros de la base de datos
         //$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
-	    $sql ="SELECT fechaAbono,pedido,banco,montoAbono,tipoDocumento,facturaRecibo,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY banco";
+	    $sql ="SELECT fechaAbono,pedido,banco,montoAbono,tipoDocumento,facturaRecibo,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY banco,fechaAbono";
 
  		$salidas = $this->db->query($sql);
  
@@ -894,8 +894,10 @@ class Tienda extends CI_Controller {
 
 			if($local=="F"){
 				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
- 				
+// 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+$anhoSistema='2016';
+
+			
 				if(strlen($pedido)==2 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
 					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
