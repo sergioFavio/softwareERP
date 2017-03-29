@@ -91,9 +91,9 @@ class TablaGenerica_model extends CI_Model{
   }
   
   public function getParaExcel($nombreTabla){
-		$fields = $this->db->field_data($nombreTabla);
-		$query = $this->db->select('*')->get($nombreTabla);
-		return array("fields" => $fields, "query" => $query);
+	$fields = $this->db->field_data($nombreTabla);
+	$query = $this->db->select('*')->get($nombreTabla);
+	return array("fields" => $fields, "query" => $query);
   }
   
 }

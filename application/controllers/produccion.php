@@ -1276,13 +1276,11 @@ class Produccion extends CI_Controller {
 	//... funciones del CRUD pedidos ...//
 	/////////////////////////////////////////////
 	
-	public function verPedidos()
-	{
+	public function verPedidos(){
 		//... control de permisos de acceso ....
 		
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
-		$permisoProceso1=$this->session->userdata('usuarioProceso1');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Producción';
 			$this->load->view('header');
