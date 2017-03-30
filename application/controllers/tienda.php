@@ -149,7 +149,7 @@ class Tienda extends CI_Controller {
 //		$numePedido=$_POST["numePedido"];
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido ASC";
+		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido ASC,local";
 		
 		$registros = $this->db->query($sql);
 		 
@@ -895,7 +895,7 @@ class Tienda extends CI_Controller {
 			if($local=="F"){
 				$anhoSistema = date("Y");	//... anho del sistema
 // 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-$anhoSistema='2016';
+$anhoSistema='16';
 
 			
 				if(strlen($pedido)==2 ){
@@ -1103,7 +1103,11 @@ $anhoSistema='2016';
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
 		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
-			
+		
+		$descuento= $_POST['descuento'];
+		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
+		$montoConDescto=$montoConDescto*(1-($descuento/100)) ;
+
 		$pedidoCabecera = array(
 	    	"numPedido"=>$_POST['numPedido'],
 	    	"local"=>$_POST['local'],
@@ -1118,7 +1122,7 @@ $anhoSistema='2016';
 		    "ordenCompra"=>$_POST['ordenCompra'],
 		    "facturarA"=>$_POST['facturarA'],
 		    "nit"=>$_POST['nit'],
-		    "montoTotal"=>str_replace(",","",$_POST['detalleTotalBs']), //...quita , como separador de miles ...
+		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 		    "descuento"=>$_POST['descuento'],
 		    "usuario"=>$this->session->userdata('userName'),
@@ -1174,6 +1178,10 @@ $anhoSistema='2016';
 		$numPedido=$_POST['numPedido'];
 		$secuenciaPedido=$_POST['secuenciaPedido'];
 		$anhoSistema=$_POST['anhoSistema'];
+		
+		$descuento= $_POST['descuento'];
+		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
+		$montoConDescto=$montoConDescto*(1-($descuento/100)) ;
 			
 		$pedidoCabecera = array(
 	    	"local"=>$_POST['local'],
@@ -1188,7 +1196,7 @@ $anhoSistema='2016';
 		    "ordenCompra"=>$_POST['ordenCompra'],
 		    "facturarA"=>$_POST['facturarA'],
 		    "nit"=>$_POST['nit'],
-		    "montoTotal"=>str_replace(",","",$_POST['detalleTotalBs']), //...quita , como separador de miles ...
+		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 		    "descuento"=>$_POST['descuento'],
 		    "usuario"=>$this->session->userdata('userName'),
