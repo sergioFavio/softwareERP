@@ -149,7 +149,7 @@ class Tienda extends CI_Controller {
 //		$numePedido=$_POST["numePedido"];
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido ASC,local";
+		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido,numPedido ASC";
 		
 		$registros = $this->db->query($sql);
 		 
@@ -508,9 +508,14 @@ class Tienda extends CI_Controller {
 		}		
 	}		//... fin function: registrarDeposito ...
 	
-	public function fechasReporteDepositos(){		
+	public function fechasReporteDepositos(){
+		
+$local=$_GET['local'];
+$datos['local']=$local;
+	
+			
 		$this->load->view('header');
-		$this->load->view('tienda/fechasReporteDepositos' );
+		$this->load->view('tienda/fechasReporteDepositos',$datos );
 		$this->load->view('footer');
 	}
 	
@@ -655,7 +660,138 @@ class Tienda extends CI_Controller {
         
 	} //... fin funcion: generarReporteDepositos ...
 	
-	
+		
+	public function generarReporteNumeroDeposito(){
+		//... genera reporte de depositos en PDF
+		$fechaInicial=$_POST['inputFechaInicial']; //... viene de la vista fechasReporteSalida ...
+		$fechaFinal=$_POST['inputFechaFinal']; //... viene de la vista fechasReporteSalida ...
+		
+        // Se carga la libreria fpdf
+        $this->load->library('tienda/ReporteNumeroDepositoPdf');
+
+        // Se obtienen los registros de la base de datos
+        //$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
+	    $sql ="SELECT deposito,fechaAbono,pedido,banco,montoAbono,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY pedido,fechaAbono";
+
+ 		$salidas = $this->db->query($sql);
+ 
+ 		$contador= $salidas->num_rows; //...contador de registros que satisfacen la consulta ..
+ 		
+ 		if($contador==0){
+			$datos['mensaje']='No hay registros entre la fecha inicial '.fechaMysqlParaLatina($fechaInicial).' y la fecha final '.fechaMysqlParaLatina($fechaFinal).' seleccionadas.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+ 		}else{
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new ReporteNumeroDepositoPdf();
+			$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 	//...pasando variable para el header del PDF
+			$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 		//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage();
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 9);
+	        
+	        // La variable $bancoAnterior se utiliza para hacer corte de control por banco ...
+	        $bancoAnterior = 'X';
+			$totalBanco=0.00;
+			$totalGeneralBancos=0.00;
+	        foreach ($salidas->result() as $salida) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+	            if($bancoAnterior != 'X' && $bancoAnterior !=($salida->banco) ){   //...corte de control numero Salida
+	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
+	            	$this->pdf->Cell(55,5,'','',0,'L',0);
+	            	$this->pdf->Cell(29,5,utf8_decode('Total Día Bs. '),'',0,'L',0);
+		            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
+					$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
+					$totalBanco=0.00;
+					//Se agrega un salto de linea
+	            	$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+	            }
+				
+	       		$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(13,5,fechaMysqlParaLatina($salida->fechaAbono),'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$salida->pedido,'',0,'R',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(10,5,$salida->deposito,'',0,'R',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);			
+				$this->pdf->Cell(15,5,utf8_decode($salida->banco),'',0,'L',0);
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+	            $this->pdf->Cell(25,5,number_format($salida->montoAbono,2),'',0,'R',0);
+				$this->pdf->Cell(5,5,'','',0,'L',0);				
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
+	            //Se agrega un salto de linea
+	            $this->pdf->Ln(5); 
+
+ 				$bancoAnterior=$salida->banco;
+				$totalBanco= $totalBanco + $salida->montoAbono;
+	        }
+
+			$this->pdf->Ln(5);  //Se agrega un salto de linea
+        	$this->pdf->Cell(55,5,'','',0,'L',0);
+        	$this->pdf->Cell(29,5,utf8_decode('Total Día Bs. '),'',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
+			$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
+			$totalBanco=0.00;
+			//Se agrega un salto de linea
+        	$this->pdf->Ln(5);
+			$this->pdf->Ln(5);
+			
+        	$this->pdf->Cell(55,5,'','',0,'L',0);
+        	$this->pdf->Cell(29,5,'Total Gral. Bs. ','',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalGeneralBancos,2),'',0,'R',0);
+			
+	        
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/reporteDepositosPdf.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/reporteDepositosPdf.pdf";	
+			$datos['titulo']=' de Depósitos ';	// ... ingreso/salida ... almacen/bodega ...
+			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
+			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
+			$this->load->view('header');
+			$this->load->view('reportePdf',$datos );
+			$this->load->view('footer');	
+ 		}
+        
+	} //... fin funcion: generarReporteNumeroDeposito ...
 	
 	
 	
@@ -894,10 +1030,8 @@ class Tienda extends CI_Controller {
 
 			if($local=="F"){
 				$anhoSistema = date("Y");	//... anho del sistema
-// 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-$anhoSistema='16';
-
-			
+ 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+		
 				if(strlen($pedido)==2 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
 					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.

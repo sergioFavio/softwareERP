@@ -2258,7 +2258,9 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/BalanceComparativoPdf');
 			
 			// Se obtienen los registros de la base de datos
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+// $sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+						
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
@@ -2303,7 +2305,7 @@ class Contabilidad extends CI_Controller {
 				foreach ($registros->result() as $registro) {
 				    // Se imprimen los datos de cada registro
 				    $numeroLineas = $numeroLineas +1;
-					
+/*					
 				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
 						$this->pdf->Cell(12,5,'','',0,'L',0);
 						
@@ -2313,10 +2315,10 @@ class Contabilidad extends CI_Controller {
 							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
 						}
 				    }
-					
-					if($cuentaAnteriorSubGrupo!=''){
+*/					
+//					if($cuentaAnteriorSubGrupo!=''){
 						 $this->pdf->Ln(5);
-					}
+//					}
 				   
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
@@ -2335,15 +2337,15 @@ class Contabilidad extends CI_Controller {
 						}			
 					}
 					
-					if($registro->nivel=='3'){
+					if($registro->nivel=='4' || $registro->nivel=='5'){
 						if($registro->cuenta<='19999999'){
 				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado ,2),'',0,'R',0);
 				    	}else{
 				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+							$this->pdf->Cell(16,5,number_format($registro->haberacumulado ,2),'',0,'R',0);
 							
 				    	}
 						

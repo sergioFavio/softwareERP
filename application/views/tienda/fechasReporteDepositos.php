@@ -58,10 +58,17 @@ $(document).ready(function() {
 
 </script>
 
-<div class="jumbotron" id="cuerpo" >	
+<div class="jumbotron" id="cuerpo" >
+	<?php 
+		if($local=='F'){
+			$reporte='generarReporteDepositos';
+		}else{
+			$reporte='generarReporteNumeroDeposito';
+		}
+	?>	
 		
 	<div class="cuerpoCabeceraReporteSalida">
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/generarReporteDepositos' id='form_' name='form_' >
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/<?=$reporte?>' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> Fechas reporte Dep&oacute;sitos </span></p>
 	

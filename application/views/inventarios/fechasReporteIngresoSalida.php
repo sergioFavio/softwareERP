@@ -62,7 +62,7 @@ $(document).ready(function() {
 		
 	<div class="cuerpoCabeceraReporteSalida">
 		<?php
-		$generar='generarReporte'.$tipoTransaccion; //...variable para determinar tipo reporte ingreso/salidad ...
+			$generar='generarReporte'.$tipoTransaccion; //...variable para determinar tipo reporte ingreso/salidad ...
 		?>
 	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/<?=$generar?>' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
