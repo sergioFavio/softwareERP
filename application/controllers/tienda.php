@@ -712,19 +712,19 @@ $datos['local']=$local;
 	        $this->pdf->SetFont('Arial', '', 9);
 	        
 	        // La variable $bancoAnterior se utiliza para hacer corte de control por banco ...
-	        $bancoAnterior = 'X';
-			$totalBanco=0.00;
-			$totalGeneralBancos=0.00;
+	        $fechaAnterior = 'X';
+			$totalDia=0.00;
+			$totalGeneral=0.00;
 	        foreach ($salidas->result() as $salida) {
 	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
 	            // Se imprimen los datos de cada registro
-	            if($bancoAnterior != 'X' && $bancoAnterior !=($salida->banco) ){   //...corte de control numero Salida
+	            if($fechaAnterior != 'X' && $fechaAnterior !=($salida->fechaAbono) ){   //...corte de control por dia ...
 	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
 	            	$this->pdf->Cell(55,5,'','',0,'L',0);
 	            	$this->pdf->Cell(29,5,utf8_decode('Total Día Bs. '),'',0,'L',0);
-		            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
-					$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
-					$totalBanco=0.00;
+		            $this->pdf->Cell(25,5,number_format($totalDia,2),'',0,'R',0);
+					$totalGeneral= $totalGeneral + $totalDia;
+					$totalDia=0.00;
 					//Se agrega un salto de linea
 	            	$this->pdf->Ln(5);
 					$this->pdf->Ln(5);
@@ -746,23 +746,23 @@ $datos['local']=$local;
 	            //Se agrega un salto de linea
 	            $this->pdf->Ln(5); 
 
- 				$bancoAnterior=$salida->banco;
-				$totalBanco= $totalBanco + $salida->montoAbono;
+ 				$fechaAnterior=$salida->fechaAbono;
+				$totalDia= $totalDia + $salida->montoAbono;
 	        }
 
 			$this->pdf->Ln(5);  //Se agrega un salto de linea
         	$this->pdf->Cell(55,5,'','',0,'L',0);
         	$this->pdf->Cell(29,5,utf8_decode('Total Día Bs. '),'',0,'L',0);
-            $this->pdf->Cell(25,5,number_format($totalBanco,2),'',0,'R',0);
-			$totalGeneralBancos= $totalGeneralBancos + $totalBanco;
-			$totalBanco=0.00;
+            $this->pdf->Cell(25,5,number_format($totalDia,2),'',0,'R',0);
+			$totalGeneral= $totalGeneral + $totalDia;
+			$totalDia=0.00;
 			//Se agrega un salto de linea
         	$this->pdf->Ln(5);
 			$this->pdf->Ln(5);
 			
         	$this->pdf->Cell(55,5,'','',0,'L',0);
         	$this->pdf->Cell(29,5,'Total Gral. Bs. ','',0,'L',0);
-            $this->pdf->Cell(25,5,number_format($totalGeneralBancos,2),'',0,'R',0);
+            $this->pdf->Cell(25,5,number_format($totalGeneral,2),'',0,'R',0);
 			
 	        
 	         /* PDF Output() settings
@@ -780,9 +780,9 @@ $datos['local']=$local;
 			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 	         */
 	  
-	  		$this->pdf->Output('pdfsArchivos/reporteDepositosPdf.pdf', 'F');
+	  		$this->pdf->Output('pdfsArchivos/reporteNumeroDepositoPdf.pdf', 'F');
 	  		
-			$datos['documento']="pdfsArchivos/reporteDepositosPdf.pdf";	
+			$datos['documento']="pdfsArchivos/reporteNumeroDepositoPdf.pdf";	
 			$datos['titulo']=' de Depósitos ';	// ... ingreso/salida ... almacen/bodega ...
 			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
 			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
