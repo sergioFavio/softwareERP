@@ -21,8 +21,8 @@
 	
 	#titulo{font-size:16px;margin-top:1px;  text-align:right; font-weight:bold} 
 	
-	.pagos-dialog {width:750px;}
-	#pagosModal{padding-left:330px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
+	.pagos-dialog {width:1000px;}
+	#pagosModal{padding-left:200px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 </style>
 
@@ -41,12 +41,16 @@ $(document).ready(function() {
 	$('#tabla2').dataTable();
     
     $('#tabla2 tbody').on('click', 'tr', function () {	
-    	var numeroDeposito = $('td', this).eq(0).text();
+    	var deposito = $('td', this).eq(0).text();
     	var numeroPedido = $('td', this).eq(1).text();
     	var fecha = $('td', this).eq(2).text();
     	var tipoPago =$('td', this).eq(3).text();
+    	var banco=$('td', this).eq(4).text();
+    	var numCheque=$('td', this).eq(5).text();
+    	var numDeposito=$('td', this).eq(6).text();
+    	var tipoDocumento=$('td', this).eq(7).text();
     	
-		$('#deposito').val(numeroDeposito);
+		$('#deposito').val(deposito);
 		$('#numPedido').val(numeroPedido);
 		$('#inputFecha').val(fecha);
 		if(tipoPago=='E'){
@@ -54,6 +58,11 @@ $(document).ready(function() {
 		}else{
 			document.getElementById("inputTipoPago2").checked = true;		//... resetea el button radio al segundo valor ...
 		}
+		
+		$('#inputBanco').val(banco);
+		$('#numCheque').val(numCheque);
+		$('#numDeposito').val(numDeposito);
+		$('#tipoDocumento').val(tipoDocumento);
 		
     	$('#pagosModal').modal('hide'); // cierra el lightBox
 	} ); // fin #tabla2 tbody
@@ -72,6 +81,7 @@ $(document).ready(function() {
 
 	function borrarFormularioDeposito(){
 	//...esta funcion borra los datos del formularioDeposito
+		$("#deposito").val("");
 		document.getElementById("inputTipoPago1").checked = true;		//... resetea el button radio al primer valor ...
 		$("#inputFecha").val("");
 	    $("#inputBanco").val("");
@@ -179,12 +189,8 @@ $(document).ready(function() {
 <div class="jumbotron" id="cuerpo" >	
 		
 	<div class="cuerpoCabeceraReporteSalida">
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDeposito' id='form_' name='form_' >
-	    	<div style="height:2px;"></div>
-			<!--p align="center" class="tituloReporte" ><span class="label label-success"> Modificar Dep&oacute;sito No. </span></p-->
-			
-
-			<div style="height:15px;"></div>
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDepositoModificado' id='form_' name='form_' >
+	    	<div style="height:17px;"></div>
 			
 			<div class="row">
 			
@@ -244,7 +250,7 @@ $(document).ready(function() {
 		    	  <div class="col-xs-2">
 			      	<div class="input-group input-group-sm">
 			        	<span class="input-group-addon" id="letraCabecera" >Fecha </span>
-			    	 	<input type="date"  class="form-control" id="inputFecha" name="inputFecha" placeholder="Fecha" style="width: 135px; height:30px;" >
+			    	 	<input type="text"  class="form-control" id="inputFecha" name="inputFecha" readonly="readonly" placeholder="fecha&hellip;" style="width: 135px; height:30px;" >
 			      	</div>
 			      </div><!-- /.col-md-2 -->
 				  
@@ -394,23 +400,33 @@ $(document).ready(function() {
 		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla2">
 			<thead>
 				<tr class='letraDetalleLightBox'>
-					<th style='width:35px;'>depósito</th>
-					<th style='width:35px;'>pedido</th>
-					<th style='width:45px;'>fecha</th>
-					<th style='width:25px;'>tipo pago</th>
-					<th style='width:45px;'>banco</th>
-					<th style='width:35px;'># cheque</th>
+					<th style='width:15px;'>depósito</th>
+					<th style='width:15px;'>pedido</th>
+					<th style='width:25px;'>fecha</th>
+					<th style='width:15px;'>tipo pago</th>
+					<th style='width:50px;'>banco</th>
+					<th style='width:15px;'># cheque</th>
+					<th style='width:15px;'># depósito</th>
+					<th style='width:15px;'>tipo documento</th>
+					<th style='width:15px;'>factura/recibo</th>
+					<th style='width:15px;'>monto Bs.</th>
+					<th style='width:50px;'>glosa</th>
 				</tr>
 			</thead>
 			<tbody>			
                 <?php foreach($pagosPedido as $pago):?>
                     <tr class='letraDetalleLightBox'> 
-                    	<td style='width:35px;'> <?= $pago["deposito"] ?></td>
-                        <td style='width:35px;'> <?= $pago["pedido"] ?></td>
-                        <td style='width:45px;'> <?= fechaMysqlParaLatina($pago["fechaAbono"])?></td>
-   						<td style='width:25px;' ><?= $pago['tipoPago']  ?></td>	
-   						<td style='width:45px;' ><?= $pago['banco']  ?></td>
-   						<td style='width:35px;' ><?= $pago['nCheque']  ?></td>
+                    	<td style='width:15px;'> <?= $pago["deposito"] ?></td>
+                        <td style='width:15px;'> <?= $pago["pedido"] ?></td>
+                        <td style='width:25px;'> <?= fechaMysqlParaLatina($pago["fechaAbono"])?></td>
+   						<td style='width:15px;' ><?= $pago['tipoPago']  ?></td>	
+   						<td style='width:60px;' ><?= $pago['banco']  ?></td>
+   						<td style='width:15px;' ><?= $pago['nCheque']  ?></td>
+   						<td style='width:15px;' ><?= $pago['nDeposito']  ?></td>
+   						<td style='width:15px;' ><?= $pago['tipoDocumento']  ?></td>
+   						<td style='width:15px;' ><?= $pago['facturaRecibo']  ?></td>
+   						<td style='width:15px;' ><?= $pago['montoAbono']  ?></td>
+   						<td style='width:50px;' ><?= $pago['glosaDeposito']  ?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>
