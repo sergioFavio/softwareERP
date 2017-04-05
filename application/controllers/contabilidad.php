@@ -2260,7 +2260,7 @@ class Contabilidad extends CI_Controller {
 			// Se obtienen los registros de la base de datos
 // $sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 						
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
@@ -2305,6 +2305,7 @@ class Contabilidad extends CI_Controller {
 				foreach ($registros->result() as $registro) {
 				    // Se imprimen los datos de cada registro
 				    $numeroLineas = $numeroLineas +1;
+					$this->pdf->Ln(5);
 /*					
 				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
 						$this->pdf->Cell(12,5,'','',0,'L',0);
@@ -2317,7 +2318,7 @@ class Contabilidad extends CI_Controller {
 				    }
 */					
 //					if($cuentaAnteriorSubGrupo!=''){
-						 $this->pdf->Ln(5);
+//						 $this->pdf->Ln(5);
 //					}
 				   
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
@@ -2337,7 +2338,7 @@ class Contabilidad extends CI_Controller {
 						}			
 					}
 					
-					if($registro->nivel=='4' || $registro->nivel=='5'){
+					if($registro->nivel=='3'){
 						if($registro->cuenta<='19999999'){
 				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);

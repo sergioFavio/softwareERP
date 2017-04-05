@@ -439,8 +439,7 @@ class Tienda extends CI_Controller {
 		<embed src="<?= base_url('pdfsArchivos/ventas/pedidoCuenta.pdf') ?>" width="820" height="455" id="pedidocuenta"> <!-- documento embebido PDF -->
 		<?php
 	}			//... fin reporte PDF pedidoCuentaPdf ....
-	
-	
+		
 	
 	public function registrarDeposito(){
 		//... control de permisos de acceso ....
@@ -458,8 +457,8 @@ class Tienda extends CI_Controller {
 	    	$deposito = $this->numeroDocumento_model->getNumero($nombreTabla);
 			
 			$anhoSistema = date("Y");	//... anho del sistema
- 			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-//$anhoSistema = '2016';	//... anho del sistema
+// 			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema = '2016';	//... anho del sistema
  				 					
 			if(strlen($deposito)==4 ){
 				$secuenciaDeposito= 0;  // toma los caracteres ... secuencia.
@@ -508,12 +507,33 @@ class Tienda extends CI_Controller {
 		}		
 	}		//... fin function: registrarDeposito ...
 	
-	public function fechasReporteDepositos(){
-		
-$local=$_GET['local'];
-$datos['local']=$local;
 	
-			
+	public function modificarDeposito(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para registrar depósito';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {
+			$sql ="SELECT * FROM pagospedido";	
+			$pagosPedido = $this->db->query($sql)->result_array();
+			$datos['pagosPedido']=$pagosPedido;
+					
+			$this->load->view('header');
+			$this->load->view('tienda/modificarDeposito',$datos);
+			$this->load->view('footer');
+		}		
+	}		//... fin function: modificarDeposito ...
+	
+	
+	public function fechasReporteDepositos(){
+		$local=$_GET['local'];
+		$datos['local']=$local;
+		
 		$this->load->view('header');
 		$this->load->view('tienda/fechasReporteDepositos',$datos );
 		$this->load->view('footer');
@@ -671,7 +691,7 @@ $datos['local']=$local;
 
         // Se obtienen los registros de la base de datos
         //$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
-	    $sql ="SELECT deposito,fechaAbono,pedido,banco,montoAbono,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY pedido,fechaAbono";
+	    $sql ="SELECT deposito,fechaAbono,pedido,banco,montoAbono,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY fechaAbono,pedido";
 
  		$salidas = $this->db->query($sql);
  
@@ -718,7 +738,7 @@ $datos['local']=$local;
 	        foreach ($salidas->result() as $salida) {
 	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
 	            // Se imprimen los datos de cada registro
-	            if($fechaAnterior != 'X' && $fechaAnterior !=($salida->fechaAbono) ){   //...corte de control por dia ...
+/*	            if($fechaAnterior != 'X' && $fechaAnterior !=($salida->fechaAbono) ){   //...corte de control por dia ...
 	            	$this->pdf->Ln(5);  //Se agrega un salto de linea
 	            	$this->pdf->Cell(55,5,'','',0,'L',0);
 	            	$this->pdf->Cell(29,5,utf8_decode('Total Día Bs. '),'',0,'L',0);
@@ -729,7 +749,7 @@ $datos['local']=$local;
 	            	$this->pdf->Ln(5);
 					$this->pdf->Ln(5);
 	            }
-				
+*/				
 	       		$this->pdf->Cell(1,5,'','',0,'L',0);
 				$this->pdf->Cell(13,5,fechaMysqlParaLatina($salida->fechaAbono),'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
