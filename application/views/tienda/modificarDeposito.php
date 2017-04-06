@@ -49,6 +49,9 @@ $(document).ready(function() {
     	var numCheque=$('td', this).eq(5).text();
     	var numDeposito=$('td', this).eq(6).text();
     	var tipoDocumento=$('td', this).eq(7).text();
+    	var facturaRecibo=$('td', this).eq(8).text();
+    	var montoAbono=$('td', this).eq(9).text();
+    	var glosa=$('td', this).eq(10).text();
     	
 		$('#deposito').val(deposito);
 		$('#numPedido').val(numeroPedido);
@@ -63,6 +66,9 @@ $(document).ready(function() {
 		$('#numCheque').val(numCheque);
 		$('#numDeposito').val(numDeposito);
 		$('#tipoDocumento').val(tipoDocumento);
+		$('#facturaRecibo').val(facturaRecibo);
+		$('#montoDeposito').val(montoAbono);
+		$('#glosaDeposito').val(glosa);
 		
     	$('#pagosModal').modal('hide'); // cierra el lightBox
 	} ); // fin #tabla2 tbody
