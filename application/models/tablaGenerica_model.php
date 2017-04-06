@@ -90,6 +90,14 @@ class TablaGenerica_model extends CI_Model{
   	return $this->db->query($sql);
   }
   
+  
+  public function disminuirValorFloat($nombreTabla,$clave,$patron,$campo,$valor){
+  	$sql="UPDATE $nombreTabla SET $campo=$campo - $valor  WHERE $clave=$patron";
+  	return $this->db->query($sql);
+  }
+  
+  
+  
   public function getParaExcel($nombreTabla){
 	$fields = $this->db->field_data($nombreTabla);
 	$query = $this->db->select('*')->get($nombreTabla);

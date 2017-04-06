@@ -51,6 +51,11 @@ $(document).ready(function() {
     	var tipoDocumento=$('td', this).eq(7).text();
     	var facturaRecibo=$('td', this).eq(8).text();
     	var montoAbono=$('td', this).eq(9).text();
+    	
+    	document.form_.montoAbonoAnterior.value=montoAbono;  // ... montoAbonoAnterior  variable hidden formulario...
+    	
+    	montoAbono=parseFloat( montoAbono ); // convierte de string to number 
+    	
     	var glosa=$('td', this).eq(10).text();
     	
 		$('#deposito').val(deposito);
@@ -67,7 +72,7 @@ $(document).ready(function() {
 		$('#numDeposito').val(numDeposito);
 		$('#tipoDocumento').val(tipoDocumento);
 		$('#facturaRecibo').val(facturaRecibo);
-		$('#montoDeposito').val(montoAbono);
+		$('#montoDeposito').val(separadorMiles( montoAbono.toFixed(2)) );
 		$('#glosaDeposito').val(glosa);
 		
     	$('#pagosModal').modal('hide'); // cierra el lightBox
@@ -156,6 +161,11 @@ $(document).ready(function() {
 	function grabarDeposito(){
 		var i=0;
 		var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
+		
+		if($("#deposito").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de DEPÓSITO está vacío, seleccione un depósito");
+				var registrosValidos= false;	
+		}
 		
 		if($("#inputFecha").val()=="" ){
 				alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
@@ -342,9 +352,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<!--input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"facturaRecibo");' -->
 	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;"  >
-	    	 		
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -379,7 +387,7 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		   <!--input type="hidden"  name="numDeposito" value="<?= $deposito ?>" /-->     				<!--  numero deposito -->
+		   <input type="hidden"  name="montoAbonoAnterior" />     				<!--  montoAbonoAnterior -->
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

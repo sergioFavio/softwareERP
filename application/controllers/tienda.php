@@ -2557,6 +2557,40 @@ $anhoSistema = '2016';	//... anho del sistema
 	}	//... fin grabarDeposito ...
 	
 	
+	public function grabarDepositoModificado(){		
+		$numDeposito=str_replace(" ","",$_POST['deposito']);
+		$numPedido=str_replace(" ","",$_POST['numPedido']);
+		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
+		$montoAbonoAnterior= str_replace(",","",$_POST['montoAbonoAnterior']);
+		
+		$regDeposito = array(
+			"deposito"=>$_POST['numDeposito'],
+	    	"pedido"=>str_replace(" ","",$_POST['numPedido']), //...quita los espacios en blanco ...
+		    "fechaAbono"=>$_POST['inputFecha'],
+		    "tipoPago"=>$_POST['inputTipoPago'],
+		    "banco"=>$_POST['inputBanco'],
+		    "nCheque"=>$_POST['numCheque'],
+		    "nDeposito"=>$_POST['numDeposito'],
+		    "tipoDocumento"=>$_POST['tipoDocumento'],
+		    "facturaRecibo"=>$_POST['facturaRecibo'], 
+		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), //...quita , como separador de miles ...
+		    "glosaDeposito"=>$_POST['glosaDeposito']
+		);
+		
+		// ... actualiza registro tabla pedidocabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+		$this-> tablaGenerica_model -> editarRegistro('pagospedido','deposito',$numDeposito,$regDeposito);
+		
+		// ... actualiza registro pedidocabecera ....	
+		$this-> load -> model("tablaGenerica_model");
+		$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoAbonoAnterior);
+		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
+		
+		redirect("menuController/index");	
+		
+	}	//... fin grabarDepositoModificado ...
+	
+	
 	public function consultarStock(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
