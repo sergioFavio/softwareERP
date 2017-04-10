@@ -2253,14 +2253,11 @@ class Contabilidad extends CI_Controller {
 					
 			}  // ... fin  FOR  i
 				
-			
 			// Se carga la libreria fpdf
 			$this->load->library('contabilidad/BalanceComparativoPdf');
 			
-			// Se obtienen los registros de la base de datos
-// $sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
-						
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			// Se obtienen los registros de la base de datos						
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
@@ -2295,31 +2292,38 @@ class Contabilidad extends CI_Controller {
 				//$this->pdf->SetFont('Arial', 'B', 9);
 				$this->pdf->SetFont('Arial', '', 9);
 				$espacio=1; 			//... epacio variable para imprimir ...
-				$cuentaAnteriorSubGrupo='';		//...para corte de control por cuentaSubGrupo ...
-				$nivelAnterior='';				//...para corte de control por cuentaSubGrupo ...
-				$saldoSubGrupo=0.00;			//...saldoSubGrupo ...
-				$totalActivo=0.00;				//...acumula saldos cuentas del activo ...
-				$totalPasivoPatrimonio=0.00;	//...acumula saldos cuentas del pasivo y patrimonio ...
+				$cuentaAnterior='';			//...para corte de control por cuentaSubGrupo ...
+				$totalActivo=0.00;			//...acumula cuentas del activo hasta la fecha...
+				$totalActivoBalApertura=0.00;		//...acumula cuentas del activo balance apertura...
+				$totalPasivoPatrimonio=0.00;		//...acumula cuentas del pasivo y patrimonio hasta la fecha...
+				$totalPasivoPatrimonioBalApertura=0.00;		//...acumula cuentas del pasivo y patrimonio balance apertura...
+				
 				$numeroLineas=0; 	//...numero de lineas de impresion ...
 				
 				foreach ($registros->result() as $registro) {
 				    // Se imprimen los datos de cada registro
 				    $numeroLineas = $numeroLineas +1;
 					$this->pdf->Ln(5);
-/*					
-				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
-						$this->pdf->Cell(12,5,'','',0,'L',0);
+					
+					if($cuentaAnterior!='' && $cuentaAnterior!=substr($registro->cuenta,0,1) && substr($registro->cuenta,0,1)=='2'){
+						//... imprime totales ........
+						$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+						$this->pdf->Ln(3);		//Se agrega un salto de linea
+						$this->pdf->Cell(18,5,'','',0,'L',0);
+						$this->pdf->Cell(56,5,utf8_decode( 'Total activo' ),'',0,'L',0);
+						$this->pdf->Cell(11,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,number_format($totalActivo,2),'',0,'R',0);
+						$this->pdf->Cell(20,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,number_format($totalActivoBalApertura,2),'',0,'R',0);
+						$this->pdf->Cell(22,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,number_format($totalActivo,2),'',0,'R',0);
+						$this->pdf->Ln(2);		//Se agrega un salto de linea
+						$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+						//... fin impresion totales  ........
 						
-						if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-						}else{
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
-						}
-				    }
-*/					
-//					if($cuentaAnteriorSubGrupo!=''){
-//						 $this->pdf->Ln(5);
-//					}
+						$this->pdf->Ln(5);
+					}
+
 				   
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
@@ -2328,55 +2332,44 @@ class Contabilidad extends CI_Controller {
 				   	}else{
 				   		$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
 				   	}
-					
-					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
-						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
-						if($registro->cuenta<='19999999'){
-							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
-						}else{
-							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
-						}			
-					}
-					
+			
 					if($registro->nivel=='3'){
+						$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 						if($registro->cuenta<='19999999'){
-				    		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format($registro->debeacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$totalActivo=$totalActivo+$registro->debeacumulado;
+							$totalActivoBalApertura=$totalActivoBalApertura+$registro->debemes;
 				    	}else{
-				    		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format($registro->haberacumulado ,2),'',0,'R',0);
-							
+				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->habermes ,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->habermes ,2),'',0,'R',0);
+							$totalPasivoPatrimonio=$totalPasivoPatrimonio+$registro->haberacumulado;
+							$totalPasivoPatrimonioBalApertura=$totalPasivoPatrimonioBalApertura+$registro->habermes;
 				    	}
-						
 					}
 				 
-				  	$cuentaAnteriorSubGrupo=substr($registro->cuenta,0,2);		//...par corte de control por cuentaSubGrupo ...
-				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
-				  							
+				  	$cuentaAnterior=substr($registro->cuenta,0,1);		//...par corte de control por cuentaGrupo ...
+				  					
 				}			//... fin foreach ....
-				
-				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}else{
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}
-				
-				
-				
+								
 				//... imprime totales ........
 				$this->pdf->Ln(5);
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
 				$this->pdf->Ln(3);		//Se agrega un salto de linea
 				$this->pdf->Cell(18,5,'','',0,'L',0);
-				$this->pdf->Cell(56,5,utf8_decode( 'Totales' ),'',0,'L',0);
-				$this->pdf->Cell(44,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($totalActivo,2),'',0,'R',0);
-				$this->pdf->Cell(37,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($totalPasivoPatrimonio*(-1) ,2),'',0,'R',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Total pasivo y patrimonio' ),'',0,'L',0);
+				$this->pdf->Cell(11,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonioBalApertura ,2),'',0,'R',0);
+				$this->pdf->Cell(22,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
@@ -2426,6 +2419,7 @@ class Contabilidad extends CI_Controller {
 			}	//.. fin IF validar usuario ...
         
 	} //... fin funcion: generarReporteBalanceComparativo ...
+	
 	
 	public function generarReporteEstadoResultados(){
 		//... genera reporte de diarioGeneral en PDF

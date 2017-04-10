@@ -2566,7 +2566,6 @@ $anhoSistema = '2016';	//... anho del sistema
 		$regDeposito = array(
 			"deposito"=>$_POST['numDeposito'],
 	    	"pedido"=>str_replace(" ","",$_POST['numPedido']), //...quita los espacios en blanco ...
-		    "fechaAbono"=>$_POST['inputFecha'],
 		    "tipoPago"=>$_POST['inputTipoPago'],
 		    "banco"=>$_POST['inputBanco'],
 		    "nCheque"=>$_POST['numCheque'],
