@@ -2167,8 +2167,8 @@ class Contabilidad extends CI_Controller {
 			
 	public function generarReporteBalanceComparativo(){
 		//... genera reporte de balance inicial en PDF
-//		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
-		$fechaGestion=periodoGestionInicial();		//... lee fechaGestionInicial ...
+		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
+//		$fechaGestion=periodoGestionInicial();		//... lee fechaGestionInicial ...
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
 
@@ -2182,8 +2182,13 @@ class Contabilidad extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
+			if($mesGestion>='01' && $mesGestion<='03'){
+				$anhoContable=$anhoGestion-1;
+			}else{
+				$anhoContable=$anhoGestion;
+			}
 		
-			$ultimaFecha=fechaInicioGestion($mesGestion,$anhoGestion,$anhoGestion.$mesGestion.'004');		//... recupera ultima fecha del periodo de gestion...
+			$ultimaFecha=ultimaFechaPeriodoGestion($mesGestion,$anhoGestion);		//... recupera ultima fecha del periiodo de gestion...
 			
 			$sql="DROP TABLE contaaux";
 			$result =$this->db->query($sql);
@@ -2197,10 +2202,9 @@ class Contabilidad extends CI_Controller {
 			$sql="UPDATE contaaux SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
 			$result =$this->db->query($sql);
 			
-			$secuencia=$anhoGestion.$mesGestion.'004';			
-			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='$secuencia'";
+			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE year(fechaComprobante)='$anhoGestion' AND month(fechaComprobante)='$mesGestion' ";
 			$result = $this->db->query($sql);
-			
+						
 			$debeHaber=''; 		//... D:debe  H:haber ...
 			$debeMonto=0.00;				
 			$haberMonto=0.00;
@@ -2251,13 +2255,73 @@ class Contabilidad extends CI_Controller {
 						
 				}	//... fin FOR j	
 					
-			}  // ... fin  FOR  i
+			}  // ... fin  FOR  each ...
+			
+			$sql="UPDATE contaaux SET debemes=0.00, habermes=0.00";
+			$result =$this->db->query($sql);
+			
+			$secuencia=$anhoGestion.'04004';			
+			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE idComprobante<='$secuencia'";	
+			$result = $this->db->query($sql);
+			
+			$debeHaber=''; 		//... D:debe  H:haber ...
+			$debeMonto=0.00;				
+			$haberMonto=0.00;
+			foreach ($result->result() as $registro){
+		  	    $clave=str_replace(" ","",$registro->cuentaComprobante); //...quita espacio en blanco ..
+			
+				if( $registro->debeHaber== "D"){
+					$debeMonto=$registro->monto;
+					$haberMonto=0.00; 
+				}else{
+					$haberMonto=$registro->monto;
+					$debeMonto=0.00; 
+				}
+									
+				if(substr($clave,6,2)=='00'){
+					$nivelCuenta=4;
+				}else{
+					$nivelCuenta=5;
+				}
+								
+				$k=0; 			//... cantidad de digitos a tomar de $clave ...
+					
+				for($j=1;$j<=$nivelCuenta; $j++){
+					$k=$j;
+					if($j==3){
+						$k=4;
+					}
+					
+					if($j==4){
+						$k=6;
+					}
+					
+					if($j==5){
+						$k=8;
+					}
+					
+					$cuentaAux=substr($clave,0,$k);	//... variable aux para generar cuentas de niveles anteriores a 4 y 5.
+				
+					for($l=1; $l<=8-$k; $l++){
+						$cuentaAux=$cuentaAux.'0';		//... genera cuenta los niveles anteriores ..1,2,3..4
+					}	// ... fin FOR l
+					
+					// ... actualiza registro tabla maestra[almacen/bodega]	
+					$this-> load -> model("tablaGenerica_model");
+		    		$this-> tablaGenerica_model -> aumentarSaldosContablesDelMes('contaaux',$cuentaAux,$debeMonto,$haberMonto);  
+									
+					// ... fin de inserción  registro tabla transacciones y actualizacion tabla maestra...
+						
+				}	//... fin FOR j	
+					
+			}  // ... fin  FOR  each ...
+			
 				
 			// Se carga la libreria fpdf
 			$this->load->library('contabilidad/BalanceComparativoPdf');
 			
 			// Se obtienen los registros de la base de datos						
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
@@ -2277,8 +2341,9 @@ class Contabilidad extends CI_Controller {
 			    $this->pdf = new BalanceComparativoPdf();
 				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
 				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
-				$this->pdf->ultimaFecha= $ultimaFecha; //...pasando variable para el header del PDF
-							
+				$this->pdf->ultimaFecha= $ultimaFecha; 		//...pasando variable para el header del PDF
+				$this->pdf->anhoContable= $anhoContable; 	//...pasando variable para el header del PDF
+					
 			    // Agregamos una página
 			    $this->pdf->AddPage();
 			    // Define el alias para el número de página que se imprimirá en el pie
@@ -2316,7 +2381,7 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Cell(20,5,'','',0,'L',0);
 						$this->pdf->Cell(20,5,number_format($totalActivoBalApertura,2),'',0,'R',0);
 						$this->pdf->Cell(22,5,'','',0,'L',0);
-						$this->pdf->Cell(20,5,number_format($totalActivo,2),'',0,'R',0);
+						$this->pdf->Cell(20,5,number_format($totalActivo - $totalActivoBalApertura,2),'',0,'R',0);
 						$this->pdf->Ln(2);		//Se agrega un salto de linea
 						$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 						//... fin impresion totales  ........
@@ -2336,19 +2401,19 @@ class Contabilidad extends CI_Controller {
 					if($registro->nivel=='3'){
 						$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 						if($registro->cuenta<='19999999'){
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
 							$this->pdf->Cell(20,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado-$registro->debemes ,2),'',0,'R',0);
 							$totalActivo=$totalActivo+$registro->debeacumulado;
 							$totalActivoBalApertura=$totalActivoBalApertura+$registro->debemes;
 				    	}else{
-				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado ,2),'',0,'R',0);
+				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado,2),'',0,'R',0);
 							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->habermes ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->habermes ,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
 							$totalPasivoPatrimonio=$totalPasivoPatrimonio+$registro->haberacumulado;
 							$totalPasivoPatrimonioBalApertura=$totalPasivoPatrimonioBalApertura+$registro->habermes;
 				    	}
@@ -2367,9 +2432,9 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(11,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio,2),'',0,'R',0);
 				$this->pdf->Cell(20,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonioBalApertura ,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonioBalApertura,2),'',0,'R',0);
 				$this->pdf->Cell(22,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio-$totalPasivoPatrimonioBalApertura,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
@@ -2422,7 +2487,7 @@ class Contabilidad extends CI_Controller {
 	
 	
 	public function generarReporteEstadoResultados(){
-		//... genera reporte de diarioGeneral en PDF
+		//... genera reporte de estado de resultados en PDF
 		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
 		$anhoGestion=substr($fechaGestion,0,4);		//... asigna anho gestion ...			
 		$mesGestion=substr($fechaGestion,4,2);		//... asigna mes gestion ...
