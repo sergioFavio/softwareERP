@@ -2202,7 +2202,7 @@ class Contabilidad extends CI_Controller {
 			$sql="UPDATE contaaux SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";
 			$result =$this->db->query($sql);
 			
-			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE year(fechaComprobante)='$anhoGestion' AND month(fechaComprobante)='$mesGestion' ";
+			$sql="SELECT cuentaComprobante,debeHaber,monto FROM comprobantedetalle WHERE year(fechaComprobante)='$anhoGestion' AND month(fechaComprobante)<='$mesGestion' ";
 			$result = $this->db->query($sql);
 						
 			$debeHaber=''; 		//... D:debe  H:haber ...
