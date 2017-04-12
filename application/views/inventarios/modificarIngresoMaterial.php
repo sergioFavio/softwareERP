@@ -28,29 +28,40 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	
 <div class="jumbotron" id="cuerpoIngreso">	
 	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarIngreso" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarModificarIngreso" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<div class="col-lg-4">
+			<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div> 
+			
+	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" >Ingreso No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $ingreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $nFactura ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
+	    	<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div> 
 	    	
-	    	<div class="col-xs-2 col-md-">
+	    	<div class="col-xs-3">
 	    	 	<span  id="titulo" class="label label-default"> <?= strtoupper($titulo) ?>  </span>
+	    	</div>
+	    	
+	    	<div class="col-xs-1">
+	    	 	<span></span>
 	    	</div> 
 	    	
 	 	
-	    	<div class="col-lg-4" >
+	    	<div class="col-xs-2" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera">Fecha </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 135px;" >
+	    			<input type="text" class="form-control input-sm" id="inputFecha" name="inputFecha" readonly="readonly" value="<?= $fecha ?>"  style="width: 135px;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -60,23 +71,25 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
-		    <div class="col-lg-4">
+			<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div> 
+			
+		    <div class="col-xs-3">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Proveedor</span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputProveedor" name="inputProveedor" placeholder="proveedor&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputProveedor" name="inputProveedor" value="<?= $proveedor ?>" placeholder="proveedor&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
-	    	
-	    	<div class="col-xs-2 col-md-2">
+	    	<div class="col-xs-4">
 	    	 	<span></span>
 	    	</div>
 	    	
-	    	
-		    <div class="col-lg-4">
+		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Factura No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputFactura" name="inputFactura" placeholder="factura No.&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputFactura" name="inputFactura" value="<?= $nFactura ?>" placeholder="factura No.&hellip;" style="width: 105px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -101,8 +114,35 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     <tbody >
     		
     	<?php
+    	
         //if ciclo de impresion de filas 
-       		for($x=0; $x<25; $x++){
+        	$x=0;
+			while($regIngreso = mysql_fetch_row($regIngresos)){ 
+            	echo "<tr class='detalleMaterial' >";
+           
+					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$regIngreso[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+					
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' size='50' value='$regIngreso[1]' readonly='readonly' style='border:none;' /></td>";
+                    
+                    echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' value='$regIngreso[2]' readonly='readonly' style='border:none;' /></td>";
+					
+                    echo "<td style='width: 120px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$regIngreso[3]'  style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+					          
+                    echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$regIngreso[4]' size='7' readonly='readonly' style='border:none;'/></td>";
+					
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$regIngreso[5]' size='7' readonly='readonly' style='border:none;'/></td>";
+					  
+					echo "<td  style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='compraMat_".$x."' id='compraMat_".$x."' value='$regIngreso[6]' style='width: 60px; border:none; background-color: #d9f9ec;' onChange='validarPrecioCompra(this.value,$x);'/></td>";  
+					   
+					$importe=$regIngreso[3]*$regIngreso[6];
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='$importe' size='7' readonly='readonly' style='border:none;'/></td>";
+					
+                echo "</tr>";
+				$x=$x+1;
+             }
+
+       		for($x=$nRegistrosIngreso; $x<25; $x++){
             	echo "<tr class='detalleMaterial' >";
            
 					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
