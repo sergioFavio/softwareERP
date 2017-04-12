@@ -214,6 +214,7 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Inventarios</a>
                     	<ul class="dropdown-menu">
                     		<li><a href="<?=base_url();?>materiales/crudMaterial"><span class="glyphicon glyphicon-file"></span> CRUD Almac&eacute;n</a></li>
+                    		<li><a href="<?=base_url();?>materiales/buscarIngresoAlmacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Ingreso de Almac&eacute;n PENDIENTE</a></li>
                     		<li><a href="<?=base_url();?>materiales/buscarSalidaAlmacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Almac&eacute;n</a></li>
 							<li><a href="<?=base_url();?>materiales/fechasReporteIngresoSalida?nombreDeposito=almacen&tipoTransaccion=salidas_modificadas"><span class="glyphicon glyphicon-list-alt"></span> Reporte Salidas Modificadas Almac&eacute;n</a></li>
 						</ul>
@@ -245,7 +246,6 @@
 						</ul>
 					</li>
 					
-                    <li><a href="#"><span class="glyphicon glyphicon-time"></span> Iniciar Gesti&oacute;n PENDIENTE</a></li>
                     <li><a href="<?=base_url();?>menuController/respaldoBaseDatos"><span class="glyphicon glyphicon-floppy-save"></span> Respaldo Base  Datos</a></li>
                     <li><a href="#">otros ...</a></li>
                 </ul>

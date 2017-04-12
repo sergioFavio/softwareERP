@@ -75,8 +75,32 @@ class Materiales extends CI_Controller {
 	}	//... fin salidamaterial ...
 
 
-	public function buscarSalidaAlmacen()
-	{
+	public function buscarIngresoAlmacen(){
+		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+	
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' ){  //... valida permiso de userName ...
+				redirect('menuController/index');
+		}
+		//... fin control de permisos de acceso ....	
+
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
+		$cabeceraIngresos= $this->tablaGenerica_model->getTodos('ingresoalmacencabecera'); //..una vez cargado el modelo de la tabla llama ingresoalmacencabecera..
+						
+		$datos['titulo']='Modificar ingreso '.$nombreDeposito;
+		$datos['cabeceraIngresos']=$cabeceraIngresos;	
+		$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
+
+		$this->load->view('header');
+		$this->load->view('inventarios/buscarIngresoMaterial',$datos);
+		$this->load->view('footer');
+	}
+
+
+	public function buscarSalidaAlmacen(){
 		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
 		
 		//... control de permisos de acceso ....
@@ -101,8 +125,41 @@ class Materiales extends CI_Controller {
 	}
 	
 	
-	public function modificarSalidaAlmacen()
-	{
+	public function modificarIngresoAlmacen(){
+		$nIngreso= $_POST['inputNumero']; //... lee numero ingreso de almacen ...	
+		$fecha= $_POST['inputFecha']; //... lee fecha ...	
+		$proveedor= $_POST['inputProveedor']; //... lee proveedor ...
+		$nOrden= $_POST['inputFactura']; //... lee numero Factura ...
+	
+		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+				
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
+		$regIngresos=mysql_query($sql);
+        	
+		$nRegistrosIngreso=mysql_num_rows($regIngresos);  	//... numero registros salida que satisfacen la consulta ...
+		
+		$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+		$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+						
+		$datos['titulo']='Modificar Ingreso '.$nombreDeposito;
+
+		$datos['nIngreso']=$nIngreso; 		//... dato cabecera Ingreso almacen ..
+		$datos['fecha']=$fecha;				//... dato cabecera Ingreso almacen ..
+		$datos['proveedor']=$proveedor;		//... dato cabecera Ingreso almacen ..
+		$datos['nFactura']=$nFactura;		//... dato cabecera Ingreso almacen ..
+		$datos['regIngresos']=$regIngresos;
+		$datos['nRegistrosIngreso']=$nRegistrosIngreso;
+
+		$datos['insumos']=$insumos;		
+		$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
+
+		$this->load->view('header');
+		$this->load->view('inventarios/modificarIngresoMaterial',$datos);
+		$this->load->view('footer');
+	}		//... fin funcion: modificarIngresoAlmacen ...
+	
+	
+	public function modificarSalidaAlmacen(){
 		$nSalida= $_POST['inputNumero']; //... lee numerosalida de almacen ...	
 		$fecha= $_POST['inputFecha']; //... lee fecha ...	
 		$glosa= $_POST['inputGlosa']; //... lee glosa(trabajador) ...
@@ -136,14 +193,12 @@ class Materiales extends CI_Controller {
 	}		//... fin funcion: modificarSalidaAlmacen ...
 	
 	
-	public function salir()
-	{
+	public function salir(){
 		redirect("/");
 	}
 	
 	
-	public function grabarIngreso()
-	{
+	public function grabarIngreso(){
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario ingresoMaterial [almacen/bodega] ...
 				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario ingreso[almacen/bodega] ...
@@ -300,6 +355,11 @@ class Materiales extends CI_Controller {
 		$numeroSalida=$_POST['inputNumero'];
 		
 		$fecha=$_POST['inputFecha'];
+		
+		$numeroOrden=$_POST['inputOrden'];
+		
+		$sql="UPDATE salidaalmacencabecera SET numOrden=$numeroOrden WHERE numero=$numeroSalida ";
+		$this->db->query($sql);	
 		
 		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$numeroSalida' AND idMaterial=codInsumo";
 		$regSalidas=$this->db->query($sql);

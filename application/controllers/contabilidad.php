@@ -2472,9 +2472,9 @@ class Contabilidad extends CI_Controller {
 					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
 				     */
 				  
-				  	$this->pdf->Output('pdfsArchivos/contabilidad/balanceInicial.pdf', 'F');
+				  	$this->pdf->Output('pdfsArchivos/contabilidad/balanceComparativo.pdf', 'F');
 					
-					$datos['documento']="pdfsArchivos/contabilidad/balanceInicial.pdf";	
+					$datos['documento']="pdfsArchivos/contabilidad/balanceComparativo.pdf";	
 					$datos['titulo']=' BALANCE COMPARATIVO período de gestión: '.substr($fechaGestion,0,4).'-'.substr($fechaGestion,4,2);	// ... titulo ...
 					
 					$this->load->view('header');

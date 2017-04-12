@@ -86,7 +86,7 @@ $(document).ready(function() {
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Orden No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" readonly="readonly" value="<?= $nOrden ?>" placeholder="orden No.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden"  value="<?= $nOrden ?>" placeholder="orden No.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
