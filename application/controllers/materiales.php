@@ -203,7 +203,8 @@ class Materiales extends CI_Controller {
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario ingreso[almacen/bodega] ...
 		
 		// ... actualizar numero de ingreso de almacén/bodega ...
-		$numeroSalida=$_POST['inputNumero'];		
+		$numeroSalida=$_POST['inputNumero'];	
+			
 		$this-> load -> model("inventarios/numeroIngresoSalida_model");	//... modelo numeroSalida[almacen/bodega]_model 
 		$prefijoTabla='noing'; // ... prefijoTabla
 		$this-> numeroIngresoSalida_model -> grabar($numeroSalida,$nombreDeposito, $prefijoTabla);	
@@ -269,10 +270,77 @@ class Materiales extends CI_Controller {
 	}	//... fin grabarIngreso
 	
 	
+	public function grabarModificarIngreso(){
+		$nombreDeposito=$_POST['nombreDeposito']; //... formulario ingresoMaterial [almacen/bodega] ...
+				
+		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario ingreso[almacen/bodega] ...
+		
+		// ... actualizar numero de ingreso de almacén/bodega ...
+		$numeroIngreso=$_POST['inputNumero'];	
+			
+		// ... inserta registro en tabla salida[almacen/bodega]cabecera ...	
+		$fecha=$_POST['inputFecha'];
+		
+		$proveedor=$_POST['inputProveedor'];
+		
+		$factura=$_POST['inputFactura'];
+		
+		$sql="UPDATE ingresoalmacencabecera SET numFactura=$factura, proveedor='$proveedor' WHERE numero=$numeroIngreso ";
+		$this->db->query($sql);	
+		
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM ingalmacen, almacen WHERE numIng=$numeroIngreso AND idMaterial=codInsumo";
+		$regIngresos=$this->db->query($sql);
+		
+		// ... borra registros en la tabla:  ingalmacen ...	
+		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
+		$this-> tablaGenerica_model -> eliminar('ingalmacen','numIng', $numeroIngreso);	
+		// fin borrar registros de ingalmacen ...
+		
+		//... decrementar existencias en tabla: almacen ...
+		foreach ($regIngresos->result() as $regIngreso) {
+			$codigoSinEspacio=str_replace(" ","",$regIngreso->idMaterial); //...quita espacio en blanco ..
+			
+			// ... actualiza registro tabla maestra[almacen/bodega]	
+			$this-> load -> model("inventarios/maestroMaterial_model");
+			$this-> maestroMaterial_model -> disminuirExistenciaM('almacen',$codigoSinEspacio,$regIngreso->cantidad );	
+	    	// fin decrementar existencias en tabla: almacen ...
+		}	 
+			
+        for($i=0; $i<$numeroFilasValidas; $i++){
+       
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]);  //...quita espacio en blanco ..
+			$precioMaterial=$_POST['compraMat_'.$i]; 					//... precioMaterial ...
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    //... agrega registro tabla salalmacen ...      
+	            $material = array(
+	            	"numIng"=>$_POST['inputNumero'],
+				    "idMaterial"=>$codigoSinEspacio,
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]),
+				    "precioCompra"=>str_replace(",","",$_POST['compraMat_'.$i])
+				);
+							
+				// ... inserta registro tabla transacciones[ingalmacen/ingbodega]
+				$this-> load -> model("inventarios/ingresoSalidaMaterial_model");		//carga modelo ingresoSalidaMaterial[ingalmacen/ingbodega]_model
+	    		$this-> ingresoSalidaMaterial_model -> grabar($material,$nombreDeposito,'ing');
+					
+				// ... actualiza registro tabla maestra[almacen/bodega]	
+				$this-> load -> model("inventarios/maestroMaterial_model");//	    		$this-> maestroMaterial_model -> aumentarExistencia($insumo,$nombreDeposito);
+				$this-> maestroMaterial_model -> aumentarExistenciaM('almacen',$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i]) );	
+				$this-> maestroMaterial_model -> actualizarPrecio($nombreDeposito,$codigoSinEspacio,$precioMaterial);	
+	
+				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR  
+
+   		redirect("menuController/index");
+	}	//... fin grabarModificarIngreso
 	
 	
-	public function grabarSalida()
-	{
+	public function grabarSalida(){
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [almacen/bodega] ...
 				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salida[almacen/bodega] ...
@@ -313,8 +381,6 @@ class Materiales extends CI_Controller {
 	            	"numSal"=>$_POST['inputNumero'],
 				    "idMaterial"=>$codigoSinEspacio,
 				    "cantidad"=>$_POST['cantMat_'.$i]
-					
-//					"aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 				);
 				
 				
@@ -345,8 +411,7 @@ class Materiales extends CI_Controller {
 	}	//... fin grabarSalida
 		
 	
-		public function grabarModificarSalida()
-	{
+	public function grabarModificarSalida()	{
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [almacen/bodega] ...
 				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salida[almacen/bodega] ...

@@ -83,4 +83,9 @@ class MaestroMaterial_model extends CI_Model{
   	return $this->db->query($sql);
   }
   
+  public function aumentarExistenciaM($nombreTabla,$codM,$cantidadM){	   
+  	$sql="UPDATE $nombreTabla SET existencia=existencia + $cantidadM WHERE codInsumo='$codM'";
+  	return $this->db->query($sql);
+  }
+  
 }
