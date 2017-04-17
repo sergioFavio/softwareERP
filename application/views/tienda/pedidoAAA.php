@@ -21,11 +21,10 @@ td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 .nota-dialog {width:450px;}
 #notaModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
-#cuerpoIngreso{margin:0 auto;  padding:0; width:1070px; background:#f4f4f4;}
+#cuerpoIngreso{margin:0 auto;  padding:0; width:920px; background:#f4f4f4;}
 .cabeceraIngreso{margin:5px;}
 #titulo{font-size:16px;margin-top:1px;  text-align:right;font-weight : bold}
 
-.totalPedido{font-size:16px;text-align:center; margin-left:820px; }
 </style>
 
 
@@ -57,29 +56,34 @@ $(document).ready(function() {
 	/*  fin de light box javascript  */	
 	
 		 
-    $('#tabla2').dataTable();
+    	$('#tabla2').dataTable();
     
-    $('#tabla2 tbody').on('click', 'tr', function () {	
-    	var codigoMaterial = $('td', this).eq(0).text();
-    	var nombreMaterial = $('td', this).eq(1).text();
-    	var unidad = $('td', this).eq(3).text();
-    	var precio = $('td', this).eq(4).text();
+    	$('#tabla2 tbody').on('click', 'tr', function () {	
+        	var codigoMaterial = $('td', this).eq(0).text();
+        	var nombreMaterial = $('td', this).eq(1).text();
+        	var unidad = $('td', this).eq(3).text();
+        	var precio = $('td', this).eq(4).text();
          
   		var limiteArreglo=document.getElementsByClassName("detalleMaterial").length;   // limiteArreglo a buscar codigoRepetido
 		var codPrefijo='#idMat_'; // para sleccionar material
 		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo,codPrefijo);			
  			
-		$('#idMat_'+filaActual).val(codigoMaterial);
-		$('#mat_'+filaActual).val(nombreMaterial);
-		$('#unidadMat_'+filaActual).val(unidad);
-		$('#precioMat_'+filaActual).val(precio);
-		
-		$('#colorMat_'+filaActual).val("");				//... blanquea campo ...
-		$('#cantMat_'+filaActual).val("");				//... blanquea campo ...
-		$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
-				
-		$('#myModal').modal('hide'); // cierra el lightBox
-
+// 		if(!codigoRepetido){
+			$('#idMat_'+filaActual).val(codigoMaterial);
+			$('#mat_'+filaActual).val(nombreMaterial);
+			$('#unidadMat_'+filaActual).val(unidad);
+			$('#precioMat_'+filaActual).val(precio);
+			
+			$('#colorMat_'+filaActual).val("");				//... blanquea campo ...
+			$('#cantMat_'+filaActual).val("");				//... blanquea campo ...
+			$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
+					
+        	$('#myModal').modal('hide'); // cierra el lightBox
+//    	}else{
+//    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
+//    		$('#myModal').modal('hide'); // cierra el lightbox
+//      	}
+        	
 	} ); // fin #tabla2 tbody
 	
 			
@@ -556,13 +560,13 @@ function filaVacia(posicionFila, codPrefijo){
     		<th style="width: 10px;"></th>
         	<th style="width: 180px;">Código</th>
             <th style="width: 220px;">Producto</th>
-            <th style="width: 140px;"></th>
+            <th style="width: 40px;"></th>
             <th style="width: 100px;">Color</th>
-            <th style="width: 60px;"></th>
+            <th style="width: 30px;"></th>
             <th style="width: 90px;">Cantidad</th>                              
             <th style="width: 90px">Unidad</th>
-            <th style="width: 80px">Precio Bs.</th>
-            <th style="width: 96px">Importe Bs.</th>
+            <th style="width: 90px">Precio Bs.</th>
+            <th style="width: 80px">Importe Bs.</th>
     	</tr>
       </thead >
     <tbody >
@@ -575,9 +579,9 @@ function filaVacia(posicionFila, codPrefijo){
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 420px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:400px;border:none;' /></textarea></td>";
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' /></textarea></td>";
                     
-					echo "<td  style='width: 130px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  style='width: 190px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."'  style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' > </textarea></td>";
 								
                     echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
 					          
@@ -625,7 +629,7 @@ function filaVacia(posicionFila, codPrefijo){
 	</div><!-- /.col-md-1 -->
 	    	
 	   	
-	<div class="totalPedido">
+	<div class="totalBs">
 		<span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
 			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
@@ -651,20 +655,8 @@ function filaVacia(posicionFila, codPrefijo){
 		<div class="col-xs-1">
 		 	<span></span>
 		</div>
-		
-		<div class="col-xs-1">
+		<div class="col-xs-2">
 			<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
-		</div>
-	
-		<div class="col-xs-1">
-			<div class="input-group input-group-sm">
-		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-plus"></span> </span>
-		 		<input type="text"  class="form-control input-sm" id="embalaje" name="embalaje" placeholder="embalaje&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarEmbalaje(this.value);'>
-			</div>
-		</div><!-- /.col-md-1 --> 
-		
-		<div class="col-xs-1">
-		 	<span></span>
 		</div>
 			
 		<div class="col-xs-1">
@@ -684,11 +676,7 @@ function filaVacia(posicionFila, codPrefijo){
     	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
     		</div>
     	</div><!-- /.col-md-1 -->
-    	
-		<div class="col-xs-1">
-		 	<span></span>
-		</div>   	
-    	
+		
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPedido" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

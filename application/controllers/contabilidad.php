@@ -1868,10 +1868,10 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 				
 				$this->pdf->Ln('5');
-				$this->pdf->Cell(49,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				$this->pdf->Cell(20,5,'Contador','',0,'C',0);
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Representante legal','',0,'C',0);
 				
 					
 					
@@ -2438,39 +2438,21 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
-				
-
-				for($x=$numeroLineas; $x<45; $x++){
-					$this->pdf->Ln('5');				//... imprime lineas en blanco ...
-				}
-				
-				$this->pdf->Cell(40,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
-				$this->pdf->Cell(50,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
-				
-				$this->pdf->Ln('5');
-				$this->pdf->Cell(49,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
-				$this->pdf->Cell(50,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
-				
 					
-					
-				     /* PDF Output() settings
-				     * Se manda el pdf al navegador
-				     *
-				     * $this->pdf->Output(nombredelarchivo, destino);
-				     *
-				     * I = Muestra el pdf en el navegador
-				     * D = Envia el pdf para descarga
-					 * F: save to a local file
-					 * S: return the document as a string. name is ignored.
-					 * $pdf->Output(); //default output to browser
-					 * $pdf->Output('D:/example2.pdf','F');
-					 * $pdf->Output("example2.pdf", 'D');
-					 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
-				     */
+			     /* PDF Output() settings
+			     * Se manda el pdf al navegador
+			     *
+			     * $this->pdf->Output(nombredelarchivo, destino);
+			     *
+			     * I = Muestra el pdf en el navegador
+			     * D = Envia el pdf para descarga
+				 * F: save to a local file
+				 * S: return the document as a string. name is ignored.
+				 * $pdf->Output(); //default output to browser
+				 * $pdf->Output('D:/example2.pdf','F');
+				 * $pdf->Output("example2.pdf", 'D');
+				 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+			     */
 				  
 				  	$this->pdf->Output('pdfsArchivos/contabilidad/balanceComparativo.pdf', 'F');
 					
@@ -2849,8 +2831,8 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 				
 				$this->pdf->Ln('5');
-				$this->pdf->Cell(49,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
+				$this->pdf->Cell(55,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Contador','',0,'C',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
 				
