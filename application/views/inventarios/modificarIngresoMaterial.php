@@ -23,9 +23,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 #titulo{font-size:14px;margin-top:1px;  text-align:right;font-weight : bold}   
 </style>
 
-
-
-	
 <div class="jumbotron" id="cuerpoIngreso">	
 	
    <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarModificarIngreso" id="form_" name="form_" >
@@ -41,7 +38,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" >Ingreso No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $nFactura ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputNumero" name="inputNumero" value="<?= $nIngreso ?>" readonly="readonly" placeholder="ingreso No." style="width: 70px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -117,6 +114,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
     	
         //if ciclo de impresion de filas 
         	$x=0;
+			$total=0.00;
 			while($regIngreso = mysql_fetch_row($regIngresos)){ 
             	echo "<tr class='detalleMaterial' >";
            
@@ -127,17 +125,18 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
                     
                     echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' value='$regIngreso[2]' readonly='readonly' style='border:none;' /></td>";
 					
-                    echo "<td style='width: 120px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$regIngreso[3]'  style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
-					          
+                    echo "<td style='width: 120px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='". number_format($regIngreso[3],2) ."'  style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+					
                     echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$regIngreso[4]' size='7' readonly='readonly' style='border:none;'/></td>";
 					
-					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$regIngreso[5]' size='7' readonly='readonly' style='border:none;'/></td>";
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='". number_format($regIngreso[5],2) ."' size='7' readonly='readonly' style='border:none;'/></td>";
 					  
-					echo "<td  style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='compraMat_".$x."' id='compraMat_".$x."' value='$regIngreso[6]' style='width: 60px; border:none; background-color: #d9f9ec;' onChange='validarPrecioCompra(this.value,$x);'/></td>";  
+					echo "<td  style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='compraMat_".$x."' id='compraMat_".$x."' value='". number_format($regIngreso[6],2) ."' style='width: 60px; border:none; background-color: #d9f9ec;' onChange='validarPrecioCompra(this.value,$x);'/></td>";  
 					   
 					$importe=$regIngreso[3]*$regIngreso[6];
-					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='$importe' size='7' readonly='readonly' style='border:none;'/></td>";
-					
+					$total= $total+ $importe;
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='". number_format($importe,2) ."' size='7' readonly='readonly' style='border:none;'/></td>";
+				
                 echo "</tr>";
 				$x=$x+1;
              }
@@ -174,7 +173,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	<div class="totalBs">
 		<span class="label label-info">&nbsp;&nbsp;&nbsp; Total Bs.:</span>&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' value='<?= number_format($total,2) ?>'  size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		

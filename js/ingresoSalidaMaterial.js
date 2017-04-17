@@ -278,7 +278,6 @@ function validarCantidadIngreso(numero, filaExistencia){
 		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
 					
 	}else{
-			
 		var cantidad=parseFloat( numero ); // convierte de string to number 
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
     	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
@@ -304,7 +303,6 @@ function validarCantidadIngreso(numero, filaExistencia){
 	    		
 	}
 }   // fin ... validarCantidadIngreso ...
-
 
 
 function validarPrecioCompra(numero, filaExistencia){

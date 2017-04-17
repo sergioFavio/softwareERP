@@ -172,19 +172,19 @@ function validarMontoDebe(numero, filaExistencia){
 
 function validarMontoDebeM(numero, filaExistencia){		//...validarMontoDebeM ... modificar comprobante ...
 	if (!/^\d{1,9}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
-    		alert("El valor " + numero + " no es válido");
-    		$("#cantDebe_"+filaExistencia).val("");   // borra celda de cantidad
-    	}else{
-    		if($("#cantHaber_"+filaExistencia).val()!=''){
-				alert("¡¡¡ ERROR !!! La celda del HABER ya esta llenada.");
-				$("#cantDebe_"+filaExistencia).val("");   // borra celda de DEBE
-    		}else{
-	    		var cantidad=$("#cantDebe_"+filaExistencia).val();
-		   		cantidad=parseFloat(cantidad);
-	    		$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-	    		calcularTotalDebeM();   //... actualiza totalDebe formulario 
-	    	}
+		alert("El valor " + numero + " no es válido");
+		$("#cantDebe_"+filaExistencia).val("");   // borra celda de cantidad
+	}else{
+		if($("#cantHaber_"+filaExistencia).val()!=''){
+			alert("¡¡¡ ERROR !!! La celda del HABER ya esta llenada.");
+			$("#cantDebe_"+filaExistencia).val("");   // borra celda de DEBE
+		}else{
+    		var cantidad=$("#cantDebe_"+filaExistencia).val();
+	   		cantidad=parseFloat(cantidad);
+    		$("#cantDebe_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+    		calcularTotalDebeM();   //... actualiza totalDebe formulario 
     	}
+	}
 }   // fin ... validarMontoDebeM(odificacion) ...
 
 
