@@ -103,6 +103,7 @@ $(document).ready(function() {
   		$('#notaModal').modal({show:true});
 	});	//...fin btnNota ...
 	
+	
 	$("#btnBorrarNota").click(function(){
         	$("#nota").val("");
     });
@@ -140,6 +141,8 @@ function borrarFormularioIngreso(){
 		$("#unidadMat_"+i).val("");
 		$("#precioMat_"+i).val("");
 		$("#importeMat_"+i).val("");
+		document.getElementById("mat_"+i).placeholder = "";
+		document.getElementById("colorMat_"+i).placeholder = "";
 	} // fin ciclo FOR
 	document.form_.detalleTotalBs.value="";
 	$("#saldo").val("");
@@ -320,10 +323,30 @@ function validarCantidadIngreso(numero, filaExistencia){
     		var precioCompra=$("#precioMat_"+filaExistencia).val();
     		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe
     		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
-    	}
-	    		
+    	}		
 	}
 }   // fin ... validarCantidadIngreso ...
+
+
+function validarCantidadIngresoM(numero, filaExistencia){
+   
+	if($("#idMat_"+filaExistencia).val()==""){
+		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
+		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+					
+	}else{	
+		var cantidad=parseFloat( numero ); // convierte de string to number 
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		var cantidad=$("#cantMat_"+filaExistencia).val();
+    		var precioCompra=$("#precioMat_"+filaExistencia).val();
+    		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe...
+    	}		
+	}
+}   // fin ... validarCantidadIngresoM ...
 
 
 function validarPrecio(numero, filaExistencia){
@@ -429,7 +452,6 @@ function separadorMiles(n){
         while(rx.test(w)){
             w= w.replace(rx, '$1,$2');
         }
-        
         return w;
     });
 }
@@ -450,16 +472,16 @@ function filaVacia(posicionFila, codPrefijo){
 
 <div class="jumbotron" id="cuerpoIngreso">	
 	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedidoModificado" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<div class="col-md-2">
+	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" value="<?= $cliente ?>" placeholder="cliente&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -467,10 +489,10 @@ function filaVacia(posicionFila, codPrefijo){
 	    	 	<span></span>
 	    	</div>
 	    	
-	    	<div class="col-md-2">
+	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="direccion" name="direccion" placeholder="dirección&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="direccion" name="direccion" value="<?= $direccion ?>" placeholder="dirección&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -479,13 +501,13 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
+	    	 	<span id="titulo" class="label label-default" ><?= $titulo.$secuenciaPedido.'/'.$anhoSistema ?> </span>
 	    	</div> 
 	    	
 	    	<div class="col-xs-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tags"></span> </span>
-	    	 		<input type="text"  class="form-control input-sm" id="cotizacionFabrica" name="cotizacionFabrica" placeholder="# cotiz.Fab. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="cotizacionFabrica" name="cotizacionFabrica" value="<?= $cotizacionFabrica ?>" placeholder="# cotiz.Fab. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-1 --> 
 	    	
@@ -498,7 +520,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" value="<?= $fono ?>" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
@@ -510,7 +532,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-globe"></span> </span>
-	    	 		<input type="text"  class="form-control input-sm" id="localidad" name="localidad" placeholder="localidad&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="localidad" name="localidad" value="<?= $localidad ?>" placeholder="localidad&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
@@ -522,7 +544,7 @@ function filaVacia(posicionFila, codPrefijo){
 		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span> </span>
-	    	 		<input type="text"  class="form-control input-sm" id="ordenCompra" name="ordenCompra" placeholder="orden compra&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="ordenCompra" name="ordenCompra" value="<?= $ordenCompra ?>" placeholder="orden compra&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
@@ -533,7 +555,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span> </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?= $fechaPedido ?>"  style="width: 130px;" >
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
 	    	
@@ -544,7 +566,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar" > entrega</span> </span>
-	    			<input type="date" class="form-control input-sm" id="inputEntrega" name="inputEntrega" value="<?=date('d-m-Y')?>"  style="width: 130px;" onChange='validarFechaMayor();'>
+	    			<input type="date" class="form-control input-sm" id="inputEntrega" name="inputEntrega" value="<?= $fechaEntrega ?>"  style="width: 130px;" onChange='validarFechaMayor();'>
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
 	    	
@@ -572,8 +594,41 @@ function filaVacia(posicionFila, codPrefijo){
     <tbody >
     		
     	<?php
-        //if ciclo de impresion de filas 
-       		for($x=0; $x<25; $x++){
+        //if ciclo de impresion de filas
+        	$x=0;
+			$totalBs=0.00;
+			$saldo=0.00;
+			while($reg = mysql_fetch_row($regPedido)){
+            	echo "<tr class='detalleMaterial' >";
+           			
+					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$reg[1]' readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+					
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' />".$reg[2]."</textarea></td>";
+                    
+					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' >".$reg[3]."</textarea></td>";
+								
+                    echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$reg[4]' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+						          
+                    echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$reg[5]' readonly='readonly' style='width:80px;border:none;'/></td>";
+					
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' value='$reg[6]' readonly='readonly' style='width:70px;border:none;'  /></td>";
+					  
+					$importe=($reg[4] * $reg[6]);
+					$totalBs=$totalBs+$importe;
+					$saldo= $totalBs*(1 -(1*$descuento/100) )- $aCuenta; 
+					
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='$importe' readonly='readonly' style='width:80px;border:none;'/></td>";
+					echo "<script>";
+					echo "validarCantidadIngresoM($importe,$x);";
+					echo "</script>";
+					
+                echo "</tr>";
+				$x=$x+1;
+            }
+         
+		 
+       		for($x=$nRegistrosPedido; $x<24; $x++){
             	echo "<tr class='detalleMaterial' >";
            			
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
@@ -602,7 +657,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-2">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	 		<input type="text"  class="form-control input-sm" id="facturarA" name="facturarA" placeholder="facturar a&hellip;" style="width: 180px;font-size:11px;text-align:center;" >
+	 		<input type="text"  class="form-control input-sm" id="facturarA" name="facturarA" value="<?= $facturarA ?>" placeholder="facturar a&hellip;" style="width: 180px;font-size:11px;text-align:center;" >
 		</div>
 	</div><!-- /.col-md-2 -->
 	
@@ -613,7 +668,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-2">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 185px;font-size:11px;text-align:center;" >
+	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" value="<?= $contacto ?>" placeholder="contacto&hellip;" style="width: 185px;font-size:11px;text-align:center;" >
 		</div>
 	</div><!-- /.col-md-2 -->
 	
@@ -624,7 +679,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-1">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> A/cta</span> </span>
-	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarAcuenta(this.value);'>
+	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" value="<?= $aCuenta ?>" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarAcuenta(this.value);'>
 		</div>
 	</div><!-- /.col-md-1 -->
 	    	
@@ -632,13 +687,13 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="totalBs">
 		<span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' value='<?= number_format($totalBs,2) ?>' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
 		</span>
 	</div>	
 		
 		
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     				<!--  numero pedido -->
+	<input type="hidden"  name="numPedido" value="<?= $numPedido ?>" />     				<!--  numero pedido -->
 	<input type="hidden"  name="local" value="<?= $local ?>" />     					<!--  local  F: fabrica  T: tienda -->
 	<input type="hidden"  name="secuenciaPedido" value="<?= $secuenciaPedido ?>" />     <!--  secuenciaPedido -->
 	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
@@ -648,21 +703,23 @@ function filaVacia(posicionFila, codPrefijo){
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 	    		<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"> Nit</span> </span>
-	 			<input type="text"  class="form-control input-sm" id="nit" name="nit" placeholder="nit&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"nit");'>
+	 			<input type="text"  class="form-control input-sm" id="nit" name="nit" value="<?= $nit ?>" placeholder="nit&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"nit");'>
 			</div>
 		</div><!-- /.col-md-1 --> 
 		
 		<div class="col-xs-1">
 		 	<span></span>
 		</div>
+		
 		<div class="col-xs-2">
 			<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
 		</div>
-			
+
+		
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-minus"></span> </span>
-    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" placeholder="% descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarDescuento(this.value);'>
+    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" value="<?= $descuento ?>" placeholder="% descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarDescuento(this.value);'>
     		</div>
     	</div><!-- /.col-md-1 --> 
 		
@@ -673,7 +730,7 @@ function filaVacia(posicionFila, codPrefijo){
     	<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> Saldo</span> </span>
-    	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
+    	 		<input type="text"  class="form-control input-sm" id="saldo" name="saldo" value="<?= number_format($saldo,2) ?>" placeholder="saldo Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" >
     		</div>
     	</div><!-- /.col-md-1 -->
 		
@@ -739,7 +796,7 @@ function filaVacia(posicionFila, codPrefijo){
 	</div>
 	<div class="modal-body">
 		<div class="input-group input-group-sm">
-	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
+	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" > <?= $notaComentario ?></textarea>
 		</div>
 	</div>
 	

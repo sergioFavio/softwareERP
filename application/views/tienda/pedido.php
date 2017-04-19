@@ -226,6 +226,11 @@ function grabarPedido(){
 			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");
 			registrosValidos= false;	
 	}
+	
+	if($("#embalaje").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de EMBALAJE está vacío");
+			registrosValidos= false;	
+	}
 
 	if($("#idMat_0").val()=="" ){        //... registro primer formulario... materiales
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
@@ -355,31 +360,18 @@ function validarNumero(numero,campo){
 }   // fin ... validarNumero ...
 
 
-function validarAcuenta(numero){	
-		var aCuenta=parseFloat( numero ); // convierte de string to number 
+function validarMonto(numero,campo){	
+		var monto=parseFloat( numero ); // convierte de string to number 
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
     	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
     		alert("El valor " + numero + " no es válido");
-    		$("#aCuenta").val("");   // borra celda de aCuenta
+    		$("#"+campo).val("");   // borra celda del campo
     	}else{
-    		$("#aCuenta").val( separadorMiles( aCuenta.toFixed(2) ));   //... actualiza aCuenta
+    		$("#"+campo).val( separadorMiles( monto.toFixed(2) ));   //... actualiza aCuenta
     		calcularTotalBs('_');   //... actualiza totalBs formulario
     	}
 	    		
 }   // fin ... validarAcuenta ...
-
-
-function validarDescuento(numero){
-   		
-	var descuento=parseFloat( numero ); // convierte de string to number 
-//	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
-	if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#descuento").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
-		alert("El valor " + numero + " no es válido");
-		$("#descuento").val("");   // borra celda de descuento
-	}else{
-		calcularTotalBs('_');   //... actualiza totalBs formulario
-	}
-}   // fin ... validarDescuento ...
 
 
 function calcularTotalBs(sufijo){
@@ -403,9 +395,16 @@ function calcularTotalBs(sufijo){
 	
 	aCuenta=eliminarComa(aCuenta);   //... elimina ,
 	
+	embalaje=$("#embalaje").val();
+	
+	embalaje=eliminarComa(embalaje);   //... elimina ,
+	
 	descuento=$("#descuento").val();
 	
-	saldo= totalBs*(1 -(1*descuento/100) )- aCuenta; 
+	descuento=eliminarComa(descuento);   //... elimina ,
+	
+	
+	saldo= totalBs + embalaje - descuento - aCuenta; 
 	
 	aCuenta=separadorMiles(aCuenta.toFixed(2) );
 	saldo=separadorMiles(saldo.toFixed(2) );
@@ -620,7 +619,7 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-1">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> A/cta</span> </span>
-	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarAcuenta(this.value);'>
+	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"aCuenta");'>
 		</div>
 	</div><!-- /.col-md-1 -->
 	    	
@@ -659,7 +658,7 @@ function filaVacia(posicionFila, codPrefijo){
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-plus"></span> </span>
-		 		<input type="text"  class="form-control input-sm" id="embalaje" name="embalaje" placeholder="embalaje&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarEmbalaje(this.value);'>
+		 		<input type="text"  class="form-control input-sm" id="embalaje" name="embalaje" placeholder="embalaje&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"embalaje");'>
 			</div>
 		</div><!-- /.col-md-1 --> 
 		
@@ -670,7 +669,7 @@ function filaVacia(posicionFila, codPrefijo){
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-minus"></span> </span>
-    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" placeholder="% descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarDescuento(this.value);'>
+    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" placeholder="descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"descuento");'>
     		</div>
     	</div><!-- /.col-md-1 --> 
 		

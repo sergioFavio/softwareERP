@@ -1259,8 +1259,9 @@ $anhoSistema = '2016';	//... anho del sistema
 		// fin actualizar numero de cotizacion ...
 		
 		$descuento= $_POST['descuento'];
+		$embalaje= $_POST['embalaje'];
 		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
-		$montoConDescto=$montoConDescto*(1-($descuento/100)) ;
+		$montoConDescto=$montoConDescto -$descuento + $embalaje;
 
 		$pedidoCabecera = array(
 	    	"numPedido"=>$_POST['numPedido'],
@@ -1279,6 +1280,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 		    "descuento"=>$_POST['descuento'],
+		    "embalaje"=>$_POST['embalaje'],
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
 		    "fechaEstado"=>$_POST['inputFecha'],
@@ -2171,6 +2173,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$embalaje= $pedidoCabecera["embalaje"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$nota= $pedidoCabecera["notaComentario"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					
@@ -2343,11 +2346,16 @@ $anhoSistema = '2016';	//... anho del sistema
 			
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'Descuento  '.$descuento.'% Bs.    '.number_format($totalPorNumeroPedido*$descuento/100,2),0,0,'R');
+    		$this->pdf->Cell(42,5,'Descuento Bs. '.number_format($descuento,2),0,0,'R');
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Embalaje Bs.    '.number_format($embalaje,2),0,0,'R');
+			
 
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(147,5,'','',0,'L',0);
-    		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido*(1-($descuento/100))-$aCuenta,2),0,0,'R');
+    		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido -$descuento - $aCuenta + $embalaje,2),0,0,'R');
 			
 			if($nota!=""){
 				$this->pdf->Ln('5');
