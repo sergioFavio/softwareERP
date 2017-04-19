@@ -21,10 +21,11 @@ td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 .nota-dialog {width:450px;}
 #notaModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
-#cuerpoIngreso{margin:0 auto;  padding:0; width:920px; background:#f4f4f4;}
+#cuerpoIngreso{margin:0 auto;  padding:0; width:1070px; background:#f4f4f4;}
 .cabeceraIngreso{margin:5px;}
 #titulo{font-size:16px;margin-top:1px;  text-align:right;font-weight : bold}
 
+.totalPedido{font-size:16px;text-align:center; margin-left:820px; }
 </style>
 
 
@@ -233,6 +234,12 @@ function grabarPedido(){
 			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");
 			registrosValidos= false;	
 	}
+	
+	if($("#embalaje").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de EMBALAJE está vacío");
+			registrosValidos= false;	
+	}
+	
 
 	if($("#idMat_0").val()=="" ){        //... registro primer formulario... materiales
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
@@ -382,31 +389,18 @@ function validarNumero(numero,campo){
 }   // fin ... validarNumero ...
 
 
-function validarAcuenta(numero){	
-		var aCuenta=parseFloat( numero ); // convierte de string to number 
+function validarMonto(numero,campo){	
+		var monto=parseFloat( numero ); // convierte de string to number 
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
     	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
     		alert("El valor " + numero + " no es válido");
-    		$("#aCuenta").val("");   // borra celda de aCuenta
+    		$("#"+campo).val("");   // borra celda del campo
     	}else{
-    		$("#aCuenta").val( separadorMiles( aCuenta.toFixed(2) ));   //... actualiza aCuenta
+    		$("#"+campo).val( separadorMiles( monto.toFixed(2) ));   //... actualiza aCuenta
     		calcularTotalBs('_');   //... actualiza totalBs formulario
     	}
 	    		
-}   // fin ... validarAcuenta ...
-
-
-function validarDescuento(numero){
-   		
-	var descuento=parseFloat( numero ); // convierte de string to number 
-//	if (!/^([0-9])*$/.test(numero) || $("#descuento").val()>19 ){  // ... solo numeros enteros ...  
-	if (!/^\d{1,2}(\.\d{1,2})?$/.test(numero) || $("#descuento").val()>19   ){  // ...hasta 2 digitos parte entera y hasta 2 parte decimal ...
-		alert("El valor " + numero + " no es válido");
-		$("#descuento").val("");   // borra celda de descuento
-	}else{
-		calcularTotalBs('_');   //... actualiza totalBs formulario
-	}
-}   // fin ... validarDescuento ...
+}   // fin ... validarMonto ...
 
 
 function calcularTotalBs(sufijo){
@@ -582,13 +576,13 @@ function filaVacia(posicionFila, codPrefijo){
     		<th style="width: 10px;"></th>
         	<th style="width: 180px;">Código</th>
             <th style="width: 220px;">Producto</th>
-            <th style="width: 40px;"></th>
+            <th style="width: 140px;"></th>
             <th style="width: 100px;">Color</th>
-            <th style="width: 30px;"></th>
+            <th style="width: 60px;"></th>
             <th style="width: 90px;">Cantidad</th>                              
             <th style="width: 90px">Unidad</th>
-            <th style="width: 90px">Precio Bs.</th>
-            <th style="width: 80px">Importe Bs.</th>
+            <th style="width: 80px">Precio Bs.</th>
+            <th style="width: 96px">Importe Bs.</th>
     	</tr>
       </thead >
     <tbody >
@@ -604,9 +598,9 @@ function filaVacia(posicionFila, codPrefijo){
 					echo"<td  class='openLightBox' title='Seleccione producto de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x >
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$reg[1]' readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:300px;border:none;' />".$reg[2]."</textarea></td>";
+                    echo "<td class='letraDetalle'  style='width: 420px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:400px;border:none;' />".$reg[2]."</textarea></td>";
                     
-					echo "<td  style='width: 80px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."' style='width: 140px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' >".$reg[3]."</textarea></td>";
+					echo "<td  style='width: 130px; background-color: #c9e9ec;' ><textarea rows='5' class='letraDetalle' name='colorMat_".$x."' id='colorMat_".$x."' style='width: 190px;border:none;background-color: #c9e9ec;' onChange='validarIngresoColor($x);' >".$reg[3]."</textarea></td>";
 								
                     echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' value='$reg[4]' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
 						          
@@ -616,7 +610,7 @@ function filaVacia(posicionFila, codPrefijo){
 					  
 					$importe=($reg[4] * $reg[6]);
 					$totalBs=$totalBs+$importe;
-					$saldo= $totalBs*(1 -(1*$descuento/100) )- $aCuenta; 
+					$saldo= $totalBs - $descuento - $aCuenta +$embalaje; 
 					
 					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' value='$importe' readonly='readonly' style='width:80px;border:none;'/></td>";
 					echo "<script>";
@@ -679,12 +673,12 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="col-md-1">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"> A/cta</span> </span>
-	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" value="<?= $aCuenta ?>" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarAcuenta(this.value);'>
+	 		<input type="text"  class="form-control input-sm" id="aCuenta" name="aCuenta" value="<?= $aCuenta ?>" placeholder="a cuenta Bs. &hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"aCuenta");'>
 		</div>
 	</div><!-- /.col-md-1 -->
 	    	
 	   	
-	<div class="totalBs">
+	<div class="totalPedido">
 		<span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="label label-info">
 			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' value='<?= number_format($totalBs,2) ?>' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
@@ -711,15 +705,26 @@ function filaVacia(posicionFila, codPrefijo){
 		 	<span></span>
 		</div>
 		
-		<div class="col-xs-2">
+		<div class="col-xs-1">
 			<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
+		</div>
+		
+		<div class="col-xs-1">
+			<div class="input-group input-group-sm">
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-plus"></span> </span>
+		 		<input type="text"  class="form-control input-sm" id="embalaje" name="embalaje" value="<?= $embalaje ?>" placeholder="embalaje&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"embalaje");'>
+			</div>
+		</div><!-- /.col-md-1 --> 
+		
+		<div class="col-xs-1">
+		 	<span></span>
 		</div>
 
 		
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-minus"></span> </span>
-    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" value="<?= $descuento ?>" placeholder="% descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarDescuento(this.value);'>
+    	 		<input type="text"  class="form-control input-sm" id="descuento" name="descuento" value="<?= $descuento ?>" placeholder="descuento&hellip;" style="width: 100px;font-size:11px;text-align:center;" onChange='validarMonto(this.value,"descuento");'>
     		</div>
     	</div><!-- /.col-md-1 --> 
 		

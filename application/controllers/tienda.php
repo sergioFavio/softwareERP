@@ -1172,6 +1172,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$embalaje= $pedidoCabecera["embalaje"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$notaComentario= $pedidoCabecera["notaComentario"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		
@@ -1231,6 +1232,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		$datos['nit']=$nit;								//... dato cabecera pedido ..
 		$datos['aCuenta']=$aCuenta;						//... dato cabecera pedido ..
 		$datos['descuento']=$descuento;					//... dato cabecera pedido ..
+		$datos['embalaje']=$embalaje;					//... dato cabecera pedido ..
 		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
 		$datos['notaComentario']=$notaComentario;		//... dato cabecera pedido ..	
 		
@@ -1336,8 +1338,12 @@ $anhoSistema = '2016';	//... anho del sistema
 		$anhoSistema=$_POST['anhoSistema'];
 		
 		$descuento= $_POST['descuento'];
+		
+		$embalaje= $_POST['embalaje'];
+		
 		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
-		$montoConDescto=$montoConDescto*(1-($descuento/100)) ;
+		
+		$montoConDescto=$montoConDescto -$descuento + $embalaje;
 			
 		$pedidoCabecera = array(
 	    	"local"=>$_POST['local'],
@@ -1355,6 +1361,7 @@ $anhoSistema = '2016';	//... anho del sistema
 		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
 		    "descuento"=>$_POST['descuento'],
+		    "embalaje"=>$_POST['embalaje'],
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
 		    "fechaEstado"=>$_POST['inputFecha'],

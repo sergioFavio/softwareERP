@@ -371,7 +371,7 @@ function validarMonto(numero,campo){
     		calcularTotalBs('_');   //... actualiza totalBs formulario
     	}
 	    		
-}   // fin ... validarAcuenta ...
+}   // fin ... validarMonto ...
 
 
 function calcularTotalBs(sufijo){
