@@ -354,7 +354,7 @@ function validarCantidadIngresoM(numero, filaExistencia){
     		var cantidad=$("#cantMat_"+filaExistencia).val();
     		var precioCompra=$("#precioMat_"+filaExistencia).val();
     		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe...
-    		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
+
     	}		
 	}
 }   // fin ... validarCantidadIngresoM ...

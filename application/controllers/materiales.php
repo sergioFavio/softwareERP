@@ -427,23 +427,31 @@ class Materiales extends CI_Controller {
 		
 		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$numeroSalida' AND idMaterial=codInsumo";
 		$regSalidas=$this->db->query($sql);
+
 		
 		// ... borra registros en la tabla:  salidaalmacen ...	
 		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
 		$this-> tablaGenerica_model -> eliminar('salalmacen','numSal', $numeroSalida);	
 		// fin borrar registros de salalmacen ...
+				
 		
 		//... incrementar existencias en tabla: almacen ...
 		foreach ($regSalidas->result() as $regSalida) {
 			$codigoSinEspacio=str_replace(" ","",$regSalida->idMaterial); //...quita espacio en blanco ..
-			$reg = array(
+
+			$regInsumo = array(
 				    "idMaterial"=>$codigoSinEspacio,
 				    "existencia"=>$regSalida->existencia,
 				    "cantidad"=>$regSalida->cantidad
 			);
+			
 			// ... actualiza registro tabla maestra[almacen/bodega]	
+			
 			$this-> load -> model("inventarios/maestroMaterial_model");
-	    	$this-> maestroMaterial_model -> aumentarExistencia($reg,'almacen');	
+		    	
+			$this-> maestroMaterial_model -> aumentarExistencia($regInsumo,'almacen' );
+	    		    	
+	    	
 	    	// fin incrementar existencias en tabla: almacen ...
 	    	
 	    	$materialBitacora = array(
@@ -457,12 +465,13 @@ class Materiales extends CI_Controller {
 	    	$this-> tablaGenerica_model -> grabar('salmacenbitacora',$materialBitacora);
 	    	// ... fin inserta registro tabla salmacenbitacora ...
 		}	 
+				
 		
         for($i=0; $i<$numeroFilasValidas; $i++){
        
 			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
 			
-        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+//        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
           	    //... si cantidad mayor que cero  graba registro ... 
           	    //... agrega registro tabla salalmacen ...      
 	            $material = array(
@@ -487,7 +496,7 @@ class Materiales extends CI_Controller {
 
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
 				
-			}	// ... fin IF
+//			}	// ... fin IF
 			
 		}  // ... fin  FOR  
 	
