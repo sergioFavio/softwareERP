@@ -31,7 +31,10 @@ td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 
 <script>
 var filaActual =-100;  // fila del formulario donde se adiciona registro ..
-var totalBs=0;      // ... calcula a partir de la suma de todos los importes formulario ..ingreso de materiales			
+var totalBs=0.00;      // ... calcula a partir de la suma de todos los importes formulario ..ingreso de materiales
+var embalaje=0.00;
+var descuento=0.00;
+var saldo=0.00;			
 $(document).ready(function() {
 	
 	$("form").keypress(function(e) {			//... dseactiva la tecla ENTER ...
@@ -351,6 +354,7 @@ function validarCantidadIngresoM(numero, filaExistencia){
     		var cantidad=$("#cantMat_"+filaExistencia).val();
     		var precioCompra=$("#precioMat_"+filaExistencia).val();
     		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe...
+    		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
     	}		
 	}
 }   // fin ... validarCantidadIngresoM ...
@@ -408,9 +412,9 @@ function calcularTotalBs(sufijo){
 	var i=0;
 	totalBs=0.00;
 	totalBs=parseFloat(totalBs);
-	saldo=0.00;
-	descuento=0.00;
-	aCuenta=0.00;
+	saldo=parseFloat(0.00);
+	descuento=parseFloat(0.00);
+	aCuenta=parseFloat(0.00);
 	while($("#idMat"+sufijo+i).val()!= ""){
 		var importe=$("#importeMat"+sufijo+i).val();
 
@@ -426,7 +430,14 @@ function calcularTotalBs(sufijo){
 	
 	descuento=$("#descuento").val();
 	
-	saldo= totalBs*(1 -(1*descuento/100) )- aCuenta; 
+	descuento=eliminarComa(descuento);   //... elimina ,
+	
+	embalaje=$("#embalaje").val();
+	
+	embalaje=eliminarComa(embalaje);   //... elimina ,
+	
+	
+	saldo= totalBs + embalaje - descuento- aCuenta; 
 	
 	aCuenta=separadorMiles(aCuenta.toFixed(2) );
 	saldo=separadorMiles(saldo.toFixed(2) );
