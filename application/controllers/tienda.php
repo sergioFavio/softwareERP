@@ -1281,8 +1281,8 @@ class Tienda extends CI_Controller {
 		    "nit"=>$_POST['nit'],
 		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
-		    "descuento"=>$_POST['descuento'],
-		    "embalaje"=>$_POST['embalaje'],
+		    "descuento"=>str_replace(",","",$_POST['descuento']),
+		    "embalaje"=>str_replace(",","",$_POST['embalaje']),
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
 		    "fechaEstado"=>$_POST['inputFecha'],
@@ -1360,8 +1360,8 @@ class Tienda extends CI_Controller {
 		    "nit"=>$_POST['nit'],
 		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
 		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
-		    "descuento"=>$_POST['descuento'],
-		    "embalaje"=>$_POST['embalaje'],
+		    "descuento"=>str_replace(",","",$_POST['descuento']),
+		    "embalaje"=>str_replace(",","",$_POST['embalaje']),
 		    "usuario"=>$this->session->userdata('userName'),
 		    "estado"=>"I",
 		    "fechaEstado"=>$_POST['inputFecha'],
@@ -1454,9 +1454,9 @@ class Tienda extends CI_Controller {
 				
 				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
 				$config['uri_segment'] = '3';
-					$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 			  
-					/*Se personaliza la paginación para que se adapte a bootstrap*/
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
 			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
 			    $config['cur_tag_close'] = '</a></li>';
 			    $config['num_tag_open'] = '<li>';
@@ -1474,9 +1474,10 @@ class Tienda extends CI_Controller {
 				$this->pagination->initialize($config);
 			
 				/* Se obtienen los registros a mostrar*/ 
+				
 				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
-			
 				$datos['consultaPedido'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
 				
 				/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');
@@ -1487,6 +1488,28 @@ class Tienda extends CI_Controller {
 		}	//... fin IF validar usuario ...
 		
 	} //... fin verPedidos ...
+	
+	public function eliminarPedido(){
+		//... elimina pedido de las tablas pedidocabecera, pedidoproducto ...
+		$codigoPedido=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('pedidocabecera','numPedido',$codigoPedido);
+		$this-> tablaGenerica_model -> eliminar('pedidoproducto','numeroPedido',$codigoPedido);
+		
+		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+
+		$archivoPDF='pedido'.$numePedidoSinGuion.'.pdf';
+		//$archivoPDF='pedido1002017.pdf';
+		$archivo ='pdfsArchivos/pedidos/pedido'.$numePedidoSinGuion.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verPedidos");
+		echo $data;
+	}
 	
 	 
 	public function buscarPedido(){
@@ -2579,7 +2602,7 @@ class Tienda extends CI_Controller {
 		$montoAbonoAnterior= str_replace(",","",$_POST['montoAbonoAnterior']);
 		
 		$regDeposito = array(
-			"deposito"=>$_POST['numDeposito'],
+			"deposito"=>$_POST['deposito'],
 	    	"pedido"=>str_replace(" ","",$_POST['numPedido']), //...quita los espacios en blanco ...
 		    "tipoPago"=>$_POST['inputTipoPago'],
 		    "banco"=>$_POST['inputBanco'],

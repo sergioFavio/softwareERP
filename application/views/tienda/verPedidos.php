@@ -226,8 +226,11 @@ function pedidoPdf(nPedido){
 								
 					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroPedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	
-					 echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->numPedido."' data-cli='".$pedido->contacto."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
-		
+					 if($permisoUserName=='superuser'){
+					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->numPedido."' data-cli='".$pedido->contacto."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+					 }else{
+					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'></td>"; 
+					 }
 				   ?>						
 				</tr>
 	        <?php endforeach ?>
@@ -259,7 +262,7 @@ function pedidoPdf(nPedido){
         <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
       </div>
       <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarPedidoCrud" method="POST">
+	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarPedido" method="POST">
         ¿ Esta seguro de eliminar el pedido <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 	  </form>

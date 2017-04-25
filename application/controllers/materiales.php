@@ -311,7 +311,7 @@ class Materiales extends CI_Controller {
 			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]);  //...quita espacio en blanco ..
 			$precioMaterial=$_POST['compraMat_'.$i]; 					//... precioMaterial ...
 			
-        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+//        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
           	    //... si cantidad mayor que cero  graba registro ... 
           	    //... agrega registro tabla salalmacen ...      
 	            $material = array(
@@ -332,7 +332,7 @@ class Materiales extends CI_Controller {
 	
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
 				
-			}	// ... fin IF
+//			}	// ... fin IF
 			
 		}  // ... fin  FOR  
 

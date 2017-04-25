@@ -690,9 +690,9 @@ function filaVacia(posicionFila, codPrefijo){
 	    	
 	   	
 	<div class="totalPedido">
-		<span class="label label-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="label label-info">
-			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' value='<?= number_format($totalBs,2) ?>' readonly='readonly' style='border:none; background-color: #2ECCFA;'/>
+		<span class="label label-success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span class="label label-success">
+			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' value='<?= number_format($totalBs,2) ?>' readonly='readonly' style='border:none; background-color: #41C152;'/>
 		</span>
 	</div>	
 		
