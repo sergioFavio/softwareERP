@@ -1419,10 +1419,8 @@ class Tienda extends CI_Controller {
 	//... funciones del CRUD pedidos ...//
 	/////////////////////////////////////////////
 	
-	public function verPedidos()
-	{
+	public function verPedidos(){
 		//... control de permisos de acceso ....
-		
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
@@ -1515,7 +1513,7 @@ class Tienda extends CI_Controller {
 	public function buscarPedido(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	    $campo1='numPedido';   //... el campo por elcual se va hacer la búsqueda ...
-		
+		$permisoUserName=$this->session->userdata('userName');
 		if(isset($_POST['inputBuscarPatron'])){
 			$consultaPedido=$_POST['inputBuscarPatron'];
 			
@@ -1576,6 +1574,7 @@ class Tienda extends CI_Controller {
 			/* Se obtienen los registros a mostrar*/ 
 			$datos['listaPedido'] = $this-> tablaGenerica_model -> buscarPaginacion('pedidocabecera',$campo1,$consultaPedido, $config['per_page'], $desde );
 			$datos['consultaPedido'] =$consultaPedido;
+			$datos['permisoUserName'] =$permisoUserName;
 			
 			/*Se llama a la vista para mostrar la información*/
 			$this->load->view('header');

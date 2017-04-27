@@ -1330,8 +1330,8 @@ class Produccion extends CI_Controller {
 				$this->pagination->initialize($config);
 			
 				/* Se obtienen los registros a mostrar*/ 
+				$datos['permisoUserName'] =$permisoUserName;
 				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
-			
 				$datos['consultaPedido'] ='';
 				
 				/*Se llama a la vista para mostrar la información*/

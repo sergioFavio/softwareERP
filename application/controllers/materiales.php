@@ -285,10 +285,10 @@ class Materiales extends CI_Controller {
 		
 		$factura=$_POST['inputFactura'];
 		
-		$sql="UPDATE ingresoalmacencabecera SET numFactura=$factura, proveedor='$proveedor' WHERE numero=$numeroIngreso ";
+		$sql="UPDATE ingresoalmacencabecera SET numFactura='$factura', proveedor='$proveedor' WHERE numero='$numeroIngreso' ";
 		$this->db->query($sql);	
 		
-		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM ingalmacen, almacen WHERE numIng=$numeroIngreso AND idMaterial=codInsumo";
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM ingalmacen, almacen WHERE numIng='$numeroIngreso' AND idMaterial=codInsumo";
 		$regIngresos=$this->db->query($sql);
 		
 		// ... borra registros en la tabla:  ingalmacen ...	
@@ -422,7 +422,7 @@ class Materiales extends CI_Controller {
 		
 		$numeroOrden=$_POST['inputOrden'];
 		
-		$sql="UPDATE salidaalmacencabecera SET numOrden=$numeroOrden WHERE numero=$numeroSalida ";
+		$sql="UPDATE salidaalmacencabecera SET numOrden='$numeroOrden' WHERE numero='$numeroSalida' ";
 		$this->db->query($sql);	
 		
 		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$numeroSalida' AND idMaterial=codInsumo";
