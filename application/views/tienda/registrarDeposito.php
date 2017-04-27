@@ -23,13 +23,23 @@
 	
 	.cabecera-dialog {width:750px;}
 	#cabeceraModal{padding-left:330px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
+	
+	/*   light box tipo cambio */
+	.cambio-dialog {width:250px;}
+	#cambioModal{padding-top:195px;padding-left:550px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 </style>
 
 <script>
 
 $(document).ready(function() {
-		/*  inicio de light box  producto javascript */
+	/*  inicio de light box  producto javascript */
+	$("form").keypress(function(e) {			//... dseactiva la tecla ENTER ...
+	    if (e.which == 13) {
+	        return false;
+	    }
+    });
+    
 	$('#numPedido').click(function(){
   		var title = $(this).attr("title");
 		$('.modal-title').html(title);
@@ -54,6 +64,10 @@ $(document).ready(function() {
 		//... grabar comprobante ...
     	grabarDeposito();
 	});
+	
+	$("#btnBorrarTipoCambio").click(function(){
+        	$("#tipoCambio").val("");
+    });
 	  
 }); // fin document.ready 
 
@@ -109,10 +123,33 @@ $(document).ready(function() {
 	    		var cantidad=$("#"+campo).val();
 		   		cantidad=parseFloat(cantidad);
 	    		$("#"+campo).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
-	    	}
-		    		
+	    	}	
 		}
 	}   // fin ... validarMonto ...
+	
+	
+		
+	function validarTipoCambio(numero,campo){	
+	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+	    	if (!/^\d{1,9}(\.\d{1,2})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+	    		alert("El valor " + numero + " no es válido");
+	    		$("#"+campo).val("");   // borra celda de cantidad
+	    	}else{
+	    		var cantidad=$("#"+campo).val();
+		   		cantidad=parseFloat(cantidad);
+	    		$("#"+campo).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+	    	}	
+		
+	}   // fin ... validarMonto ...
+	
+	
+	function tipoCambio(banco){
+		if(banco=="Banco Económico M.E."){
+			var title = "Tipo de cambio del dólar";
+			$('.modal-title').html(title);		
+  			$('#cambioModal').modal({show:true});
+		}
+	}
 	
 	function separadorMiles(n){
 	    var rx=  /(\d+)(\d{3})/;
@@ -224,7 +261,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<select class = "form-control input-sm" id="inputBanco" name="inputBanco" style="width:160px;font-size:11px;text-align:center;">
+	    	 		<select class = "form-control input-sm" id="inputBanco" name="inputBanco" style="width:160px;font-size:11px;text-align:center;" onClick='tipoCambio(this.value);'>
 				         <option value="BNB Caja Ahorros M.N.">BNB Caja Ahorros M.N. </option>
 				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
 				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
@@ -386,4 +423,33 @@ $(document).ready(function() {
   </div>
 </div>
 <!-- ... fin  lightbox cabecerapedido... -->
+
+
+<!-- ... inicio  lightbox tipoCambio... -->
+<div id="cambioModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="cambio-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h4 class="modal-title">cabecera de caja luz</h4>
+	</div>
+	<div class="modal-body">
+		<div class="col-xs-2">
+			<div class="input-group input-group-sm">
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span>us.</span>
+		 		<input type="text"  class="form-control input-sm" id="tipoCambio" name="tipoCambio" placeholder="tipo de cambio Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarTipoCambio(this.value,"tipoCambio");' >
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarTipoCambio"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
+	</div>
+	
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox tipoCambio... -->
+
 
