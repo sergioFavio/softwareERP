@@ -96,9 +96,6 @@ class Tienda extends CI_Controller {
 		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('pedidocabecera',$campo1,$consultaPedido);
 		//echo"total registros econtrados".$totalRegistrosEncontrados;
 		if($totalRegistrosEncontrados==0){
-		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
-		//	$this->load->view('mensaje',$datos );
-		//	redirect('produccion/crudVerCotizaciones');
 			redirect('menuController/index');
 		}else{
 			/* URL a la que se desea agregar la paginación*/
@@ -303,6 +300,7 @@ class Tienda extends CI_Controller {
 			$cliente=$registro->cliente;
 			$telCel=$registro->telCel;
 			$abono=$registro->abono;
+			$tipoCambio=$registro->tipoCambio;
 			$local=$registro->local;
 		}
 	
@@ -392,17 +390,35 @@ class Tienda extends CI_Controller {
 			
 			if($registro->tipoPago=='E'){
 				$this->pdf->Cell(16,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+				if($registro->tipoCambio==0.00){
+					$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+					$totalEfectivo=$totalEfectivo+$registro->montoAbono;
+				}else{														//... cuando el deposito es en dolares ...
+					$this->pdf->Cell(17,5,number_format($registro->montoAbono*$registro->tipoCambio,2),'',0,'R',0);
+					$totalEfectivo=$totalEfectivo+($registro->montoAbono*$registro->tipoCambio);
+				}
+				
 				$this->pdf->Cell(34,5,'','',0,'L',0);
-				$totalEfectivo=$totalEfectivo+$registro->montoAbono;
+				
 			}else{
 				$this->pdf->Cell(40,5,'','',0,'L',0);
-				$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+				if($registro->tipoCambio==0.00){
+					$this->pdf->Cell(17,5,number_format($registro->montoAbono,2),'',0,'R',0);
+					$totalCheque=$totalCheque+$registro->montoAbono ;
+				}else{														//... cuando el deposito es en dolares ...
+					$this->pdf->Cell(17,5,number_format($registro->montoAbono*$registro->tipoCambio,2),'',0,'R',0);
+					$totalCheque=$totalCheque+($registro->montoAbono*$registro->tipoCambio) ;
+				}
+				
 				$this->pdf->Cell(10,5,'','',0,'L',0);
-				$totalCheque=$totalCheque+$registro->montoAbono ;
+				
 			}
 			
-			$saldo= $saldo - $registro->montoAbono;
+			if($registro->tipoCambio==0.00){
+				$saldo= $saldo - $registro->montoAbono;
+			}else{															//... cuando el deposito es en dolares ...	
+				$saldo= $saldo - ($registro->montoAbono*$registro->tipoCambio);
+			}
 			
 			$this->pdf->Cell(15,5,number_format($saldo,2),'',0,'R',0);
 			
@@ -2558,6 +2574,8 @@ class Tienda extends CI_Controller {
 		$numDeposito=$_POST['numDeposito'];
 		$numPedido=str_replace(" ","",$_POST['numPedido']);
 		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
+		$tipoCambio= str_replace(",","",$_POST['cambioDolar']);
+		
 		
 		$regDeposito = array(
 			"deposito"=>$_POST['numDeposito'],
@@ -2569,7 +2587,8 @@ class Tienda extends CI_Controller {
 		    "nDeposito"=>$_POST['nDeposito'],
 		    "tipoDocumento"=>$_POST['tipoDocumento'],
 		    "facturaRecibo"=>$_POST['facturaRecibo'], 
-		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), //...quita , como separador de miles ...
+		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), 	//...quita , como separador de miles ...
+		    "tipoCambio"=>str_replace(",","",$_POST['cambioDolar']), 	//...quita , como separador de miles ...
 		    "glosaDeposito"=>$_POST['glosaDeposito']
 		);
 		
@@ -2577,6 +2596,9 @@ class Tienda extends CI_Controller {
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
 	    $this-> tablaGenerica_model -> grabar('pagospedido', $regDeposito);
 		
+		if($tipoCambio!=0.00){		//... cuando el deposito es en $us.
+			$montoDeposito=$montoDeposito * $tipoCambio;
+		}
 		
 		// ... actualiza registro pedidocabecera ....	
 		$this-> load -> model("tablaGenerica_model");
@@ -2620,8 +2642,11 @@ class Tienda extends CI_Controller {
 		// ... actualiza registro pedidocabecera ....	
 		$this-> load -> model("tablaGenerica_model");
 		$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoAbonoAnterior);
-		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
-		
+//		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
+		$sql="UPDATE pedidocabecera set abono= abono+ $montoDeposito WHERE numPedido='$numPedido' ";
+		$this->db->query($sql);
+			
+			
 		redirect("menuController/index");	
 		
 	}	//... fin grabarDepositoModificado ...

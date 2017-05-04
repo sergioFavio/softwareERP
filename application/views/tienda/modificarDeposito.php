@@ -23,6 +23,10 @@
 	
 	.pagos-dialog {width:1000px;}
 	#pagosModal{padding-left:200px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
+	
+	/*   light box tipo cambio */
+	.cambio-dialog {width:250px;}
+	#cambioModal{padding-top:195px;padding-left:550px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 </style>
 
@@ -56,7 +60,10 @@ $(document).ready(function() {
     	
     	montoAbono=parseFloat( montoAbono ); // convierte de string to number 
     	
-    	var glosa=$('td', this).eq(10).text();
+    	var tipoCambio=$('td', this).eq(10).text();
+    	tipoCambio=parseFloat( tipoCambio ); // convierte de string to number 
+    	
+    	var glosa=$('td', this).eq(11).text();
     	
 		$('#deposito').val(deposito);
 		$('#numPedido').val(numeroPedido);
@@ -73,6 +80,7 @@ $(document).ready(function() {
 		$('#tipoDocumento').val(tipoDocumento);
 		$('#facturaRecibo').val(facturaRecibo);
 		$('#montoDeposito').val(separadorMiles( montoAbono.toFixed(2)) );
+		$('#tipoCambio').val(separadorMiles( tipoCambio.toFixed(2)) );
 		$('#glosaDeposito').val(glosa);
 		
     	$('#pagosModal').modal('hide'); // cierra el lightBox
@@ -147,6 +155,16 @@ $(document).ready(function() {
 		    		
 		}
 	}   // fin ... validarMonto ...
+	
+	
+	function tipoCambio(banco){
+		if(banco=="Banco Económico M.E."){
+			var title = "Tipo de cambio del dólar";
+			$('.modal-title').html(title);		
+  			$('#cambioModal').modal({show:true});
+		}
+	}
+	
 	
 	function separadorMiles(n){
 	    var rx=  /(\d+)(\d{3})/;
@@ -283,7 +301,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span><span class="glyphicon glyphicon-usd"></span></span>
-	    	 		<select class = "form-control input-sm" id="inputBanco" name="inputBanco" style="width:160px;font-size:11px;text-align:center;">
+	    	 		<select class = "form-control input-sm" id="inputBanco" name="inputBanco" style="width:160px;font-size:11px;text-align:center;" onClick='tipoCambio(this.value);'>
 				         <option value="BNB Caja Ahorros M.N.">BNB Caja Ahorros M.N. </option>
 				         <option value="Banco Económico M.N.">Banco Económico M.N.</option>
 				         <option value="Banco Económico M.E.">Banco Económico M.E.</option>
@@ -424,6 +442,7 @@ $(document).ready(function() {
 					<th style='width:15px;'>tipo documento</th>
 					<th style='width:15px;'>factura/recibo</th>
 					<th style='width:15px;'>monto Bs.</th>
+					<th style='width:15px;'>cambio Bs.</th>
 					<th style='width:50px;'>glosa</th>
 				</tr>
 			</thead>
@@ -440,6 +459,7 @@ $(document).ready(function() {
    						<td style='width:15px;' ><?= $pago['tipoDocumento']  ?></td>
    						<td style='width:15px;' ><?= $pago['facturaRecibo']  ?></td>
    						<td style='width:15px;' ><?= $pago['montoAbono']  ?></td>
+   						<td style='width:15px;' ><?= $pago['tipoCambio']  ?></td>
    						<td style='width:50px;' ><?= $pago['glosaDeposito']  ?></td>
                     </tr>
                 <?php endforeach ?>
@@ -454,5 +474,32 @@ $(document).ready(function() {
   </div>
 </div>
 <!-- ... fin  lightbox pagospedido... -->
+
+<!-- ... inicio  lightbox tipoCambio... -->
+<div id="cambioModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="cambio-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h4 class="modal-title">cabecera de caja luz</h4>
+	</div>
+	<div class="modal-body">
+		<div class="col-xs-2">
+			<div class="input-group input-group-sm">
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span>us.</span>
+		 		<input type="text"  class="form-control input-sm" id="tipoCambio" name="tipoCambio" placeholder="tipo de cambio Bs. &hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarTipoCambio(this.value,"tipoCambio");' >
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarTipoCambio"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
+	</div>
+	
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox tipoCambio... -->
 
 

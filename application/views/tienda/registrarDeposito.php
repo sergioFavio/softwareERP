@@ -171,28 +171,41 @@ $(document).ready(function() {
 		}
 		
 		if($("#numPedido").val()=="" ){
-				alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO PEDIDO está vacío");
-				var registrosValidos= false;	
+			alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO PEDIDO está vacío");
+			var registrosValidos= false;	
 		}
 		
+		
+		if($("#inputBanco").val()=="Banco Económico M.E." ){
+			if($("#tipoCambio").val()=="" || $("#tipoCambio").val()=="0.00" ){
+				alert("Ingrese el TIPO DE CAMBIO ");
+				$('#tipoCambio').val()="";
+				var registrosValidos= false;
+			}
+		}else{
+			$('#tipoCambio').val(0.00);
+		}
+		
+		
 		if($("#facturaRecibo").val()=="" ){
-				alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO FACTURA/RECIBO está vacío");
-				var registrosValidos= false;	
+			alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO FACTURA/RECIBO está vacío");
+			var registrosValidos= false;	
 		}
 		
 		if($("#montoDeposito").val()=="" ){
-				alert("¡¡¡ E R R O R !!! ... El contenido de MONTO está vacío");
-				var registrosValidos= false;	
+			alert("¡¡¡ E R R O R !!! ... El contenido de MONTO está vacío");
+			var registrosValidos= false;	
 		}
 		
 		if($("#glosaDeposito").val()=="" ){
-				alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
-				var registrosValidos= false;	
+			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
+			var registrosValidos= false;	
 		}
 					
 		if(!registrosValidos){
 			alert('Corrija los campos que están vacíos');
-		}else{
+		}else{					
+			document.form_.cambioDolar.value=$('#tipoCambio').val();  // ... tipoCambio variable hidden formulario ...
 			$("#form_").submit(); // ...  graba registros ...
 		}
 				
@@ -367,8 +380,9 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		   <input type="hidden"  name="numDeposito" value="<?= $deposito ?>" />     				<!--  numero deposito -->
-			
+		   <input type="hidden"  name="numDeposito" value="<?= $deposito ?>" />     	<!--  numero deposito -->
+		   <input type="hidden"  name="cambioDolar" />     								<!--  cambioDolar  -->
+		    
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
 		        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarDeposito"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
@@ -380,6 +394,7 @@ $(document).ready(function() {
 	</div>
 	
 </div>
+
 
 <!-- ... inicio  lightbox cabecerapedido... -->
 
@@ -425,6 +440,7 @@ $(document).ready(function() {
 <!-- ... fin  lightbox cabecerapedido... -->
 
 
+
 <!-- ... inicio  lightbox tipoCambio... -->
 <div id="cambioModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
   <div class="cambio-dialog"  >
@@ -451,5 +467,4 @@ $(document).ready(function() {
   </div>
 </div>
 <!-- ... fin  lightbox tipoCambio... -->
-
 

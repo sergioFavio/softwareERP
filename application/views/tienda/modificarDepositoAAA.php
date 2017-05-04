@@ -21,8 +21,8 @@
 	
 	#titulo{font-size:16px;margin-top:1px;  text-align:right; font-weight:bold} 
 	
-	.cabecera-dialog {width:750px;}
-	#cabeceraModal{padding-left:330px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
+	.pagos-dialog {width:1000px;}
+	#pagosModal{padding-left:200px;padding-top:25px;}  /* ... baja la ventana modal más al centro vertical ... */
 
 </style>
 
@@ -30,20 +30,53 @@
 
 $(document).ready(function() {
 		/*  inicio de light box  producto javascript */
-	$('#numPedido').click(function(){
+	$('#deposito').click(function(){
   		var title = $(this).attr("title");
 		$('.modal-title').html(title);
-  		$('#cabeceraModal').modal({show:true});
+  		$('#pagosModal').modal({show:true});
 	});
-	/*  fin de light box producto javascript  */	
+	/*  fin de light box producto javascript  */
 	
-	$('#tabla1').dataTable();
+	
+	$('#tabla2').dataTable();
     
-    $('#tabla1 tbody').on('click', 'tr', function () {	
-    	var numeroComprobante = $('td', this).eq(0).text();
-		$('#numPedido').val(numeroComprobante);
-    	$('#cabeceraModal').modal('hide'); // cierra el lightBox
-	} ); // fin #tabla1 tbody
+    $('#tabla2 tbody').on('click', 'tr', function () {	
+    	var deposito = $('td', this).eq(0).text();
+    	var numeroPedido = $('td', this).eq(1).text();
+    	var fecha = $('td', this).eq(2).text();
+    	var tipoPago =$('td', this).eq(3).text();
+    	var banco=$('td', this).eq(4).text();
+    	var numCheque=$('td', this).eq(5).text();
+    	var numDeposito=$('td', this).eq(6).text();
+    	var tipoDocumento=$('td', this).eq(7).text();
+    	var facturaRecibo=$('td', this).eq(8).text();
+    	var montoAbono=$('td', this).eq(9).text();
+    	
+    	document.form_.montoAbonoAnterior.value=montoAbono;  // ... montoAbonoAnterior  variable hidden formulario...
+    	
+    	montoAbono=parseFloat( montoAbono ); // convierte de string to number 
+    	
+    	var glosa=$('td', this).eq(10).text();
+    	
+		$('#deposito').val(deposito);
+		$('#numPedido').val(numeroPedido);
+		$('#inputFecha').val(fecha);
+		if(tipoPago=='E'){
+			document.getElementById("inputTipoPago1").checked = true;		//... resetea el button radio al primer valor ...
+		}else{
+			document.getElementById("inputTipoPago2").checked = true;		//... resetea el button radio al segundo valor ...
+		}
+		
+		$('#inputBanco').val(banco);
+		$('#numCheque').val(numCheque);
+		$('#numDeposito').val(numDeposito);
+		$('#tipoDocumento').val(tipoDocumento);
+		$('#facturaRecibo').val(facturaRecibo);
+		$('#montoDeposito').val(separadorMiles( montoAbono.toFixed(2)) );
+		$('#glosaDeposito').val(glosa);
+		
+    	$('#pagosModal').modal('hide'); // cierra el lightBox
+	} ); // fin #tabla2 tbody
 	
 
 	$("#btnBorrarDeposito").click(function(){
@@ -59,11 +92,12 @@ $(document).ready(function() {
 
 	function borrarFormularioDeposito(){
 	//...esta funcion borra los datos del formularioDeposito
+		$("#deposito").val("");
 		document.getElementById("inputTipoPago1").checked = true;		//... resetea el button radio al primer valor ...
 		$("#inputFecha").val("");
 	    $("#inputBanco").val("");
 	    $("#numCheque").val("");
-	    $("#nDeposito").val("");
+	    $("#numDeposito").val("");
 	    $("#numPedido").val("");
 		$("#tipoDocumento").val("");
 		$("#facturaRecibo").val("");
@@ -128,6 +162,11 @@ $(document).ready(function() {
 		var i=0;
 		var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 		
+		if($("#deposito").val()=="" ){
+				alert("¡¡¡ E R R O R !!! ... El contenido de DEPÓSITO está vacío, seleccione un depósito");
+				var registrosValidos= false;	
+		}
+		
 		if($("#inputFecha").val()=="" ){
 				alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
 				var registrosValidos= false;	
@@ -166,11 +205,31 @@ $(document).ready(function() {
 <div class="jumbotron" id="cuerpo" >	
 		
 	<div class="cuerpoCabeceraReporteSalida">
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDeposito' id='form_' name='form_' >
-	    	<div style="height:2px;"></div>
-			<p align="center" class="tituloReporte" ><span class="label label-success"> Registrar Dep&oacute;sito No. <?= $secuenciaDeposito.' / '.$anhoSistema ?></span></p>
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>tienda/grabarDepositoModificado' id='form_' name='form_' >
+	    	<div style="height:17px;"></div>
+			
+			<div class="row">
+			
+				<div class="col-xs-3"> 
+					<span></span>
+				</div>
+								
+				<div class="col-xs-3">
+					<div class="input-group input-group-sm">
+				    	<span class="input-group-addon" id="letraCabecera" >MODIFICAR DEPÓSITO No.</span>
+				 		<input type="text"  class="form-control input-sm" id="deposito" name="deposito" title='Seleccione un número de depósito' readonly="readonly" placeholder="depósito No.&hellip;" style="background-color:#d9f9ec;width: 120px;font-size:11px;text-align:center;"  >
+					</div>
+				</div><!-- /.col-md-2 -->
+				
+				<div class="col-xs-3"> 
+					<span></span>
+				</div>			
+								
+			</div><!-- /.row -->
+
+			
 							
-			<div style="height:10px;"></div>
+			<div style="height:15px;"></div>
 			
 			<div class="row">
 		   	
@@ -207,7 +266,7 @@ $(document).ready(function() {
 		    	  <div class="col-xs-2">
 			      	<div class="input-group input-group-sm">
 			        	<span class="input-group-addon" id="letraCabecera" >Fecha </span>
-			    	 	<input type="date"  class="form-control" id="inputFecha" name="inputFecha" placeholder="Fecha" style="width: 135px; height:30px;" >
+			    	 	<input type="text"  class="form-control" id="inputFecha" name="inputFecha" readonly="readonly" placeholder="fecha&hellip;" style="width: 135px; height:30px;" >
 			      	</div>
 			      </div><!-- /.col-md-2 -->
 				  
@@ -251,7 +310,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="nDeposito" name="nDeposito" placeholder="dep&oacute;sito No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numDeposito");' >
+	    	 		<input type="text"  class="form-control input-sm" id="numDeposito" name="numDeposito" placeholder="dep&oacute;sito No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"numDeposito");' >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 		
@@ -268,7 +327,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="numPedido" name="numPedido" title='Seleccione un número de pedido' readonly="readonly" placeholder="pedido No.&hellip;" style="background-color:#d9f9ec;width: 120px;font-size:11px;text-align:center;"  >
+	    	 		<input type="text"  class="form-control input-sm" id="numPedido" name="numPedido" title='Seleccione un número de pedido' readonly="readonly" placeholder="pedido No.&hellip;" style="width:120px;font-size:11px;text-align:center;"  >
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -293,9 +352,7 @@ $(document).ready(function() {
 		   	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-pushpin"></span></span>
-	    	 		<!--input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;" onChange='validarNumero(this.value,"facturaRecibo");' -->
 	    	 		<input type="text"  class="form-control input-sm" id="facturaRecibo" name="facturaRecibo" placeholder="factura/recibo No.&hellip;" style="width: 120px;font-size:11px;text-align:center;"  >
-	    	 		
 	    		</div>
 			</div><!-- /.col-md-2 -->
 			
@@ -330,7 +387,7 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		   <input type="hidden"  name="numDeposito" value="<?= $deposito ?>" />     				<!--  numero deposito -->
+		   <input type="hidden"  name="montoAbonoAnterior" />     				<!--  montoAbonoAnterior -->
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
@@ -344,10 +401,9 @@ $(document).ready(function() {
 	
 </div>
 
-<!-- ... inicio  lightbox cabecerapedido... -->
-
-<div id="cabeceraModal"  class="modal fade" tabindex="-1" role="dialog" >
-  <div class="cabecera-dialog"  >
+<!-- ... inicio  lightbox pagospedido... -->
+<div id="pagosModal"  class="modal fade" tabindex="-1" role="dialog" >
+  <div class="pagos-dialog"  >
   <div class="modal-content">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">×</button>
@@ -355,24 +411,36 @@ $(document).ready(function() {
 	</div>
 	<div class="modal-body">
 		
-		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla1">
+		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla2">
 			<thead>
 				<tr class='letraDetalleLightBox'>
-					<th style='width:50px;'>pedido</th>
-					<th style='width:45px;'>fecha</th>
-					<th style='width:180px;'>cliente</th>
-					<th style='width:180px;'>dirección</th>
-					<th style='width:80px;'>teléf./cel.</th>
+					<th style='width:15px;'>depósito</th>
+					<th style='width:15px;'>pedido</th>
+					<th style='width:25px;'>fecha</th>
+					<th style='width:15px;'>tipo pago</th>
+					<th style='width:50px;'>banco</th>
+					<th style='width:15px;'># cheque</th>
+					<th style='width:15px;'># depósito</th>
+					<th style='width:15px;'>tipo documento</th>
+					<th style='width:15px;'>factura/recibo</th>
+					<th style='width:15px;'>monto Bs.</th>
+					<th style='width:50px;'>glosa</th>
 				</tr>
 			</thead>
 			<tbody>			
-                <?php foreach($cabeceraPedido as $cabecera):?>
-                    <tr class='letraDetalleLightBox'>
-                        <td style='width:55px;'> <?= $cabecera["numPedido"] ?></td>
-                        <td style='width:60px;'> <?= fechaMysqlParaLatina($cabecera["fechaPedido"])?></td>
-   						<td style='width:200px;' ><?= $cabecera['cliente']  ?></td>	
-   						<td style='width:200px;' ><?= $cabecera['direccion']  ?></td>
-   						<td style='width:90px;' ><?= $cabecera['telCel']  ?></td>
+                <?php foreach($pagosPedido as $pago):?>
+                    <tr class='letraDetalleLightBox'> 
+                    	<td style='width:15px;'> <?= $pago["deposito"] ?></td>
+                        <td style='width:15px;'> <?= $pago["pedido"] ?></td>
+                        <td style='width:25px;'> <?= fechaMysqlParaLatina($pago["fechaAbono"])?></td>
+   						<td style='width:15px;' ><?= $pago['tipoPago']  ?></td>	
+   						<td style='width:60px;' ><?= $pago['banco']  ?></td>
+   						<td style='width:15px;' ><?= $pago['nCheque']  ?></td>
+   						<td style='width:15px;' ><?= $pago['nDeposito']  ?></td>
+   						<td style='width:15px;' ><?= $pago['tipoDocumento']  ?></td>
+   						<td style='width:15px;' ><?= $pago['facturaRecibo']  ?></td>
+   						<td style='width:15px;' ><?= $pago['montoAbono']  ?></td>
+   						<td style='width:50px;' ><?= $pago['glosaDeposito']  ?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>
@@ -385,5 +453,6 @@ $(document).ready(function() {
    </div>
   </div>
 </div>
-<!-- ... fin  lightbox cabecerapedido... -->
+<!-- ... fin  lightbox pagospedido... -->
+
 
