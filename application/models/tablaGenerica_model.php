@@ -34,7 +34,7 @@ class TablaGenerica_model extends CI_Model{
   }
    
   
-  public function buscar($nombreTabla,$campo,$patron) {
+  function buscar($nombreTabla,$campo,$patron) {
     $this->db->where($campo, $patron);
     return $this->db->get($nombreTabla)->row_array();
   }

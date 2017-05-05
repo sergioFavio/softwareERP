@@ -32,6 +32,7 @@
 
 <script>
 
+var banco='';
 $(document).ready(function() {
 		/*  inicio de light box  producto javascript */
 	$('#deposito').click(function(){
@@ -57,10 +58,13 @@ $(document).ready(function() {
     	var montoAbono=$('td', this).eq(9).text();
     	
     	document.form_.montoAbonoAnterior.value=montoAbono;  // ... montoAbonoAnterior  variable hidden formulario...
-    	
+
     	montoAbono=parseFloat( montoAbono ); // convierte de string to number 
     	
     	var tipoCambio=$('td', this).eq(10).text();
+    	
+    	document.form_.cambioDolarAnterior.value=tipoCambio;  // ... montoAbonoAnterior  variable hidden formulario...
+    	
     	tipoCambio=parseFloat( tipoCambio ); // convierte de string to number 
     	
     	var glosa=$('td', this).eq(11).text();
@@ -156,8 +160,30 @@ $(document).ready(function() {
 		}
 	}   // fin ... validarMonto ...
 	
+		
+	function validarTipoCambio(numero,campo){	
+	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+	    	if (!/^\d{1,9}(\.\d{1,2})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
+	    		alert("El valor " + numero + " no es válido");
+	    		$("#"+campo).val("");   // borra celda de cantidad
+	    	}else{
+	    		var cantidad=$("#"+campo).val();
+		   		cantidad=parseFloat(cantidad);
+	    		$("#"+campo).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+	    	}	
+		
+	}   // fin ... validarMonto ...
+	
 	
 	function tipoCambio(banco){
+		if(banco=="Banco Económico M.E."){
+			var title = "Tipo de cambio del dólar";
+			$('.modal-title').html(title);		
+  			$('#cambioModal').modal({show:true});
+		}
+	}
+	
+	function tipoCambioM(banco){
 		if(banco=="Banco Económico M.E."){
 			var title = "Tipo de cambio del dólar";
 			$('.modal-title').html(title);		
@@ -195,6 +221,16 @@ $(document).ready(function() {
 				var registrosValidos= false;	
 		}
 		
+		if($("#inputBanco").val()=="Banco Económico M.E." ){
+			if($("#tipoCambio").val()=="" || $("#tipoCambio").val()=="0.00" ){
+				alert("Ingrese el TIPO DE CAMBIO ");
+				$('#tipoCambio').val()="";
+				var registrosValidos= false;
+			}
+		}else{
+			$('#tipoCambio').val(0.00);
+		}
+		
 		if($("#facturaRecibo").val()=="" ){
 				alert("¡¡¡ E R R O R !!! ... El contenido de NÚMERO FACTURA/RECIBO está vacío");
 				var registrosValidos= false;	
@@ -213,6 +249,7 @@ $(document).ready(function() {
 		if(!registrosValidos){
 			alert('Corrija los campos que están vacíos');
 		}else{
+			document.form_.cambioDolar.value=$('#tipoCambio').val();  // ... tipoCambio variable hidden formulario ...
 			$("#form_").submit(); // ...  graba registros ...
 		}
 				
@@ -405,7 +442,9 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		   <input type="hidden"  name="montoAbonoAnterior" />     				<!--  montoAbonoAnterior -->
+		   <input type="hidden"  name="montoAbonoAnterior" />     		<!--  montoAbonoAnterior -->
+		   <input type="hidden"  name="cambioDolarAnterior" />     		<!--  cambioDolarAnterior  -->
+		   <input type="hidden"  name="cambioDolar" />     				<!--  cambioDolar  -->
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

@@ -2620,7 +2620,15 @@ class Tienda extends CI_Controller {
 		$numDeposito=str_replace(" ","",$_POST['deposito']);
 		$numPedido=str_replace(" ","",$_POST['numPedido']);
 		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
+		$tipoCambio= str_replace(",","",$_POST['cambioDolar']);
 		$montoAbonoAnterior= str_replace(",","",$_POST['montoAbonoAnterior']);
+		$cambioDolarAnterior= str_replace(",","",$_POST['cambioDolarAnterior']);
+
+
+echo"tipoCambio= $tipoCambio  montoDeposito= $montoDeposito";
+
+
+
 		
 		$regDeposito = array(
 			"deposito"=>$_POST['deposito'],
@@ -2631,21 +2639,29 @@ class Tienda extends CI_Controller {
 		    "nDeposito"=>$_POST['numDeposito'],
 		    "tipoDocumento"=>$_POST['tipoDocumento'],
 		    "facturaRecibo"=>$_POST['facturaRecibo'], 
-		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), //...quita , como separador de miles ...
+		    "montoAbono"=>str_replace(",","",$_POST['montoDeposito']), 					//...quita , como separador de miles ...
+		    "tipoCambio"=>str_replace(",","",$_POST['cambioDolar']), 						//...quita , como separador de miles ...
 		    "glosaDeposito"=>$_POST['glosaDeposito']
 		);
 		
 		// ... actualiza registro tabla pedidocabecera ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-		$this-> tablaGenerica_model -> editarRegistro('pagospedido','deposito',$numDeposito,$regDeposito);
+		$this-> tablaGenerica_model ->editarRegistro('pagospedido','deposito',$numDeposito,$regDeposito);
+		
+		if($cambioDolarAnterior!=0.00){		//... cuando el deposito es en $us.
+			$montoAbonoAnterior=$montoAbonoAnterior * $cambioDolarAnterior;
+		}
+		
+		if($tipoCambio!=0.00){		//... cuando el deposito es en $us.
+			$montoDeposito=$montoDeposito * $tipoCambio;
+		}
 		
 		// ... actualiza registro pedidocabecera ....	
 		$this-> load -> model("tablaGenerica_model");
 		$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoAbonoAnterior);
-//		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
+
 		$sql="UPDATE pedidocabecera set abono= abono+ $montoDeposito WHERE numPedido='$numPedido' ";
 		$this->db->query($sql);
-			
 			
 		redirect("menuController/index");	
 		
