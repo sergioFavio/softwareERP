@@ -160,9 +160,19 @@
 							<li><a href="<?=base_url();?>tienda/verCotizaciones"><span class="glyphicon glyphicon-eye-open"></span> Ver Cotizaciones</a></li>
 						</ul>
 					</li>
-					<li><a href="<?=base_url();?>tienda/consultarStock"><span class="glyphicon glyphicon-info-sign"></span> Consultar Stock</a></li>
+					
+					<li><a href="<?=base_url();?>tienda/consultarStock"><span class="glyphicon glyphicon-info-sign"></span> Consultar Stock de F&aacute;brica</a></li>
+					
                     <li><a href="<?=base_url();?>tienda/listaPreciosProductos"><span class="glyphicon glyphicon-print"></span> Lista de Precios</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Reportes</a></li>
+                    
+                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Reportes</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/fechasReporteVentasPedido?atributo=P"><span class="glyphicon glyphicon-signal"></span> 30 productos mas vendidos</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Reporte de ventas por meses de un año</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> .... Sr. XXX de Sucre</a></li>
+						</ul>
+					</li>
+                    
                 </ul>
             </li>
 
@@ -189,8 +199,10 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BG"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance General</a></li>
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=ER"><span class="glyphicon glyphicon-usd"></span><span class="glyphicon glyphicon-ok"></span> Estado de Resultados</a></li>
 							<li><a href="<?=base_url();?>contabilidad/generarReporteBalanceInicial"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Inicial</a></li>
-			
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=BC"><span class="glyphicon glyphicon-book"></span><span class="glyphicon glyphicon-pencil"></span> Balance Comparativo</a></li>
+			
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=FE"><span class="glyphicon glyphicon-transfer"></span><span class="glyphicon glyphicon-usd"></span> Estado del Flujo de Efectivo</a></li>
+
 			
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera PENDIENTE</a></li>
 							

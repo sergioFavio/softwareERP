@@ -555,6 +555,15 @@ class Tienda extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
+	public function fechasReporteVentasPedido(){
+		$atributo=$_GET['atributo'];
+		$datos['atributo']=$atributo;
+		
+		$this->load->view('header');
+		$this->load->view('tienda/fechasReporteVentasPedido',$datos );
+		$this->load->view('footer');
+	}
+	
 		
 	public function generarReporteDepositos(){
 		//... genera reporte de depositos en PDF
@@ -829,9 +838,126 @@ class Tienda extends CI_Controller {
         
 	} //... fin funcion: generarReporteNumeroDeposito ...
 	
-	
-	
-	
+		
+	public function generarReporteMasVendidos(){
+		//... genera reporte de depositos en PDF
+		$fechaInicial=$_POST['inputFechaInicial']; //... viene de la vista fechasReporteSalida ...
+		$fechaFinal=$_POST['inputFechaFinal']; //... viene de la vista fechasReporteSalida ...
+		
+        // Se carga la libreria fpdf
+        $this->load->library('tienda/ReporteMasVendidosPdf');
+
+        // Se obtienen los registros de la base de datos
+//	    $sql ="SELECT deposito,fechaAbono,pedido,banco,montoAbono,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY fechaAbono,pedido";
+		$sql ="SELECT idProducto,descripcion,SUM(cantidad)AS cantidadTotal,precio FROM pedidoproducto WHERE fechaInicial>='$fechaInicial' AND fechaInicial<='$fechaFinal' GROUP BY idproducto ORDER BY cantidadTotal DESC LIMIT 30";
+		
+ 		$salidas = $this->db->query($sql);
+ 
+ 		$contador= $salidas->num_rows; //...contador de registros que satisfacen la consulta ..
+ 		
+ 		if($contador==0){
+			$datos['mensaje']='No hay registros entre la fecha inicial '.fechaMysqlParaLatina($fechaInicial).' y la fecha final '.fechaMysqlParaLatina($fechaFinal).' seleccionadas.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+ 		}else{
+ 			// Creacion del PDF
+	        /*
+	        * Se crea un objeto de la clase SalAlmacenPdf, recordar que la clase Pdf
+	        * heredó todos las variables y métodos de fpdf
+	        */
+	         
+	        ob_clean(); // cierra si es se abrio el envio de pdf...
+	        $this->pdf = new ReporteMasVendidosPdf();
+			$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 	//...pasando variable para el header del PDF
+			$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 		//...pasando variable para el header del PDF
+			
+	        // Agregamos una página
+	        $this->pdf->AddPage();
+	        // Define el alias para el número de página que se imprimirá en el pie
+	        $this->pdf->AliasNbPages();
+	 
+	        /* Se define el titulo, márgenes izquierdo, derecho y
+	         * el color de relleno predeterminado
+	         */
+	         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+	        // Se define el formato de fuente: Arial, negritas, tamaño 9
+	        //$this->pdf->SetFont('Arial', 'B', 9);
+	        $this->pdf->SetFont('Arial', '', 9);
+	        
+			$totalMonto=0.00;
+			$totalItems=0.00;
+	        foreach ($salidas->result() as $salida) {
+	            // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	            // Se imprimen los datos de cada registro
+			
+	       		$this->pdf->Cell(1,5,'','',0,'L',0);
+//				$this->pdf->Cell(13,5,fechaMysqlParaLatina($salida->fechaAbono),'',0,'L',0);
+				$this->pdf->Cell(13,5,$salida->idProducto,'',0,'L',0);
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+//				$this->pdf->Cell(10,5,$salida->pedido,'',0,'R',0);
+				$this->pdf->Cell(65,5,$salida->descripcion,'',0,'L',0);
+				
+				
+				$this->pdf->Cell(10,5,'','',0,'L',0);
+				$this->pdf->Cell(15,5,number_format($salida->cantidadTotal,0),'',0,'R',0);
+//				$this->pdf->Cell(5,5,'','',0,'L',0);			
+//				$this->pdf->Cell(15,5,utf8_decode($salida->banco),'',0,'L',0);
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+	            $this->pdf->Cell(25,5,number_format($salida->cantidadTotal * $salida->precio,2),'',0,'R',0);
+/*				$this->pdf->Cell(5,5,'','',0,'L',0);				
+				$this->pdf->Cell(5,5,'','',0,'L',0);
+				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
+ * 
+*/
+	            //Se agrega un salto de linea
+	            $this->pdf->Ln(5); 
+				
+				$totalItems= $totalItems + $salida->cantidadTotal;
+				$totalMonto= $totalMonto + ($salida->cantidadTotal*$salida->precio);
+	        }
+
+			$this->pdf->Ln(5);  //Se agrega un salto de linea
+        	$this->pdf->Cell(60,5,'','',0,'L',0);
+        	$this->pdf->Cell(29,5,utf8_decode('Totales '),'',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalItems,0),'',0,'R',0);
+			$this->pdf->Cell(15,5,'','',0,'L',0);
+            $this->pdf->Cell(25,5,number_format($totalMonto,2),'',0,'R',0);
+			
+			
+			
+	        
+	         /* PDF Output() settings
+	         * Se manda el pdf al navegador
+	         *
+	         * $this->pdf->Output(nombredelarchivo, destino);
+	         *
+	         * I = Muestra el pdf en el navegador
+	         * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	         */
+	  
+	  		$this->pdf->Output('pdfsArchivos/reporteNumeroDepositoPdf.pdf', 'F');
+	  		
+			$datos['documento']="pdfsArchivos/reporteNumeroDepositoPdf.pdf";	
+			$datos['titulo']=' de Productos Mas Vendidos ';	// ... ingreso/salida ... almacen/bodega ...
+			$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
+			$datos['fechaFinal']=fechaMysqlParaLatina($fechaFinal);
+			$this->load->view('header');
+			$this->load->view('reportePdf',$datos );
+			$this->load->view('footer');	
+ 		}
+        
+	} //... fin funcion: generarReporteMasVendidos ...
 	
 	
 	public function notaEntrega(){
