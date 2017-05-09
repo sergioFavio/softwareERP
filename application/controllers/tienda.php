@@ -848,8 +848,7 @@ class Tienda extends CI_Controller {
         $this->load->library('tienda/ReporteMasVendidosPdf');
 
         // Se obtienen los registros de la base de datos
-//	    $sql ="SELECT deposito,fechaAbono,pedido,banco,montoAbono,tipoPago,nCheque,glosaDeposito FROM pagospedido WHERE fechaAbono>='$fechaInicial' AND fechaAbono<='$fechaFinal' ORDER BY fechaAbono,pedido";
-		$sql ="SELECT idProducto,descripcion,SUM(cantidad)AS cantidadTotal,precio FROM pedidoproducto WHERE fechaInicial>='$fechaInicial' AND fechaInicial<='$fechaFinal' GROUP BY idproducto ORDER BY cantidadTotal DESC LIMIT 30";
+		$sql ="SELECT idProducto,descripcion,SUM(cantidad)AS cantidadTotal,precio FROM pedidoproducto,pedidocabecera WHERE fechaPedido>='$fechaInicial' AND fechaPedido<='$fechaFinal' AND numeroPedido=numPedido GROUP BY idproducto ORDER BY cantidadTotal DESC LIMIT 30";
 		
  		$salidas = $this->db->query($sql);
  
@@ -896,24 +895,15 @@ class Tienda extends CI_Controller {
 	            // Se imprimen los datos de cada registro
 			
 	       		$this->pdf->Cell(1,5,'','',0,'L',0);
-//				$this->pdf->Cell(13,5,fechaMysqlParaLatina($salida->fechaAbono),'',0,'L',0);
 				$this->pdf->Cell(13,5,$salida->idProducto,'',0,'L',0);
 				$this->pdf->Cell(10,5,'','',0,'L',0);
-//				$this->pdf->Cell(10,5,$salida->pedido,'',0,'R',0);
 				$this->pdf->Cell(65,5,$salida->descripcion,'',0,'L',0);
-				
-				
 				$this->pdf->Cell(10,5,'','',0,'L',0);
 				$this->pdf->Cell(15,5,number_format($salida->cantidadTotal,0),'',0,'R',0);
-//				$this->pdf->Cell(5,5,'','',0,'L',0);			
-//				$this->pdf->Cell(15,5,utf8_decode($salida->banco),'',0,'L',0);
+
 				$this->pdf->Cell(15,5,'','',0,'L',0);
 	            $this->pdf->Cell(25,5,number_format($salida->cantidadTotal * $salida->precio,2),'',0,'R',0);
-/*				$this->pdf->Cell(5,5,'','',0,'L',0);				
-				$this->pdf->Cell(5,5,'','',0,'L',0);
-				$this->pdf->Cell(30,5,utf8_decode($salida->glosaDeposito),'',0,'L',0);
- * 
-*/
+
 	            //Se agrega un salto de linea
 	            $this->pdf->Ln(5); 
 				
