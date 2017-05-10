@@ -918,9 +918,6 @@ class Tienda extends CI_Controller {
 			$this->pdf->Cell(15,5,'','',0,'L',0);
             $this->pdf->Cell(25,5,number_format($totalMonto,2),'',0,'R',0);
 			
-			
-			
-	        
 	         /* PDF Output() settings
 	         * Se manda el pdf al navegador
 	         *
@@ -948,6 +945,107 @@ class Tienda extends CI_Controller {
  		}
         
 	} //... fin funcion: generarReporteMasVendidos ...
+	
+			
+	public function generarReporteVentasAnhoMes(){
+		//... genera reporte de ventas por meses del anho en PDF
+        //... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			// Se carga la libreria fpdf
+			$this->load->library('tienda/ReporteVentasAnhoMesPdf');
+			
+			// Se obtienen los registros de la base de datos
+			$sql="SELECT YEAR(fechaPedido)AS anho,MONTH(fechaPedido) AS mes,SUM(montoTotal) AS montoMensual FROM pedidocabecera GROUP BY YEAR(fechaPedido),MONTH(fechaPedido)";
+			$registros = $this->db->query($sql);
+			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros seleccionados para el REPORTE DE VENTAS POR AÑO-MES '.$contador;
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				// Creacion del PDF
+			    /*
+			    * Se crea un objeto de la clase VentasAnhoMesPdf, recordar que la clase Pdf
+			    * heredó todos las variables y métodos de fpdf
+			    */
+			     
+			    ob_clean(); // cierra si es se abrio el envio de pdf...
+			    $this->pdf = new ReporteVentasAnhoMesPdf();
+//				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
+						
+			    // Agregamos una página
+			    $this->pdf->AddPage();
+			    // Define el alias para el número de página que se imprimirá en el pie
+			    $this->pdf->AliasNbPages();
+			 
+			    /* Se define el titulo, márgenes izquierdo, derecho y
+			    * el color de relleno predeterminado
+			    */
+				     
+				// Se define el formato de fuente: Arial, negritas, tamaño 9
+				//$this->pdf->SetFont('Arial', 'B', 9);
+				$this->pdf->SetFont('Arial', '', 9);
+				
+				$contadorRegistros=2; 	//...numero de lineas de impresion ...
+				
+				foreach ($registros->result() as $registro) {
+				    // Se imprimen los datos de cada registro
+				    $contadorRegistros = $contadorRegistros +1;
+					
+					if($contadorRegistros==3){
+						$contadorRegistros=1;
+						$this->pdf->Ln(5);
+					}
+					
+				    $this->pdf->Cell(5,5,'','',0,'L',0);
+				   	$this->pdf->Cell(10,5,mesLiteral($registro->mes),'',0,'L',0);
+					$this->pdf->Cell(10,5,'','',0,'L',0);
+				    $this->pdf->Cell(10,5,$registro->anho,'',0,'L',0);
+					$this->pdf->Cell(10,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($registro->montoMensual,2),'',0,'R',0);	
+					$this->pdf->Cell(30,5,'','',0,'L',0);   
+				}			//... fin foreach ....
+				
+					
+			     /* PDF Output() settings
+			     * Se manda el pdf al navegador
+			     *
+			     * $this->pdf->Output(nombredelarchivo, destino);
+			     *
+			     * I = Muestra el pdf en el navegador
+			     * D = Envia el pdf para descarga
+				 * F: save to a local file
+				 * S: return the document as a string. name is ignored.
+				 * $pdf->Output(); //default output to browser
+				 * $pdf->Output('D:/example2.pdf','F');
+				 * $pdf->Output("example2.pdf", 'D');
+				 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+			     */
+			  
+				  	$this->pdf->Output('pdfsArchivos/ventas/reporteVentasAnhoMes.pdf', 'F');
+					
+					$datos['documento']="pdfsArchivos/ventas/reporteVentasAnhoMes.pdf";	
+					$datos['titulo']=' REPORTE DE VENTAS por Mes-Año ';	// ... titulo ...
+					
+					$this->load->view('header');
+					$this->load->view('reportePdfSinFechas',$datos );
+					$this->load->view('footer');	
+				}
+			}	//.. fin IF validar usuario ...
+        
+	} //... fin funcion: generarReporteVentasAnhoMes ...
+	
+	
 	
 	
 	public function notaEntrega(){
