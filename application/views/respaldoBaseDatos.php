@@ -42,7 +42,7 @@ $(document).ready(function(){
 	<div class="row">
 	<h3><center><small>Crea un respaldo de la base de datos en la partición C:\respaldoBD</small></center></h3>
 	<?php
-		$directorio='C:\respaldoBD';
+		$directorio='D:\respaldoBD';
 		if (!file_exists($directorio)) {
 			echo"<p align='center'><code>NOTA: El directorio $directorio NO existe, se tiene que crear el directorio $directorio</code></p><br />";
 	?>
@@ -63,10 +63,10 @@ $(document).ready(function(){
         <div class="modal-content">
             <div class="modal-body" >
             	<?php
-            		shell_exec('c:\xampp\mysql\bin\mysqldump -u root irbadb>c:\respaldoBD\irbaDB'.date("d-m-Y").'.sql');
+            		shell_exec('c:\xampp\mysql\bin\mysqldump -u root irbadb>d:\respaldoBD\irbaDB'.date("d-m-Y").'.sql');
 					
 					$fuente = "c:/xampp\htdocs/irba/pdfsArchivos";
-					$destino = "c:/respaldoBD/pdfsArchivos";
+					$destino = "d:/respaldoBD/pdfsArchivos";
 					 
 					copiar($fuente, $destino);		//... copia carpetas y archivos ...
 

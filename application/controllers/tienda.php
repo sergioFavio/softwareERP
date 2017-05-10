@@ -1094,7 +1094,7 @@ class Tienda extends CI_Controller {
 		        // basename() puede evitar ataques de denegación del sistema de ficheros;
 		        // podría ser apropiado más validación/saneamiento del nombre de fichero
 		        $nombre = basename($_FILES["fileToUpload"]["name"][$clave]);
-		        move_uploaded_file($nombre_tmp, "c:respaldoBD/$nombre");
+		        move_uploaded_file($nombre_tmp, "d:respaldoBD/$nombre");
 				
 				$foto=$foto.$nombre.'|';
 				
@@ -2100,7 +2100,7 @@ class Tienda extends CI_Controller {
 				}
 				
 				$this->pdf->Ln(5);
-				$this->pdf->Image('c:respaldoBD/'.$plano,20,52,176);
+				$this->pdf->Image('d:respaldoBD/'.$plano,20,52,176);
 				$foto=substr($foto,$pos+1,strlen($foto)-$pos);				
 			} 
 			
