@@ -953,7 +953,7 @@ class Tienda extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName y de menu...
-			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
@@ -1035,7 +1035,7 @@ class Tienda extends CI_Controller {
 				  	$this->pdf->Output('pdfsArchivos/ventas/reporteVentasAnhoMes.pdf', 'F');
 					
 					$datos['documento']="pdfsArchivos/ventas/reporteVentasAnhoMes.pdf";	
-					$datos['titulo']=' REPORTE DE VENTAS por Mes-Año ';	// ... titulo ...
+					$datos['titulo']=' de VENTAS por Mes-Año ';	// ... titulo ...
 					
 					$this->load->view('header');
 					$this->load->view('reportePdfSinFechas',$datos );

@@ -40,8 +40,8 @@
 			$this->Ln('5');
 			
 			$this->Cell(70,10,utf8_decode('Facturar a: '.$this->facturarA.'   Nit: '.$this->nit),0,0,'L');
-			$this->Cell(15);
-			$this->Cell(55,10,utf8_decode('Contacto: '.$this->contacto),0,0,'L');
+			$this->Cell(30);
+			$this->Cell(40,10,utf8_decode('Contacto: '.$this->contacto),0,0,'L');
 			$this->Cell(10);
 			$this->Cell(30,10,utf8_decode('Código Vendedor: ').$this->usuario,0,0,'L');
 			$this->Ln('9');

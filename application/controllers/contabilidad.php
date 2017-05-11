@@ -2710,17 +2710,17 @@ class Contabilidad extends CI_Controller {
 					if($registro->nivel=='3'){
 						$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 						if($registro->cuenta<='19999999'){
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+//							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+//							$this->pdf->Cell(20,5,'','',0,'L',0);
+//							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->debeacumulado-$registro->debemes ,2),'',0,'R',0);
 							$totalActivo=$totalActivo+$registro->debeacumulado;
 							$totalActivoBalApertura=$totalActivoBalApertura+$registro->debemes;
 				    	}else{
-				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
+//				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado,2),'',0,'R',0);
+//							$this->pdf->Cell(20,5,'','',0,'L',0);
+//							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
 							$totalPasivoPatrimonio=$totalPasivoPatrimonio+$registro->haberacumulado;

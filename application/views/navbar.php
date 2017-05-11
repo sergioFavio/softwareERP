@@ -128,6 +128,14 @@
 						</ul>
 					</li>
 					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Pedidos Zúñiga</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/realizarPedidoZ?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido Zúñiga</a></li>
+							<li><a href="<?=base_url();?>tienda/ubicarPedidoZ?local=T"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido Zúñiga</a></li>
+							<li><a href="<?=base_url();?>tienda/verPedidosZ"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos Zúñiga</a></li>
+						</ul>
+					</li>
+					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega PENDIENTE</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/notaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
