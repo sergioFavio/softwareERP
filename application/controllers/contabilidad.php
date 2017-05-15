@@ -2472,8 +2472,7 @@ class Contabilidad extends CI_Controller {
         
 	} //... fin funcion: generarReporteBalanceComparativo ...
 	
-	
-				
+			
 	public function generarReporteFlujoEfectivo(){
 		//... genera reporte de balance inicial en PDF
 		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
@@ -2630,7 +2629,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/FlujoEfectivoPdf');
 			
 			// Se obtienen los registros de la base de datos						
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND cuenta<='39999999' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
@@ -2673,6 +2672,165 @@ class Contabilidad extends CI_Controller {
 				$totalPasivoPatrimonioBalApertura=0.00;		//...acumula cuentas del pasivo y patrimonio balance apertura...
 				
 				$numeroLineas=0; 	//...numero de lineas de impresion ...
+				
+	
+	
+				
+$this->pdf->Ln(5);
+$this->pdf->Cell(1,5,'','',0,'L',0);			
+$this->pdf->Cell(15,5,'ORIGEN DE LOS FONDOS','',0,'L',0);
+
+//... resultados de la gestión ....	   			
+$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaplandectas WHERE nivel='3' AND cuenta>='40000000' AND cuenta<='69999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
+$registros = $this->db->query($sql);
+$resultadoGestion=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$resultadoGestion=$resultadoGestion+($registro->debeacumulado - $registro->haberacumulado);
+}
+$resultadoGestion=$resultadoGestion*(-1);
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(5,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,'FONDOS GENERADOS POR LAS OPERACIONES','',0,'L',0);
+
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(15,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Resultados De La Gestión'),'',0,'L',0);
+				
+$this->pdf->Cell(57,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($resultadoGestion ,2),'',0,'R',0);				
+			
+			
+$this->pdf->Ln(5);	
+$this->pdf->Ln(5);
+$this->pdf->Cell(15,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Partidas que no generan movimiento de fondos:'),'',0,'L',0);			
+			
+$sql="SELECT * FROM contaplandectas WHERE nivel='3' AND cuenta='22010000' ";
+$registros = $this->db->query($sql);
+$previsiones=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$previsiones=$registro->haberacumulado - $registro->habermes;
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Previsiones'),'',0,'L',0);
+				
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($previsiones ,2),'',0,'R',0);
+
+
+$sql="SELECT * FROM contaplandectas WHERE nivel='3' AND cuenta='51070000' ";
+$registros = $this->db->query($sql);
+$depreciaciones=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$depreciaciones=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Depreciaciones'),'',0,'L',0);
+				
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($depreciaciones ,2),'',0,'R',0);
+
+
+
+$sql="SELECT * FROM contaplandectas WHERE nivel='3' AND cuenta='31020000' ";
+$registros = $this->db->query($sql);
+$ajusteCapital=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$ajusteCapital=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Ajuste de Capital'),'',0,'L',0);
+				
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($ajusteCapital ,2),'',0,'R',0);
+			
+
+$this->pdf->Ln(5);	
+$this->pdf->Ln(5);
+$this->pdf->Cell(15,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('TOTAL FONDOS GENERADOS'),'',0,'L',0);		
+
+$totalFondosGenerados= $resultadoGestion + $previsiones + $depreciaciones + $ajusteCapital;
+$this->pdf->Cell(57,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($totalFondosGenerados ,2),'',0,'R',0);	
+
+$this->pdf->Ln(5);	
+$this->pdf->Ln(5);	
+$this->pdf->Cell(15,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Aumento Neto de Pasivos:'),'',0,'L',0);	
+
+$sql="SELECT * FROM contaplandectas WHERE  cuenta='21100400' ";
+$registros = $this->db->query($sql);
+$ivaDebitoFiscalPorPagar=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$ivaDebitoFiscalPorPagar=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('IVA Débito Fiscal'),'',0,'L',0);
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($ivaDebitoFiscalPorPagar ,2),'',0,'R',0);	
+
+
+$sql="SELECT * FROM contaplandectas WHERE  cuenta='31040000' ";
+$registros = $this->db->query($sql);
+$resultadosAcumulados=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$resultadosAcumulados=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Resultados Acumulados'),'',0,'L',0);
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($resultadosAcumulados ,2),'',0,'R',0);		
+		
+		
+$sql="SELECT * FROM contaplandectas WHERE  cuenta='31030300' ";
+$registros = $this->db->query($sql);
+$reservaLegal=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$reservaLegal=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Reserva Legal'),'',0,'L',0);
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($reservaLegal ,2),'',0,'R',0);		
+	
+	
+$sql="SELECT * FROM contaplandectas WHERE  cuenta='31030200' ";
+$registros = $this->db->query($sql);
+$reservaParaCapitalizacion=0.00; 			//... acumulael resultado de la gestión ...
+foreach ($registros->result() as $registro) {
+	$reservaParaCapitalizacion=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
+}
+
+$this->pdf->Ln(5);
+$this->pdf->Cell(25,5,'','',0,'L',0);			
+$this->pdf->Cell(35,5,utf8_decode('Reserva Para Capitalización'),'',0,'L',0);
+$this->pdf->Cell(47,5,'','',0,'L',0);
+$this->pdf->Cell(20,5,number_format($reservaParaCapitalizacion ,2),'',0,'R',0);	
+
+
+
+		
+		
+		
+				
+$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
+$registros = $this->db->query($sql);				
+				
 				
 				foreach ($registros->result() as $registro) {
 				    // Se imprimen los datos de cada registro

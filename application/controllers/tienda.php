@@ -1356,6 +1356,112 @@ class Tienda extends CI_Controller {
 	}	//..fin realizarPedido ...
 	
 	
+		
+	public function realizarPedidoZ(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}
+		else{		//... fin control de permisos de acceso ....
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla
+	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de pedido ...
+			//////////////////////////////////////
+
+			if($local=="F"){
+				$anhoSistema = date("Y");	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+		
+				if(strlen($pedido)==2 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==3 ){
+					$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+			}else{		//...cuando el local es T:tienda o es Z:Zuñiga...
+				$anhoSistema = date("Y");	//... anho del sistema
+//				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema ='2016';	//... anho del sistema
+
+ 				 					
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0,1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 4);  // toma 4 caracteres ... anho.
+				}
+			
+				if(strlen($pedido)==6 ){
+					$secuenciaPedido= substr($pedido, 0,2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==7 ){
+					$secuenciaPedido= substr($pedido, 0,3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 4);  // toma 4 caracteres ... anho.
+				}
+			
+			}
+		
+			if($anhoPedido!=$anhoSistema){
+				$secuenciaPedido="1";
+			}else{		//... si anhoPedido==anhoSistema ...
+		     	$secuenciaPedido=$secuenciaPedido+1;
+			}
+			
+			$pedido=$secuenciaPedido.$anhoSistema;	
+			
+			///////////////////////////////////////
+			///...FIN genera nuevo numero de pedido ...
+			//////////////////////////////////////
+		
+//			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+//			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
+$insumos = $this->db->query($sql)->result_array();
+			
+			$datos['local']=$local;					//... T: tienda / F: fabrica / Z:zuñiga...		
+			$datos['titulo']='productosfabrica';
+			$datos['secuenciaPedido']=$secuenciaPedido;
+			$datos['anhoSistema']=$anhoSistema;
+			$datos['pedido']=$pedido;
+			$datos['insumos']=$insumos;	
+				
+			$this->load->view('header');
+			$this->load->view('tienda/pedidoZ',$datos);
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
+	}	//..fin realizarPedidoZ ...
+	
+	
+	
+	
 	public function ubicarPedido(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -1476,8 +1582,91 @@ class Tienda extends CI_Controller {
 	}		//... fin funcion: modificarPedido ...
 	
 	
-	public function grabarPedido()
-	{		
+	public function grabarPedidoZ(){		
+		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
+		$local=$_POST['local'];
+		$numPedido=$_POST['numPedido'];
+		$secuenciaPedido=$_POST['secuenciaPedido'];
+		$anhoSistema=$_POST['anhoSistema'];
+		
+		// ... actualizar numero de cotizacion ...	
+		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
+		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
+		// fin actualizar numero de cotizacion ...
+		
+		$descuento= $_POST['descuento'];
+		$embalaje= $_POST['embalaje'];
+		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
+		$montoConDescto=$montoConDescto -$descuento + $embalaje;
+
+		$pedidoCabecera = array(
+	    	"numPedido"=>$_POST['numPedido'],
+	    	"local"=>$_POST['local'],
+		    "fechaPedido"=>$_POST['inputFecha'],
+		    "fechaEntrega"=>$_POST['inputEntrega'],
+		    "cliente"=>$_POST['cliente'],
+		    "contacto"=>$_POST['contacto'],
+		    "direccion"=>$_POST['direccion'],
+		    "telCel"=>$_POST['telCel'],
+		    "localidad"=>$_POST['localidad'],
+		    "cotizacionFabrica"=>$_POST['cotizacionFabrica'],
+		    "ordenCompra"=>$_POST['ordenCompra'],
+		    "facturarA"=>$_POST['facturarA'],
+		    "nit"=>$_POST['nit'],
+		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
+		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
+		    "descuento"=>str_replace(",","",$_POST['descuento']),
+		    "embalaje"=>str_replace(",","",$_POST['embalaje']),
+		    "usuario"=>$this->session->userdata('userName'),
+		    "estado"=>"I",
+		    "fechaEstado"=>$_POST['inputFecha'],
+		    "notaComentario"=>$_POST['nota']
+		);
+		
+		// ... inserta registro tabla pedidocabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+	    $this-> tablaGenerica_model -> grabar('pedidocabeceraZ', $pedidoCabecera);
+		
+		$secuencia=0;		//...secuencia ... para cada item ...
+        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    $secuencia=$i+1;
+				if($secuencia<10){
+					$secuencia='0'.$secuencia;
+				}
+          	    //... agrega registro tabla pedidoproducto ...      
+	            $plantillaProducto = array(
+	            	"numeroPedido"=>$numPedido,
+				    "idProducto"=>$codigoSinEspacio,
+				    "descripcion"=>$_POST['mat_'.$i],
+				    "color"=>$_POST['colorMat_'.$i],
+				    "cantidad"=>$_POST['cantMat_'.$i],
+				    "unidad"=>$_POST['unidadMat_'.$i],
+				    "precio"=>$_POST['precioMat_'.$i],
+				    "secuencia"=>$secuencia,
+				    "cliente"=>$_POST['cliente'],
+				    "fechaEntrega"=>$_POST['inputEntrega']
+				);
+			
+				// ... inserta registro tabla transacciones ... cotizacionmaterial 
+				$this-> load -> model("tablaGenerica_model");		//carga modelo 
+	    		$this-> tablaGenerica_model -> grabar('pedidoproductoZ',$plantillaProducto);			
+				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR 
+			
+		redirect("tienda/generarPedidoZPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+		
+	}	//... fin grabarPedidoZ ...
+		
+	
+	public function grabarPedido(){		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
 		$local=$_POST['local'];
 		$numPedido=$_POST['numPedido'];
@@ -1559,6 +1748,7 @@ class Tienda extends CI_Controller {
 		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
 		
 	}	//... fin grabarPedido	
+	
 
 	public function grabarPedidoModificado(){		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
@@ -2682,6 +2872,304 @@ class Tienda extends CI_Controller {
 	    
 	} //... fin funcion: generarPedidoPDF ...
 
+	
+	
+	public function generarPedidoZPDF(){
+		//... genera reporte de salida en PDF
+
+		$numeroPedido= $_GET['numeroPedido']; 			//... lee numeroPedido que viene de grabarPedido ...
+		$local= $_GET['local']; 						//... lee local que viene de grabarPedido ...
+		$secuenciaPedido= $_GET['secuenciaPedido'];		//... lee local que viene de grabarPedido ...
+		$anhoSistema= $_GET['anhoSistema']; 			//... lee local que viene de grabarPedido ...
+		
+		$nombreLocal='';
+		if($local=='T'){
+			$nombreLocal='Tienda';
+		}else{
+			if($local=='Z'){
+				$nombreLocal='Zúñiga';
+			}else{
+				$nombreLocal='Fábrica';
+			}	
+		}
+		
+		// Se carga la libreria fpdf
+		$this->load->library('tienda/EstructuraPedidoPdf');
+		
+ 
+		// Se obtienen los registros de la base de datos
+		//$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
+		$sql ="SELECT numeroPedido,idProducto,descripcion,color,cantidad,unidad,precio FROM pedidoproductoZ WHERE numeroPedido='$numeroPedido' ";
+		$productos = $this->db->query($sql);
+						
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+		$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabeceraZ','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		
+		$fechaPedido= $pedidoCabecera["fechaPedido"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaEntrega= $pedidoCabecera["fechaEntrega"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$contacto= $pedidoCabecera["contacto"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$direccion= $pedidoCabecera["direccion"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fono= $pedidoCabecera["telCel"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$localidad= $pedidoCabecera["localidad"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cotizacionFabrica= $pedidoCabecera["cotizacionFabrica"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$ordenCompra= $pedidoCabecera["ordenCompra"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$facturarA= $pedidoCabecera["facturarA"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$embalaje= $pedidoCabecera["embalaje"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nota= $pedidoCabecera["notaComentario"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					
+		$sql ="SELECT * FROM pedidocabecera WHERE numPedido='$numeroPedido' ";
+		$contador = $this->db->query($sql);	
+ 		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
+
+		if($contador==0){
+			$datos['mensaje']='No hay registro grabado con el n&uacute;mero de  pedido '.$numeroPedido.' en la tabla PEDIDOcabecera.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new EstructuraPedidoPdf();
+			
+			$this->pdf->local=$nombreLocal;   			   					//...pasando variable para el header del PDF
+			$this->pdf->numeroPedido=strtoupper($numeroPedido);      		//...pasando variable para el header del PDF
+			$this->pdf->fechaPedido=fechaMysqlParaLatina($fechaPedido); 	//...pasando variable para el header del PDF
+			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 	//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 									//...pasando variable para el header del PDF
+			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
+			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
+			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF
+			$this->pdf->localidad=$localidad; 								//...pasando variable para el header del PDF
+			$this->pdf->cotizacionFabrica=$cotizacionFabrica; 				//...pasando variable para el header del PDF
+			$this->pdf->ordenCompra=$ordenCompra; 							//...pasando variable para el header del PDF
+			$this->pdf->facturarA=$facturarA; 								//...pasando variable para el header del PDF
+			$this->pdf->nit=$nit; 											//...pasando variable para el header del PDF
+			$this->pdf->usuario=$usuario; 									//...pasando variable para el header del PDF
+			
+			$this->pdf->secuenciaPedido=$secuenciaPedido; 					//...pasando variable para el header del PDF
+			$this->pdf->anhoSistema=$anhoSistema; 							//...pasando variable para el header del PDF
+			
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    $this->pdf->SetFont('Arial', '', 9);
+		    
+			
+		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
+		    $numeroAnterior = 0;
+			$totalPorNumeroPedido=0; //... acumula los importes de cada nota de ingreso...
+		    foreach ($productos->result() as $producto) {
+		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
+		        // Se imprimen los datos de cada registro
+
+				$this->pdf->Cell(15,5,$producto->idProducto,'',0,'L',0);
+				$this->pdf->Cell(94,5,utf8_decode(substr($producto->descripcion,0,56) ),'',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,$producto->unidad,'',0,'C',0);
+				$this->pdf->Cell(19,5,number_format($producto->precio,2),'',0,'R',0);
+				$this->pdf->Cell(21,5,number_format($producto->cantidad*$producto->precio,2),'',0,'R',0);
+				
+				if(substr($producto->descripcion,56,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,56,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,112,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,112,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,178,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,178,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,234,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,234,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,290,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,290,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,346,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,346,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,402,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,402,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,458,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,458,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,514,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,514,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,570,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,570,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,626,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,626,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,682,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,682,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->descripcion,738,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descripcion,738,56) ),0,0,'L');
+				}
+				
+				
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(15,5,'','',0,'L',0);
+				$this->pdf->Cell(32,5,utf8_decode($producto->color),'',0,'L',0);
+				
+				
+				$totalPorNumeroPedido=$totalPorNumeroPedido +( $producto->cantidad*$producto->precio ); //... acumula los importes de cada nota de ingreso...
+		        //Se agrega un salto de linea
+		        $this->pdf->Ln('5');
+		    }
+
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Total Bs. '.number_format($totalPorNumeroPedido,2),0,0,'R');
+	
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'A Cuenta Bs.    '.number_format($aCuenta,2),0,0,'R');
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Descuento Bs. '.number_format($descuento,2),0,0,'R');
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Embalaje Bs.    '.number_format($embalaje,2),0,0,'R');
+			
+
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(147,5,'','',0,'L',0);
+    		$this->pdf->Cell(42,5,'Saldo Bs. '.number_format($totalPorNumeroPedido -$descuento - $aCuenta + $embalaje,2),0,0,'R');
+			
+			if($nota!=""){
+				$this->pdf->Ln('5');
+				$this->pdf->Ln('5');
+				$this->pdf->Cell(1,5,'N O T A :','',0,'L',0);
+				
+				if(substr($nota,0,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,0,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,124,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,124,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,248,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,248,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,372,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,372,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,496,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,496,124) ),0,0,'L');
+				}
+				
+				if(substr($nota,620,124)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($nota,620,124) ),0,0,'L');
+				}
+				
+			}
+			
+		     /* PDF Output() settings
+		     * Se manda el pdf al navegador
+		     *
+		     * $this->pdf->Output(nombredelarchivo, destino);
+		     *
+		     * I = Muestra el pdf en el navegador
+		     * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+		     */
+			  
+			 $this->pdf->Output('pdfsArchivos/pedidos/pedidoZ'.$numeroPedido.'.pdf', 'F');
+	
+			 redirect("menuController/index");			
+					
+		}
+	    
+	} //... fin funcion: generarPedidoZPDF ...
+
+	
+	
 	
 	public function listaPreciosProductos(){
 		//... genera listaPreciosProductos en PDF
