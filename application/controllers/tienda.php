@@ -1256,108 +1256,9 @@ class Tienda extends CI_Controller {
 		redirect("tienda/generarSolicitudCotizacionPDF?numeroCotizacion=$numeroCotizacion&foto=$foto");
 		
 	}	//... fin grabarCotizacion ...
-	
-	
+		
+		
 	public function realizarPedido(){
-		//... control de permisos de acceso ....
-		$permisoUserName=$this->session->userdata('userName');
-		$permisoMenu=$this->session->userdata('usuarioMenu');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
-			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
-			$this->load->view('header');
-			$this->load->view('mensaje',$datos );
-			$this->load->view('footer');
-		}
-		else{		//... fin control de permisos de acceso ....
-			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
-			$this->load->model("numeroDocumento_model");
-			$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla
-	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
-			
-			///////////////////////////////////////
-			///...INICIO genera nuevo numero de pedido ...
-			//////////////////////////////////////
-
-			if($local=="F"){
-				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-		
-				if(strlen($pedido)==2 ){
-					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
-				}
-				
-				if(strlen($pedido)==3 ){
-					$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
-				}
-				
-				if(strlen($pedido)==4 ){
-					$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
-				}
-				
-				if(strlen($pedido)==5 ){
-					$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
-				}
-				
-			}else{		//...cuando el local es T:tienda ...
-				$anhoSistema = date("Y");	//... anho del sistema
- 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
- 				 					
-				if(strlen($pedido)==4 ){
-					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 0, 4);  // toma 4 caracteres ... anho.
-				}
-				
-				if(strlen($pedido)==5 ){
-					$secuenciaPedido= substr($pedido, 0,1);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 1, 4);  // toma 4 caracteres ... anho.
-				}
-			
-				if(strlen($pedido)==6 ){
-					$secuenciaPedido= substr($pedido, 0,2);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 2, 4);  // toma 4 caracteres ... anho.
-				}
-				
-				if(strlen($pedido)==7 ){
-					$secuenciaPedido= substr($pedido, 0,3);  // toma los caracteres ... secuencia.
-					$anhoPedido= substr($pedido, 3, 4);  // toma 4 caracteres ... anho.
-				}
-			
-			}
-		
-			if($anhoPedido!=$anhoSistema){
-				$secuenciaPedido="1";
-			}else{		//... si anhoPedido==anhoSistema ...
-		     	$secuenciaPedido=$secuenciaPedido+1;
-			}
-			
-			$pedido=$secuenciaPedido.$anhoSistema;	
-			
-			///////////////////////////////////////
-			///...FIN genera nuevo numero de pedido ...
-			//////////////////////////////////////
-		
-			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
-			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
-			$datos['local']=$local;					//... T: tienda / F: fabrica ...		
-			$datos['titulo']='productosfabrica';
-			$datos['secuenciaPedido']=$secuenciaPedido;
-			$datos['anhoSistema']=$anhoSistema;
-			$datos['pedido']=$pedido;
-			$datos['insumos']=$insumos;	
-				
-			$this->load->view('header');
-			$this->load->view('tienda/pedido',$datos);
-			$this->load->view('footer');
-		}		//... fin IF validar usuario ...
-	}	//..fin realizarPedido ...
-	
-	
-		
-	public function realizarPedidoZ(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -1401,11 +1302,11 @@ class Tienda extends CI_Controller {
 					$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
 				}
 				
-			}else{		//...cuando el local es T:tienda o es Z:Zuñiga...
+			}
+			
+			if($local=="T"){		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
-//				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-$anhoSistema ='2016';	//... anho del sistema
-
+				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
  				 					
 				if(strlen($pedido)==4 ){
 					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
@@ -1428,9 +1329,28 @@ $anhoSistema ='2016';	//... anho del sistema
 				}
 			
 			}
-		
+			
+			
+			if($local=="Z"){		//...cuando el local es Z:Zuñiga...
+				$anhoSistema = date("Y");	//... anho del sistema
+//				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+$anhoSistema ='2016';
+
+				 				
+				if(strlen($pedido)==8 ){
+					$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+				}
+			
+			}
+			
+			
 			if($anhoPedido!=$anhoSistema){
 				$secuenciaPedido="1";
+				if($local=="Z"){
+					$secuenciaPedido="1001";
+				}
+				
 			}else{		//... si anhoPedido==anhoSistema ...
 		     	$secuenciaPedido=$secuenciaPedido+1;
 			}
@@ -1440,11 +1360,14 @@ $anhoSistema ='2016';	//... anho del sistema
 			///////////////////////////////////////
 			///...FIN genera nuevo numero de pedido ...
 			//////////////////////////////////////
-		
-//			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
-//			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
-$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
-$insumos = $this->db->query($sql)->result_array();
+			
+			if($local=="Z"){		//...cuando el local es Z:Zuñiga...
+				$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
+				$insumos = $this->db->query($sql)->result_array();
+			}else{						//.. cuando local es T:tienda o F:fabrica ...
+				$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+				$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+			}
 			
 			$datos['local']=$local;					//... T: tienda / F: fabrica / Z:zuñiga...		
 			$datos['titulo']='productosfabrica';
@@ -1454,12 +1377,10 @@ $insumos = $this->db->query($sql)->result_array();
 			$datos['insumos']=$insumos;	
 				
 			$this->load->view('header');
-			$this->load->view('tienda/pedidoZ',$datos);
+			$this->load->view('tienda/pedido',$datos);		
 			$this->load->view('footer');
 		}		//... fin IF validar usuario ...
-	}	//..fin realizarPedidoZ ...
-	
-	
+	}	//..fin realizarPedido ...
 	
 	
 	public function ubicarPedido(){
@@ -2922,7 +2843,7 @@ $insumos = $this->db->query($sql)->result_array();
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$nota= $pedidoCabecera["notaComentario"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 					
-		$sql ="SELECT * FROM pedidocabecera WHERE numPedido='$numeroPedido' ";
+		$sql ="SELECT * FROM pedidocabeceraZ WHERE numPedido='$numeroPedido' ";
 		$contador = $this->db->query($sql);	
  		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
 

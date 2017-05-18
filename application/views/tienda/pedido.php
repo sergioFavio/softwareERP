@@ -444,8 +444,14 @@ function filaVacia(posicionFila, codPrefijo){
 </script>
 
 <div class="jumbotron" id="cuerpoIngreso">	
-	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
+   <?php 
+   	if($local=='Z'){ 
+   		$grabar='grabarPedidoZ';
+	}else{
+		$grabar='grabarPedido';
+	}
+   ?>
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?=$grabar?>" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
@@ -469,13 +475,28 @@ function filaVacia(posicionFila, codPrefijo){
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
+	    	<?php if($local=='Z'){ ?>
+	    	<div class="col-xs-1">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div class="col-xs-3">
+	    	 	<span id="titulo" class="label label-default">Pedido Zúñiga: Z<?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
+	    	</div> 
+	    	<?php }else{ ?>
+	    	
 	    	<div class="col-xs-2">
 	    	 	<span></span>
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
 	    	 	<span id="titulo" class="label label-default">Pedido: <?= $secuenciaPedido.'/'.$anhoSistema ?> </span>
-	    	</div> 
+	    	</div> 	
+	    		
+	    	<?php } ?>
+	    	
+	    	
+	    	
 	    	
 	    	<div class="col-xs-1">
 				<div class="input-group input-group-sm">

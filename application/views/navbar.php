@@ -130,7 +130,7 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Pedidos Zúñiga</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda/realizarPedidoZ?local=Z"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido Zúñiga</a></li>
+							<li><a href="<?=base_url();?>tienda/realizarPedido?local=Z"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido Zúñiga</a></li>
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoZ?local=Z"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido Zúñiga</a></li>
 							<li><a href="<?=base_url();?>tienda/verPedidosZ"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos Zúñiga</a></li>
 						</ul>
