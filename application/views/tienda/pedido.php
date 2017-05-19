@@ -444,14 +444,7 @@ function filaVacia(posicionFila, codPrefijo){
 </script>
 
 <div class="jumbotron" id="cuerpoIngreso">	
-   <?php 
-   	if($local=='Z'){ 
-   		$grabar='grabarPedidoZ';
-	}else{
-		$grabar='grabarPedido';
-	}
-   ?>
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?=$grabar?>" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">

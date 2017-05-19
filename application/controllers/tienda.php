@@ -1503,90 +1503,6 @@ $anhoSistema ='2016';
 	}		//... fin funcion: modificarPedido ...
 	
 	
-	public function grabarPedidoZ(){		
-		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
-		$local=$_POST['local'];
-		$numPedido=$_POST['numPedido'];
-		$secuenciaPedido=$_POST['secuenciaPedido'];
-		$anhoSistema=$_POST['anhoSistema'];
-		
-		// ... actualizar numero de cotizacion ...	
-		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
-		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
-		$this-> numeroDocumento_model -> actualizar($numPedido,$nombreTabla);
-		// fin actualizar numero de cotizacion ...
-		
-		$descuento= $_POST['descuento'];
-		$embalaje= $_POST['embalaje'];
-		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
-		$montoConDescto=$montoConDescto -$descuento + $embalaje;
-
-		$pedidoCabecera = array(
-	    	"numPedido"=>$_POST['numPedido'],
-	    	"local"=>$_POST['local'],
-		    "fechaPedido"=>$_POST['inputFecha'],
-		    "fechaEntrega"=>$_POST['inputEntrega'],
-		    "cliente"=>$_POST['cliente'],
-		    "contacto"=>$_POST['contacto'],
-		    "direccion"=>$_POST['direccion'],
-		    "telCel"=>$_POST['telCel'],
-		    "localidad"=>$_POST['localidad'],
-		    "cotizacionFabrica"=>$_POST['cotizacionFabrica'],
-		    "ordenCompra"=>$_POST['ordenCompra'],
-		    "facturarA"=>$_POST['facturarA'],
-		    "nit"=>$_POST['nit'],
-		    "montoTotal"=>$montoConDescto, //...quita , como separador de miles ...
-		    "aCuenta"=>str_replace(",","",$_POST['aCuenta']), //...quita , como separador de miles ...
-		    "descuento"=>str_replace(",","",$_POST['descuento']),
-		    "embalaje"=>str_replace(",","",$_POST['embalaje']),
-		    "usuario"=>$this->session->userdata('userName'),
-		    "estado"=>"I",
-		    "fechaEstado"=>$_POST['inputFecha'],
-		    "notaComentario"=>$_POST['nota']
-		);
-		
-		// ... inserta registro tabla pedidocabecera ...
-		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-	    $this-> tablaGenerica_model -> grabar('pedidocabeceraZ', $pedidoCabecera);
-		
-		$secuencia=0;		//...secuencia ... para cada item ...
-        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
-			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
-			
-        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
-          	    //... si cantidad mayor que cero  graba registro ... 
-          	    $secuencia=$i+1;
-				if($secuencia<10){
-					$secuencia='0'.$secuencia;
-				}
-          	    //... agrega registro tabla pedidoproducto ...      
-	            $plantillaProducto = array(
-	            	"numeroPedido"=>$numPedido,
-				    "idProducto"=>$codigoSinEspacio,
-				    "descripcion"=>$_POST['mat_'.$i],
-				    "color"=>$_POST['colorMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i],
-				    "unidad"=>$_POST['unidadMat_'.$i],
-				    "precio"=>$_POST['precioMat_'.$i],
-				    "secuencia"=>$secuencia,
-				    "cliente"=>$_POST['cliente'],
-				    "fechaEntrega"=>$_POST['inputEntrega']
-				);
-			
-				// ... inserta registro tabla transacciones ... cotizacionmaterial 
-				$this-> load -> model("tablaGenerica_model");		//carga modelo 
-	    		$this-> tablaGenerica_model -> grabar('pedidoproductoZ',$plantillaProducto);			
-				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
-				
-			}	// ... fin IF
-			
-		}  // ... fin  FOR 
-			
-		redirect("tienda/generarPedidoZPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
-		
-	}	//... fin grabarPedidoZ ...
-		
-	
 	public function grabarPedido(){		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
 		$local=$_POST['local'];
@@ -1631,7 +1547,11 @@ $anhoSistema ='2016';
 		
 		// ... inserta registro tabla pedidocabecera ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-	    $this-> tablaGenerica_model -> grabar('pedidocabecera', $pedidoCabecera);
+		if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
+			$this-> tablaGenerica_model -> grabar('pedidocabeceraZ', $pedidoCabecera);
+		}else{							//... si es pedido de T:tienda o F:fábrica... ...
+	    	$this-> tablaGenerica_model -> grabar('pedidocabecera', $pedidoCabecera);
+		}
 		
 		$secuencia=0;		//...secuencia ... para cada item ...
         for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
@@ -1659,17 +1579,27 @@ $anhoSistema ='2016';
 			
 				// ... inserta registro tabla transacciones ... cotizacionmaterial 
 				$this-> load -> model("tablaGenerica_model");		//carga modelo 
-	    		$this-> tablaGenerica_model -> grabar('pedidoproducto',$plantillaProducto);			
+				if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
+	    			$this-> tablaGenerica_model -> grabar('pedidoproductoZ',$plantillaProducto);
+				}else{							//... si es pedido de T:tienda o F:fábrica... ...
+					$this-> tablaGenerica_model -> grabar('pedidoproducto',$plantillaProducto);
+				}
+							
 				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
 				
 			}	// ... fin IF
 			
 		}  // ... fin  FOR 
-			
-		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
 		
-	}	//... fin grabarPedido	
-	
+		if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
+			redirect("tienda/generarPedidoZPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+		}else{							//... si es pedido de T:tienda o F:fábrica... ...
+			redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+		}	
+		
+		
+	}	//... fin grabarPedido ...
+		
 
 	public function grabarPedidoModificado(){		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
