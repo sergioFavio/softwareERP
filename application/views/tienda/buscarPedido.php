@@ -157,7 +157,7 @@ function buscarComprobante(){
 		</div>
 	</div>
 
-	<!--input type="hidden"  name="gestion" value="<?= $gestion ?>" /-->
+	<input type="hidden"  name="localAux" value="<?= $local ?>" />
 		
 	<div style="text-align: right; padding-top: 3px;"> 
 		

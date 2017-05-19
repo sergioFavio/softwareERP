@@ -1382,7 +1382,7 @@ $anhoSistema ='2016';
 		}		//... fin IF validar usuario ...
 	}	//..fin realizarPedido ...
 	
-	
+
 	public function ubicarPedido(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -1395,7 +1395,12 @@ $anhoSistema ='2016';
 		}
 		else{		//... fin control de permisos de acceso ....
 			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
-			$sql ="SELECT * FROM pedidocabecera WHERE local='$local'";	
+			if($local=='Z'){					//.. cuando local es Z:Zúñiga ...
+				$sql ="SELECT * FROM pedidocabeceraz WHERE local='$local'";	
+			}else{								//.. cuando local es T:tienda o F.fábrica ...
+				$sql ="SELECT * FROM pedidocabecera WHERE local='$local'";	
+			}
+				
 			$cabeceraPedido = $this->db->query($sql)->result_array();
 			 	
 			$datos['titulo']='Modificar PEDIDO';
@@ -1410,10 +1415,17 @@ $anhoSistema ='2016';
 	
 	
 	public function modificarPedido(){
+		$localAux= $_POST['localAux']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+		
 		$numeroPedido= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
 
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
-		$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		
+		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
+			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabeceraz','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
+			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		} 
 		
 		$local= $pedidoCabecera["local"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fechaPedido= $pedidoCabecera["fechaPedido"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -1464,13 +1476,29 @@ $anhoSistema ='2016';
 			$anhoSistema=substr($numeroPedido,3,4);
 		}
 		
-		$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$numeroPedido'";
+		if(strlen($numeroPedido)==8){
+			$secuenciaPedido=substr($numeroPedido,0,4);
+			$anhoSistema=substr($numeroPedido,4,4);
+		}
+		
+		
+		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
+			$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$numeroPedido'";
+		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
+			$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$numeroPedido'";
+		}
+		
 		$regPedido=mysql_query($sql);
 		$nRegistrosPedido= mysql_num_rows($regPedido); 	//... numero registros salida que satisfacen la consulta ...
 		
-		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla maestra[almacen/bodega]
-		$insumos= $this->tablaGenerica_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama productosfabrica..
-									
+		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
+			$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
+			$insumos = $this->db->query($sql)->result_array();
+		}else{						//...cuando el local es T:Tienda o F:Fábrica ...
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla maestra[almacen/bodega]
+			$insumos= $this->tablaGenerica_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama productosfabrica..
+		}	
+					
 		$datos['titulo']='mPedido:';
 		$datos['secuenciaPedido']=$secuenciaPedido;		//... dato cabecera pedido ..
 		$datos['anhoSistema']=$anhoSistema;				//... dato cabecera pedido ..
@@ -1636,11 +1664,19 @@ $anhoSistema ='2016';
 		
 		// ... edita registro tabla pedidocabecera ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-	    $this-> tablaGenerica_model -> editarRegistro('pedidocabecera','numPedido',$numPedido,$pedidoCabecera);
+		if($local=='Z'){						//... cuando local es Z:Zúñiga ...
+			$this-> tablaGenerica_model -> editarRegistro('pedidocabeceraz','numPedido',$numPedido,$pedidoCabecera);
+		}else{									//... cuando local es T:tienda o F:Fábrica ...
+			$this-> tablaGenerica_model -> editarRegistro('pedidocabecera','numPedido',$numPedido,$pedidoCabecera);
+		}
 	    
 	    // ... borra registros en la tabla: pedidoproducto ...	
 		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
-		$this-> tablaGenerica_model -> eliminar('pedidoproducto','numeroPedido',$numPedido);	
+		if($local=='Z'){						//... cuando local es Z:Zúñiga ...
+			$this-> tablaGenerica_model -> eliminar('pedidoproductoz','numeroPedido',$numPedido);	
+		}else{									//... cuando local es T:tienda o F:Fábrica ...
+			$this-> tablaGenerica_model -> eliminar('pedidoproducto','numeroPedido',$numPedido);	
+		}
 		// fin borrar registros de pedidoproducto ...
 		
 		$secuencia=0;		//...secuencia ... para cada item ...
@@ -1669,7 +1705,11 @@ $anhoSistema ='2016';
 			
 				// ... inserta registro tabla transacciones ... cotizacionmaterial 
 				$this-> load -> model("tablaGenerica_model");		//carga modelo 
-	    		$this-> tablaGenerica_model -> grabar('pedidoproducto',$plantillaProducto);			
+				if($local=='Z'){						//... cuando local es Z:Zúñiga ...
+					$this-> tablaGenerica_model -> grabar('pedidoproductoz',$plantillaProducto);			
+				}else{									//... cuando local es T:tienda o F:Fábrica ...
+	    			$this-> tablaGenerica_model -> grabar('pedidoproducto',$plantillaProducto);
+				}	
 				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
 				
 			}	// ... fin IF
