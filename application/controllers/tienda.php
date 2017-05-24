@@ -1724,8 +1724,9 @@ $anhoSistema ='2016';
 	/////////////////////////////////////////////
 	//... funciones del CRUD pedidos ...//
 	/////////////////////////////////////////////
-	
-	public function verPedidos(){
+		
+			
+	public function verPedidosZ(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -1740,12 +1741,12 @@ $anhoSistema ='2016';
 			$this->load->model("tablaGenerica_model");
 			
 			/* URL a la que se desea agregar la paginación*/
-	    	$config['base_url'] = base_url().'tienda/verPedidos';
+	    	$config['base_url'] = base_url().'tienda/verPedidosZ';
 			
 			/*Obtiene el total de registros a paginar */
-	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabecera');
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabeceraz');
 		
-			$contador= $this->tablaGenerica_model->get_total_registros('pedidocabecera'); //...contador de registros  ...		
+			$contador= $this->tablaGenerica_model->get_total_registros('pedidocabeceraz'); //...contador de registros  ...		
 			if($contador==0){
 				$datos['mensaje']='No hay registros para mostrar ';
 				$this->load->view('header');
@@ -1779,19 +1780,89 @@ $anhoSistema ='2016';
 			
 				/* Se obtienen los registros a mostrar*/ 
 				
-				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
+				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabeceraz',$config['per_page'], $desde); 
 				$datos['consultaPedido'] ='';
 				$datos['permisoUserName'] =$permisoUserName;
 				
 				/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');
-				$this->load->view('tienda/verPedidos', $datos);
+				$this->load->view('tienda/verPedidosZ', $datos);
 				$this->load->view('footer');
 					
 			}//..fin IF contador registros mayor que cero ..
 		}	//... fin IF validar usuario ...
 		
-	} //... fin verPedidos ...
+	} //... fin verPedidosZ ...
+		
+		
+		
+	public function verPedidos(){
+			//... control de permisos de acceso ....
+			$permisoUserName=$this->session->userdata('userName');
+			$permisoMenu=$this->session->userdata('usuarioMenu');
+			$permisoProceso1=$this->session->userdata('usuarioProceso1');
+			if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName y de menu ...
+				$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}			// ... fin control permiso de accesos...
+			else {
+				$this->load->model("tablaGenerica_model");
+				
+				/* URL a la que se desea agregar la paginación*/
+		    	$config['base_url'] = base_url().'tienda/verPedidos';
+				
+				/*Obtiene el total de registros a paginar */
+		    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabecera');
+			
+				$contador= $this->tablaGenerica_model->get_total_registros('pedidocabecera'); //...contador de registros  ...		
+				if($contador==0){
+					$datos['mensaje']='No hay registros para mostrar ';
+					$this->load->view('header');
+					$this->load->view('mensaje',$datos );
+					$this->load->view('footer');
+				}else{
+					
+					/*Obtiene el numero de registros a mostrar por pagina */
+					$config['per_page'] = '13';
+					
+					/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+					$config['uri_segment'] = '3';
+					$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+				  
+					/*Se personaliza la paginación para que se adapte a bootstrap*/
+				    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+				    $config['cur_tag_close'] = '</a></li>';
+				    $config['num_tag_open'] = '<li>';
+				    $config['num_tag_close'] = '</li>';
+				    $config['last_link'] = FALSE;
+				    $config['first_link'] = FALSE;
+				    $config['next_link'] = '&raquo;';
+				    $config['next_tag_open'] = '<li>';
+				    $config['next_tag_close'] = '</li>';
+				    $config['prev_link'] = '&laquo;';
+				    $config['prev_tag_open'] = '<li>';
+				    $config['prev_tag_close'] = '</li>';
+					
+					/* Se inicializa la paginacion*/
+					$this->pagination->initialize($config);
+				
+					/* Se obtienen los registros a mostrar*/ 
+					
+					$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
+					$datos['consultaPedido'] ='';
+					$datos['permisoUserName'] =$permisoUserName;
+					
+					/*Se llama a la vista para mostrar la información*/
+					$this->load->view('header');
+					$this->load->view('tienda/verPedidos', $datos);
+					$this->load->view('footer');
+						
+				}//..fin IF contador registros mayor que cero ..
+			}	//... fin IF validar usuario ...
+			
+		} //... fin verPedidos ...
 	
 	public function eliminarPedido(){
 		//... elimina pedido de las tablas pedidocabecera, pedidoproducto ...
@@ -1815,7 +1886,104 @@ $anhoSistema ='2016';
 		echo $data;
 	}
 	
-	 
+	
+	public function eliminarPedidoZ(){
+		//... elimina pedido de las tablas pedidocabecera, pedidoproducto ...
+		$codigoPedido=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('pedidocabeceraz','numPedido',$codigoPedido);
+		$this-> tablaGenerica_model -> eliminar('pedidoproductoz','numeroPedido',$codigoPedido);
+		
+		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+
+		$archivoPDF='pedidoZ'.$numePedidoSinGuion.'.pdf';
+		//$archivoPDF='pedido1002017.pdf';
+		$archivo ='pdfsArchivos/pedidos/pedidoZ'.$numePedidoSinGuion.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verPedidosZ");
+		echo $data;
+	}
+		 
+	public function buscarPedidoZ(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+	    $campo1='numPedido';   //... el campo por elcual se va hacer la búsqueda ...
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaPedido=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaPedido);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaPedido = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('pedidocabeceraz',$campo1,$consultaPedido);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
+		//	$this->load->view('mensaje',$datos );
+		//	redirect('produccion/crudVerCotizaciones');
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarPedidoZ';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('pedidocabeceraz',$campo1,$consultaPedido);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaPedido'] = $this-> tablaGenerica_model -> buscarPaginacion('pedidocabeceraz',$campo1,$consultaPedido, $config['per_page'], $desde );
+			$datos['consultaPedido'] =$consultaPedido;
+			$datos['permisoUserName'] =$permisoUserName;
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verPedidosZ', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarPedidoZ ...
+	
+	
 	public function buscarPedido(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	    $campo1='numPedido';   //... el campo por elcual se va hacer la búsqueda ...
@@ -3155,8 +3323,6 @@ echo"tipoCambio= $tipoCambio  montoDeposito= $montoDeposito";
 			$this->load->view('footer');
 		}		//... fin IF total registros encontrados ...
 	}		//..fin buscarCotizaciones ...
-
-	
  
 }
 

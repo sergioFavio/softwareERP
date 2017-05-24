@@ -1445,9 +1445,20 @@ class Produccion extends CI_Controller {
 		?>
 		<embed src="<?= base_url('pdfsArchivos/pedidos/pedido'.$numePedido.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
 		<?php
-	}	
+	}
+
+
+    public function pedidoZPdfCrud(){
+		//... recupera la variable de numePedido ...
+		$numePedido=$_POST["numePedido"];
+
+		?>
+		<embed src="<?= base_url('pdfsArchivos/pedidos/pedidoZ'.$numePedido.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}		
 	
- 		public function verOrdenesTrabajo()
+	
+ 	public function verOrdenesTrabajo()
 	{
 		//... control de permisos de acceso ....
 		
