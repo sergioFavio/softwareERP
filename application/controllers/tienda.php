@@ -456,7 +456,7 @@ class Tienda extends CI_Controller {
 		<?php
 	}			//... fin reporte PDF pedidoCuentaPdf ....
 		
-	
+
 	public function registrarDeposito(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -468,6 +468,7 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
 			$this->load->model("numeroDocumento_model");
 			$nombreTabla='nodeposito'; // ... nombreTabla
 	    	$deposito = $this->numeroDocumento_model->getNumero($nombreTabla);
@@ -507,12 +508,16 @@ class Tienda extends CI_Controller {
 			///////////////////////////////////////
 			///...FIN genera nuevo numero de Deposito ...
 			//////////////////////////////////////
-					
-			$sql ="SELECT * FROM pedidocabecera";	
+		    if($local=='Z'){							//... depositos de Z:Zúñiga ...
+		    	$sql ="SELECT * FROM pedidocabeceraz";	
+		    }else{										//... depositos de O:otros Tienda o Fabrica ...
+		    	$sql ="SELECT * FROM pedidocabecera";	
+		    }
+		
 			$cabeceraPedido = $this->db->query($sql)->result_array();
+			
+			$datos['local']=$local;
 			$datos['cabeceraPedido']=$cabeceraPedido;
-			
-			
 			$datos['secuenciaDeposito']=$secuenciaDeposito;
 			$datos['anhoSistema']=$anhoSistema;
 			$datos['deposito']=$deposito;
@@ -523,7 +528,7 @@ class Tienda extends CI_Controller {
 		}		
 	}		//... fin function: registrarDeposito ...
 	
-	
+		
 	public function modificarDeposito(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -3049,7 +3054,8 @@ $anhoSistema ='2016';
 ////////////////////////////////////
 
 
-	public function grabarDeposito(){		
+	public function grabarDeposito(){
+		$local=$_POST['local'];		
 		$numDeposito=$_POST['numDeposito'];
 		$numPedido=str_replace(" ","",$_POST['numPedido']);
 		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
@@ -3081,11 +3087,15 @@ $anhoSistema ='2016';
 		
 		// ... actualiza registro pedidocabecera ....	
 		$this-> load -> model("tablaGenerica_model");
-		$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
-
+		if($local=='Z'){									//... local es Z:Zúñiga ...
+			$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabeceraz','numPedido',$numPedido,'abono',$montoDeposito);
+		}else{												//... local es otro Tienda o Fabrica ...
+			$this-> tablaGenerica_model ->aumentarValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoDeposito);
+		}
+		
 		// ... actualizar numero de cotizacion ...	
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion
-		$nombreTabla='nodeposito'; // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$nombreTabla='nodeposito'; 	
 		
 		$this-> numeroDocumento_model -> actualizar($numDeposito,$nombreTabla);
 		// fin actualizar numero de cotizacion ...
