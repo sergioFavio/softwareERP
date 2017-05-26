@@ -2,7 +2,93 @@
 
 class Tienda extends CI_Controller {
 	
+		
 	public function cuentasPorCobrar(){
+		//... control de permisos de acceso ....
+		
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else{
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
+			
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/cuentasPorCobrar';
+			
+			/*Obtiene el total de registros a paginar */
+			if($local=='Z'){									//.. cuando local es Z:Zúñiga ...		
+	    		$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabeceraz');
+				$contador= $this->tablaGenerica_model->get_total_registros('pedidocabeceraz'); //...contador de registros  ...	
+			}else{												//.. cuando local es tienda o Fabrica ...	
+	    		$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('pedidocabecera');
+				$contador= $this->tablaGenerica_model->get_total_registros('pedidocabecera'); //...contador de registros  ...	
+			}
+			
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				if($local=='Z'){									//.. cuando local es Z:Zúñiga ...		
+					$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabeceraz',$config['per_page'], $desde); 
+				}else{												//.. cuando local es tienda o Fabrica ...	
+					$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
+				}
+			
+				$datos['consultaPedido'] ='';
+				$datos['local'] =$local;
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verCuentasPorCobrar', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin cuentasPorCobrar...
+	
+	
+	
+	
+	
+	
+	
+	public function cuentasPorCobrarAAA(){
 		//... control de permisos de acceso ....
 		
 		$permisoUserName=$this->session->userdata('userName');
@@ -68,9 +154,10 @@ class Tienda extends CI_Controller {
 			}//..fin IF contador registros mayor que cero ..
 		}	//... fin IF validar usuario ...
 		
-	} //... fin cuentasPorCobrar ...
+	} //... fin cuentasPorCobrarAAA ...
 	
-		public function buscarPedidoCtasPorCobrar(){
+	
+	public function buscarPedidoCtasPorCobrar(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	    $campo1='numPedido';   //... el campo por elcual se va hacer la búsqueda ...
 		
@@ -144,9 +231,14 @@ class Tienda extends CI_Controller {
 	public function cuentasPorCobrarPdf(){
 		//... recupera la variable de numePedido ...
 //		$numePedido=$_POST["numePedido"];
+		$local=$_POST["local"];
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido,numPedido ASC";
+		if($local=='Z'){								//... si local es Z:Zúñiga ...
+			$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabeceraz WHERE montoTotal != abono ORDER BY fechaPedido,numPedido ASC";
+		}else{											//... si local es O: otro Tienda o Fabrica ...
+			$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE montoTotal != abono ORDER BY fechaPedido,numPedido ASC";
+		}
 		
 		$registros = $this->db->query($sql);
 		 
@@ -159,7 +251,11 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}else{
 			// Se carga la libreria fpdf
-			$this->load->library('tienda/CuentasPorCobrarPdf');
+			if($local=='Z'){								//... si local es Z:Zúñiga ...
+				$this->load->library('tienda/CuentasPorCobrarZPdf');
+			}else{											//... si local es O: otro Tienda o Fabrica ...
+				$this->load->library('tienda/CuentasPorCobrarPdf');
+			}	
 		
 			// Creacion del PDF
 		    /*
@@ -168,7 +264,11 @@ class Tienda extends CI_Controller {
 		    */
 		     
 		    ob_clean(); // cierra si es se abrio el envio de pdf...
-		    $this->pdf = new CuentasPorCobrarPdf();
+		    if($local=='Z'){								//... si local es Z:Zúñiga ...
+		    	$this->pdf = new CuentasPorCobrarZPdf();
+		    }else{											//... si local es O: otro Tienda o Fabrica ...
+		    	$this->pdf = new CuentasPorCobrarPdf();
+			}
 			
 		    // Agregamos una página
 		    $this->pdf->AddPage();
@@ -216,6 +316,11 @@ class Tienda extends CI_Controller {
 				if(strlen($numeroPedido)==7){
 					$secuenciaPedido=substr($numeroPedido,0,3);
 					$anhoSistema=substr($numeroPedido,3,4);
+				}
+				
+				if(strlen($numeroPedido)==8){
+					$secuenciaPedido=substr($numeroPedido,0,4);
+					$anhoSistema=substr($numeroPedido,4,4);
 				}
 				
 		  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
@@ -279,6 +384,7 @@ class Tienda extends CI_Controller {
 	public function pedidoCuentaPdf(){
 		//... recupera la variable de numePedido ...
 		$numeroPedido=str_replace(" ","",$_POST['numePedido']); //...quita espacios en blanco ...
+		$localAux=str_replace(" ","",$_POST['local']); //...quita espacios en blanco ...
 		
 		$importe=0.00;			//... montoTotal ...
 		$fechaPedido='';
@@ -288,7 +394,11 @@ class Tienda extends CI_Controller {
 		$local='';
 		
 		// Se obtienen los registros de la base de datos
-		$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE numPedido= '$numeroPedido' ";
+		if($localAux=='Z'){									//... si local es Z:Zúñiga ...
+			$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabeceraz WHERE numPedido= '$numeroPedido' ";
+		}else{												//... si local es O: otro Tienda o Fabrica ...
+			$sql="SELECT numPedido,fechaPedido,cliente,telCel,montoTotal,abono,local FROM pedidocabecera WHERE numPedido= '$numeroPedido' ";
+		}
 		$registros = $this->db->query($sql);
 		
 		$sql="SELECT * FROM pagospedido WHERE pedido='$numeroPedido' ";
@@ -333,6 +443,11 @@ class Tienda extends CI_Controller {
 		if(strlen($numeroPedido)==7){
 			$secuenciaPedido=substr($numeroPedido,0,3);
 			$anhoSistema=substr($numeroPedido,3,4);
+		}
+		
+		if(strlen($numeroPedido)==8){
+			$secuenciaPedido=substr($numeroPedido,0,4);
+			$anhoSistema=substr($numeroPedido,4,4);
 		}
 		
   		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
@@ -528,7 +643,8 @@ class Tienda extends CI_Controller {
 		}		
 	}		//... fin function: registrarDeposito ...
 	
-		
+	
+			
 	public function modificarDeposito(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -540,9 +656,12 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {
+			$local=$_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
+			
 			$sql ="SELECT * FROM pagospedido";	
 			$pagosPedido = $this->db->query($sql)->result_array();
 			$datos['pagosPedido']=$pagosPedido;
+			$datos['local']=$local;
 					
 			$this->load->view('header');
 			$this->load->view('tienda/modificarDeposito',$datos);
@@ -3105,7 +3224,8 @@ $anhoSistema ='2016';
 	}	//... fin grabarDeposito ...
 	
 	
-	public function grabarDepositoModificado(){		
+	public function grabarDepositoModificado(){
+		$local=$_POST['local'];		
 		$numDeposito=str_replace(" ","",$_POST['deposito']);
 		$numPedido=str_replace(" ","",$_POST['numPedido']);
 		$montoDeposito= str_replace(",","",$_POST['montoDeposito']);
@@ -3113,12 +3233,6 @@ $anhoSistema ='2016';
 		$montoAbonoAnterior= str_replace(",","",$_POST['montoAbonoAnterior']);
 		$cambioDolarAnterior= str_replace(",","",$_POST['cambioDolarAnterior']);
 
-
-echo"tipoCambio= $tipoCambio  montoDeposito= $montoDeposito";
-
-
-
-		
 		$regDeposito = array(
 			"deposito"=>$_POST['deposito'],
 	    	"pedido"=>str_replace(" ","",$_POST['numPedido']), //...quita los espacios en blanco ...
@@ -3147,11 +3261,17 @@ echo"tipoCambio= $tipoCambio  montoDeposito= $montoDeposito";
 		
 		// ... actualiza registro pedidocabecera ....	
 		$this-> load -> model("tablaGenerica_model");
-		$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoAbonoAnterior);
-
-		$sql="UPDATE pedidocabecera set abono= abono+ $montoDeposito WHERE numPedido='$numPedido' ";
-		$this->db->query($sql);
-			
+		
+		if($local=='Z'){								//.... cuando local es Z:Zúñiga ...
+			$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabeceraz','numPedido',$numPedido,'abono',$montoAbonoAnterior);
+			$sql="UPDATE pedidocabeceraz set abono= abono+ $montoDeposito WHERE numPedido='$numPedido' ";
+			$this->db->query($sql);
+		}else{											//.... cuando local es Tienda o Fabrica ...
+			$this-> tablaGenerica_model ->disminuirValorFloat('pedidocabecera','numPedido',$numPedido,'abono',$montoAbonoAnterior);
+			$sql="UPDATE pedidocabecera set abono= abono+ $montoDeposito WHERE numPedido='$numPedido' ";
+			$this->db->query($sql);
+		}
+		
 		redirect("menuController/index");	
 		
 	}	//... fin grabarDepositoModificado ...

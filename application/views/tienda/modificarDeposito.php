@@ -442,9 +442,11 @@ $(document).ready(function() {
 		
 		<div style="height:15px;"></div>
 		
-		   <input type="hidden"  name="montoAbonoAnterior" />     		<!--  montoAbonoAnterior -->
-		   <input type="hidden"  name="cambioDolarAnterior" />     		<!--  cambioDolarAnterior  -->
-		   <input type="hidden"  name="cambioDolar" />     				<!--  cambioDolar  -->
+		   <input type="hidden"  name="montoAbonoAnterior" />     			<!--  montoAbonoAnterior -->
+		   <input type="hidden"  name="cambioDolarAnterior" />     			<!--  cambioDolarAnterior  -->
+		   <input type="hidden"  name="cambioDolar" />     					<!--  cambioDolar  -->
+		   <input type="hidden"  name="local" value="<?= $local ?>" />     	<!--  local -->
+
 			
 		   <div style="text-align: right; padding-top: 5px;">  
 		    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

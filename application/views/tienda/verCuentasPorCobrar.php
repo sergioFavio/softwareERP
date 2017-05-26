@@ -46,14 +46,14 @@ $(document).ready(function() {
  }); // fin document.ready 
 
 
-function ctasCobrarPdf(nPedido){
+function ctasCobrarPdf(nPedido,local){
     var pedido= nPedido;
-  
+   
 	$.ajax({
       url: "<?=base_url()?>tienda/cuentasPorCobrarPdf",
 
       type: "POST",
-      data: {numePedido: pedido},
+      data: {numePedido: pedido,local:local},
 
       success: function(data){
          //alert(data);
@@ -110,12 +110,23 @@ function pedidoCtaCobrarPdf(nPedido){
 			    	</div>
 			    </div><!-- /.col-xs-3 -->	
 			    
+			    <?php if($local!='Z'){ ?>
 			    <div class="col-xs-1"> 
 					<span></span>
 			   	</div>
-			     	
-			   	<div class="col-xs-2"> 
-					<span  id="titulo" class="label label-success"> Cuentas por Cobrar</span>
+			    <?php } ?>
+			     
+			    <?php if($local=='Z'){ ?> 	
+			   	<div class="col-xs-3">
+			   	<?php }else{ ?>	
+			   	<div class="col-xs-2">
+			   	<?php } ?>	
+			   		
+			   		<?php if($local=='Z'){ ?>
+						<span  id="titulo" class="label label-success"> Cuentas por Cobrar Z&uacute;ñiga</span>
+					<?php }else{ ?>
+						<span  id="titulo" class="label label-success"> Cuentas por Cobrar</span>
+					<?php } ?>
 			   	</div>
 			    
 			    <div class="col-xs-1"> 
@@ -123,7 +134,11 @@ function pedidoCtaCobrarPdf(nPedido){
 			   	</div>
 			   			     	
 			    <div class="col-xs-1"> 
-			    	<button type="button" id="btnSalir" class="btn btn-default btn-sm" onClick="ctasCobrarPdf('1002016')"><span class="glyphicon glyphicon-print"></span> PDF</button>
+			    	<?php if($local=='Z'){ ?>
+			    	<button type="button" id="btnCtasCobrar" class="btn btn-default btn-sm" onClick="ctasCobrarPdf('1002016','Z')"><span class="glyphicon glyphicon-print"></span> PDF</button>
+					<?php }else{ ?>
+					<button type="button" id="btnCtasCobrar" class="btn btn-default btn-sm" onClick="ctasCobrarPdf('1002016','O')"><span class="glyphicon glyphicon-print"></span> PDF</button>
+					<?php } ?>
 				</div>
 				
 				<div class="col-xs-1"> 
@@ -169,6 +184,8 @@ function pedidoCtaCobrarPdf(nPedido){
 		
 					$numeroPedido = $pedido->numPedido;
 					$local= $pedido->numPedido;
+
+					
 								
 					if(strlen($numeroPedido)==3){
 						$secuenciaPedido=substr($numeroPedido,0,1);
@@ -200,6 +217,11 @@ function pedidoCtaCobrarPdf(nPedido){
 						$anhoSistema=substr($numeroPedido,3,4);
 					}
 					
+					if(strlen($numeroPedido)==8){
+						$secuenciaPedido=substr($numeroPedido,0,4);
+						$anhoSistema=substr($numeroPedido,4,4);
+					}
+					
 			  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;
  
 					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numePedidoAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
@@ -215,8 +237,12 @@ function pedidoCtaCobrarPdf(nPedido){
 					 echo"<td style='width: 70px;'><input type='text' id='abono_".$posicionFila."' name='abono_".$posicionFila."' value='".number_format($pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 					
 					 echo"<td style='width: 70px;'><input type='text' id='saldo_".$posicionFila."' name='saldo_".$posicionFila."' value='".number_format($pedido->montoTotal - $pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
-													
-					 echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
+					 
+//					 if($local=='Z'){
+//					 	echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido,'Z');'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
+//					 }else{
+					 	echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
+//					 }							
 	
 				   ?>						
 				</tr>

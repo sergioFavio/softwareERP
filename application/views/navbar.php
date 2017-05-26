@@ -148,14 +148,18 @@
 							<li><a href="<?=base_url();?>tienda/registrarDeposito?local=O"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito </a></li>
 							<li><a href="<?=base_url();?>tienda/registrarDeposito?local=Z"><span class="glyphicon glyphicon-pencil"></span> Registrar Depósito Zúñiga</a></li>
 
-							<li><a href="<?=base_url();?>tienda/modificarDeposito"><span class="glyphicon glyphicon-pencil"></span> Modificar Depósito </a></li>
+							<li><a href="<?=base_url();?>tienda/modificarDeposito?local=O"><span class="glyphicon glyphicon-pencil"></span> Modificar Depósito </a></li>
+							<li><a href="<?=base_url();?>tienda/modificarDeposito?local=Z"><span class="glyphicon glyphicon-pencil"></span> Modificar Depósito Zúñiga</a></li>
+
+							
 							<li><a href="<?=base_url();?>tienda/fechasReporteDepositos?local=F"><span class="glyphicon glyphicon-list-alt"></span> Reporte de Depósitos</a></li>
 							<li><a href="<?=base_url();?>tienda/fechasReporteDepositos?local=T"><span class="glyphicon glyphicon-list-alt"></span> Reporte por Número de Depósito</a></li>
 						</ul>
 					</li>
 					
-					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
-					
+					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar?local=O"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
+					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar?local=Z"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar Zúñiga</a></li>
+
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
