@@ -68,14 +68,15 @@ function ctasCobrarPdf(nPedido,local){
 }  // ... fin pedidoPdf ...
 
 
-function pedidoCtaCobrarPdf(nPedido){
+function pedidoCtaCobrarPdf(nPedido,local){
     var pedido= nPedido;
-  
+    var localAux= local;
+
 	$.ajax({
       url: "<?=base_url()?>tienda/pedidoCuentaPdf",
 
       type: "POST",
-      data: {numePedido: pedido},
+      data: {numePedido: pedido,local:localAux},
 
       success: function(data){
          //alert(data);
@@ -183,9 +184,6 @@ function pedidoCtaCobrarPdf(nPedido){
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
 					$numeroPedido = $pedido->numPedido;
-					$local= $pedido->numPedido;
-
-					
 								
 					if(strlen($numeroPedido)==3){
 						$secuenciaPedido=substr($numeroPedido,0,1);
@@ -237,12 +235,10 @@ function pedidoCtaCobrarPdf(nPedido){
 					 echo"<td style='width: 70px;'><input type='text' id='abono_".$posicionFila."' name='abono_".$posicionFila."' value='".number_format($pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
 					
 					 echo"<td style='width: 70px;'><input type='text' id='saldo_".$posicionFila."' name='saldo_".$posicionFila."' value='".number_format($pedido->montoTotal - $pedido->abono,2)."' readonly='readonly' style='border:none; width:70px;' class='letraNumero'/></td>";
-					 
-//					 if($local=='Z'){
-//					 	echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido,'Z');'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
-//					 }else{
-					 	echo"<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoCtaCobrarPdf($numeroPedido);'><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>";
-//					 }							
+					 					
+					 ?>
+					 	<td style='width:75px;background-color:#b9e9ec;align=left;'><a href='#' onClick="pedidoCtaCobrarPdf('<?= $numeroPedido ?>','<?= $local ?>');"><span class='glyphicon glyphicon-info-sign'></span> + detalle </a></td>
+				     <?php  						
 	
 				   ?>						
 				</tr>
