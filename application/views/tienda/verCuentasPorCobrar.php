@@ -92,8 +92,15 @@ function pedidoCtaCobrarPdf(nPedido,local){
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
+		<?php 
+			if($local=='Z'){
+				$buscar='buscarPedidoCtasPorCobrarZ';
+			}else{
+				$buscar='buscarPedidoCtasPorCobrar';
+			}
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarPedidoCtasPorCobrar" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+		?>
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?= $buscar ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:10px;"></div>
 			
 			<div class="row">
