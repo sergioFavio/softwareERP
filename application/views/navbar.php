@@ -157,8 +157,8 @@
 						</ul>
 					</li>
 					
-					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar?local=O"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
-					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar?local=Z"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar Zúñiga</a></li>
+					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
+					<li><a href="<?=base_url();?>tienda/cuentasPorCobrarZ"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar Zúñiga</a></li>
 
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
 						<ul class="dropdown-menu">
