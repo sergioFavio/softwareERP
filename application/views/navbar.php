@@ -218,7 +218,7 @@
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=FE"><span class="glyphicon glyphicon-transfer"></span><span class="glyphicon glyphicon-usd"></span> Estado del Flujo de Efectivo</a></li>
 
 			
-							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera PENDIENTE</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera</a></li>
 							
 							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
 						</ul>
