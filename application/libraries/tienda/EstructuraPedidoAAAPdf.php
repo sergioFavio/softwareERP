@@ -16,8 +16,8 @@
             $this->Image('assets/img/logo.jpg',10,8,22);
             //$this->SetFont('Arial','B',13); // 'B' es negrita
             
-		    $this->SetFont('Arial','',9);
-		    $this->Cell(335,9,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'C');
+		    $this->SetFont('Arial','',8);
+		    $this->Cell(335,8,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'C');
 		             
   			$this->Ln('7');        
             $this->SetFont('Arial','',13);
@@ -27,40 +27,25 @@
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
-            $this->SetFont('Arial','B',10);
-           
-		    $this->Ln('10');
-		    $this->Cell(50,10,utf8_decode('CLIENTE: ').$this->cliente,0,0,'L');
-            $this->Ln('6');
+            $this->SetFont('Arial','',8);
+            
+            $this->Cell(80,10,utf8_decode('Cliente: '.$this->cliente.'    Dirección: '.$this->direccion.'   Fono/Celular: '). $this->fonoCelular,0,0,'L');
+			$this->Cell(57);
+			$this->Cell(50,10,utf8_decode('Fecha Pedido:  ').$this->fechaPedido,0,0,'R');
+            $this->Ln('5');
 			
-			$this->Cell(50,10,utf8_decode('FECHA PEDIDO: ').$this->fechaPedido,0,0,'L');
-            $this->Ln('6');
+			$this->Cell(81,10,utf8_decode('Localidad: '.$this->localidad.'   Cotización fábrica: '.$this->cotizacionFabrica.'   Orden compra: '). $this->ordenCompra,0,0,'L');
+			$this->Cell(56);
+			$this->Cell(50,10,utf8_decode('Fecha Entrega: ').$this->fechaEntrega,0,0,'R');
+			$this->Ln('5');
 			
-			$this->Cell(50,10,utf8_decode('FECHA ENTREGA: ').$this->fechaEntrega,0,0,'L');
-            $this->Ln('6');
+			$this->Cell(70,10,utf8_decode('Facturar a: '.$this->facturarA.'   Nit: '.$this->nit),0,0,'L');
+			$this->Cell(30);
+			$this->Cell(40,10,utf8_decode('Contacto: '.$this->contacto),0,0,'L');
+			$this->Cell(10);
+			$this->Cell(30,10,utf8_decode('Código Vendedor: ').$this->usuario,0,0,'L');
+			$this->Ln('9');
 			
-			$this->Cell(50,10,utf8_decode('ORDEN DE COMPRA: ').$this->ordenCompra,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('PERSONA CONTACTO: ').$this->contacto,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('TELÉFONO: ').$this->fonoCelular,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('FACTURAR A NOMBRE DE: ').$this->facturarA,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('NÚMERO DE NIT: ').$this->nit,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('DIRECCIÓN: ').$this->direccion,0,0,'L');
-            $this->Ln('6');
-			
-			$this->Cell(50,10,utf8_decode('LOCALIDAD: ').$this->localidad,0,0,'L');
-            $this->Ln('8');
-			
-			$this->SetFont('Arial','',8);
 			/*
 	         * TITULOS DE COLUMNAS
 	         *

@@ -2954,8 +2954,8 @@ $anhoSistema ='2016';
 	 
 		    // Se define el formato de fuente: Arial, negritas, tamaño 9
 		    //$this->pdf->SetFont('Arial', 'B', 9);
-		    $this->pdf->SetFont('Arial', '', 9);
-		    
+		    //$this->pdf->SetFont('Arial', '', 9);
+		    $this->pdf->SetFont('Arial', '', 10);
 			
 		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
 		    $numeroAnterior = 0;
