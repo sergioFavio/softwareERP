@@ -32,7 +32,10 @@
             $this->Ln(7);
 			
 			$sTxt1 = "  CUENTA                        D E S C R I P C I O N                     S U M A S    M E N S U A L E S     S U M A S    A C U M U L A D A S              ";
-			$sTxt2 = "SALDO                                                                                                            D E B E            H A B E R                 D E B E            H A B E R";
+//			$sTxt2 = "SALDO                                                                                                            D E B E            H A B E R                 D E B E            H A B E R";
+			$sTxt2 = "                                                                                                                         D E B E            H A B E R                 D E B E            H A B E R";
+			
+
 			//create an advanced multicell
 			$this->multiCell( 188, 5, $sTxt1.$sTxt2, 1, 'L', 0, 0, 1 );
 			

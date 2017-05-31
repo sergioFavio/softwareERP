@@ -1533,7 +1533,7 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Cell(6,5,'','',0,'L',0);
 			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
 			          	$this->pdf->Cell(6,5,'','',0,'L',0);
-			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+//			       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
 						$this->pdf->Ln(2);		//Se agrega un salto de linea
 			        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 						
@@ -1555,7 +1555,7 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Cell(6,5,'','',0,'L',0);
 			       		$this->pdf->Cell(17,5,number_format($cuentaMayorHaberAcumulado,2),'',0,'R',0);
 			          	$this->pdf->Cell(6,5,'','',0,'L',0);
-			       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
+//			       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
 						$this->pdf->Ln(2);		//Se agrega un salto de linea
 			        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
 						
@@ -1595,7 +1595,7 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Cell(6,5,'','',0,'L',0);
 			       		$this->pdf->Cell(17,5,number_format($registro->haberacumulado,2),'',0,'R',0);
 			          	$this->pdf->Cell(6,5,'','',0,'L',0);
-			       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+//			       		$this->pdf->Cell(17,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 						$totalDebeMes=$totalDebeMes + $registro->debemes;						//...acumula total debeMes ...
 						$totalHaberMes=$totalHaberMes + $registro->habermes;					//...acumula total haberMes ...
 						$totalDebeAcumulado=$totalDebeAcumulado + $registro->debeacumulado;		//...acumula total debeAcumulado ...
@@ -1630,7 +1630,7 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Cell(6,5,'','',0,'L',0);
 		       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorHaberAcumulado,2),'',0,'R',0);
 		          	$this->pdf->Cell(6,5,'','',0,'L',0);
-		       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
+//		       		$this->pdf->Cell(17,5,number_format($subCuentaAnteriorDebeAcumulado - $subCuentaAnteriorHaberAcumulado ,2),'',0,'R',0);
 					$this->pdf->Ln(2);		//Se agrega un salto de linea
 		        	$this->pdf->Cell(1,5,'----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------','',0,'L',0);
 					
@@ -1651,7 +1651,7 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(6,5,'','',0,'L',0);
 	       		$this->pdf->Cell(17,5,number_format($cuentaMayorHaberAcumulado,2),'',0,'R',0);
 	          	$this->pdf->Cell(6,5,'','',0,'L',0);
-	       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
+//	       		$this->pdf->Cell(17,5,number_format($cuentaMayorDebeAcumulado - $cuentaMayorHaberAcumulado ,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 	        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);
 				
@@ -1671,7 +1671,7 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(6,5,'','',0,'L',0);
 	       		$this->pdf->Cell(17,5,number_format($totalHaberAcumulado,2),'',0,'R',0);
 	          	$this->pdf->Cell(6,5,'','',0,'L',0);
-	       		$this->pdf->Cell(17,5,number_format($totalDebeAcumulado - $totalHaberAcumulado ,2),'',0,'R',0);
+//	       		$this->pdf->Cell(17,5,number_format($totalDebeAcumulado - $totalHaberAcumulado ,2),'',0,'R',0);
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 	        	$this->pdf->Cell(1,5,'=================================================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
