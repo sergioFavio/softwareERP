@@ -43,7 +43,7 @@
 			$this->Cell(38,7,'','TB',0,'C','0');
 			$this->Cell(22,7,'PASIVO y PATRIMONIO','TB',0,'R','0');
 			$this->Cell(10,7,'','TBR',0,'R','0');
-	        $this->Ln(7);
+	        $this->Ln(4);
        }
 
        // El pie del pdf

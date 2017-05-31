@@ -1783,19 +1783,7 @@ class Contabilidad extends CI_Controller {
 				    // Se imprimen los datos de cada registro
 				    $numeroLineas = $numeroLineas +1;
 					
-				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
-						$this->pdf->Cell(12,5,'','',0,'L',0);
-						
-						if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-						}else{
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
-						}
-				    }
-					
-					if($cuentaAnteriorSubGrupo!=''){
-						 $this->pdf->Ln(5);
-					}
+					$this->pdf->Ln(5);
 				   
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
@@ -1809,8 +1797,16 @@ class Contabilidad extends CI_Controller {
 						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
 						if($registro->cuenta<='19999999'){
 							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
+							$this->pdf->Cell(48,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 						}else{
 							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
+							$this->pdf->Cell(102,5,'','',0,'L',0);
+							if($registro->cuenta=='31000000'){					//... si es la cuenta de CAPITAL ....
+								$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1)+$resultadoGestion ,2),'',0,'R',0);
+							}else{
+								$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
+							}
 						}			
 					}
 					
@@ -1839,14 +1835,6 @@ class Contabilidad extends CI_Controller {
 				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
 				  							
 				}			//... fin foreach ....
-				
-				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}else{				
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}
 				
 				//... imprime totales ........
 				$this->pdf->Ln(5);
@@ -2047,20 +2035,8 @@ class Contabilidad extends CI_Controller {
 				foreach ($registros->result() as $registro) {
 				    // Se imprimen los datos de cada registro
 				    $numeroLineas = $numeroLineas +1;
-					
-				    if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
-						$this->pdf->Cell(12,5,'','',0,'L',0);
-						
-						if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-						}else{
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
-						}
-				    }
-					
-					if($cuentaAnteriorSubGrupo!=''){
-						 $this->pdf->Ln(5);
-					}
+				
+					$this->pdf->Ln(5);
 				   
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 					
@@ -2074,8 +2050,12 @@ class Contabilidad extends CI_Controller {
 						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
 						if($registro->cuenta<='19999999'){
 							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
+							$this->pdf->Cell(48,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
 						}else{
 							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
+							$this->pdf->Cell(102,5,'','',0,'L',0);
+							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 						}			
 					}
 					
@@ -2097,17 +2077,7 @@ class Contabilidad extends CI_Controller {
 				  	$nivelAnterior= $registro->nivel;							//...par corte de control por cuentaSubGrupo ...
 				  							
 				}			//... fin foreach ....
-				
-				if(substr($cuentaAnteriorSubGrupo,0,1)=='1'){
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}else{
-					$this->pdf->Cell(12,5,'','',0,'L',0);
-					$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);		//... saldo del subGrupo ...
-				}
-				
-				
-				
+			
 				//... imprime totales ........
 				$this->pdf->Ln(5);
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
@@ -2133,10 +2103,10 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 				
 				$this->pdf->Ln('5');
-				$this->pdf->Cell(49,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				$this->pdf->Cell(20,5,'Contador','',0,'C',0);
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Representante legal','',0,'C',0);
 				
 					
 					
