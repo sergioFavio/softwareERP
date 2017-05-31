@@ -16,7 +16,7 @@
             $this->Image('assets/img/logo.jpg',10,8,22);
             //$this->SetFont('Arial','B',13); // 'B' es negrita
             $this->SetFont('Arial','B',13);
-            $this->Cell(35);
+            $this->Cell(55);
 			
      		//$this->Cell(120,10,'Reporte de Ingreso de '.$titulo,0,0,'C');
 		
@@ -27,7 +27,7 @@
             $this->SetFont('Arial','',8);
 			$this->Cell(80);		// ... anteriror 10
 			$this->Cell(50,10,utf8_decode('Expresado en bolivianos '),0,0,'L');	
-			$this->Cell(20);
+			$this->Cell(55);
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
            $this->Ln(7);
             
@@ -41,9 +41,11 @@
 			$this->Cell(23,7,'','TB',0,'C','0');
 			$this->Cell(18,7,'Al 31/03/'.$this->anhoContable,'TB',0,'C','0');
 			$this->Cell(20,7,'','TB',0,'C','0');
-			$this->Cell(22,7,'AUMENTA / DISMINUYE','TB',0,'R','0');
+			$this->Cell(22,7,'AUMENTA (+)','TB',0,'R','0');
+			$this->Cell(20,7,'','TB',0,'C','0');
+			$this->Cell(22,7,'DISMINUYE (-)','TB',0,'R','0');
 			$this->Cell(2,7,'','TBR',0,'R','0');
-	        $this->Ln(5);
+	        $this->Ln(7);
        }
 
        // El pie del pdf

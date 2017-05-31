@@ -2646,14 +2646,15 @@ class Contabilidad extends CI_Controller {
 			    */
 			     
 			    ob_clean(); // cierra si es se abrio el envio de pdf...
-			    $this->pdf = new EstadoCambiosSituacionFinancieraPdf();
+			    $this->pdf = new EstadoCambiosSituacionFinancieraPdf('L');					//... ('L') sentido horizontal de la hoja ...
+			        
 				$this->pdf->fechaGestion=$fechaGestion;      											 //...pasando variable para el header del PDF
 				$this->pdf->gestion= mesLiteral( intval($mesGestion) ).' de '.substr($fechaGestion,0,4); //...pasando variable para el header del PDF
 				$this->pdf->ultimaFecha= $ultimaFecha; 		//...pasando variable para el header del PDF
 				$this->pdf->anhoContable= $anhoContable; 	//...pasando variable para el header del PDF
 					
 			    // Agregamos una página
-			    $this->pdf->AddPage();
+			    $this->pdf->AddPage('L');
 			    // Define el alias para el número de página que se imprimirá en el pie
 			    $this->pdf->AliasNbPages();
 			 
@@ -2671,6 +2672,12 @@ class Contabilidad extends CI_Controller {
 				$totalPasivoPatrimonio=0.00;		//...acumula cuentas del pasivo y patrimonio hasta la fecha...
 				$totalPasivoPatrimonioBalApertura=0.00;		//...acumula cuentas del pasivo y patrimonio balance apertura...
 				
+				$totalAumentaActivo=0.00;					//... acumula diferencias cuentas que aumentaron ...
+				$totalDisminuyeActivo=0.00;					//... acumula diferencias cuentas que disminuyeron ...
+				
+				$totalAumentaPasivoPatrimonio=0.00;			//... acumula diferencias cuentas que aumentaron ...
+				$totalDisminuyePasivoPatrimonio=0.00;		//... acumula diferencias cuentas que disminuyeron ...
+				
 				$numeroLineas=0; 	//...numero de lineas de impresion ...
 				
 				foreach ($registros->result() as $registro) {
@@ -2681,6 +2688,10 @@ class Contabilidad extends CI_Controller {
 					if($cuentaAnterior!='' && $cuentaAnterior!=substr($registro->cuenta,0,1) && substr($registro->cuenta,0,1)=='2'){
 						//... imprime totales ........
 						$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+						$this->pdf->Cell(186,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,'======================','',0,'L',0);
+						
+						
 						$this->pdf->Ln(3);		//Se agrega un salto de linea
 						$this->pdf->Cell(18,5,'','',0,'L',0);
 						$this->pdf->Cell(56,5,utf8_decode( 'Total activo' ),'',0,'L',0);
@@ -2689,9 +2700,15 @@ class Contabilidad extends CI_Controller {
 						$this->pdf->Cell(20,5,'','',0,'L',0);
 						$this->pdf->Cell(20,5,number_format($totalActivoBalApertura,2),'',0,'R',0);
 						$this->pdf->Cell(22,5,'','',0,'L',0);
-						$this->pdf->Cell(20,5,number_format($totalActivo - $totalActivoBalApertura,2),'',0,'R',0);
+						$this->pdf->Cell(20,5,number_format($totalAumentaActivo,2),'',0,'R',0);
+						
+						$this->pdf->Cell(22,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,number_format($totalDisminuyeActivo,2),'',0,'R',0);
+						
 						$this->pdf->Ln(2);		//Se agrega un salto de linea
 						$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+						$this->pdf->Cell(186,5,'','',0,'L',0);
+						$this->pdf->Cell(20,5,'======================','',0,'L',0);
 						//... fin impresion totales  ........
 						
 						$this->pdf->Ln(5);
@@ -2713,7 +2730,16 @@ class Contabilidad extends CI_Controller {
 							$this->pdf->Cell(20,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado-$registro->debemes ,2),'',0,'R',0);
+							
+							if($registro->debeacumulado-$registro->debemes>=0.00){			//... cuando aumenta ...
+								$this->pdf->Cell(20,5,number_format($registro->debeacumulado-$registro->debemes ,2),'',0,'R',0);
+								$totalAumentaActivo=$totalAumentaActivo+( $registro->debeacumulado-$registro->debemes );
+							}else{															//... cuando disminuye ...
+								$this->pdf->Cell(42,5,'','',0,'L',0);
+								$this->pdf->Cell(20,5,number_format($registro->debeacumulado-$registro->debemes ,2),'',0,'R',0);
+								$totalDisminuyeActivo=$totalDisminuyeActivo+( $registro->debeacumulado-$registro->debemes );
+							}
+								
 							$totalActivo=$totalActivo+$registro->debeacumulado;
 							$totalActivoBalApertura=$totalActivoBalApertura+$registro->debemes;
 				    	}else{
@@ -2721,7 +2747,16 @@ class Contabilidad extends CI_Controller {
 							$this->pdf->Cell(20,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
 							$this->pdf->Cell(22,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
+							
+							if($registro->haberacumulado-$registro->habermes>=0.00){			//... cuando aumenta ...
+								$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
+								$totalAumentaPasivoPatrimonio=$totalAumentaPasivoPatrimonio+( $registro->haberacumulado-$registro->habermes );
+							}else{															//... cuando disminuye ...
+								$this->pdf->Cell(42,5,'','',0,'L',0);
+								$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
+								$totalDisminuyePasivoPatrimonio=$totalDisminuyePasivoPatrimonio+ ( $registro->haberacumulado-$registro->habermes );
+							}
+							
 							$totalPasivoPatrimonio=$totalPasivoPatrimonio+$registro->haberacumulado;
 							$totalPasivoPatrimonioBalApertura=$totalPasivoPatrimonioBalApertura+$registro->habermes;
 				    	}
@@ -2734,6 +2769,8 @@ class Contabilidad extends CI_Controller {
 				//... imprime totales ........
 				$this->pdf->Ln(5);
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Cell(186,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'======================','',0,'L',0);
 				$this->pdf->Ln(3);		//Se agrega un salto de linea
 				$this->pdf->Cell(18,5,'','',0,'L',0);
 				$this->pdf->Cell(56,5,utf8_decode( 'Total pasivo y patrimonio' ),'',0,'L',0);
@@ -2742,9 +2779,15 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(20,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonioBalApertura,2),'',0,'R',0);
 				$this->pdf->Cell(22,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,number_format($totalPasivoPatrimonio-$totalPasivoPatrimonioBalApertura,2),'',0,'R',0);
+				$this->pdf->Cell(20,5,number_format($totalAumentaPasivoPatrimonio,2),'',0,'R',0);
+				
+				$this->pdf->Cell(22,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalDisminuyePasivoPatrimonio,2),'',0,'R',0);
+				
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
-				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);	
+				$this->pdf->Cell(186,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'======================','',0,'L',0);		
 				//... fin impresion totales  ........
 					
 			     /* PDF Output() settings
