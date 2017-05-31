@@ -25,9 +25,10 @@
             $this->Ln('8');
      
             $this->SetFont('Arial','',8);
-			$this->Cell(80);		// ... anteriror 10
+			$this->Cell(90);		// ... anteriror 10
+			$this->Cell(20,10,utf8_decode('Al ').$this->ultimaFecha,0,0,'L');
 			$this->Cell(50,10,utf8_decode('Expresado en bolivianos '),0,0,'L');	
-			$this->Cell(55);
+			$this->Cell(32);
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
            $this->Ln(7);
             
