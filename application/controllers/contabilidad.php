@@ -2787,7 +2787,22 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);	
 				$this->pdf->Cell(186,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'======================','',0,'L',0);		
+				$this->pdf->Cell(20,5,'======================','',0,'L',0);	
+				
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(89,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( 'Aumentos y disminuciones' ),'',0,'L',0);
+				$this->pdf->Cell(22,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalAumentaActivo+$totalAumentaPasivoPatrimonio,2),'',0,'R',0);
+				
+				$this->pdf->Cell(22,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalDisminuyeActivo+$totalDisminuyePasivoPatrimonio,2),'',0,'R',0);
+				
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(89,5,'','',0,'L',0);
+				$this->pdf->Cell(56,5,utf8_decode( '===========================================================================' ),'',0,'L',0);
+					
 				//... fin impresion totales  ........
 					
 			     /* PDF Output() settings
