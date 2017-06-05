@@ -31,18 +31,22 @@
 			$this->Cell(10);
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
             $this->Ln(7);
+			$this->Cell(120,7,'_______________________________________________________________________________________________________________________',0,0,'L');
             
 			/*
 	         * TITULOS DE COLUMNAS
 	         *
 	         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
 	        */	 
+/*	        
 	        $this->Cell(100,7,'','TBL',0,'C','0');
 	        $this->Cell(18,7,'I N G R E S O S','TB',0,'C','0');
 			$this->Cell(41,7,'','TB',0,'L','0');
 			$this->Cell(22,7,'EGRESOS y COSTOS','TB',0,'R','0');
 			$this->Cell(7,7,'','TBR',0,'R','0');
+ */
 	        $this->Ln(7);
+			
        }
 
        // El pie del pdf

@@ -3361,10 +3361,7 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
         
 	} //... fin funcion: generarReporteFlujoEfectivo ...
 	
-	
-	
-	
-	
+		
 	public function generarReporteEstadoResultados(){
 		//... genera reporte de estado de resultados en PDF
 		$fechaGestion= $_POST['fechaDeGestion']; 		//... lee fechaGestion ...
@@ -3435,15 +3432,6 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 			        // Se imprimen los datos de cada registro
 			        $numeroLineas = $numeroLineas +1;
 					
-			        if(substr($registro->cuenta,0,2)!=$cuentaAnteriorSubGrupo && $cuentaAnteriorSubGrupo!='' && $nivelAnterior>'1' ) {
-						$this->pdf->Cell(12,5,'','',0,'L',0);
-						if($cuentaAnteriorSubGrupo<='49999999'){
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo*(-1) ,2),'',0,'R',0);
-						}else{
-							$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);
-						}	
-			        }
-					
 					if($cuentaAnteriorSubGrupo!=''){
 						 $this->pdf->Ln(5);
 					}
@@ -3459,8 +3447,10 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 					if($registro->nivel=='2'){			//... acumula saldos por SubGrupo ...
 						$saldoSubGrupo= $registro->debeacumulado - $registro->haberacumulado;
 						if($registro->cuenta<='49999999'){
+							$this->pdf->Cell(64,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 							$totalActivo= $totalActivo + ($registro->debeacumulado - $registro->haberacumulado);
 						}else{
+							$this->pdf->Cell(64,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 							$totalPasivoPatrimonio= $totalPasivoPatrimonio + ($registro->debeacumulado - $registro->haberacumulado);
 						}			
 					}
@@ -3471,9 +3461,9 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);
 							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 			        	}else{
-			        		$this->pdf->Cell(54+$espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+			        		$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
 							$this->pdf->Cell(6,5,'','',0,'L',0);
-							$this->pdf->Cell(16,5,number_format($registro->debeacumulado - $registro->haberacumulado ,2),'',0,'R',0);
+							$this->pdf->Cell(16,5,number_format(($registro->debeacumulado - $registro->haberacumulado)*(-1) ,2),'',0,'R',0);
 			        	}	
 		       		}
 		         
@@ -3482,10 +3472,7 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 				  							
 			    }			//... fin foreach ....
 			    
-			    
-			    $this->pdf->Cell(12,5,'','',0,'L',0);
-				$this->pdf->Cell(16,5,number_format($saldoSubGrupo ,2),'',0,'R',0);		//... saldo del subGrupo ...
-			    
+		    
 				$this->pdf->Ln(5);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
 				$this->pdf->Ln(5);		//Se agrega un salto de linea
@@ -3512,12 +3499,14 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,'____________________','',0,'L',0);
-				
+								
 				$this->pdf->Ln('5');
-				$this->pdf->Cell(49,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Contador general','',0,'C',0);
 				$this->pdf->Cell(50,5,'','',0,'L',0);
-				$this->pdf->Cell(20,5,'Gerente general','',0,'C',0);
+				$this->pdf->Cell(20,5,'Contador','',0,'C',0);
+				$this->pdf->Cell(49,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,'Representante legal','',0,'C',0);
+				
+			
 				
 					
 					
