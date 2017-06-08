@@ -220,7 +220,7 @@
 			
 							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EC"><span class="glyphicon glyphicon-info-sign"></span> Estado de Cambios Situación Financiera</a></li>
 							
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
+							<li><a href="<?=base_url();?>contabilidad/reporteContabilidad?reporte=EP"><span class="glyphicon glyphicon-info-sign"></span> Estado de  Evolución del Patrimonio</a></li>
 						</ul>
 					</li>
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil"></span> Cuentas</a>

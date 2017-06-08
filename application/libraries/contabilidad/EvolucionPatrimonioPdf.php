@@ -3,7 +3,7 @@
     require_once APPPATH."/third_party/fpdf/fpdf.php";
  
     //Extendemos la clase Pdf de la clase fpdf para que herede todas sus variables y funciones
-    class EstadocambiosSituacionFinancieraPdf extends FPDF {
+    class EvolucionPatrimonioPdf extends FPDF {
         public function __construct() {
             parent::__construct();
         }
@@ -16,40 +16,41 @@
             $this->Image('assets/img/logo.jpg',10,8,22);
             //$this->SetFont('Arial','B',13); // 'B' es negrita
             $this->SetFont('Arial','B',13);
-            $this->Cell(35);
+            $this->Cell(80);
 			
      		//$this->Cell(120,10,'Reporte de Ingreso de '.$titulo,0,0,'C');
 		
-			$this->Cell(120,10,utf8_decode('ESTADO CAMBIOS SITUACION FINANCIERA'),0,0,'C');	
+			$this->Cell(120,10,utf8_decode('ESTADO DE EVOLUCIÓN DEL PATRIMONIO'),0,0,'C');	
 			
             $this->Ln('8');
      
             $this->SetFont('Arial','',8);
-//			$this->Cell(60,10,utf8_decode('Período de gestión: ').$this->gestion,0,0,'L');
-			$this->Cell(70);			//... anterior 10
+			$this->Cell(110);		// ..anterior 50
 			$this->Cell(20,10,utf8_decode('Al ').$this->ultimaFecha,0,0,'L');
 			$this->Cell(50,10,utf8_decode('Expresado en bolivianos '),0,0,'L');	
-			$this->Cell(10);
+			$this->Cell(61);
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
-            $this->Ln(7);
+           $this->Ln(7);
             
 			/*
 	         * TITULOS DE COLUMNAS
 	         *
 	         * $this->pdf->Cell(Ancho, Alto,texto,borde,posición,alineación,relleno);
 	        */	 
-	        $this->Cell(10,7,'','TBL',0,'C','0');
-			$this->Cell(18,7,'D E T A L L E','TB',0,'C','0');
-			$this->Cell(45,7,'','TB',0,'L','0');
-	        $this->Cell(18,7,'SALDO AL 31/03/15','TB',0,'R','0');
+	        $this->Cell(58,7,'','TBL',0,'C','0');
+	        $this->Cell(18,7,'Capital Social','TB',0,'C','0');
 			$this->Cell(20,7,'','TB',0,'C','0');
-			$this->Cell(18,7,'SALDO AL 31/03/15','TB',0,'R','0');
-			$this->Cell(10,7,'','TB',0,'C','0');
-			$this->Cell(18,7,'AUMENTA (+)','TB',0,'R','0');
-			$this->Cell(10,7,'','TB',0,'C','0');
-			$this->Cell(18,7,'DISMINUYE (-)','TB',0,'R','0');
-			$this->Cell(3,7,'','TBR',0,'R','0');
-	        $this->Ln(7);
+			$this->Cell(18,7,'Ajuste de Capital','TB',0,'C','0');
+			$this->Cell(21,7,'','TB',0,'C','0');
+			$this->Cell(22,7,'Reserva Legal','TB',0,'R','0');
+			$this->Cell(19,7,'','TB',0,'C','0');
+			$this->Cell(22,7,utf8_decode('Reserva Para Capitalización'),'TB',0,'R','0');
+			$this->Cell(18,7,'','TB',0,'C','0');
+			$this->Cell(22,7,utf8_decode('Resultados Acumulados'),'TB',0,'R','0');
+			$this->Cell(15,7,'','TB',0,'C','0');
+			$this->Cell(22,7,utf8_decode('Total'),'TB',0,'R','0');
+			$this->Cell(4,7,'','TBR',0,'R','0');
+	        $this->Ln(5);
        }
 
        // El pie del pdf
