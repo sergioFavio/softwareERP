@@ -230,7 +230,6 @@
 						</ul>
 					</li>
                     <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> Iniciar Per&iacute;odo de  Gesti&oacute;n</a></li>
-                    <li><a href="#">otros ...</a></li>
                 </ul>
             </li>
 

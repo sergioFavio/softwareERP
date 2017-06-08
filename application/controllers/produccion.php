@@ -1678,8 +1678,6 @@ class Produccion extends CI_Controller {
 			
 			$pedido=$secuenciaPedido.$anhoSistema;
 			
-				
-			
 			$this->load->model("TablaGenerica_model");	
 			$empleados= $this->TablaGenerica_model->getTodos('prodmanoobra'); 
 					
@@ -1695,7 +1693,38 @@ class Produccion extends CI_Controller {
 		}	//... fin validar acceso usuario ...
 	}	//... fin ordenStock ...
 
+	
+	public function grabarOrdenStock(){		
+		$numStock=$_POST['numStock'];
+		$secuenciaStock=$_POST['secuenciaStock'];
+		$anhoSistema=$_POST['anhoSistema'];
+		
+		// ... actualizar numero de cotizacion ...	
+		$nombreTabla='nostock';  
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
+		$this-> numeroDocumento_model -> actualizar($numStock,$nombreTabla);
+		// fin actualizar numero de cotizacion ...
+		
+		$regOrdenStock = array(
+	    	"stock"=>$_POST['numStock'],
+		    "fInicio"=>date("Y-m-d"),
+		    "codTrabajador"=>str_replace(" ","",$_POST['codEmpleado']),
+		    "trabajador"=>$_POST['empleado'],
+		    "cantidad"=>str_replace(",","",$_POST['cantidad']), //...quita , como separador de miles ...
+		    "descripcion"=>$_POST['descripcion'],
+		    "unidad"=>$_POST['unidad'],
+		    "estado"=>"I"
+		);
+		
+		// ... inserta registro tabla ordenstock ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+		$this-> tablaGenerica_model -> grabar('ordenstock',$regOrdenStock);	
+		
+//		redirect("tienda/generarPedidoPDF?numeroStock=$numStock&secuenciaStock=$secuenciaStock&anhoSistema=$anhoSistema");
+	
+	}	//... fin grabarOrdenStock ...
+			
+	
 }
-
 
 /* End of file produccion.php */

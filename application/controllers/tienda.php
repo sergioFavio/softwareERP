@@ -673,8 +673,8 @@ class Tienda extends CI_Controller {
 	    	$deposito = $this->numeroDocumento_model->getNumero($nombreTabla);
 			
 			$anhoSistema = date("Y");	//... anho del sistema
-// 			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-$anhoSistema ='2016'; 
+ 			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+//$anhoSistema ='2016'; 
  				 					
 			if(strlen($deposito)==4 ){
 				$secuenciaDeposito= 0;  // toma los caracteres ... secuencia.

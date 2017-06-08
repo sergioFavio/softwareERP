@@ -55,7 +55,9 @@ $(document).ready(function() {
     
     $('#tabla3 tbody').on('click', 'tr', function () {	
     	var codigoEmpleado = $('td', this).eq(0).text();
-    	var nombreEmpleado = $('td', this).eq(1).text();
+    	var nombreEmpleado = $('td', this).eq(1).text();	
+    	
+    	document.form_.codEmpleado.value=codigoEmpleado;  // ... codEmpleado  variable hidden formulario ...
 
 		$('#empleado').val(nombreEmpleado);
 
@@ -89,14 +91,22 @@ function borrarOrdenStock(){
 function grabarPlantilla(){
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
-	if($("#inputCodigo").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO DE PRODUCTO está vacío");
+	if($("#empleado").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de EMPLEADO está vacío");
 			var registrosValidos= false;	
 	}
-			
-	if(!registrosValidos){
-		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
-	}else{
+	
+	if($("#cantidad").val()=="" ){
+		alert("¡¡¡ E R R O R !!! ... El contenido de CANTIDAD está vacío");
+		var registrosValidos= false;	
+	}
+	
+	if($("#descripcion").val()=="" ){
+		alert("¡¡¡ E R R O R !!! ... El contenido de DESCRIPCION está vacío");
+		var registrosValidos= false;	
+	}
+		
+	if(registrosValidos){
 		$("#form_").submit(); // ...  graba registros ...
 	}
 			
@@ -215,6 +225,8 @@ function separadorMiles(n){
 	<input type="hidden"  name="numStock" value="<?= $pedido ?>" />     				<!--  numero orden stock -->
 	<input type="hidden"  name="secuenciaStock" value="<?= $secuenciaPedido ?>" />      <!--  secuenciaStock -->
 	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
+	<input type="hidden"  name="codEmpleado"  />     									<!--  codEmpleado -->
+
 	
 	<div style="height:80px;"></div>
 	<div style="text-align: right; padding-top: 3px;">   
