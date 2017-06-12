@@ -1699,6 +1699,11 @@ class Produccion extends CI_Controller {
 		$secuenciaStock=$_POST['secuenciaStock'];
 		$anhoSistema=$_POST['anhoSistema'];
 		
+		$descripcion=$_POST['descripcion'];
+		$cantidad=$_POST['cantidad'];
+		$unidad=$_POST['unidad'];
+		$empleado=$_POST['empleado'];
+		
 		// ... actualizar numero de cotizacion ...	
 		$nombreTabla='nostock';  
 		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
@@ -1720,10 +1725,145 @@ class Produccion extends CI_Controller {
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
 		$this-> tablaGenerica_model -> grabar('ordenstock',$regOrdenStock);	
 		
-//		redirect("tienda/generarPedidoPDF?numeroStock=$numStock&secuenciaStock=$secuenciaStock&anhoSistema=$anhoSistema");
+		redirect("produccion/generarOrdenStockPDF?numStock=$numStock&secuencia=$secuenciaStock&anhoSistema=$anhoSistema&descripcion=$descripcion&cantidad=$cantidad&unidad=$unidad&empleado=$empleado");
 	
 	}	//... fin grabarOrdenStock ...
 			
+	
+	public function generarOrdenStockPDF(){
+		//... genera reporte de ordenTrabajo en PDF
+		$numStock=str_replace(" ","",$_GET['numStock']); 			//...lee y quita espacio en blanco a codigoPedido..
+		$codigoTrabajador=str_replace(" ","",$_GET['codEmpleado']); 	//...lee y quita espacio en blanco a codTrabajador..
+		$nombreTrabajador= $_GET['empleado']; 							//... lee nombre del trabajador ...
+		$fechaInicial= date("Y-m-d"); 									//... lee fecha inicial ...
+//		$fechaFinal= $_POST['inputFechaFinal']; 						//... lee fecha final ...
+		$descripcion= $_GET['descripcion']; 							//... lee descripcion ...
+		$cantidad= str_replace(",","",$_GET['cantidad']); 									//... lee cantidad ...
+		$unidad= $_GET['unidad']; 										//... lee unidad ...
+		$secuencia= $_GET['secuencia']; 							//... lee secuencia ...
+				
+        // Se carga la libreria fpdf
+        $this->load->library('produccion/OrdenStock');
+ 
+        // Se obtienen los registros de la base de datos
+		
+		$anhoStock=substr($numStock,strlen($numStock)-2,2);
+			
+		// Creacion del PDF
+        /*
+        * Se crea un objeto de la clase OrdenTrabajoPdf, recordar que la clase Pdf
+        * heredó todos las variables y métodos de fpdf
+        */
+     
+        ob_clean(); // cierra si es se abrio el envio de pdf...
+        $this->pdf = new OrdenStock();
+		$this->pdf->numero=$secuencia.'/'.$anhoStock;     //...pasando variable para el header del PDF
+		$this->pdf->nombreTrabajador=$nombreTrabajador;      				//...pasando variable para el header del PDF
+		$this->pdf->fechaInicial=fechaMysqlParaLatina($fechaInicial); 		//...pasando variable para el header del PDF
+//		$this->pdf->fechaFinal=fechaMysqlParaLatina($fechaFinal); 			//...pasando variable para el header del PDF
+		
+        // Agregamos una página
+        $this->pdf->AddPage();
+        // Define el alias para el número de página que se imprimirá en el pie
+        $this->pdf->AliasNbPages();
+ 
+        /* Se define el titulo, márgenes izquierdo, derecho y
+         * el color de relleno predeterminado
+         */
+         
+        $this->pdf->SetLeftMargin(10);
+        $this->pdf->SetRightMargin(10);
+        $this->pdf->SetFillColor(200,200,200);
+ 
+        // Se define el formato de fuente: Arial, negritas, tamaño 9
+        //$this->pdf->SetFont('Arial', 'B', 9);
+        $this->pdf->SetFont('Arial', '', 10);
+        
+        //... lineq de detalle ...		
+//		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
+		$this->pdf->Cell(1,7,' ','',0,'L',0);
+		$this->pdf->Cell(60,7,utf8_decode(substr($descripcion,0,85) ),'',0,'L',0);
+		$this->pdf->Cell(15,7,' ','',0,'L',0);
+		$this->pdf->Cell(75,7,' ','',0,'L',0);
+		$this->pdf->Cell(15,7,number_format($cantidad,2),'',0,'R',0);
+		$this->pdf->Cell(10,7,' ','',0,'L',0);
+        $this->pdf->Cell(15,7,$unidad,'',0,'L',0);
+		
+		if(substr($descripcion,85,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,85,85) ),0,0,'L');
+		}
+
+		if(substr($descripcion,170,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,170,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,255,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,255,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,340,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,340,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,425,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,425,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,510,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,510,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,595,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,595,85) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,670,85)!=""){
+			$this->pdf->Ln(7);
+			$this->pdf->Cell(1,7,'','',0,'L',0);
+			$this->pdf->Cell(85,7,utf8_decode(substr($descripcion,670,85) ),0,0,'L');
+		}
+		
+  
+         /* PDF Output() settings
+         * Se manda el pdf al navegador
+         *
+         * $this->pdf->Output(nombredelarchivo, destino);
+         *
+         * I = Muestra el pdf en el navegador
+         * D = Envia el pdf para descarga
+		 * F: save to a local file
+		 * S: return the document as a string. name is ignored.
+		 * $pdf->Output(); //default output to browser
+		 * $pdf->Output('D:/example2.pdf','F');
+		 * $pdf->Output("example2.pdf", 'D');
+		 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+         */
+  
+  		$this->pdf->Output('pdfsArchivos/ordenesStock/ordenStock'.$numStock.'.pdf', 'F');
+  		
+		$datos['documento']="pdfsArchivos/ordenesStock/ordenStock".$numStock.".pdf";
+		$datos['titulo']=' Orden de Stock No.: S'.'-'.$secuencia.'/'.$anhoStock;	// ... titulo ...
+		$datos['fechaInicial']=fechaMysqlParaLatina($fechaInicial);
+		$datos['fechaFinal']='  /  /   ';
+		$this->load->view('header');
+		$this->load->view('reportePdf',$datos );
+		$this->load->view('footer');	
+ 		
+	} //... fin funcion: generaOrdenStockPdf ...
 	
 }
 
