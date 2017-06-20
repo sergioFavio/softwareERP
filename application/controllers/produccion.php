@@ -1555,7 +1555,7 @@ class Produccion extends CI_Controller {
 	}
 	
 	
-		public function buscarOrdenTrabajo(){
+	public function buscarOrdenTrabajo(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	
 		if(isset($_POST['inputBuscarPatron'])){
@@ -1933,6 +1933,111 @@ class Produccion extends CI_Controller {
 		}	//... fin IF validar usuario ...
 		
 	} //... fin verOrdenesStock ...
+	
+	
+	public function ordenStockPdf(){
+		//... recupera la variable de numeordenStock ...
+		$numeOrdenStock=$_POST["numeOrdenStock"];
+		
+		?>
+		<embed src="<?= base_url('pdfsArchivos/ordenesStock/ordenStock'.$numeOrdenStock.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}
+	
+	
+	
+	public function actualizarOrdenStock(){
+		//... edita registro de la tabla: pedidoproducto ...	
+		$numeroPedido=$_POST['numeroPedido']; 	//... formulario actualizarOrdenTrabajo ...
+//		$secuencia=$_POST['secuencia']; 		//... formulario actualizarOrdenTrabajo ...
+//		if($secuencia<10){
+//			$secuencia = '0'.$secuencia;
+//		}
+		$fechaAcabado = $this->input->post("inputFechaAcabadoM");
+		$estado = $this->input->post("inputEstadoM");
+
+		$sql="UPDATE ordenstock SET estado='$estado', fechaAcabado='$fechaAcabado' WHERE numeroPedido='$numeroPedido' AND secuencia='$secuencia'";
+		$this->db->query($sql);
+
+		$data=base_url().'produccion/verOrdenesStock';
+		echo $data;
+	}		//... fin actualizarOrdenStock ...
+	
+	
+	public function buscarOrdenStock(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+	
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaOrdenStock=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaOrdenStock.txt", "w");
+			fputs($fp, $consultaOrdenStock);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaOrdenStock.txt", "r");
+			$consultaOrdenStock = fgets($fp);
+			fclose($fp); 
+		}	
+				
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('ordenstock','stock',$consultaOrdenStock);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
+		//	$this->load->view('mensaje',$datos );
+		//	redirect('produccion/crudVerCotizaciones');
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'produccion/buscarOrdenStock';
+			
+			/*Obtiene el total de registros a paginar */
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('ordenstock','stock',$consultaOrdenStock);
+	
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 		
+			$datos['listaOrdenStock'] = $this-> tablaGenerica_model -> buscarPaginacion('ordenstock','stock',$consultaOrdenStock, $config['per_page'], $desde );
+			
+			$datos['consultaOrdenStock'] =$consultaOrdenStock;
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('produccion/verOrdenesStock', $datos);
+			$this->load->view('footer');
+		
+		}     //... fin IF total registros encontrados ...
+	}	//..fin buscarOrdenStock ...
+	
 	
 	
 }

@@ -120,14 +120,14 @@ $(document).ready(function() {
 }); // fin document.ready 
 
 
-function reportePdf(nOrdenTrabajo){
-    var ordenTrabajo= nOrdenTrabajo;
+function reportePdf(nOrdenStock){
+    var ordenStock= nOrdenStock;
     
 	$.ajax({
-      url: "<?=base_url()?>produccion/ordenTrabajoPdf",
+      url: "<?=base_url()?>produccion/ordenStockPdf",
 
       type: "POST",
-      data: {numeOrdenTrabajo: ordenTrabajo},
+      data: {numeOrdenStock: ordenStock},
 
       success: function(data){
          //alert(data);
@@ -166,7 +166,7 @@ function terminarOrdenTrabajo(){
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>produccion/buscarOrdenTrabajo" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>produccion/buscarOrdenStock" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> Ver Órdenes de Stock</span></p>
 	
@@ -178,7 +178,7 @@ function terminarOrdenTrabajo(){
 			   	     
 				<div class="col-lg-6">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaOrdenStock ?>' placeholder="buscar ...">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaOrdenStock ?>' placeholder="buscar órdenes de stock" data-toggle='tooltip' title="ingresar número de órden de stock sin ' S- ' y sin ' / ' " >
 						
 						
 						<div class="input-group-btn">
@@ -233,8 +233,10 @@ function terminarOrdenTrabajo(){
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
 					$numeOrdenStock = $ordenStock->stock;	
+					$numeOrdenStockAux = 'S-'.substr($ordenStock->stock,0,strlen($ordenStock->stock)-2).'/'.substr($ordenStock->stock,strlen($ordenStock->stock)-2,2);	
+					
 							
-					 echo"<td style='width:65px;' ><input type='text' id='idOrdenT_".$posicionFila."' name='idOrdenT_".$posicionFila."' value='".$ordenStock->stock."-".$ordenStock->stock."' readonly='readonly' style='border:none; width:65px;text-align:center;' data-toggle='tooltip' title='$ordenStock->trabajador'  /></td>";
+					 echo"<td style='width:65px;' ><input type='text' id='idOrdenT_".$posicionFila."' name='idOrdenT_".$posicionFila."' value='".$numeOrdenStockAux."' readonly='readonly' style='border:none; width:65px;text-align:center;' data-toggle='tooltip' title='$ordenStock->trabajador'  /></td>";
 						
 					 echo"<td style='width: 45px;'  ><input type='text' id='codTrab_".$posicionFila."' name='codTrab_".$posicionFila."' value='".$ordenStock->codTrabajador."' readonly='readonly' style='border:none; width:45px;'  data-toggle='tooltip' title='$ordenStock->trabajador'  /></td>";
 							 
@@ -251,14 +253,9 @@ function terminarOrdenTrabajo(){
 					 echo"<td style='width: 40px;'><input type='text' id='estadoItem_".$posicionFila."' name='estadoItem_".$posicionFila."' value='".$ordenStock->estado."' readonly='readonly' style='border:none; width:40px;text-align:center;' /></td>";
 						 
 					 echo"<td style='width:50px;background-color:#b9e9ec;' align='left'><a href='#' onClick='reportePdf($numeOrdenStock);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
-
 					 
-//					 if($ordenStock->estado=='P'){		//... solo ordenes ya signadas ...		 
-//					 	echo"<td style='width:50px;background-color:#b9e9ec;' align='left'><a href='#' onClick='reportePdf($numeOrdenStock);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
-					 
-					 	echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de trabajo' data-item-id='".$ordenStock->stock."-".$ordenStock->stock."' data-producto='".$ordenStock->descripcion."'
-					    data-numeropedido='".$ordenStock->stock."' data-secuencia='".$ordenStock->stock."' data-color='".$ordenStock->descripcion."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
-//					 }
+					 echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de Stock' data-item-id='"."S-".$ordenStock->stock."-".$ordenStock->stock."' data-producto='".$ordenStock->descripcion."'
+					 data-numeropedido='".$ordenStock->stock."' data-secuencia='".$ordenStock->stock."' data-color='".$ordenStock->trabajador."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
 					 				
 				   ?>						
 				</tr>
@@ -317,10 +314,10 @@ function terminarOrdenTrabajo(){
       <div class="modal-body">
       	
       	
-      	 <form class="form-horizontal"   data-async data-target="#rating-modal" action="<?=base_url()?>produccion/actualizarOrdenTrabajo" id="formEditarRegistro_" name="formEditarRegistro_" method="POST">
+      	 <form class="form-horizontal"   data-async data-target="#rating-modal" action="<?=base_url()?>produccion/actualizarOrdenStock" id="formEditarRegistro_" name="formEditarRegistro_" method="POST">
       	
         	<div class="input-group input-group-sm">
-			  <span class="input-group-addon">Orden Trabajo #: </span>
+			  <span class="input-group-addon">Orden Stock #: </span>
 			  	<input type='text' class='form-control input-sm' id='inputCodigoM' name='inputCodigoM' value='' readonly='readonly' placeholder='codigo&hellip;' onChange='validarCodigo(this.value);' > 
 			</div>
         
@@ -344,7 +341,7 @@ function terminarOrdenTrabajo(){
 	            <label class="control-label col-xs-3">Estado:</label>
 	            <div class="col-xs-4">
 	                <label class="radio-inline">
-	                    <input type="radio" id="inputEstado1M" name="inputEstadoM" value="P"> Proceso
+	                    <input type="radio" id="inputEstado1M" name="inputEstadoM" value="I"> Iniciado
 	                </label>
 	            </div>
 	            <div class="col-xs-4">
