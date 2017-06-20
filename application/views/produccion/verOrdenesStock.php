@@ -55,8 +55,8 @@ $(document).ready(function() {
 	$('#editarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
 		var id = $(e.relatedTarget).data('item-id'); 
-		var producto = $(e.relatedTarget).data('producto');
-		var color = $(e.relatedTarget).data('color');
+		var descripcion = $(e.relatedTarget).data('descripcion');
+		var trabajador = $(e.relatedTarget).data('trabajador');
 		var estado = $(e.relatedTarget).data('estado');
 		var numeropedido = $(e.relatedTarget).data('numeropedido');
 		var secuencia = $(e.relatedTarget).data('secuencia');
@@ -67,8 +67,8 @@ $(document).ready(function() {
 		
 		//aca lo asignamos a un hidden dentro del form que esta en el modal
 	    $(e.currentTarget).find('input[name="inputCodigoM"]').val(id);
-		$(e.currentTarget).find('input[name="inputProductoM"]').val(producto);
-		$(e.currentTarget).find('input[name="inputColorM"]').val(color);
+		$(e.currentTarget).find('input[name="inputDescripcionM"]').val(descripcion);
+		$(e.currentTarget).find('input[name="inputTrabajadorM"]').val(trabajador);
 		$(e.currentTarget).find('input[name="inputEditarEstadoM"]').val(estado);      //.. variable falsa para tipo estado ...
 		$(e.currentTarget).find('input[name="inputFechaAcabadoM"]').val();
 		
@@ -89,8 +89,8 @@ $(document).ready(function() {
 		var action=form.attr("action");
 		//aca recuperamos el id que paso por tag al modal
 		var idele1=$(form).find('input[name="inputCodigoM"]').val();	
-		var idele2=$(form).find('input[name="inputProductoM"]').val();
-		var idele3=$(form).find('input[name="inputColorM"]').val();
+		var idele2=$(form).find('input[name="inputDescripcionM"]').val();
+		var idele3=$(form).find('input[name="inputTrabajadorM"]').val();
 		var idele4=$(form).find('input[name="inputEditarEstadoM"]').val();	//.. variable falsa para estado ...
 		var idele5=$(form).find('input[name="inputFechaAcabadoM"]').val();	
 					
@@ -236,7 +236,7 @@ function terminarOrdenTrabajo(){
 					$numeOrdenStockAux = 'S-'.substr($ordenStock->stock,0,strlen($ordenStock->stock)-2).'/'.substr($ordenStock->stock,strlen($ordenStock->stock)-2,2);	
 					
 							
-					 echo"<td style='width:65px;' ><input type='text' id='idOrdenT_".$posicionFila."' name='idOrdenT_".$posicionFila."' value='".$numeOrdenStockAux."' readonly='readonly' style='border:none; width:65px;text-align:center;' data-toggle='tooltip' title='$ordenStock->trabajador'  /></td>";
+					 echo"<td style='width:65px;' ><input type='text' id='idOrdenT_".$posicionFila."' name='idOrdenT_".$posicionFila."' value='".$numeOrdenStockAux."' readonly='readonly' style='border:none; width:65px;text-align:center;'   /></td>";
 						
 					 echo"<td style='width: 45px;'  ><input type='text' id='codTrab_".$posicionFila."' name='codTrab_".$posicionFila."' value='".$ordenStock->codTrabajador."' readonly='readonly' style='border:none; width:45px;'  data-toggle='tooltip' title='$ordenStock->trabajador'  /></td>";
 							 
@@ -254,8 +254,8 @@ function terminarOrdenTrabajo(){
 						 
 					 echo"<td style='width:50px;background-color:#b9e9ec;' align='left'><a href='#' onClick='reportePdf($numeOrdenStock);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 
-					 echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de Stock' data-item-id='"."S-".$ordenStock->stock."-".$ordenStock->stock."' data-producto='".$ordenStock->descripcion."'
-					 data-numeropedido='".$ordenStock->stock."' data-secuencia='".$ordenStock->stock."' data-color='".$ordenStock->trabajador."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
+					 echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de Stock' data-item-id='"."S-".$ordenStock->stock."-".$ordenStock->stock."' data-descripcion='".$ordenStock->descripcion."'
+					 data-numeropedido='".$ordenStock->stock."' data-secuencia='".$ordenStock->stock."' data-trabajador='".$ordenStock->trabajador."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
 					 				
 				   ?>						
 				</tr>
@@ -324,15 +324,15 @@ function terminarOrdenTrabajo(){
         	<div style="height:10px;"></div>
         	
         	<div class="input-group input-group-sm">
-			  <span class="input-group-addon">Producto: </span>
-			  <input type="text" class="form-control input-sm" id="inputProductoM" name="inputProductoM" value='' readonly='readonly' placeholder="producto &hellip;">
+			  <span class="input-group-addon">Descripción: </span>
+			  <input type="text" class="form-control input-sm" id="inputDescripcionM" name="inputDescripcionM" value='' readonly='readonly' placeholder="producto &hellip;">
 			</div>
 			
 			<div style="height:10px;"></div>
 			
 			<div class="input-group input-group-sm">
-			  <span class="input-group-addon">Color: </span>
-			  <input type="text" class="form-control input-sm" id="inputColorM" name="inputColorM" value='' readonly='readonly' placeholder="color &hellip;">
+			  <span class="input-group-addon">Trabajador: </span>
+			  <input type="text" class="form-control input-sm" id="inputTrabajadorM" name="inputTrabajadorM" value='' readonly='readonly' placeholder="color &hellip;">
 			</div>
 			
 			<div style="height:10px;"></div>
