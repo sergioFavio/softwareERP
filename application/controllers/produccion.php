@@ -1464,7 +1464,7 @@ class Produccion extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion' && $permisoMenu!='inventarios'){  //... valida permiso de userName y de menu ...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de producción';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
@@ -1871,7 +1871,7 @@ class Produccion extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion' && $permisoMenu!='inventarios'){  //... valida permiso de userName y de menu ...
 			$datos['mensaje']='Usuario NO autorizado para operar Sistema de producción';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
@@ -1945,18 +1945,14 @@ class Produccion extends CI_Controller {
 	}
 	
 	
-	
 	public function actualizarOrdenStock(){
 		//... edita registro de la tabla: pedidoproducto ...	
-		$numeroPedido=$_POST['numeroPedido']; 	//... formulario actualizarOrdenTrabajo ...
-//		$secuencia=$_POST['secuencia']; 		//... formulario actualizarOrdenTrabajo ...
-//		if($secuencia<10){
-//			$secuencia = '0'.$secuencia;
-//		}
+		$numeroStock=$_POST['numeroStock']; 	//... formulario actualizarOrdenTrabajo ...
+
 		$fechaAcabado = $this->input->post("inputFechaAcabadoM");
 		$estado = $this->input->post("inputEstadoM");
 
-		$sql="UPDATE ordenstock SET estado='$estado', fechaAcabado='$fechaAcabado' WHERE numeroPedido='$numeroPedido' AND secuencia='$secuencia'";
+		$sql="UPDATE ordenstock SET estado='$estado', fEntrega='$fechaAcabado' WHERE stock='$numeroStock' ";
 		$this->db->query($sql);
 
 		$data=base_url().'produccion/verOrdenesStock';

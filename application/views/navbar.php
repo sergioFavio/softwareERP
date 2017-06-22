@@ -56,6 +56,8 @@
                     <li><a href="<?=base_url();?>materiales/listadoExistencias"><span class="glyphicon glyphicon-list-alt"></span> Listado de Existencias</a></li>
                     <li><a href="<?=base_url();?>materiales/reponerMateriales"><span class="glyphicon glyphicon-transfer"></span> Reponer Materiales</a></li>
                     
+                    <li><a href="<?=base_url();?>produccion/verOrdenesTrabajo"><span class="glyphicon glyphicon-eye-open"></span> Ver Órdenes de Trabajo</a></li>
+                    <li><a href="<?=base_url();?>produccion/verOrdenesStock"><span class="glyphicon glyphicon-eye-open"></span> Ver Órdenes de Stock</a></li>
                 </ul>
             </li>
 

@@ -58,12 +58,10 @@ $(document).ready(function() {
 		var descripcion = $(e.relatedTarget).data('descripcion');
 		var trabajador = $(e.relatedTarget).data('trabajador');
 		var estado = $(e.relatedTarget).data('estado');
-		var numeropedido = $(e.relatedTarget).data('numeropedido');
-		var secuencia = $(e.relatedTarget).data('secuencia');
+		var numerostock = $(e.relatedTarget).data('numerostock');
 		var title = $(e.relatedTarget).data('title');
 		
-		document.formEditarRegistro_.numeroPedido.value=numeropedido;  	// ... numeropedido  variable hidden formulario...
-		document.formEditarRegistro_.secuencia.value=secuencia;  			// ... secuencia  variable hidden formulario...
+		document.formEditarRegistro_.numeroStock.value=numerostock;  	// ... numeropedido  variable hidden formulario...
 		
 		//aca lo asignamos a un hidden dentro del form que esta en el modal
 	    $(e.currentTarget).find('input[name="inputCodigoM"]').val(id);
@@ -111,9 +109,9 @@ $(document).ready(function() {
 	 });
 
 
-	 $("#btnTerminarOrdenTrabajo").click(function(){
+	 $("#btnTerminarOrdenStock").click(function(){
 	// actualizar estado  orden de trabajo a T: terminado..
-    	terminarOrdenTrabajo();
+    	terminarOrdenStock();
 	});
 	
 	
@@ -142,25 +140,25 @@ function reportePdf(nOrdenStock){
 }  // ... fin reportePdf ...
 
 
-function terminarOrdenTrabajo(){
+function terminarOrdenStock(){
 	
-	var registrosValidosM= true;	  // ... bandera para grabar o no grabar registros ...
+	var registrosValidosM=true;	  // ... bandera para grabar o no grabar registros ...
 	
 	if($("#inputFechaAcabadoM").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA ACABADO está vacío");
-			var registrosValidosM= false;	
+			registrosValidosM=false;	
 	}
 	
 	if(document.getElementById('inputEstado2M').checked == false ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de ESTADO no se ha modificado a TERMINADO");
-			var registrosValidosM= false;	
+			registrosValidosM=false;	
 	}
 		
 	if(registrosValidosM){
 		$("#formEditarRegistro_").submit(); // ...  graba registros ...
 	}
 			
-}	// ... fin funcion terminaOrdenTrabajo() ...
+}	// ... fin funcion terminaOrdenStock() ...
 	
 </script>
 
@@ -246,7 +244,7 @@ function terminarOrdenTrabajo(){
 					
 					 echo"<td style='width: 40px;'><input type='text' id='estado_".$posicionFila."' name='estado_".$posicionFila."' value='".$ordenStock->unidad."' readonly='readonly' style='border:none; width:40px;' /></td>";
 					
-					 echo"<td style='width: 60px;'><input type='text' id='fechaInicial_".$posicionFila."' name='fechaInicial_".$posicionFila."' value='".$ordenStock->fInicio."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width: 60px;'><input type='text' id='fechaInicial_".$posicionFila."' name='fechaInicial_".$posicionFila."' value='".fechaMysqlParaLatina($ordenStock->fInicio)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 					
 					 echo"<td style='width: 60px;'><input type='text' id='fechaFinal_".$posicionFila."' name='fechaFinal_".$posicionFila."' value='".$ordenStock->fEntrega."' readonly='readonly' style='border:none; width:60px;' /></td>";
 					 					 
@@ -254,8 +252,8 @@ function terminarOrdenTrabajo(){
 						 
 					 echo"<td style='width:50px;background-color:#b9e9ec;' align='left'><a href='#' onClick='reportePdf($numeOrdenStock);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 
-					 echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de Stock' data-item-id='"."S-".$ordenStock->stock."-".$ordenStock->stock."' data-descripcion='".$ordenStock->descripcion."'
-					 data-numeropedido='".$ordenStock->stock."' data-secuencia='".$ordenStock->stock."' data-trabajador='".$ordenStock->trabajador."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
+					 echo"<td style='width:75px;background-color:#a5d4da;align=left;'><a href='#' data-title='Terminar orden de Stock' data-item-id='".$numeOrdenStockAux."' data-descripcion='".$ordenStock->descripcion."'
+					 data-numerostock='".$ordenStock->stock."' data-trabajador='".$ordenStock->trabajador."' data-estado='".$ordenStock->estado."' data-toggle='modal' data-target='#editarModal'><span class='glyphicon glyphicon-ok'></span> Terminar</a></td>";
 					 				
 				   ?>						
 				</tr>
@@ -358,14 +356,13 @@ function terminarOrdenTrabajo(){
 			  <input type="date" class="form-control input-sm" id="inputFechaAcabadoM" name="inputFechaAcabadoM" value='' placeholder="nota entrega &hellip;" style='width:140px;'>
 			</div>
         	
-        	<input type="hidden"  name="numeroPedido"  />
-        	<input type="hidden"  name="secuencia"  />
+        	<input type="hidden"  name="numeroStock"  />
       	</form>
   		        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-        <button type="submit" id="btnTerminarOrdenTrabajo" class="btn btn-primary btn-sm" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>
+        <button type="submit" id="btnTerminarOrdenStock" class="btn btn-primary btn-sm" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
