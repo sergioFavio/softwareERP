@@ -24,11 +24,11 @@
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);
-            $this->SetFont('Arial','',8);
+            $this->SetFont('Arial','',10);
            
             $this->Cell(1,10,utf8_decode('Trabajador: '.$this->nombreTrabajador),0,0,'L');
             $this->Cell(30);
-    		$this->Cell(120,10,'Desde: '.$this->fechaInicial.'     Hasta: '. $this->fechaFinal,0,0,'C');
+    		$this->Cell(115,10,'Desde: '.$this->fechaInicial.'     Hasta: '. $this->fechaFinal,0,0,'C');
 			
 			$this->Cell(30,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'C');
 			
