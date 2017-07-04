@@ -1189,7 +1189,7 @@ class Produccion extends CI_Controller {
  
         // Se define el formato de fuente: Arial, negritas, tamaño 9
         //$this->pdf->SetFont('Arial', 'B', 9);
-        $this->pdf->SetFont('Arial', '',11);
+        $this->pdf->SetFont('Arial', '',12);
         
         //... lineq de detalle ...		
 		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
@@ -1776,64 +1776,70 @@ class Produccion extends CI_Controller {
  
         // Se define el formato de fuente: Arial, negritas, tamaño 9
         //$this->pdf->SetFont('Arial', 'B', 9);
-        $this->pdf->SetFont('Arial', '',11);
+        $this->pdf->SetFont('Arial', '',12);
         
         //... lineq de detalle ...		
 //		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
 		$this->pdf->Cell(1,10,' ','',0,'L',0);
-		$this->pdf->Cell(60,10,utf8_decode(substr($descripcion,0,85) ),'',0,'L',0);
-		$this->pdf->Cell(15,10,' ','',0,'L',0);
+		$this->pdf->Cell(50,10,utf8_decode(substr($descripcion,0,75) ),'',0,'L',0);
+		$this->pdf->Cell(25,10,' ','',0,'L',0);
 		$this->pdf->Cell(75,10,' ','',0,'L',0);
 		$this->pdf->Cell(15,10,number_format($cantidad,2),'',0,'R',0);
 		$this->pdf->Cell(10,10,' ','',0,'L',0);
         $this->pdf->Cell(15,10,$unidad,'',0,'L',0);
 		
-		if(substr($descripcion,85,85)!=""){
+		if(substr($descripcion,75,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,85,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,75,75) ),0,0,'L');
 		}
 
-		if(substr($descripcion,170,85)!=""){
+		if(substr($descripcion,150,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,170,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,150,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,255,85)!=""){
+		if(substr($descripcion,225,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,255,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,225,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,340,85)!=""){
+		if(substr($descripcion,300,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,340,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,300,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,425,85)!=""){
+		if(substr($descripcion,375,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,425,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,375,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,510,85)!=""){
+		if(substr($descripcion,450,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,510,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,450,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,595,85)!=""){
+		if(substr($descripcion,525,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,595,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,525,75) ),0,0,'L');
 		}
 		
-		if(substr($descripcion,670,85)!=""){
+		if(substr($descripcion,600,75)!=""){
 			$this->pdf->Ln(10);
 			$this->pdf->Cell(1,10,'','',0,'L',0);
-			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,670,85) ),0,0,'L');
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,600,75) ),0,0,'L');
+		}
+		
+		if(substr($descripcion,675,75)!=""){
+			$this->pdf->Ln(10);
+			$this->pdf->Cell(1,10,'','',0,'L',0);
+			$this->pdf->Cell(85,10,utf8_decode(substr($descripcion,675,75) ),0,0,'L');
 		}
 		
   
