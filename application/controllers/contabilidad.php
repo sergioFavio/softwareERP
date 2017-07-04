@@ -3640,27 +3640,53 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 					$resultadoGestion=$resultadoGestion+($registro->debeacumulado - $registro->haberacumulado);
 				}
 				$resultadoGestion=$resultadoGestion*(-1);
-				
-		
-							
+						
 				$this->pdf->Cell(165,5,'','',0,'L',0);
-				//$this->pdf->Cell(20,5,number_format(999999999.99 ,2),'',0,'R',0);	
-							
-				//$this->pdf->Cell(20,5,'','',0,'L',0);
-				//$this->pdf->Cell(20,5,number_format(999999999.99 ,2),'',0,'R',0);	
-							
-				//$this->pdf->Cell(20,5,'','',0,'L',0);
-				//$this->pdf->Cell(20,5,number_format(999999999.99 ,2),'',0,'R',0);	
-							
-				//$this->pdf->Cell(20,5,'','',0,'L',0);
-				//$this->pdf->Cell(20,5,number_format(999999999.99 ,2),'',0,'R',0);	
 							
 				$this->pdf->Cell(20,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($resultadoGestion ,2),'',0,'R',0);
 							
 				$this->pdf->Cell(18,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($resultadoGestion ,2),'',0,'R',0);
+
 				
+				if($capitalSocialG!=$capitalSocialI){							//... actualizacion CAPITAL SOCIAL ...
+					$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(1,5,'','',0,'L',0);			
+					$this->pdf->Cell(35,5,utf8_decode('Actualización Capital Social'),'',0,'L',0);
+					$this->pdf->Cell(25,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($capitalSocialG-$capitalSocialI ,2),'',0,'R',0);
+				}
+
+				
+				if($ajusteCapitalG!=$ajusteCapitalI){							//... actualizacion AJUSTE DE CAPITAL  ...
+					$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(1,5,'','',0,'L',0);			
+					$this->pdf->Cell(35,5,utf8_decode('Actualización Ajuste de Capital'),'',0,'L',0);
+					$this->pdf->Cell(65,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($ajusteCapitalG-$ajusteCapitalI,2),'',0,'R',0);
+				}
+
+
+				if($reservaLegalG!=$reservaLegalI){							//... actualizacion RESERVA LEGAL  ...
+					$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(1,5,'','',0,'L',0);			
+					$this->pdf->Cell(35,5,utf8_decode('Actualización Reserva Legal'),'',0,'L',0);
+					$this->pdf->Cell(105,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($reservaLegalG-$reservaLegalI,2),'',0,'R',0);
+				}
+
+				if($reservaParaCapitalizacionG!=$reservaParaCapitalizacionI){							//... actualizacion RESERVA PARA CAPITALIZACION  ...
+					$this->pdf->Ln(5);
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(1,5,'','',0,'L',0);			
+					$this->pdf->Cell(35,5,utf8_decode('Actualización Reserva Para Capitalización'),'',0,'L',0);
+					$this->pdf->Cell(145,5,'','',0,'L',0);
+					$this->pdf->Cell(20,5,number_format($reservaParaCapitalizacionG-$reservaParaCapitalizacionI,2),'',0,'R',0);
+				}
 
 				
 				$this->pdf->SetFont('Arial', 'B', 9);
@@ -3692,6 +3718,9 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 				$this->pdf->Cell(18,5,'','',0,'L',0);
 				$this->pdf->Cell(20,5,number_format($capitalSocialG+$ajusteCapitalG+$reservaLegalG+$reservaParaCapitalizacionG+($resultadosAcumuladosI+$resultadoGestion),2),'',0,'R',0);
 				
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);			
+				$this->pdf->Cell(70,5,'=====================================================================================================================================================','',0,'L',0);				
 				
 			     /* PDF Output() settings
 			     * Se manda el pdf al navegador
