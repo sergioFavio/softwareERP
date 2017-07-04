@@ -97,7 +97,7 @@ function buscarIngreso(){
 
 <div class="jumbotron" id="cuerpoSalida">		
 		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/modificarIngresoAlmacen" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/modificarIngreso" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">

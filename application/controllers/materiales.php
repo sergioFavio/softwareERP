@@ -75,8 +75,8 @@ class Materiales extends CI_Controller {
 	}	//... fin salidamaterial ...
 
 
-	public function buscarIngresoAlmacen(){
-		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+	public function buscarIngreso(){
+		$nombreDeposito=str_replace(" ","",$_GET['nombreDeposito']); //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
 		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -88,7 +88,10 @@ class Materiales extends CI_Controller {
 		//... fin control de permisos de acceso ....	
 
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
-		$cabeceraIngresos= $this->tablaGenerica_model->getTodos('ingresoalmacencabecera'); //..una vez cargado el modelo de la tabla llama ingresoalmacencabecera..
+//		$cabeceraIngresos= $this->tablaGenerica_model->getTodos('ingresoalmacencabecera'); //..una vez cargado el modelo de la tabla llama ingresoalmacencabecera..
+				
+		$cabeceraIngresos= $this->tablaGenerica_model->getTodos('ingreso'.$nombreDeposito.'cabecera'); //..una vez cargado el modelo de la tabla llama ingresoalmacencabecera..
+				
 						
 		$datos['titulo']='Modificar ingreso '.$nombreDeposito;
 		$datos['cabeceraIngresos']=$cabeceraIngresos;	
@@ -100,8 +103,8 @@ class Materiales extends CI_Controller {
 	}
 
 
-	public function buscarSalidaAlmacen(){
-		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+	public function buscarSalida(){
+		$nombreDeposito=str_replace(" ","",$_GET['nombreDeposito']); //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
 		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -113,7 +116,10 @@ class Materiales extends CI_Controller {
 		//... fin control de permisos de acceso ....	
 
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
-		$cabeceraSalidas= $this->tablaGenerica_model->getTodos('salidaalmacencabecera'); //..una vez cargado el modelo de la tabla llama salidaalmacencabecera..
+//		$cabeceraSalidas= $this->tablaGenerica_model->getTodos('salidaalmacencabecera'); //..una vez cargado el modelo de la tabla llama salidaalmacencabecera..
+						
+		$cabeceraSalidas= $this->tablaGenerica_model->getTodos('salida'.$nombreDeposito.'cabecera'); //..una vez cargado el modelo de la tabla llama salidaalmacencabecera..
+								
 						
 		$datos['titulo']='Modificar salida '.$nombreDeposito;
 		$datos['cabeceraSalidas']=$cabeceraSalidas;	
@@ -125,15 +131,15 @@ class Materiales extends CI_Controller {
 	}
 	
 	
-	public function modificarIngresoAlmacen(){
+	public function modificarIngreso(){
 		$nIngreso= $_POST['inputNumero']; //... lee numero ingreso de almacen ...	
 		$fecha= $_POST['inputFecha']; //... lee fecha ...	
 		$proveedor= $_POST['inputProveedor']; //... lee proveedor ...
 		$nFactura= $_POST['inputFactura']; //... lee numero Factura ...
 	
-		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+		$nombreDeposito=$_POST['nombreDeposito']; //... lee nombreDeposito que viene de buscarIngresoMaerial ...	
 				
-		$sql="SELECT idMaterial,nombreInsumo,existencia,cantidad,unidad,precioUnidad,precioCompra FROM ingalmacen, almacen WHERE numIng='$nIngreso' AND idMaterial=codInsumo";
+		$sql="SELECT idMaterial,nombreInsumo,existencia,cantidad,unidad,precioUnidad,precioCompra FROM ing".$nombreDeposito.",".$nombreDeposito." WHERE numIng='$nIngreso' AND idMaterial=codInsumo";
 		$regIngresos=mysql_query($sql);        	
 		$nRegistrosIngreso=mysql_num_rows($regIngresos);  	//... numero registros salida que satisfacen la consulta ...
 		
@@ -158,15 +164,15 @@ class Materiales extends CI_Controller {
 	}		//... fin funcion: modificarIngresoAlmacen ...
 	
 	
-	public function modificarSalidaAlmacen(){
+	public function modificarSalida(){
 		$nSalida= $_POST['inputNumero']; //... lee numerosalida de almacen ...	
 		$fecha= $_POST['inputFecha']; //... lee fecha ...	
 		$glosa= $_POST['inputGlosa']; //... lee glosa(trabajador) ...
 		$nOrden= $_POST['inputOrden']; //... lee numeroOrden ...
 	
-		$nombreDeposito='almacen'; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+		$nombreDeposito=$_POST['nombreDeposito']; //... lee nombreDeposito que viene de buscarSalidaMaterial ...	
 				
-		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$nSalida' AND idMaterial=codInsumo";
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM sal".$nombreDeposito.",".$nombreDeposito." WHERE numSal='$nSalida' AND idMaterial=codInsumo";
 		$regSalidas=mysql_query($sql);
         	
 		$nRegistrosSalida=mysql_num_rows($regSalidas);  	//... numero registros salida que satisfacen la consulta ...
@@ -225,11 +231,10 @@ class Materiales extends CI_Controller {
 	    $this-> ingresoSalidaCabecera_model -> grabar($cabecera,$nombreDeposito,'ingreso');
 		// ...fin de insertar registro en tabla salida[almacen/bodega]cabecera ...	
 		
-		
         for($i=0; $i<$numeroFilasValidas; $i++){
        
-			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]);  //...quita espacio en blanco ..
-			$precioMaterial=$_POST['compraMat_'.$i]; 					//... precioMaterial ...
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]);  		//...quita espacio en blanco ..
+			$precioMaterial=str_replace(",","",$_POST['compraMat_'.$i])*0.87; 	//... precioMaterial menos 13% iva ...
 			
         	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
           	    //... si cantidad mayor que cero  graba registro ... 
@@ -238,7 +243,7 @@ class Materiales extends CI_Controller {
 	            	"numIng"=>$_POST['inputNumero'],
 				    "idMaterial"=>$codigoSinEspacio,
 				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]),
-				    "precioCompra"=>str_replace(",","",$_POST['compraMat_'.$i])
+					"precioCompra"=>$precioMaterial
 				);
 				
 				
@@ -285,15 +290,15 @@ class Materiales extends CI_Controller {
 		
 		$factura=$_POST['inputFactura'];
 		
-		$sql="UPDATE ingresoalmacencabecera SET numFactura='$factura', proveedor='$proveedor' WHERE numero='$numeroIngreso' ";
+		$sql="UPDATE ingreso".$nombreDeposito."cabecera SET numFactura='$factura', proveedor='$proveedor' WHERE numero='$numeroIngreso' ";
 		$this->db->query($sql);	
 		
-		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM ingalmacen, almacen WHERE numIng='$numeroIngreso' AND idMaterial=codInsumo";
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM ing".$nombreDeposito.",".$nombreDeposito." WHERE numIng='$numeroIngreso' AND idMaterial=codInsumo";
 		$regIngresos=$this->db->query($sql);
 		
 		// ... borra registros en la tabla:  ingalmacen ...	
 		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
-		$this-> tablaGenerica_model -> eliminar('ingalmacen','numIng', $numeroIngreso);	
+		$this-> tablaGenerica_model -> eliminar('ing'.$nombreDeposito,'numIng', $numeroIngreso);	
 		// fin borrar registros de ingalmacen ...
 		
 		//... decrementar existencias en tabla: almacen ...
@@ -302,7 +307,7 @@ class Materiales extends CI_Controller {
 			
 			// ... actualiza registro tabla maestra[almacen/bodega]	
 			$this-> load -> model("inventarios/maestroMaterial_model");
-			$this-> maestroMaterial_model -> disminuirExistenciaM('almacen',$codigoSinEspacio,$regIngreso->cantidad );	
+			$this-> maestroMaterial_model -> disminuirExistenciaM($nombreDeposito,$codigoSinEspacio,$regIngreso->cantidad );	
 	    	// fin decrementar existencias en tabla: almacen ...
 		}	 
 			
@@ -327,7 +332,7 @@ class Materiales extends CI_Controller {
 					
 				// ... actualiza registro tabla maestra[almacen/bodega]	
 				$this-> load -> model("inventarios/maestroMaterial_model");//	    		$this-> maestroMaterial_model -> aumentarExistencia($insumo,$nombreDeposito);
-				$this-> maestroMaterial_model -> aumentarExistenciaM('almacen',$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i]) );	
+				$this-> maestroMaterial_model -> aumentarExistenciaM($nombreDeposito,$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i]) );	
 				$this-> maestroMaterial_model -> actualizarPrecio($nombreDeposito,$codigoSinEspacio,$precioMaterial);	
 	
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
@@ -422,19 +427,17 @@ class Materiales extends CI_Controller {
 		
 		$numeroOrden=$_POST['inputOrden'];
 		
-		$sql="UPDATE salidaalmacencabecera SET numOrden='$numeroOrden' WHERE numero='$numeroSalida' ";
+		$sql="UPDATE salida".$nombreDeposito."cabecera SET numOrden='$numeroOrden' WHERE numero='$numeroSalida' ";
 		$this->db->query($sql);	
 		
-		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM salalmacen, almacen WHERE numSal='$numeroSalida' AND idMaterial=codInsumo";
+		$sql="SELECT idMaterial, nombreInsumo, existencia, cantidad, unidad FROM sal".$nombreDeposito.",".$nombreDeposito." WHERE numSal='$numeroSalida' AND idMaterial=codInsumo";
 		$regSalidas=$this->db->query($sql);
 
-		
 		// ... borra registros en la tabla:  salidaalmacen ...	
 		$this-> load -> model("tablaGenerica_model");	//... modelo tablaGenerica_model
-		$this-> tablaGenerica_model -> eliminar('salalmacen','numSal', $numeroSalida);	
+		$this-> tablaGenerica_model -> eliminar('sal'.$nombreDeposito,'numSal', $numeroSalida);	
 		// fin borrar registros de salalmacen ...
 				
-		
 		//... incrementar existencias en tabla: almacen ...
 		foreach ($regSalidas->result() as $regSalida) {
 			$codigoSinEspacio=str_replace(" ","",$regSalida->idMaterial); //...quita espacio en blanco ..
@@ -449,7 +452,7 @@ class Materiales extends CI_Controller {
 			
 			$this-> load -> model("inventarios/maestroMaterial_model");
 		    	
-			$this-> maestroMaterial_model -> aumentarExistencia($regInsumo,'almacen' );
+			$this-> maestroMaterial_model -> aumentarExistencia($regInsumo,$nombreDeposito );
 	    		    	
 	    	
 	    	// fin incrementar existencias en tabla: almacen ...
@@ -462,7 +465,7 @@ class Materiales extends CI_Controller {
 			
 			// ... inserta registro tabla salmacenbitacora ...
 			$this-> load -> model("tablaGenerica_model");		//carga modelo tablaGenerica_model
-	    	$this-> tablaGenerica_model -> grabar('salmacenbitacora',$materialBitacora);
+	    	$this-> tablaGenerica_model -> grabar('s'.$nombreDeposito.'bitacora',$materialBitacora);
 	    	// ... fin inserta registro tabla salmacenbitacora ...
 		}	 
 				
@@ -492,7 +495,7 @@ class Materiales extends CI_Controller {
 				);
 				
 				// ... actualiza registro tabla maestra[almacen/bodega]	
-				$this-> maestroMaterial_model -> disminuirExistenciaM('almacen',$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i])  );
+				$this-> maestroMaterial_model -> disminuirExistenciaM($nombreDeposito,$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i])  );
 
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
 				

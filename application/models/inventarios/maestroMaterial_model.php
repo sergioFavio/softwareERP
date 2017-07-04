@@ -57,10 +57,10 @@ class MaestroMaterial_model extends CI_Model{
     $material = $this->db->get($nombreDeposito)->row_array(); 
 	$precioUnidad = $material['precioUnidad'];	
 	
-	if($precioMaterial>$precioUnidad){		
+//	if($precioMaterial>$precioUnidad){		
 		$sql2="UPDATE $nombreDeposito SET precioUnidad='$precioMaterial' WHERE codInsumo='$clave'";
 		return $this->db->query($sql2);
-	}
+//	}
   }
   
   public function aumentarExistencia($insumo,$nombreDeposito){

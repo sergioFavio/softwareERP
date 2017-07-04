@@ -241,9 +241,12 @@
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Inventarios</a>
                     	<ul class="dropdown-menu">
                     		<li><a href="<?=base_url();?>materiales/crudMaterial"><span class="glyphicon glyphicon-file"></span> CRUD Almac&eacute;n</a></li>
-                    		<li><a href="<?=base_url();?>materiales/buscarIngresoAlmacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Ingreso de Almac&eacute;n</a></li>
-                    		<li><a href="<?=base_url();?>materiales/buscarSalidaAlmacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Almac&eacute;n</a></li>
+                    		<li><a href="<?=base_url();?>materiales/buscarIngreso?nombreDeposito=almacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Ingreso de Almac&eacute;n</a></li>
+                    		<li><a href="<?=base_url();?>materiales/buscarSalida?nombreDeposito=almacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Almac&eacute;n</a></li>
 							<li><a href="<?=base_url();?>materiales/fechasReporteIngresoSalida?nombreDeposito=almacen&tipoTransaccion=salidas_modificadas"><span class="glyphicon glyphicon-list-alt"></span> Reporte Salidas Modificadas Almac&eacute;n</a></li>
+							
+							<li><a href="<?=base_url();?>materiales/buscarIngreso?nombreDeposito=bodega"><span class="glyphicon glyphicon-pencil"></span> Modificar Ingreso de Bodega</a></li>
+                    		<li><a href="<?=base_url();?>materiales/buscarSalida?nombreDeposito=bodega"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Bodega</a></li>
 						</ul>
 					</li>
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Proveedores PENDIENTE</a>
