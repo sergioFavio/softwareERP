@@ -38,8 +38,7 @@ class Materiales extends CI_Controller {
 		}	//... fin IF validar usuario...
 	}	//... fin funcion ingresoMaterial ....
 	
-	public function salidaMaterial()
-	{
+	public function salidaMaterial(){
 		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
 		
 		//... control de permisos de acceso ....
@@ -74,7 +73,47 @@ class Materiales extends CI_Controller {
 		}	//... fin validar usuario ...
 	}	//... fin salidamaterial ...
 
+		
+	public function traspasoMaterial(){
+		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoDeposito=$this->session->userdata('usuarioDeposito');
+		$permisoProceso2=$this->session->userdata('usuarioProceso1');
+		if( $permisoUserName!='superuser' && $permisoUserName!='developer'   &&  $permisoDeposito!=$nombreDeposito ){  //... valida permiso de userName ...
 
+				$datos['mensaje']='Usuario NO autorizado para operar Sistema de Inventarios';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+	//			redirect('menuController/index');		
+		}	//... fin control de permisos de acceso ....	
+		else {
+			$this->load->model("inventarios/numeroIngresoSalida_model");
+			$prefijoTabla='nosal'; // ... prefijoTabla
+	    	$salida = $this->numeroIngresoSalida_model->getNumero($nombreDeposito, $prefijoTabla);
+			
+			$prefijoTabla='noing'; // ... prefijoTabla
+			$ingreso = $this->numeroIngresoSalida_model->getNumero('almacen', $prefijoTabla);		
+					
+			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+			$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+							
+			$datos['ingreso']=$ingreso;	
+			$datos['titulo']='Traspaso a almacén ';
+			$datos['salida']=$salida;
+			$datos['insumos']=$insumos;		
+			$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
+	
+			$this->load->view('header');
+			$this->load->view('inventarios/traspaso_material',$datos);
+			$this->load->view('footer');
+		}	//... fin validar usuario ...
+	}	//... fin traspasoMaterial ...
+	
+	
 	public function buscarIngreso(){
 		$nombreDeposito=str_replace(" ","",$_GET['nombreDeposito']); //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
 		
@@ -415,6 +454,92 @@ class Materiales extends CI_Controller {
 		redirect("materiales/salidaMaterial?nombreDeposito=$nombreDeposito");
 	}	//... fin grabarSalida
 		
+		
+	public function grabarTraspaso(){
+		$nombreDeposito=$_POST['nombreDeposito']; 	//... formulario salidaMaterial [almacen/bodega] ...
+				
+		$numeroFilasValidas=$_POST['numeroFilas']; 	//... formulario salida[almacen/bodega] ...
+		
+		$numeroIngresoAlmacen=$_POST['ingreso']; 	//... formulario salida[almacen/bodega] ...
+		
+		// ... actualizar numero de salida de almacén/bodega ...
+		$numeroSalida=$_POST['inputNumero'];		
+		$this-> load -> model("inventarios/numeroIngresoSalida_model");	//... modelo numeroSalida[almacen/bodega]_model 
+		$prefijoTabla='nosal'; // ... prefijoTabla
+		$this-> numeroIngresoSalida_model -> grabar($numeroSalida,$nombreDeposito, $prefijoTabla);	
+		// fin actualizar numero de salida de almacén/bodega ...
+		
+		$this-> numeroIngresoSalida_model -> grabar($numeroIngresoAlmacen,'almacen', 'noing');		//..actualiza numero ingreso almacen ...
+		
+		// ... inserta registro en tabla salida[almacen/bodega]cabecera ...	
+		$fecha=$_POST['inputFecha'];
+		
+		$cabecera = array(
+	    	"numero"=>$_POST['inputNumero'],
+	    	"fecha"=>$_POST['inputFecha'], 
+	    	"numOrden"=>$_POST['inputOrden'],
+	    	"glosa"=>$_POST['inputGlosa']
+		);
+		
+	    $this-> load -> model("inventarios/ingresoSalidaCabecera_model");	//... carga modelo salidaCabecera [almacen/bodega]
+	    $this-> ingresoSalidaCabecera_model -> grabar($cabecera,$nombreDeposito,'salida');
+		// ...fin de insertar registro en tabla salida[almacen/bodega]cabecera ...	
+		
+		
+		$cabeceraIngreso = array(
+	    	"numero"=>$numeroIngresoAlmacen,
+	    	"fecha"=>$_POST['inputFecha'],  
+	    	"numFactura"=>$_POST['inputNumero'],
+	    	"proveedor"=>"traspaso de Bodega"
+		);
+		
+//	    $this-> load -> model("inventarios/ingresoSalidaCabecera_model");	//... carga modelo salidaCabecera [almacen/bodega]
+	    $this-> ingresoSalidaCabecera_model -> grabar($cabeceraIngreso,'almacen','ingreso');
+		
+		
+		
+		
+        for($i=0; $i<$numeroFilasValidas; $i++){
+       
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    //... agrega registro tabla salalmacen ...      
+	            $material = array(
+	            	"numSal"=>$_POST['inputNumero'],
+				    "idMaterial"=>$codigoSinEspacio,
+				    "cantidad"=>$_POST['cantMat_'.$i]
+				);
+				
+				
+				//... actualiza registro tabla almacen/bodega
+				 $insumo = array(
+				 	"idMaterial"=>$codigoSinEspacio,
+				    "existencia"=>$_POST['existMat_'.$i],
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i])
+				);
+				
+				
+				// ... inserta registro tabla transacciones[salalmacen/salbodega]
+				$this-> load -> model("inventarios/ingresoSalidaMaterial_model");		//carga modelo salidaMaterial[salalmacen/salbodega]_model
+	    		$this-> ingresoSalidaMaterial_model -> grabar($material,$nombreDeposito,'sal');
+					
+					
+				// ... actualiza registro tabla maestra[almacen/bodega]	
+				$this-> load -> model("inventarios/maestroMaterial_model");
+	    		$this-> maestroMaterial_model -> disminuirExistencia($insumo,$nombreDeposito);
+								
+				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR  
+	
+		redirect("materiales/salidaMaterial?nombreDeposito=$nombreDeposito");
+	}	//... fin grabarTraspaso
+	
+	
 	
 	public function grabarModificarSalida()	{
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [almacen/bodega] ...

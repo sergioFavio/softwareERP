@@ -37,7 +37,12 @@
                     <li><a href="<?=base_url();?>materiales/ingresoMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-log-in"></span> Ingreso a Bodega</a></li>
                     <li class="divider"></li>
                     <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=almacen"><span class="glyphicon glyphicon-log-out"></span> Salida de Almacén</a></li>
-                    <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-log-out"></span> Salida de Bodega</a></li> 		
+                    <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-log-out"></span> Salida de Bodega</a></li> 	
+                    
+                    
+              <li><a href="<?=base_url();?>materiales/traspasoMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-retweet"></span> Traspaso de Bodega a Almacén</a></li> 		
+
+                    	
                     <li class="divider"></li>
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Reportes </b></a>
 						<ul class="dropdown-menu">

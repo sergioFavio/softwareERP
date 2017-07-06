@@ -1193,12 +1193,12 @@ class Produccion extends CI_Controller {
         
         //... lineq de detalle ...		
 		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
-		$this->pdf->Cell(10,7,' ','',0,'L',0);
+		$this->pdf->Cell(15,7,' ','',0,'L',0);
 		$this->pdf->Cell(60,7,utf8_decode(substr($producto,0,56) ),'',0,'L',0);
 		$this->pdf->Cell(7,7,' ','',0,'L',0);
-		$this->pdf->Cell(75,7,' ','',0,'L',0);
+		$this->pdf->Cell(70,7,' ','',0,'L',0);
 		$this->pdf->Cell(15,7,number_format($cantidad,2),'',0,'R',0);
-		$this->pdf->Cell(10,7,' ','',0,'L',0);
+		$this->pdf->Cell(5,7,' ','',0,'L',0);
         $this->pdf->Cell(15,7,$unidad,'',0,'L',0);
 		
 		if(substr($producto,56,120)!=""){
