@@ -529,6 +529,19 @@ class Materiales extends CI_Controller {
 				// ... actualiza registro tabla maestra[almacen/bodega]	
 				$this-> load -> model("inventarios/maestroMaterial_model");
 	    		$this-> maestroMaterial_model -> disminuirExistencia($insumo,$nombreDeposito);
+				
+				
+				
+				$materialIngreso = array(
+	            	"numIng"=>$numeroIngresoAlmacen,
+				    "idMaterial"=>$codigoSinEspacio,
+				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]),
+					"precioCompra"=>$precioMaterial
+				);
+				
+				$this-> load -> model("inventarios/maestroMaterial_model");
+	    		$this-> maestroMaterial_model -> aumentarExistencia($insumo,'almacen');
+				$this-> ingresoSalidaMaterial_model -> grabar($materialIngreso,'almacen','ing');
 								
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
 				

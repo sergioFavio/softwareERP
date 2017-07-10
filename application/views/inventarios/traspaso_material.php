@@ -70,7 +70,7 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Trabajador </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" placeholder="trabajador&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" value="Traspaso a almacén" readonly="readonly" placeholder="trabajador&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -83,7 +83,7 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Orden No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" placeholder="orden No.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" value="<?=$ingreso?>" readonly="readonly" placeholder="orden No.&hellip;" style="width: 90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -159,7 +159,7 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 					<th style='width:450px;'>Material</th>
 					<th style='width:60px;'>Existencia</th>
 					<th style='width:30px;'>Unidad</th>
-					<th style='width:30px;'>Tipo Insumo</th>
+					<th style='width:30px;'>Precio Unidad</th>
 				</tr>
 			</thead>
 			<tbody>			
@@ -169,7 +169,7 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
                         <td style='width:450px;'> <?= $insumo["nombreInsumo"]?></td>
                         <td style='width:70px;'> <?= $insumo["existencia"]?></td>
                         <td style='width:70px;'><?= $insumo["unidad"]?></td>
-                        <td style='width:30px;'><?= $insumo["tipoInsumo"]?></td>
+                        <td style='width:30px;'><?= number_format($insumo["precioUnidad"],2)?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>
