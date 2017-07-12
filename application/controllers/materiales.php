@@ -485,7 +485,6 @@ class Materiales extends CI_Controller {
 	    $this-> ingresoSalidaCabecera_model -> grabar($cabecera,$nombreDeposito,'salida');
 		// ...fin de insertar registro en tabla salida[almacen/bodega]cabecera ...	
 		
-		
 		$cabeceraIngreso = array(
 	    	"numero"=>$numeroIngresoAlmacen,
 	    	"fecha"=>$_POST['inputFecha'],  
@@ -493,11 +492,7 @@ class Materiales extends CI_Controller {
 	    	"proveedor"=>"traspaso de Bodega"
 		);
 		
-//	    $this-> load -> model("inventarios/ingresoSalidaCabecera_model");	//... carga modelo salidaCabecera [almacen/bodega]
 	    $this-> ingresoSalidaCabecera_model -> grabar($cabeceraIngreso,'almacen','ingreso');
-		
-		
-		
 		
         for($i=0; $i<$numeroFilasValidas; $i++){
        
@@ -536,11 +531,11 @@ class Materiales extends CI_Controller {
 	            	"numIng"=>$numeroIngresoAlmacen,
 				    "idMaterial"=>$codigoSinEspacio,
 				    "cantidad"=>str_replace(",","",$_POST['cantMat_'.$i]),
-					"precioCompra"=>$precioMaterial
+					"precioCompra"=>str_replace(",","",$_POST['precioMat_'.$i])
 				);
 				
 				$this-> load -> model("inventarios/maestroMaterial_model");
-	    		$this-> maestroMaterial_model -> aumentarExistencia($insumo,'almacen');
+	    		$this-> maestroMaterial_model -> aumentarExistenciaM('almacen',$codigoSinEspacio,str_replace(",","",$_POST['cantMat_'.$i]));
 				$this-> ingresoSalidaMaterial_model -> grabar($materialIngreso,'almacen','ing');
 								
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
@@ -549,7 +544,7 @@ class Materiales extends CI_Controller {
 			
 		}  // ... fin  FOR  
 	
-		redirect("materiales/salidaMaterial?nombreDeposito=$nombreDeposito");
+		redirect("materiales/traspasoMaterial?nombreDeposito=$nombreDeposito");
 	}	//... fin grabarTraspaso
 	
 	

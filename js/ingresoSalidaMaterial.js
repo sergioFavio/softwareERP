@@ -2,7 +2,6 @@
 
 var totalBs=0;      // ... calcula a partir de la suma de todos los importes formulario ..ingreso de materiales			
 $(document).ready(function() {
-			
 	/*  inicio de light box  javascript */
 	$('.openLightBox').click(function(){
   		var title = $(this).attr("title");
@@ -50,29 +49,24 @@ $(document).ready(function() {
         	
 	} ); // fin #tabla2 tbody
 
-			
 	$("#btnBorrarIngreso").click(function(){
         	borrarFormularioIngreso();
     });	
     		
-
 	$("#btnBorrarSalida").click(function(){
         	borrarFormularioSalida();
     });	
-
 
 	$("#btnGrabarIngreso").click(function(){
 	// grabar ingreso [almacen/bodega]
     	grabarIngreso();
 	});
 	
-	
 	$("#btnGrabarSalida").click(function(){
 	// grabar salida [almacen/bodega]
     	grabarSalida();
 	});
 	
-		
 }); // fin document.ready 
 		
 
@@ -93,9 +87,6 @@ function verificarCodigoRepetido(codigoMaterial,posicionFila,limiteArreglo){
 	return codigoRepetido;
 }	// fin funcion verificarCodigoRepetido 
 	
-
-
-		
 function borrarFormularioIngreso(){
 	//...esta funcion borra los datos del formularioIngreso
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -111,8 +102,6 @@ function borrarFormularioIngreso(){
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioIngreso 
 	
-
-
 function borrarFormularioSalida(){
 	//...esta funcion borra los datos del formularioSalida
 	var fila = document.getElementsByClassName("detalleMaterial");
@@ -125,10 +114,7 @@ function borrarFormularioSalida(){
 	} // fin ciclo FOR
 } // fin funcion borrarFormularioSalida 
 
-		
-
 function grabarIngreso(){
-	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
@@ -152,7 +138,6 @@ function grabarIngreso(){
 			var registrosValidos= false;	
 	}
 	
-			
 	// ... valida que los registros no tengan cantidad vac�a  ...
 	while($("#idMat_"+i).val()!= ""){
 		if($("#cantMat_"+i).val()==""){
@@ -178,10 +163,7 @@ function grabarIngreso(){
 			
 }	// ... fin funcion grabarIngreso() ...
 
-
-	
 function grabarSalida(){
-	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
@@ -190,25 +172,21 @@ function grabarSalida(){
 			var registrosValidos= false;	
 	}
 	
-	
 	if($("#inputGlosa").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
 			var registrosValidos= false;	
 	}
-	
 	
 	if( $("#inputOrden").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
 			var registrosValidos= false;	
 	}
 	
-	
 	if($("#idMat_0").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
 			var registrosValidos= false;	
 	}
-	
-			
+		
 	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
 	while($("#idMat_"+i).val()!= ""){
 		if($("#cantMat_"+i).val()==""){
@@ -270,7 +248,6 @@ function validarCantidad(numero, filaExistencia){
 	}
 }   // fin ... validarCantidad ...
 
-
 function validarCantidadIngreso(numero, filaExistencia){
 			
 	if($("#idMat_"+filaExistencia).val()==""){
@@ -304,7 +281,6 @@ function validarCantidadIngreso(numero, filaExistencia){
 	}
 }   // fin ... validarCantidadIngreso ...
 
-
 function validarPrecioCompra(numero, filaExistencia){
 			
 	if($("#idMat_"+filaExistencia).val()==""){
@@ -335,7 +311,6 @@ function validarPrecioCompra(numero, filaExistencia){
 	}
 }   // fin ... validarPrecioCompra ...
 
-
 function calcularTotalBs(){
 	//...suma los importes del formularioIngreso
 	var i=0;
@@ -359,8 +334,7 @@ function calcularTotalBs(){
 	document.form_.detalleTotalBs.value=totalBs;  // ... totalBs  variable formulario...
 		
 } // fin funcion ... calcularTotalBs 
-
-		
+	
 function separadorMiles(n){
     var rx=  /(\d+)(\d{3})/;
     return String(n).replace(/^\d+/, function(w){
@@ -371,7 +345,6 @@ function separadorMiles(n){
         return w;
     });
 }
-
 		
 function filaVacia(posicionFila){
 	var filaAnterior= parseInt( posicionFila )-1;
