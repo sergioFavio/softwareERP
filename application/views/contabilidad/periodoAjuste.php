@@ -35,7 +35,7 @@ $(document).ready(function() {
 <div class="jumbotron" id="cuerpo" >	
 				
 	<div class="cuerpoCabeceraReporteSalida">
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>contabilidad/generarReporte<?=$reporte?>' id='form_' name='form_' >
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>contabilidad/comprobanteAjuste?tipoComprobante=diario' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> <?= $tituloReporte ?> </span></p>
 	
@@ -49,9 +49,10 @@ $(document).ready(function() {
 					<div class="input-group input-group-sm">
 				    	<span class="input-group-addon" id="letraCabecera" >Per&iacute;odo de Gestión</span>
 		    	 		<select class = "form-control input-sm" id="fechaDeGestion" name="fechaDeGestion" placeholder="fecha de gestión&hellip;" style="width:85px;font-size:11px;text-align:center;">
-						   <?php foreach($fechasGestiones as $fechaGestion):?>
+							<?php  while ($fechaGestion = mysql_fetch_array($fechasGestiones)){?>
 					         <option value="<?= $fechaGestion['gestion'] ?>"> <?= substr($fechaGestion['gestion'],0,4).'-'.substr($fechaGestion['gestion'],4,2) ?> </option>
-					       <?php endforeach ?>
+ 						   <?php } ?>					       
+					       
 			        	</select>
 		    		</div>
 	    		</div><!-- /.col-xs-2 -->
@@ -61,7 +62,7 @@ $(document).ready(function() {
 			   	</div>
 				     			     	
 			    <div class="col-xs-6 col-md-2"> 
-			    	<button type="button" id="btnGenerarReporteSalida" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver Reporte</button>
+			    	<button type="button" id="btnGenerarReporteSalida" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-pencil"></span> Comprobante</button>
 			    </div>
 			    
 			    <div class="col-xs-1 col-md-1"> 

@@ -182,6 +182,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 	<input type="hidden"  name="numeroFilas"  />
 	<input type="hidden"  name="tipoComprobante" value="<?= $tipoComprobante ?>" />     <!--  tipoComprobante: ingreso/egreso/traspaso -->
 	<input type="hidden"  name="numComprobante" value="<?= $numComprobante ?>" />     	<!--  numComprobante: ingreso/egreso/traspaso -->
+	<input type="hidden"  name="ajuste" value="<?= $ajuste ?>" />     					<!--  ajuste: true/false -->
 	
 	<div style="text-align: right; padding-top: 5px;">  
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

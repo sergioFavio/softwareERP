@@ -54,3 +54,14 @@ function periodoGestionInicial(){ 	//...sistema de contabilidad ...
 	}
 	return $gestionInicial;		
 }
+
+function ultimoComprobantePeriodoGestion($mesGestion,$anhoGestion){ 	//...sistema de contabilidad ...
+	$sql="SELECT MAX(idComprobante) AS ultimoComprobante FROM comprobantedetalle WHERE MONTH(fechaComprobante)='$mesGestion' AND YEAR(fechaComprobante)='$anhoGestion'";		
+	$regComprobantes= mysql_query($sql);	
+	while ($fila = mysql_fetch_assoc($regComprobantes)) {
+	    $ultimoComprobante=$fila["ultimoComprobante"];
+	}
+//	$ultimaFecha= substr($ultimaFecha,8,2).substr($ultimaFecha,4,4).substr($ultimaFecha,0,4);
+	return $ultimoComprobante;		
+}
+

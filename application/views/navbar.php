@@ -38,11 +38,7 @@
                     <li class="divider"></li>
                     <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=almacen"><span class="glyphicon glyphicon-log-out"></span> Salida de Almacén</a></li>
                     <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-log-out"></span> Salida de Bodega</a></li> 	
-                    
-                    
-              <li><a href="<?=base_url();?>materiales/traspasoMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-retweet"></span> Traspaso de Bodega a Almacén</a></li> 		
-
-                    	
+              		<li><a href="<?=base_url();?>materiales/traspasoMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-retweet"></span> Traspaso de Bodega a Almacén</a></li> 		
                     <li class="divider"></li>
                     <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Reportes </b></a>
 						<ul class="dropdown-menu">
@@ -207,7 +203,7 @@
 							<li><a href="<?=base_url();?>contabilidad/comprobante?tipoComprobante=diario"><span class="glyphicon glyphicon-new-window"></span> Diario</a></li>
 							<li><a href="<?=base_url();?>contabilidad/buscarComprobante"><span class="glyphicon glyphicon-edit"></span> Modificar</a></li>
 								
-							<li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-unchecked"></span> Ajuste ...PENDIENTE</a></li>
+							<li><a href="<?=base_url();?>contabilidad/periodoAjuste"><span class="glyphicon glyphicon-unchecked"></span> Ajuste</a></li>
 							
 							<li><a href="<?=base_url();?>contabilidad/verComprobante"><span class="glyphicon glyphicon-search"></span> Buscar</a></li>
 						</ul>

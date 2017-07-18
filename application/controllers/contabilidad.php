@@ -395,8 +395,72 @@ class Contabilidad extends CI_Controller {
 	}		//... fin buscarComprobante ....
 	
 	
-	public function comprobante()
-	{
+	public function comprobanteAjuste(){
+		$tipoComprobante= $_GET['tipoComprobante']; //... lee tipoComprobante que viene del menu principal(ingreso/egreso/traspaso ) ...		
+		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {				//... usuario validado ...
+		
+			$gestion=$_POST['fechaDeGestion'];
+						
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de comprobante ...
+			//////////////////////////////////////
+			$anhoSistema = substr($gestion, 0, 4);	//... anho del periodo ...
+			$mesSistema = substr($gestion, 4, 2);	//... mes del periodo ...
+					
+		    $ultimoComprobante=ultimoComprobantePeriodoGestion($mesSistema,$anhoSistema);			
+						
+			$anhoPedido= substr($ultimoComprobante, 0, 4);  // toma los primeros 4 caracteres ... anho.
+			$mesPedido= substr($ultimoComprobante, 4, 2);  // toma los  caracteres ... mes.
+			$secuenciaPedido= substr($ultimoComprobante, 6, 3);  // toma los caracteres ... secuencia.
+			if($anhoPedido==$anhoSistema){
+				if($mesPedido==$mesSistema){
+			        $secuenciaPedido=$secuenciaPedido +1;
+					if(strlen($secuenciaPedido)==1){
+						 $secuenciaPedido="00". $secuenciaPedido;
+					}
+					if(strlen($secuenciaPedido)==2){
+						 $secuenciaPedido="0". $secuenciaPedido;
+					}
+			     	$numComprobante=$anhoSistema.$mesSistema.$secuenciaPedido;
+				}
+			    else{
+					$numComprobante=$anhoSistema.$mesSistema."001";
+				}
+			}
+			else{
+				$numComprobante=$anhoSistema.$mesSistema."001";
+			}
+			
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
+			$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
+			
+			$datos['ajuste']=true;
+			$datos['gestion']=$gestion;			
+			$datos['titulo']='Comprobante de '.$tipoComprobante;
+			$datos['numComprobante']=$numComprobante;
+			$datos['cuentas']=$cuentas;		
+			$datos['tipoComprobante']=$tipoComprobante;	// ... ingreso/egreso/traspaso ...
+	
+			$this->load->view('header');
+			$this->load->view('contabilidad/comprobante',$datos);
+			$this->load->view('footer');
+			
+		}	//... fin IF validar usuario ...
+	}	//.. fin funcion comprobanteAjuste ...
+	
+	
+	public function comprobante(){
 		$tipoComprobante= $_GET['tipoComprobante']; //... lee tipoComprobante que viene del menu principal(ingreso/egreso/traspaso ) ...		
 		
 		//... control de permisos de acceso ....
@@ -453,6 +517,7 @@ class Contabilidad extends CI_Controller {
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla para cargar planCtas que solo se pueden registrar [contaplana]			
 			$cuentas= $this->tablaGenerica_model->getTodos('contaplana'); //..una vez cargado el modelo de la tabla llama contaplana..
 			
+			$datos['ajuste']=false;
 			$datos['gestion']=$gestion;			
 			$datos['titulo']='Comprobante de '.$tipoComprobante;
 			$datos['numComprobante']=$numComprobante;
@@ -467,6 +532,8 @@ class Contabilidad extends CI_Controller {
 
 
 	public function grabarComprobante(){
+		$ajuste=$_POST['ajuste']; //... formulario tipoComprobante [ajuste: true/false] ...
+		
 		$tipoComprobante=$_POST['tipoComprobante']; //... formulario tipoComprobante [ingreso/egreso/traspaso] ...
 		
 		if($tipoComprobante!='egreso'){
@@ -479,13 +546,14 @@ class Contabilidad extends CI_Controller {
 		$numComprobante=$_POST['numComprobante'];
 		$valorLiteral=$_POST['inputLiteral'];		//... valor literal total del comprobante ...
 		
-		// ... actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
-		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... 
-		$nombreTabla='contanocomprobante'; // ... prefijoTabla
-		
-		$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
-		// fin actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
-		
+		if(!$ajuste){
+			// ... actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
+			$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... 
+			$nombreTabla='contanocomprobante'; // ... prefijoTabla
+			
+			$this-> numeroDocumento_model -> actualizar($numComprobante,$nombreTabla);
+			// fin actualizar numero de documento de comprobante ingreso/egreso/traspaso ...
+		}
 		
 		// ... inserta registro en tabla comprobantecabecera ...	
 		$fecha=$_POST['inputFecha'];
@@ -1038,6 +1106,43 @@ class Contabilidad extends CI_Controller {
 		$this->load->view('contabilidad/reporteContabilidad',$datos );
 		$this->load->view('footer');
 	}		//... fin reporteContabilidad ...
+	
+	public function periodoAjuste(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {	//... usuario validado ...
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tablagenerica
+			$contador= $this->tablaGenerica_model->get_total_registros('contagestion'); //...contador de registros  ...		
+			if($contador<=1){
+				$datos['mensaje']='¡ No se puede hacer comprobante de ajuste en la gestión actual !';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				$gestionActual ='';
+				$rs = mysql_query("SELECT MAX(gestion) AS gestionActual FROM contagestion");
+				if ($row = mysql_fetch_row($rs)) {
+					$gestionActual = trim($row[0]);
+				}
+
+				$sql="SELECT gestion FROM contagestion WHERE gestion!='$gestionActual'";
+				$fechasGestiones=mysql_query($sql); 
+			
+				$datos['fechasGestiones']=$fechasGestiones;
+				$datos['tituloReporte']='Seleccionar período contable';
+				$this->load->view('header');
+				$this->load->view('contabilidad/periodoAjuste',$datos );
+				$this->load->view('footer');
+			}
+		}
+	}		//... fin funcion periodoAjuste ....
 	
 		
 	public function generarReporteDiarioGeneral(){
