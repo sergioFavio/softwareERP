@@ -1286,7 +1286,6 @@ class Produccion extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}			// ... fin control permiso de accesos...
 		else {
 			$this->load->model("tablaGenerica_model");

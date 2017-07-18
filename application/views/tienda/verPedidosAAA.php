@@ -26,9 +26,9 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpoCabecera{margin:0 auto; padding:0; width:850px; height:50px;}
-	#cuerpoDetalle{margin:0 auto; padding:0; width:850px; height:410px;}
-	#cuerpoPaginacion{margin:0 auto;padding:0; width:850px; height:60px;}
+	#cuerpoCabecera{margin:0 auto; padding:0; width:820px; height:50px;}
+	#cuerpoDetalle{margin:0 auto; padding:0; width:820px; height:410px;}
+	#cuerpoPaginacion{margin:0 auto;padding:0; width:820px; height:60px;}
 	
 	#inputBuscarPatron, #letraCabecera{font-size:11px;text-align:center; }
 	
@@ -113,41 +113,22 @@ function pedidoPdf(nPedido){
 			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
-			   	      
-				<div class="col-xs-3" style="font-size:11px;"> 					   
-					<label class="radio-inline">
-				      <input type="radio" name="optradio" value="pedido" checked="checked">Por pedido
-				    </label>
-				    <label class="radio-inline">
-				      <input type="radio" name="optradio" value="cliente">Por cliente
-				    </label>
-				</div> 	
-    			   	         
-				<div class="col-xs-3">
-					
+			   	     
+				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar por: &hellip;" data-toggle='tooltip' title="ingresar número de pedido sin ' / ' ">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar No. pedido&hellip;" data-toggle='tooltip' title="ingresar número de pedido sin ' / ' ">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>
-                    </div>
-			    </div>	
+			    	</div>
+			    </div><!-- /.col-xs-3 -->	
 			    
-			    
-			     
- 		    
-			    
-			    
-			    
-			    
-			    
-			    
-			    <!--div class="col-xs-1"> 
+			    <div class="col-xs-1"> 
 					<span></span>
-			   	</div-->
+			   	</div>
 			   	
-			   	<div class="col-xs-2"> 
+			   	<div class="col-xs-3"> 
 					<span  id="titulo" class="label label-success"> V e r  &nbsp;&nbsp;&nbsp;&nbsp; P e d i d o s</span>
 			   	</div>
 			    
@@ -181,8 +162,8 @@ function pedidoPdf(nPedido){
 				<th style="width: 75px;">Fecha Pedido</th>
 				<th style="width: 40px;">Estado</th>
 				<th style="width: 75px;">Fecha Estado</th>
-				<th style="width: 70px;">Nota Entrega</th>
-				<th style="width: 140px;text-align:center ">Acciones</th>
+				<th style="width: 30px;">Nota Entrega</th>
+				<th style="width: 130px;text-align:center ">Acciones</th>
     		</tr>
  		</thead>
  		
@@ -239,9 +220,9 @@ function pedidoPdf(nPedido){
 					
 					 echo"<td style='width: 40px;'><input type='text' id='estado_".$posicionFila."' name='estado_".$posicionFila."' value='".$pedido->estado."' readonly='readonly' style='border:none; width:40px;' /></td>";
 					
-					 echo"<td style='width: 63px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEstado)."' readonly='readonly' style='border:none; width:63px;' /></td>";
+					 echo"<td style='width: 60px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEstado)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 					
-					 echo"<td style='width: 65px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:65px;' /></td>";
+					 echo"<td style='width: 40px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:40px;' /></td>";
 								
 					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroPedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	

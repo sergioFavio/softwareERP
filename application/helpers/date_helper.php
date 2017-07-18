@@ -61,7 +61,6 @@ function ultimoComprobantePeriodoGestion($mesGestion,$anhoGestion){ 	//...sistem
 	while ($fila = mysql_fetch_assoc($regComprobantes)) {
 	    $ultimoComprobante=$fila["ultimoComprobante"];
 	}
-//	$ultimaFecha= substr($ultimaFecha,8,2).substr($ultimaFecha,4,4).substr($ultimaFecha,0,4);
 	return $ultimoComprobante;		
 }
 
