@@ -73,24 +73,20 @@ $(document).ready(function() {
 		var idele=$(form).find('input[name="codigo"]').val();
 			
 		$.ajax({
-		
 		    url: action,
 		    type: "POST",
 		    data: $(form).serialize(),
 		
 		    success: function(data){
 		        //alert(data);
-		       
-		    //  aca deberia poner la funcion que hace el refrescado del listado
-		    window.location.href=data;
-
+		    	//  aca deberia poner la funcion que hace el refrescado del listado
+		    	window.location.href=data;
 			}
 		});
 	 });
 
 	
-	
-	$('#editarModal').on('show.bs.modal', function(e) {  
+	$('#editarModal').on('show.bs.modal', function(e){  
 		//aca recuperamos el id que pasaremos por tag al modal  
 		var id = $(e.relatedTarget).data('item-id'); 
 		var mat = $(e.relatedTarget).data('mat');
@@ -161,7 +157,6 @@ $(document).ready(function() {
     	grabarModificacionMaterial();
 	});
 	
-	  
 }); // fin document.ready 
 
 
@@ -247,8 +242,8 @@ function grabarModificacionMaterial(){
 */
 	
 	if($("#inputEstockMinimoM").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de ESTOCK MINIMO está vacío");
-			var registrosValidosM= false;	
+		alert("¡¡¡ E R R O R !!! ... El contenido de ESTOCK MINIMO está vacío");
+		var registrosValidosM= false;	
 	}
 	
 	if(!registrosValidosM){
@@ -278,9 +273,6 @@ function validarCodigoNoRepetido(numero){
     	});	//..fin AJAX ...
 
 }   // fin ... validarCodigoNoRepetido ...
-
-
-
 
 function validarExistencia(numero){		
 	var cantidad=parseFloat( numero ); // convierte de string to number 
@@ -335,33 +327,50 @@ function validarEstockMinimoM(numero){
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
-		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/buscarMaterialCrud" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	
+		<?php
+			if($campoBusqueda=="nombreInsumo"){
+				$buscaPor="buscarMaterialCrud";
+			}else{
+				$buscaPor="buscarMaterialCrudPorCodigo";
+			}
+		?>
+	
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/<?= $buscaPor ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> CRUD material </span></p>
 	
 		   <div class="row">
 		   	
-			   	<div class="col-xs-1 col-md-1"> 
+			   	<div class="col-xs-1"> 
 					<span></span>
 			   	</div>
 			   	
-			   	<div class="col-xs-2 col-md-2"> 
+			   	<div class="col-xs-1"> 
 			    	<button type="button"  class="btn btn-success btn-sm" id="openLightBox" title='Crea registro de nuevo material en almacén y bodega'><span class="glyphicon glyphicon-plus-sign"></span> Añadir material</button>
 			    </div>
-			   	     
-				<div class="col-lg-6">    
+			    
+				<div class="col-xs-2"> 
+					<span></span>
+			   	</div>
+						   			      
+				<div class="col-xs-4">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaMaterial ?>' placeholder="buscar ...">
-						
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaMaterial ?>' placeholder="buscar por ...<?= $campoBusqueda ?>">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>
 			    	</div>
 			    </div><!-- /.col-lg-6 -->	
-			    			     	
-			    <div class="col-xs-2 col-md-2"> 
+			        
+				<div class="col-xs-1"> 
+					<span></span>
+			   	</div>	
+			   	
+			   	<input type="hidden"  name="campoBusqueda" value="<?= $campoBusqueda ?>" />     <!--  campoBusqueda: nombreInsumo/codInsumo -->
+	    	     	
+			    <div class="col-xs-2"> 
 			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 			    

@@ -644,9 +644,8 @@ class Materiales extends CI_Controller {
 	/////////////////////////////////////////////
 	//... funciones del CRUD almacen/bodega ...//
 	/////////////////////////////////////////////
-	
-	public function crudMaterial(){
 		
+	public function crudMaterialPorCodigo(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -657,9 +656,9 @@ class Materiales extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
-//			redirect('menuController/index');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
+		
 			$nombreDeposito='almacen';
 			$this->load->model("inventarios/maestroMaterial_model");
 			
@@ -707,6 +706,83 @@ class Materiales extends CI_Controller {
 		   		$datos['listaMaterial'] = $this->maestroMaterial_model->get_materiales($nombreDeposito,$config['per_page'], $desde); 
 		
 				$datos['consultaMaterial'] ='';
+				
+				$datos['campoBusqueda'] ='codInsumo';
+				
+		 		/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('inventarios/mostrarMaterialesCrud', $datos);
+				$this->load->view('footer');
+				
+			}  // fin else cuando hay registros 
+		}	//... fin IF validar usuarios...
+		
+	} //... fin crudMaterialPorCodigo
+	
+	
+	public function crudMaterial(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoDeposito=$this->session->userdata('usuarioDeposito');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' ){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar CRUD de Inventarios';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+		
+			$nombreDeposito='almacen';
+			$this->load->model("inventarios/maestroMaterial_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'materiales/crudMaterial';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->maestroMaterial_model->get_total_registros($nombreDeposito);
+			
+			$contador= $config['total_rows'];
+			
+			if($contador==0){  //...cuando NO hay registros ...
+				$datos['mensaje']='No hay registros grabados en la tabla '.$nombreDeposito;
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}
+			else{      //... cuando hay registros ...
+			
+				/*Obtiene el numero de registros a mostrar por pagina */
+		    	$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+		    	$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+		    	$this->pagination->initialize($config);
+		
+				/* Se obtienen los registros a mostrar*/ 
+		   		$datos['listaMaterial'] = $this->maestroMaterial_model->get_materiales($nombreDeposito,$config['per_page'], $desde); 
+		
+				$datos['consultaMaterial'] ='';
+				
+				$datos['campoBusqueda'] ='nombreInsumo';
 				
 		 		/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');
@@ -770,9 +846,11 @@ class Materiales extends CI_Controller {
 		echo $data;
 	}
 	
-	public function buscarMaterialCrud(){
-		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	
+		public function buscarMaterialCrudPorCodigo(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+		$campoBusqueda="codInsumo";
+
 		if(isset($_POST['inputBuscarPatron'])){
 			$consultaMaterial=$_POST['inputBuscarPatron'];
 			
@@ -792,7 +870,7 @@ class Materiales extends CI_Controller {
 		$this-> load -> model("tablaGenerica_model");
 		
 		$totalRegistrosEncontrados=0;		
-		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('almacen','nombreInsumo',$consultaMaterial);
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
 		//echo"total registros econtrados".$totalRegistrosEncontrados;
 		if($totalRegistrosEncontrados==0){
 		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
@@ -801,10 +879,10 @@ class Materiales extends CI_Controller {
 			redirect('menuController/index');
 		}else{
 			/* URL a la que se desea agregar la paginación*/
-	    	$config['base_url'] = base_url().'materiales/buscarMaterialCrud';
+	    	$config['base_url'] = base_url().'materiales/buscarMaterialCrudPorCodigo';
 			
 			/*Obtiene el total de registros a paginar */
-			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('almacen','nombreInsumo',$consultaMaterial);
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
 	
 		
 			/*Obtiene el numero de registros a mostrar por pagina */
@@ -832,9 +910,91 @@ class Materiales extends CI_Controller {
 	    	$this->pagination->initialize($config);
 	
 			/* Se obtienen los registros a mostrar*/ 		
-			$datos['listaMaterial'] = $this-> tablaGenerica_model -> buscarPaginacion('almacen','nombreInsumo',$consultaMaterial, $config['per_page'], $desde );
+			$datos['listaMaterial'] = $this-> tablaGenerica_model -> buscarPaginacion('almacen',$campoBusqueda,$consultaMaterial, $config['per_page'], $desde );
 			
 			$datos['consultaMaterial'] =$consultaMaterial;
+			
+			$datos['campoBusqueda'] =$campoBusqueda;
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('inventarios/mostrarMaterialesCrud', $datos);
+			$this->load->view('footer');
+		
+		}     //... fin IF total registros encontrados ...
+	}		//.. fin buscarMaterialCrudPorcodigo ..
+	
+	
+	
+	
+	public function buscarMaterialCrud(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+		$campoBusqueda="nombreInsumo";
+
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaMaterial=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaMaterial);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaMaterial = fgets($fp);
+			fclose($fp); 
+		}	
+				
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
+		//	$this->load->view('mensaje',$datos );
+		//	redirect('produccion/crudVerCotizaciones');
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'materiales/buscarMaterialCrud';
+			
+			/*Obtiene el total de registros a paginar */
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
+	
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 		
+			$datos['listaMaterial'] = $this-> tablaGenerica_model -> buscarPaginacion('almacen',$campoBusqueda,$consultaMaterial, $config['per_page'], $desde );
+			
+			$datos['consultaMaterial'] =$consultaMaterial;
+			
+			$datos['campoBusqueda'] =$campoBusqueda;
 			
 			/*Se llama a la vista para mostrar la información*/
 			$this->load->view('header');
@@ -843,6 +1003,7 @@ class Materiales extends CI_Controller {
 		
 		}     //... fin IF total registros encontrados ...
 	}		//.. fin buscarMaterialCrud ..
+	
 		
 	function validarCodigoMaterialCrud(){
 		//... recupera la variable de codigoMaterial ...

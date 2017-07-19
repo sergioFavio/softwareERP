@@ -124,7 +124,6 @@ function pedidoPdf(nPedido){
 				</div> 	
     			   	         
 				<div class="col-xs-3">
-					
 			    	<div class="input-group input-group-sm">
 			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar por: &hellip;" data-toggle='tooltip' title="ingresar número de pedido sin ' / ' ">
 						
@@ -134,15 +133,7 @@ function pedidoPdf(nPedido){
                     </div>
 			    </div>	
 			    
-			    
-			     
- 		    
-			    
-			    
-			    
-			    
-			    
-			    
+			    			    
 			    <!--div class="col-xs-1"> 
 					<span></span>
 			   	</div-->
