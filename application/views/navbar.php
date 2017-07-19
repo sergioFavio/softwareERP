@@ -244,8 +244,6 @@
                     		<li><a href="<?=base_url();?>materiales/crudMaterial"><span class="glyphicon glyphicon-file"></span> CRUD Almac&eacute;n</a></li>
                     		
                     		<li><a href="<?=base_url();?>materiales/crudMaterialPorCodigo"><span class="glyphicon glyphicon-file"></span> Buscar Material por C&oacute;digo</a></li>
-
-                    		
                     		<li><a href="<?=base_url();?>materiales/buscarIngreso?nombreDeposito=almacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Ingreso de Almac&eacute;n</a></li>
                     		<li><a href="<?=base_url();?>materiales/buscarSalida?nombreDeposito=almacen"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Almac&eacute;n</a></li>
 							<li><a href="<?=base_url();?>materiales/fechasReporteIngresoSalida?nombreDeposito=almacen&tipoTransaccion=salidas_modificadas"><span class="glyphicon glyphicon-list-alt"></span> Reporte Salidas Modificadas Almac&eacute;n</a></li>
@@ -277,6 +275,9 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Productos</a>
                     	<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/crudProducto"><span class="glyphicon glyphicon-file"></span> CRUD productosfabrica</a></li>
+							
+							<li><a href="<?=base_url();?>tienda/crudProductoPorCodigo"><span class="glyphicon glyphicon-file"></span> Buscar Productos F&aacute;brica por C&oacute;digo</a></li>
+
 							<li><a href="<?=base_url();?>tienda/listaPreciosProductos"><span class="glyphicon glyphicon-print"></span> Lista de Precios</a></li>
 						</ul>
 					</li>

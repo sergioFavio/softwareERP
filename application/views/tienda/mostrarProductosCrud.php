@@ -76,7 +76,6 @@ $(document).ready(function() {
 	});
 	
 	
-	
 	$('#borrarModal').on("click", 'input[type="submit"], button[type="submit"]', function() {       
 		var form= $('#borrarModal').find("form");
 		var action=form.attr("action");
@@ -100,7 +99,6 @@ $(document).ready(function() {
 	 });
 
 	
-	
 	$('#editarModal').on('show.bs.modal', function(e) {  
 		//aca recuperamos el id que pasaremos por tag al modal  
 		var id = $(e.relatedTarget).data('item-id'); 
@@ -120,7 +118,6 @@ $(document).ready(function() {
 		$(e.currentTarget).find('input[name="inputPrecioVentaM"]').val(precio);
 		$(e.currentTarget).find('input[name="inputEstockMinimoM"]').val(stock);
 		
-
 		//esto solo pone el id pasado por tag para mostralo en el modal
 		$(e.currentTarget).find('.modal-title').html(title);		
 		
@@ -140,17 +137,14 @@ $(document).ready(function() {
 		var idele7=$(form).find('input[name="inputEstockMinimoM"]').val();	
 					
 		$.ajax({
-		
 		    url: action,
 		    type: "POST",
 		    data: $(form).serialize(),
 		
 		    success: function(data){
-      		//alert(data);
-		       
-		    //  aca deberia poner la funcion que hace el refrescado del listado
-		    window.location.href=data;
-
+	      		//alert(data);
+			    //  aca deberia poner la funcion que hace el refrescado del listado
+			    window.location.href=data;
 			}
 		});
 	 });
@@ -167,7 +161,6 @@ $(document).ready(function() {
     	grabarModificacionMaterial();
 	});
 	
-	  
 }); // fin document.ready 
 
 
@@ -220,7 +213,6 @@ function grabarNuevoMaterial(){
 
 
 function grabarModificacionMaterial(){
-	
 	var registrosValidosM= true;	  // ... bandera para grabar o no grabar registros ...
 	
 	if($("#inputMaterialM").val()=="" ){
@@ -237,7 +229,6 @@ function grabarModificacionMaterial(){
 			alert("¡¡¡ E R R O R !!! ... El contenido de PRECIO UNIDAD está vacío");
 			var registrosValidosM= false;	
 	}
-	
 	
 	if($("#inputUnidadM").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de UNIDAD está vacío");
@@ -276,9 +267,6 @@ function validarCodigoNoRepetido(numero){
     	});	//..fin AJAX ...
 
 }   // fin ... validarCodigoNoRepetido ...
-
-
-
 
 function validarExistencia(numero){		
 	var cantidad=parseFloat( numero ); // convierte de string to number 
@@ -333,8 +321,16 @@ function validarEstockMinimoM(numero){
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
+	
+		<?php
+			if($campoBusqueda=="nombreProd"){
+				$buscaPor="buscarProductoCrud";
+			}else{
+				$buscaPor="buscarProductoCrudPorCodigo";
+			}
+		?>
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarProductoCrud" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?= $buscaPor ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> CRUD producto </span></p>
 	
@@ -350,7 +346,7 @@ function validarEstockMinimoM(numero){
 			   	     
 				<div class="col-lg-6">    
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaProducto ?>' placeholder="buscar ...">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaProducto ?>' placeholder="buscar por ...<?= $campoBusqueda ?>">
 						
 						
 						<div class="input-group-btn">
@@ -358,7 +354,9 @@ function validarEstockMinimoM(numero){
                     	</div>
 			    	</div>
 			    </div><!-- /.col-lg-6 -->	
-			    			     	
+			    
+			    <input type="hidden"  name="campoBusqueda" value="<?= $campoBusqueda ?>" />     <!--  campoBusqueda: nombreInsumo/codInsumo -->
+
 			    <div class="col-xs-2 col-md-2"> 
 			    	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>

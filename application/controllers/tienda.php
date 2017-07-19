@@ -2289,7 +2289,6 @@ class Tienda extends CI_Controller {
 	}	
 
 	public function crudProducto(){
-		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -2350,6 +2349,8 @@ class Tienda extends CI_Controller {
 		
 				$datos['consultaProducto'] ='';
 				
+				$datos['campoBusqueda'] ='nombreProd';
+				
 		 		/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');
 				$this->load->view('tienda/mostrarProductosCrud', $datos);
@@ -2359,6 +2360,81 @@ class Tienda extends CI_Controller {
 		}	//... fin IF validar usuarios...
 		
 	} //... fin crudProducto
+	
+	
+	public function crudProductoPorCodigo(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoDeposito=$this->session->userdata('usuarioDeposito');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' ){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar CRUD de Productos';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....
+		else {		//... usuario validado ...
+			$nombreDeposito='productosfabrica';
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/crudProducto';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros($nombreDeposito);
+			
+			$contador= $config['total_rows'];
+			
+			if($contador==0){  //...cuando NO hay registros ...
+				$datos['mensaje']='No hay registros grabados en la tabla '.$nombreDeposito;
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}
+			else{      //... cuando hay registros ...
+			
+				/*Obtiene el numero de registros a mostrar por pagina */
+		    	$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+		    	$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+		    	$this->pagination->initialize($config);
+		
+				/* Se obtienen los registros a mostrar*/ 
+		   		$datos['listaProducto'] = $this->tablaGenerica_model->get_registros($nombreDeposito,$config['per_page'], $desde); 
+		
+				$datos['consultaProducto'] ='';
+				
+				$datos['campoBusqueda'] ='idProd';
+				
+		 		/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/mostrarProductosCrud', $datos);
+				$this->load->view('footer');
+				
+			}  // fin else cuando hay registros 
+		}	//... fin IF validar usuarios...
+		
+	} //... fin crudProductoPorCodigo ...
+	
 	
 	
 	public function actualizarProductoCrud(){
@@ -2389,7 +2465,7 @@ class Tienda extends CI_Controller {
 	}	//...fin eliminarProductoCrud ...
 	
 	
-		public function buscarProductoCrud(){
+	public function buscarProductoCrud(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
 	
 		if(isset($_POST['inputBuscarPatron'])){
@@ -2407,11 +2483,11 @@ class Tienda extends CI_Controller {
 			$consultaProducto = fgets($fp);
 			fclose($fp); 
 		}	
-				
+		$campoBusqueda="nombreProd";	
 		$this-> load -> model("tablaGenerica_model");
 		
 		$totalRegistrosEncontrados=0;		
-		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica','nombreProd',$consultaProducto);
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica',$campoBusqueda,$consultaProducto);
 		//echo"total registros econtrados".$totalRegistrosEncontrados;
 		if($totalRegistrosEncontrados==0){
 		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
@@ -2423,7 +2499,7 @@ class Tienda extends CI_Controller {
 	    	$config['base_url'] = base_url().'tienda/buscarProductoCrud';
 			
 			/*Obtiene el total de registros a paginar */
-			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica','nombreProd',$consultaProducto);
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica',$campoBusqueda,$consultaProducto);
 	
 		
 			/*Obtiene el numero de registros a mostrar por pagina */
@@ -2451,9 +2527,11 @@ class Tienda extends CI_Controller {
 	    	$this->pagination->initialize($config);
 	
 			/* Se obtienen los registros a mostrar*/ 		
-			$datos['listaProducto'] = $this-> tablaGenerica_model -> buscarPaginacion('productosfabrica','nombreProd',$consultaProducto, $config['per_page'], $desde );
+			$datos['listaProducto'] = $this-> tablaGenerica_model -> buscarPaginacion('productosfabrica',$campoBusqueda,$consultaProducto, $config['per_page'], $desde );
 			
 			$datos['consultaProducto'] =$consultaProducto;
+			
+			$datos['campoBusqueda'] =$campoBusqueda;
 			
 			/*Se llama a la vista para mostrar la información*/
 			$this->load->view('header');
@@ -2462,6 +2540,85 @@ class Tienda extends CI_Controller {
 		
 		}     //... fin IF total registros encontrados ...
 	}		//.. fin buscarProductoCrud ..
+	
+	
+	public function buscarProductoCrudPorCodigo(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+	
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaProducto=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaProducto);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaProducto = fgets($fp);
+			fclose($fp); 
+		}	
+		$campoBusqueda="idProd";	
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica',$campoBusqueda,$consultaProducto);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
+		//	$this->load->view('mensaje',$datos );
+		//	redirect('produccion/crudVerCotizaciones');
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarProductoCrudPorCodigo';
+			
+			/*Obtiene el total de registros a paginar */
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('productosfabrica',$campoBusqueda,$consultaProducto);
+	
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 		
+			$datos['listaProducto'] = $this-> tablaGenerica_model -> buscarPaginacion('productosfabrica',$campoBusqueda,$consultaProducto, $config['per_page'], $desde );
+			
+			$datos['consultaProducto'] =$consultaProducto;
+			
+			$datos['campoBusqueda'] =$campoBusqueda;
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/mostrarProductosCrud', $datos);
+			$this->load->view('footer');
+		
+		}     //... fin IF total registros encontrados ...
+	}		//.. fin buscarProductoCrudPorCodigo ...
+	
+	
 	
 	
 	function validarCodigoProductoCrud(){
