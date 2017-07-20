@@ -1332,6 +1332,7 @@ class Produccion extends CI_Controller {
 				$datos['permisoUserName'] =$permisoUserName;
 				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
 				$datos['consultaPedido'] ='';
+				$datos['buscarPor'] ='numPedido';
 				
 				/*Se llama a la vista para mostrar la información*/
 				$this->load->view('header');

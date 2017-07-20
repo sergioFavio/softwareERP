@@ -2001,7 +2001,6 @@ class Tienda extends CI_Controller {
 	} //... fin verPedidosZ ...
 		
 		
-		
 	public function verPedidos(){
 			//... control de permisos de acceso ....
 			$permisoUserName=$this->session->userdata('userName');
@@ -2059,6 +2058,7 @@ class Tienda extends CI_Controller {
 					$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('pedidocabecera',$config['per_page'], $desde); 
 					$datos['consultaPedido'] ='';
 					$datos['permisoUserName'] =$permisoUserName;
+					$datos['buscarPor'] ='numPedido';
 					
 					/*Se llama a la vista para mostrar la información*/
 					$this->load->view('header');
@@ -2192,11 +2192,8 @@ class Tienda extends CI_Controller {
 	
 	public function buscarPedido(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
-		if($_POST['optradio']=="pedido"){ 				//...discrimina por que campo se hara la busqueda ...
-			$campo1='numPedido';   	//... el campo por elcual se va hacer la búsqueda ...
-		}else{
-			$campo1='cliente';   	//... el campo por elcual se va hacer la búsqueda ...
-		}
+
+		$campo1='numPedido';   	//... el campo por elcual se va hacer la búsqueda ...
 		
 		$permisoUserName=$this->session->userdata('userName');
 		if(isset($_POST['inputBuscarPatron'])){
@@ -2260,6 +2257,7 @@ class Tienda extends CI_Controller {
 			$datos['listaPedido'] = $this-> tablaGenerica_model -> buscarPaginacion('pedidocabecera',$campo1,$consultaPedido, $config['per_page'], $desde );
 			$datos['consultaPedido'] =$consultaPedido;
 			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='numPedido';
 			
 			/*Se llama a la vista para mostrar la información*/
 			$this->load->view('header');
