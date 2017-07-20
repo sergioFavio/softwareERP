@@ -105,8 +105,16 @@ function pedidoPdf(nPedido){
 </script>
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
+		<?php 
+			if($buscarPor=="numPedido"){
+				$funcionBuscar='buscarPedido';
+			}else{
+				$funcionBuscar='buscarPedidoPorCliente';
+			}
 		
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/buscarPedido" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+		?>
+	
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?= $funcionBuscar ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:10px;"></div>
 			
 			<div class="row">

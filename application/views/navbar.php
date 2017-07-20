@@ -128,6 +128,8 @@
 							<li><a href="<?=base_url();?>tienda/realizarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Pedido </a></li>
 							<li><a href="<?=base_url();?>tienda/ubicarPedido?local=T"><span class="glyphicon glyphicon-pencil"></span> Modificar Pedido </a></li>
 							<li><a href="<?=base_url();?>tienda/verPedidos"><span class="glyphicon glyphicon-eye-open"></span> Ver Pedidos</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verPedidosPorCliente"><span class="glyphicon glyphicon-search"></span> Buscar Pedidos por Cliente</a></li>
 						</ul>
 					</li>
 					
