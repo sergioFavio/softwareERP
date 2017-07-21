@@ -431,21 +431,10 @@ function filaVacia(posicionFila, codPrefijo){
 	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<div class="col-md-2">
+	    	<div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
-	    		</div>
-	    	</div><!-- /.col-md-2 -->
-	    	
-	    	<div class="col-xs-2">
-	    	 	<span></span>
-	    	</div>
-	    	
-	    	<div class="col-md-2">
-				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="direccion" name="direccion" placeholder="dirección&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-2 -->
 	    	
@@ -454,37 +443,23 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div>
 	    	
 	    	<div class="col-xs-2">
-	    	 	<span id="titulo" class="label label-default">Proforma: <!--?= $secuenciaPedido.'/'.$anhoSistema ?--> </span>
-	    	</div> 	
-	    		
-		</div>
-		
-		<div style="height:35px;"></div>
-		
-		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
-			
-		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
-	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:100px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-md-1 -->
 	    	
-	    	
-	    	<div class="col-md-1">
+	    	<!--div class="col-xs-1">
 	    	 	<span></span>
-	    	</div>
+	    	</div-->
 	    	
-	    	<div class="col-md-1">
-				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-globe"></span> </span>
-	    	 		<input type="text"  class="form-control input-sm" id="localidad" name="localidad" placeholder="localidad&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
-	    		</div>
-	    	</div><!-- /.col-md-1 -->
+	    	<div class="col-xs-3">
+	    	 	<span id="titulo" class="label label-default">Proforma: 1055/2017 <!--?= $secuenciaPedido.'/'.$anhoSistema ?--> </span>
+	    	</div> 	
 	    	
-	    	<div class="col-md-1">
+	    	<!--div class="col-xs-1">
 	    	 	<span></span>
-	    	</div>
+	    	</div-->
 	    	
 	    	<div class="col-xs-1" >
 				<div class="input-group input-group-sm" >
@@ -492,10 +467,41 @@ function filaVacia(posicionFila, codPrefijo){
 	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
+	    		
+		</div>
+		
+		<div style="height:35px;"></div>
+		
+		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
+			
+			<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+			 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 200px;font-size:11px;text-align:center;" >
+				</div>
+			</div><!-- /.col-md-2 -->
+			
+			<div class="col-xs-2">
+			 	<span></span>
+			</div>
+					
+	    	<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="direccion" name="direccion" placeholder="dirección&hellip;" style="width:220px;font-size:11px;text-align:center;" >
+	    		</div>
+	    	</div><!-- /.col-md-2 -->
 	    	
 	    	<div class="col-md-2">
 	    	 	<span></span>
 	    	</div>
+	    	
+	    	<div class="col-xs-4">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-envelope"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="correo" name="correo"  placeholder="correo electr&oacute;nico&hellip;" style="font-size:11px;text-align:center;" onChange='validarEmail(this.value);'>
+	    		</div>
+	    	</div><!-- /.col-lg-2 -->
 	    	
 	    	<div style="height:30px;"></div>
 	    	
@@ -543,24 +549,6 @@ function filaVacia(posicionFila, codPrefijo){
    
       </tbody>
 	</table>
-	
-	
-	
-	<div class="col-md-1">
-	 	<span></span>
-	</div>
-	
-	<div class="col-md-2">
-		<div class="input-group input-group-sm">
-	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 185px;font-size:11px;text-align:center;" >
-		</div>
-	</div><!-- /.col-md-2 -->
-	
-	<div class="col-md-1">
-	 	<span></span>
-	</div>
-	
 	   	
 	<div class="totalPedido">
 		<span class="label label-success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

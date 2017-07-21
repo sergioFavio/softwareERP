@@ -168,7 +168,7 @@
 					<li><a href="<?=base_url();?>tienda/cuentasPorCobrar"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar</a></li>
 					<li><a href="<?=base_url();?>tienda/cuentasPorCobrarZ"><span class="glyphicon glyphicon-list-alt"></span> Cuentas por Cobrar Zúñiga</a></li>
 
-					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proforma PENDIENTE</a>
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proformas </a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
 							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
