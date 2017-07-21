@@ -1,169 +1,120 @@
+<link rel="stylesheet" type="text/css"  href="<?=base_url(); ?>css/ingresoSalidaMaterial.css" />
+	
 <link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
 
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
-
+	
 <style type="text/css" >
 
-/*  inicio de light box material */
-.modal-dialog {width:620px;}
-.thumbnail {margin-bottom:6px;}
-/*  fin de light box material */
+#inputFecha, #inputEntrega{font-size:11px;text-align:center;}
 
-/*   light box material */
-.producto-dialog {width:580px;}
-
-/*   light box fotografia */
-.fotografia-dialog {width:350px;}
-
- #fotografiaModal{padding-top:220px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
-
-#productoModal{padding-left:350px;}  /* ... baja la ventana modal más al centro vertical ... */
-
-	/*  inicio de scrollbar  */
+/*  inicio de scrollbar  */
 thead { display:block;  margin:0px; cell-spacing:0px; left:0px; }  
-tbody { display:block; overflow:auto; height:330px; }               
-th { height:10px;  width:890px;}                                    
-td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
+tbody { display:block; overflow:auto; height:310px; }               
+th { height:10px;  width:840px;}                                    
+td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 /*  fin de scrollbar  */
 
-#cuerpoSalida{margin:0 auto;  padding:0; width:658px; background:#f4f4f4;}
-.cabeceraSalida{margin:10px;}
+/*   light box nota */
+.nota-dialog {width:450px;}
+#notaModal{padding-top:195px;padding-left:450px;}  /* ... baja la ventana modal más al centro vertical ... */
 
-#inputFecha, #inputFechaInicial, #inputFechaFinal{font-size:11px;text-align:center;}
+#cuerpoIngreso{margin:0 auto;  padding:0; width:880px; background:#f4f4f4;}
+.cabeceraIngreso{margin:5px;}
+#titulo{font-size:16px;margin-top:1px;  text-align:right;font-weight : bold}
 
-#letraCabecera{font-size:12px;margin-top:1px; margin-left:25px; text-align:left;}
-
-.letraDetalle , .openLightBox{font-size:11px;text-align:left;}
-
-.letraCentreada{font-size:11px;text-align:center;}
- 			
-.letraNumero{font-size:11px;text-align:right;}
-        
-.letraNumeroNegrita{font-size:11px;text-align:right; font-weight : bold;}
-
-
-.letraDetalleLightBox{font-size:10px;margin-top:1px;text-align:left;}
-
+.totalPedido{font-size:16px;text-align:center; margin-left:630px; }
 </style>
 
 
 <script>
-
 var filaActual =-100;  // fila del formulario donde se adiciona registro ..
-	
+var totalBs=0;      // ... calcula a partir de la suma de todos los importes formulario ..ingreso de materiales			
 $(document).ready(function() {
 	
-	/*  inicio de light box  producto javascript */
-	$('#inputCodigo').click(function(){
-  		var title = $(this).attr("title");
-		$('.modal-title').html(title);
-  		$('#productoModal').modal({show:true});
-	});
-	/*  fin de light box producto javascript  */	
-	
-	
+	$("form").keypress(function(e) {			//... dseactiva la tecla ENTER ...
+        if (e.which == 13) {
+            return false;
+        }
+    });
+		
 	/*  inicio de light box  javascript */
 	$('.openLightBox').click(function(){
   		var title = $(this).attr("title");
   		filaActual = $(this).attr("fila");
+  		var codPrefijo='#idMat_'; // para sleccionar material
   				
-  		if(!filaVacia(filaActual)){
+  		if(!filaVacia(filaActual,codPrefijo)){
   			$('.modal-title').html(title);
-	  		$('#materialModal').modal({show:true});
+	  		$('#myModal').modal({show:true});
   		}else{
-  			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.')// fila vacía ...
+  			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.');// fila vacía ...
   		}
 
 	});
 	/*  fin de light box javascript  */	
-			
+	
 		 
-    	$('#tabla2').dataTable();
+    $('#tabla2').dataTable();
     
-    	$('#tabla2 tbody').on('click', 'tr', function () {	
-        	var codigoMaterial = $('td', this).eq(0).text();
-        	var nombreMaterial = $('td', this).eq(1).text();
-        	var unidad = $('td', this).eq(3).text();
-      
+    $('#tabla2 tbody').on('click', 'tr', function () {	
+    	var codigoMaterial = $('td', this).eq(0).text();
+    	var nombreMaterial = $('td', this).eq(1).text();
+    	var unidad = $('td', this).eq(3).text();
+    	var precio = $('td', this).eq(4).text();
          
   		var limiteArreglo=document.getElementsByClassName("detalleMaterial").length;   // limiteArreglo a buscar codigoRepetido
-		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo);			
+		var codPrefijo='#idMat_'; // para sleccionar material
+		var codigoRepetido =verificarCodigoRepetido(codigoMaterial,filaActual,limiteArreglo,codPrefijo);			
  			
- 		if(!codigoRepetido){
-			$('#idMat_'+filaActual).val(codigoMaterial);
-			$('#mat_'+filaActual).val(nombreMaterial);
-			
-			$('#unidadMat_'+filaActual).val(unidad);
-			$('#cantMat_'+filaActual).val("");				//... blanquea campo ...
+		$('#idMat_'+filaActual).val(codigoMaterial);
+		$('#mat_'+filaActual).val(nombreMaterial);
+		$('#unidadMat_'+filaActual).val(unidad);
+		$('#precioMat_'+filaActual).val(precio);
+		
+		$('#colorMat_'+filaActual).val("");				//... blanquea campo ...
+		$('#cantMat_'+filaActual).val("");				//... blanquea campo ...
+		$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
 				
-        	$('#materialModal').modal('hide'); // cierra el lightBox
-    	}else{
-    		alert("¡¡¡ Este código" +codigoMaterial +" ya fué adicionado ...!!!");
-    		$('#materialModal').modal('hide'); // cierra el lightbox
-      	}
-        	
+		$('#myModal').modal('hide'); // cierra el lightBox
+
 	} ); // fin #tabla2 tbody
 	
-	
-	$('#tabla3').dataTable();
-    
-    $('#tabla3 tbody').on('click', 'tr', function () {	
-    	var codigoProducto = $('td', this).eq(0).text();
-    	var nombreProducto = $('td', this).eq(1).text();
-    	var medidas = $('td', this).eq(2).text();
-  		
-		$('#inputCodigo').val(codigoProducto);
-		$('#inputDescripcion').val(nombreProducto);
-		$('#inputMedida').val(medidas);
-	
-    	$('#productoModal').modal('hide'); // cierra el lightBox
-  
-	} ); // fin #tabla3 tbody
-	
-	
-	
-	/*  inicio de light box  verFotografia javascript */
-	$('#btnVerFoto').click(function(){
-  		var title = $(this).attr("title");
-  		var fotoP = document.getElementById('fotoProducto'); 
-		var codiProducto=$("#inputCodigo").val(); 
-		codiProducto=codiProducto.split(' '); //... elimina espacio en blanco ...
-		codiProducto=codiProducto[0]+codiProducto[1]; 
-		fotoP.src ="http://192.168.1.61/irba/assets/img/productos/"+codiProducto+".jpg";
-		
-  		if($("#inputCodigo").val()!="" ){
-  			$('.modal-title').html($('#inputDescripcion').val());			
-	  		$('#fotografiaModal').modal({show:true});
-  		}else{
-  			alert("¡¡¡ E R R O R !!! ... primero seleccione un CODIGO DE PRODUCTO");
-  		}
-
-	});
-		
 			
-	$("#btnBorrarPlantillaProduccion").click(function(){
-        	borrarPlantillaProduccion();
+	$("#btnBorrarIngreso").click(function(){
+        	borrarFormularioIngreso();
     });	
-    			
-	$("#btnGrabarPlantilla").click(function(){
-	// grabar salida [almacen/bodega]
-    	grabarPlantilla();
+    		
+	$("#btnGrabarPedido").click(function(){
+	// grabar cotizacion...
+    	grabarPedido();
 	});
 	
+	
+	$('#btnNota').click(function(){	
+		var title = $(this).attr("data-title");
+		$('.modal-title').html(title);		
+  		$('#notaModal').modal({show:true});
+	});	//...fin btnNota ...
+	
+	$("#btnBorrarNota").click(function(){
+        	$("#nota").val("");
+    });
 		
 }); // fin document.ready 
 		
 
-function verificarCodigoRepetido(codigoMaterial,posicionFila,limiteArreglo){
+function verificarCodigoRepetido(codigoMaterial,posicionFila,limiteArreglo,codPrefijo){
 	var codigo = codigoMaterial;
 	var posicion = parseInt( posicionFila ); // convierte de string to number 
 	var limite =limiteArreglo;
 	var codigoRepetido= false;  // retorna el estado de la busqueda
+	var codigoPrefijo=codPrefijo;	
 					
 	for(var i=0; i<limiteArreglo; i++){
-		var codigoTdFormulario = $('#idMat_'+i).val(); // asigna codigo del material actual
+		var codigoTdFormulario = $(codigoPrefijo+i).val(); // asigna codigo del material actual
 	    		
 			if(codigo == codigoTdFormulario && i != posicion){
 	       			codigoRepetido= true;
@@ -174,68 +125,278 @@ function verificarCodigoRepetido(codigoMaterial,posicionFila,limiteArreglo){
 }	// fin funcion verificarCodigoRepetido 
 	
 
-function borrarPlantillaProduccion(){
-	//...esta funcion borra los datos del formularioSalida
+function borrarFormularioIngreso(){
+	//...esta funcion borra los datos del formularioIngreso
 	var fila = document.getElementsByClassName("detalleMaterial");
 	for(var i=0; i<fila.length; i++){
 	    $("#idMat_"+i).val("");
         $("#mat_"+i).val("");
 		$("#cantMat_"+i).val("");
 		$("#unidadMat_"+i).val("");
+		$("#precioMat_"+i).val("");
+		$("#importeMat_"+i).val("");
 	} // fin ciclo FOR
-} // fin funcion borrarPlantillaProduccion 
+	document.form_.detalleTotalBs.value="";
+	$("#saldo").val("");
+} // fin funcion borrarFormularioIngreso 
+			
 
+function eliminarComa(numero){
+	//...esta funcion elimina la coma(,) como separador de miles de una variable que esta string
+	//... para convertirla en numerica ...
+	var auxiliarMonto=numero;
+	auxiliarMonto=auxiliarMonto.split(','); //... elimina ,
+	auxiliarMonto=auxiliarMonto[0]+auxiliarMonto[1]+auxiliarMonto[2];
+	auxiliarMonto=parseFloat( auxiliarMonto );	
+	return auxiliarMonto;
+} // ... fin funcion eliminarComa ... 
 	
-function grabarPlantilla(){
-	
-	var i=0;
+
+function grabarPedido(){
+	var i=0;  //... cuenta numeroFilas  del formulario materiales ...
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
-	if($("#inputCodigo").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO DE PRODUCTO está vacío");
-			var registrosValidos= false;	
+	if($("#cliente").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CLIENTE está vacío");
+			registrosValidos= false;	
 	}
+	
+	if($("#contacto").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de CONTACTO está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#inputDireccion").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de DIRECCION está vacío");
+			registrosValidos= false;	
+	}
+/*	
+	
+*/	
+//	if($("#telCel").val()!="" ){
+/*		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
+		registrosValidos= false;	
+	}
+	else{
+*/		
+//		var numero= $('#telCel').val();
+//		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+//		{
+//    		alert("El valor " + numero + " no es un número telefónico");
+//    		$("#telCel").val("");   // borra celda de cantidad
+//    		registrosValidos= false;
+//    	}
+//	}
+	
+	if($("#localidad").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#inputFecha").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
+			registrosValidos= false;	
+	}
+	
+	if($("#inputEntrega").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA DE ENTREGA está vacío, seleccione una fecha");
+			registrosValidos= false;	
+	}
+	
+	if($("#descuento").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#embalaje").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de EMBALAJE está vacío");
+			registrosValidos= false;	
+	}
+
+	if($("#idMat_0").val()=="" ){        //... registro primer formulario... materiales
+			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
+			registrosValidos= false;	
+	}
+	
 			
-	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
+	// ... valida que los registros no tengan cantidad vacia formulario materiales  ...
 	while($("#idMat_"+i).val()!= ""){
 		if($("#cantMat_"+i).val()==""){
-			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
-			var registrosValidos= false;	
+			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está en vacío");
+			registrosValidos= false;	
 		}
-	
+		
+		if($("#precioMat_"+i).val()=="0.00"){
+			alert("¡¡¡ E R R O R !!! ... El valor de PRECIO está en cero");
+			registrosValidos= false;	
+		}
+		
 		i++;
 	} // ... fin while ...
+	
 		
-	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
+	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario materiales...
 		
 	if(!registrosValidos){
-		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
-	}else{
+		alert('Corrija los campos que están vacíos');
+	}else{	
 		$("#form_").submit(); // ...  graba registros ...
 	}
 			
-}	// ... fin funcion grabarSalida() ...
+}	// ... fin funcion grabarPedido() ...
+	
+
+function validarFechaMayor(){
 		
+	if($("#inputFecha").val()=="" ||  $("#inputEntrega").val()==""  ){
+		alert("¡¡¡ E R R O R !!! ... El contenido de FECHA ó FECHA ENTREGA está vacío, seleccione una fecha");	
+	}else{
+		var fechaInicio =$("#inputFecha").val();
+	 	var fechaFin = $("#inputEntrega").val();
+	 	
+		fechaInicio = fechaInicio.split('-');
+	 	fechaFin = fechaFin.split('-');
+	                    
+	 	fechaInicio = new Date(fechaInicio[0], fechaInicio[1] - 1, fechaInicio[2]).valueOf();
+	 	fechaFin = new Date(fechaFin[0], fechaFin[1] - 1, fechaFin[2]).valueOf();
+	
+        // Verificamos que la fecha no sea posterior a la actual
+        
+        if(fechaInicio > fechaFin)
+        {	
+   			alert(" ¡¡¡... ERROR ... !!! La fecha final "+$("#inputEntrega").val()+" NO es superior a la fecha inicial "+$("#inputFecha").val()  );   
+   			value="<?=date('d-m-Y')?>"
+   			$("#inputFecha").val("<?=date('d-m-Y')?>");
+   			$("#inputEntrega").val("<?=date('d-m-Y')?>");	
+        }
+	}
+					                                	
+}   // fin ... validarFechas ...
+
+
+function validarIngresoColor(filaExistencia){
+   
+	if($("#idMat_"+filaExistencia).val()==""){
+		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar color.");
+		$("#colorMat_"+filaExistencia).val("");   // borra celda de color
+					
+	}
+}   // fin ... validarIngresoColor ...
+
 		
-function validarCantidad(numero, filaExistencia){
-			
+function validarCantidadIngreso(numero, filaExistencia){
+   
 	if($("#idMat_"+filaExistencia).val()==""){
 		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
 		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-				
+					
 	}else{
 			
-		var existenciaAlmacen=parseFloat($('#existMat_'+filaExistencia).val()   );
 		var cantidad=parseFloat( numero ); // convierte de string to number 
-				
-	    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-	    	if (!/^\d{1,7}(\.\d{1,3})?$/.test(numero)){  // ...hasta 4 digitos parte entera y hasta 3 parte decimal ...
-	    		alert("El valor " + numero + " no es una cantidad válida");
-	    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-	    	}
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		var cantidad=$("#cantMat_"+filaExistencia).val();
+    		var precioCompra=$("#precioMat_"+filaExistencia).val();
+    		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe
+    		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
+    	}
 	    		
 	}
-}   // fin ... validarCantidad ...
+}   // fin ... validarCantidadIngreso ...
+
+
+function validarPrecio(numero, filaExistencia){
+   
+	if($("#idMat_"+filaExistencia).val()==""){
+		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar precio.");
+		$("#precioMat_"+filaExistencia).val("");   // borra celda de cantidad
+					
+	}else{	
+	    //var precio=parseFloat( numero ); // convierte de string to number 
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
+    	}else{
+    		var cantidad=$("#cantMat_"+filaExistencia).val();
+    		var precioCompra=$("#precioMat_"+filaExistencia).val();
+    		$("#importeMat_"+filaExistencia).val( separadorMiles( (cantidad*precioCompra).toFixed(2) ) );   //... actualiza importe
+    		calcularTotalBs('_');   //... actualiza totalBs formualrio ingreso materiales
+    	}
+	    		
+	}
+}   // fin ... validarPrecio ...
+
+
+function validarNumero(numero,campo){	
+		// ... valida ingreso de numeros para telefono/celular y NIT 
+    	if (!/^([0-9])*$/.test(numero)){  // ... solo numeros enteros ...  
+    	//if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#"+campo).val("");   // borra celda de aCuenta
+    	}
+}   // fin ... validarNumero ...
+
+
+function validarMonto(numero,campo){	
+		var monto=parseFloat( numero ); // convierte de string to number 
+    	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
+    	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
+    		alert("El valor " + numero + " no es válido");
+    		$("#"+campo).val("");   // borra celda del campo
+    	}else{
+    		$("#"+campo).val( separadorMiles( monto.toFixed(2) ));   //... actualiza aCuenta
+    		calcularTotalBs('_');   //... actualiza totalBs formulario
+    	}
+	    		
+}   // fin ... validarMonto ...
+
+
+function calcularTotalBs(sufijo){
+	//...suma los importes del formularioIngreso
+	var i=0;
+	totalBs=0.00;
+	totalBs=parseFloat(totalBs);
+	saldo=0.00;
+	descuento=0.00;
+	aCuenta=0.00;
+	while($("#idMat"+sufijo+i).val()!= ""){
+		var importe=$("#importeMat"+sufijo+i).val();
+
+		importe=eliminarComa(importe);   //... elimina ,
+
+		totalBs= totalBs +  importe ;
+		i++;
+	} // fin ciclo WHILE
+	
+	aCuenta=$("#aCuenta").val();
+	
+	aCuenta=eliminarComa(aCuenta);   //... elimina ,
+	
+	embalaje=$("#embalaje").val();
+	
+	embalaje=eliminarComa(embalaje);   //... elimina ,
+	
+	descuento=$("#descuento").val();
+	
+	descuento=eliminarComa(descuento);   //... elimina ,
+	
+	
+	saldo= totalBs + embalaje - descuento - aCuenta; 
+	
+	aCuenta=separadorMiles(aCuenta.toFixed(2) );
+	saldo=separadorMiles(saldo.toFixed(2) );
+	
+	totalBs=separadorMiles(totalBs.toFixed(2) ); 
+	
+	document.form_.detalleTotalBs.value=totalBs;  // ... totalBs  variable formulario materiales ...
+	
+	$("#aCuenta").val(aCuenta);
+	$("#saldo").val(saldo);
+} // fin funcion ... calcularTotalBs 
 
 		
 function separadorMiles(n){
@@ -250,127 +411,188 @@ function separadorMiles(n){
 }
 
 		
-function filaVacia(posicionFila){
+function filaVacia(posicionFila, codPrefijo){
 	var filaAnterior= parseInt( posicionFila )-1;
-				
-	if($("#idMat_"+ filaAnterior).val()==""  && filaAnterior >=0 ){
+	var codigoPrefijo=codPrefijo;	
+			
+	if($(codigoPrefijo+ filaAnterior).val()==""  && filaAnterior >=0 ){
 		return true;  // fila vac�a ...
 	}else{
 		return false; // fila llena ...
 	}
 }  // ... fin validarFilaSeleccionada ...
 
-
 </script>
 
-<div class="jumbotron" id="cuerpoSalida">		
-		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPlantilla" id="form_" name="form_" >
-   	  <div style="height:10px;"></div>
-   	   
-      <div class="cabeceraSalida">
+<div class="jumbotron" id="cuerpoIngreso">	
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
+   	<div style="height:7px;"></div>
+	 
+	<div class="cabeceraIngreso">
 		<div class="row-fluid">
 			
-	    	<div class="col-lg-2">
-				<div class="input-group input-group-sm" >
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputCodigo" name="inputCodigo" title='Seleccionar # pedido de la tabla de PEDIDOPRODUCTO' readonly="readonly" placeholder="pedido #&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
+	    	<div class="col-md-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="cliente" name="cliente" placeholder="cliente&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
-	    	</div><!-- /.col-lg-2 -->
+	    	</div><!-- /.col-md-2 -->
 	    	
-			<div class="col-xs-2 col-md-2">
-				<span></span>
-			</div>    	
+	    	<div class="col-xs-2">
+	    	 	<span></span>
+	    	</div>
 	    	
-	    	<div class="col-md-4">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Proforma #: <?= strtoupper($local) ?> </span>
-	    	</div> 
-	    	
-	    	
-	<div class="col-xs-1 col-md-1">
-		<span></span>
-	</div>      	
-	    	
-	    	
-	    	<div class="col-lg-2" >
-				<div class="input-group input-group-sm" >
-					<button type="button" class="btn btn-info btn-sm"  title="Foto: " id="btnVerFoto"><span class="glyphicon glyphicon-camera"></span> &nbsp;Ver &nbsp;Fotografía</button>
+	    	<div class="col-md-2">
+				<div class="input-group input-group-sm">
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-home"></span></span>
+	    	 		<input type="text"  class="form-control input-sm" id="direccion" name="direccion" placeholder="dirección&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
-	    	</div><!-- /.col-lg-2 -->
+	    	</div><!-- /.col-md-2 -->
 	    	
+	    	<div class="col-xs-2">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div class="col-xs-2">
+	    	 	<span id="titulo" class="label label-default">Proforma: <!--?= $secuenciaPedido.'/'.$anhoSistema ?--> </span>
+	    	</div> 	
+	    		
 		</div>
-		
 		
 		<div style="height:35px;"></div>
 		
 		<div class="row-fluid"> <!-- segunda fila de la cabecera -->
 			
-		    <div class="col-lg-4">
+		    <div class="col-md-1">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputDescripcion" name="inputDescripcion"  readonly='readonly' placeholder="cliente&hellip;" style="width: 250px;font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-earphone"></span> </span>
+	    	 		<input type="text" class="form-control input-sm" id="telCel" name="telCel" placeholder="telf./cel.&hellip;" style="width:110px;font-size:11px;text-align:center;" );'>
 	    		</div>
-	    	</div><!-- /.col-lg-4 -->
+	    	</div><!-- /.col-md-1 -->
 	    	
-	    	<div class="col-xs-3 col-md-2">
+	    	
+	    	<div class="col-md-1">
 	    	 	<span></span>
 	    	</div>
 	    	
-		    <div class="col-lg-6">
+	    	<div class="col-md-1">
 				<div class="input-group input-group-sm">
-			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputMedida" name="inputMedida"  placeholder="observaci&oacute;n&hellip;" style="font-size:11px;text-align:center;" >
+			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-globe"></span> </span>
+	    	 		<input type="text"  class="form-control input-sm" id="localidad" name="localidad" placeholder="localidad&hellip;" style="width: 100px;font-size:11px;text-align:center;" >
 	    		</div>
-	    	</div><!-- /.col-lg-2 -->
+	    	</div><!-- /.col-md-1 -->
 	    	
-	    	<div style="height:25px;"></div>
+	    	<div class="col-md-1">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div class="col-xs-1" >
+				<div class="input-group input-group-sm" >
+			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span> </span>
+	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    		</div>
+	    	</div><!-- /.col-xs-1 -->
+	    	
+	    	<div class="col-md-2">
+	    	 	<span></span>
+	    	</div>
+	    	
+	    	<div style="height:30px;"></div>
 	    	
 		</div>
 	</div>
 
 	<table width="79%" class="table table-striped table-bordered table-condensed " >
 	  <thead >
-    	<tr style="background-color: #b9e9ec; " class='letraDetalle'>
+    	<tr style="background-color: #b9e9ec;" class='letraDetalle'>
+    		<th style="width: 10px;"></th>
         	<th style="width: 180px;">Código</th>
-            <th style="width: 320px;">Material</th>
-            <th style="width: 80px;">Cantidad</th>                              
-            <th style="width: 80px">Unidad</th>
+            <th style="width: 120px;">Producto</th>
+            <th style="width: 140px;"></th>
+            <th style="width: 60px;"></th>
+            <th style="width: 90px;">Cantidad</th>                              
+            <th style="width: 90px">Unidad</th>
+            <th style="width: 80px">Precio Bs.</th>
+            <th style="width: 110px">Importe Bs.</th>
     	</tr>
       </thead >
     <tbody >
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<20; $x++){
+       		for($x=0; $x<25; $x++){
             	echo "<tr class='detalleMaterial' >";
-					echo"<td  class='openLightBox' title='Seleccionar producto de la tabla de pedidoproducto' style='width: 80px; background-color: #d9f9ec;' fila=$x>
+           			
+					echo"<td  class='openLightBox' title='Seleccione producto de la tabla productos fabrica' style='width: 80px; background-color: #d9f9ec;' fila=$x >
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-                    echo "<td class='letraDetalle'  style='width: 400px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
-                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' readonly='readonly' style='border:none;'/></td>";
+					
+                    echo "<td class='letraDetalle'  style='width: 420px; background-color: #f9f9ec;' ><textarea rows='5' class='letraCentreada' id='mat_".$x."' name='mat_".$x."' readonly='readonly' style='width:400px;border:none;' /></textarea></td>";
+                    								
+                    echo "<td style='width: 100px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' class='letraCantidad' name='cantMat_".$x."' id='cantMat_".$x."' style='width:70px; border:none; background-color: #d9f9ec;' onChange='validarCantidadIngreso(this.value,$x);'/></td>";  
+					          
+                    echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' readonly='readonly' style='width:80px;border:none;'/></td>";
+					
+					echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='precioMat_".$x."' id='precioMat_".$x."' readonly='readonly' style='width:70px;border:none;' onChange='validarPrecio(this.value,$x);' /></td>";
+					  
+					echo "<td  style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumeroNegrita' name='importeMat_".$x."' id='importeMat_".$x."' readonly='readonly' style='width:80px;border:none;'/></td>";
+					
                 echo "</tr>";
+				
              }
          ?>
+   
       </tbody>
-  
 	</table>
 	
-	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  nombreDeposito: almacen/bodega -->
 	
-	<div style="text-align: right; padding-top: 3px;">   
+	
+	<div class="col-md-1">
+	 	<span></span>
+	</div>
+	
+	<div class="col-md-2">
+		<div class="input-group input-group-sm">
+	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	 		<input type="text"  class="form-control input-sm" id="contacto" name="contacto" placeholder="contacto&hellip;" style="width: 185px;font-size:11px;text-align:center;" >
+		</div>
+	</div><!-- /.col-md-2 -->
+	
+	<div class="col-md-1">
+	 	<span></span>
+	</div>
+	
+	   	
+	<div class="totalPedido">
+		<span class="label label-success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span class="label label-success">
+			<input type='text' class='letraNumero' name='detalleTotalBs' id='detalleTotalBs' size='7' readonly='readonly' style='border:none; background-color: #41C152;'/>
+		</span>
+	</div>	
+		
+		
+	<input type="hidden"  name="numeroFilas"  />
+	<!--input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     				<!--  numero pedido -->
+	<!--input type="hidden"  name="local" value="<?= $local ?>" />     						<!--  local  F: fabrica  T: tienda -->
+	<!--input type="hidden"  name="secuenciaPedido" value="<?= $secuenciaPedido ?>" />     	<!--  secuenciaPedido -->
+	<!--input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     			<!--  anhoSistema -->
+	
+	<div style="text-align: right; padding-top: 15px;"> 
+		
+		<div class="col-xs-1">
+		 	<span></span>
+		</div>
+		
+    	
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarPlantillaProduccion" ><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPlantilla" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   </div>
+        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPedido" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
    <div style="height:10px;"></div>
-   </form>
 </div>
 
 
-<!-- ... inicio  lightbox materiales... -->
-
-<div id="materialModal"  class="modal fade" tabindex="-1" role="dialog" >
+<!-- ... inicio  lightbox ... -->
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog" >
   <div class="modal-dialog"  >
   <div class="modal-content">
 	<div class="modal-header">
@@ -382,63 +604,23 @@ function filaVacia(posicionFila){
 		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla2">
 			<thead>
 				<tr class='letraDetalleLightBox'>
-					<th style='width:75px;'>Código</th>
-					<th style='width:450px;'>Producto</th>
-					<th style='width:50px;'>cantidad</th>
+					<th style='width:40px;'>cod Insumo</th>
+					<th style='width:450px;'>Material</th>
+					<th style='width:60px;'>Existencia</th>
 					<th style='width:30px;'>Unidad</th>
-					<th style='width:30px;'>Estado</th>
+					<th style='width:30px;'>Precio Venta Bs.</th>
+					<th style='width:30px;'>Stock M&iacute;nimo</th>
 				</tr>
 			</thead>
 			<tbody>			
-                <?php foreach($registros as $registro):?>
+                <?php foreach($insumos as $insumo):?>
                     <tr class='letraDetalleLightBox'>
-                        <td style='width:75px;'> <?= $registro["idProducto"].'-'.$registro["secuencia"] ?></td>
-                        <td style='width:460px;'> <?= $registro["descripcion"]?></td>
-                        <td style='width:60px;'> <?= $registro["cantidad"]?></td>
-                        <td style='width:70px;'><?= $registro["unidad"]?></td>
-                        <td style='width:30px;' > <?= $registro["estadoItem"]?></td>
-                    </tr>
-                <?php endforeach ?>
-                	
-			</tbody>
-		</table>
-		
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-	</div>
-   </div>
-  </div>
-</div>
-<!-- ... fin  lightbox materiales... -->
-
-<!-- ... inicio  lightbox productos... -->
-
-<div id="productoModal"  class="modal fade" tabindex="-1" role="dialog" >
-  <div class="producto-dialog"  >
-  <div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h4 class="modal-title">cabecera de caja luz</h4>
-	</div>
-	<div class="modal-body">
-		
-		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla3">
-			<thead>
-				<tr class='letraDetalleLightBox'>
-					<th style='width:40px;'>Pedido #</th>
-					<th style='width:450px;'>Producto</th>
-					<th style='width:60px;'>Medidas</th>
-					<th style='width:30px;'>Unidad</th>
-				</tr>
-			</thead>
-			<tbody>			
-                <?php foreach($registros as $registro):?>
-                    <tr class='letraDetalleLightBox'>
-                        <td style='width:40px;'> <?= $registro["numeroPedido"] ?></td>
-                        <td style='width:450px;'> <?= $registro["cliente"]?></td>
-                        <td style='width:70px;'> <?= $registro["fechaEntrega"]?></td>
-   						<td style='width:30px;' ><?= $registro['unidad']  ?></td>
+                        <td style='width:40px;'> <?= $insumo["idProd"] ?></td>
+                        <td style='width:450px;'> <?= $insumo["nombreProd"]?></td>
+                        <td style='width:70px;'> <?= $insumo["existencia"]?></td>
+                        <td style='width:70px;'><?= $insumo["unidad"]?></td>
+                        <td style='width:30px;'><?= $insumo["precioVenta"]?></td>
+                        <td style='width:40px;'><?= $insumo["stockMinimo"]?></td>
                     </tr>
                 <?php endforeach ?>
 			</tbody>
@@ -451,23 +633,28 @@ function filaVacia(posicionFila){
    </div>
   </div>
 </div>
-<!-- ... fin  lightbox productos... -->
+<!-- ... fin  lightbox ... -->
 
-
-<!-- ... inicio  lightbox fotografia... -->
-<div id="fotografiaModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
-  <div class="fotografia-dialog"  >
+<!-- ... inicio  lightbox nota... -->
+<div id="notaModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="nota-dialog"  >
   <div class="modal-content">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">×</button>
 		<h5 class="modal-title">cabecera de caja luz</h5>
 	</div>
 	<div class="modal-body">
-		<input type='image' id='fotoProducto' class="img-rounded" width='300' height='200'>
+		<div class="input-group input-group-sm">
+	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarNota"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
 	</div>
 	
    </div>
   </div>
 </div>
-<!-- ... fin  lightbox fotografia... -->
-
+<!-- ... fin  lightbox nota... -->
