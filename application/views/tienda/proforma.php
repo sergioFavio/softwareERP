@@ -28,7 +28,6 @@ td { height:10px;  width:840px; margin:0px; cell-spacing:0px;}
 .totalPedido{font-size:16px;text-align:center; margin-left:630px; }
 </style>
 
-
 <script>
 var filaActual =-100;  // fila del formulario donde se adiciona registro ..
 var totalBs=0;      // ... calcula a partir de la suma de todos los importes formulario ..ingreso de materiales			
@@ -74,7 +73,6 @@ $(document).ready(function() {
 		$('#unidadMat_'+filaActual).val(unidad);
 		$('#precioMat_'+filaActual).val(precio);
 		
-		$('#colorMat_'+filaActual).val("");				//... blanquea campo ...
 		$('#cantMat_'+filaActual).val("");				//... blanquea campo ...
 		$('#importeMat_'+filaActual).val("");				//... blanquea campo ...
 				
@@ -92,16 +90,6 @@ $(document).ready(function() {
     	grabarPedido();
 	});
 	
-	
-	$('#btnNota').click(function(){	
-		var title = $(this).attr("data-title");
-		$('.modal-title').html(title);		
-  		$('#notaModal').modal({show:true});
-	});	//...fin btnNota ...
-	
-	$("#btnBorrarNota").click(function(){
-        	$("#nota").val("");
-    });
 		
 }); // fin document.ready 
 		
@@ -188,31 +176,16 @@ function grabarPedido(){
 //    	}
 //	}
 	
-	if($("#localidad").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
-			registrosValidos= false;	
-	}
+//	if($("#localidad").val()=="" ){
+//			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
+//			registrosValidos= false;	
+//	}
 	
 	if($("#inputFecha").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
 			registrosValidos= false;	
 	}
 	
-	if($("#inputEntrega").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA DE ENTREGA está vacío, seleccione una fecha");
-			registrosValidos= false;	
-	}
-	
-	if($("#descuento").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de DESCUENTO está vacío");
-			registrosValidos= false;	
-	}
-	
-	if($("#embalaje").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de EMBALAJE está vacío");
-			registrosValidos= false;	
-	}
-
 	if($("#idMat_0").val()=="" ){        //... registro primer formulario... materiales
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
 			registrosValidos= false;	
@@ -244,54 +217,12 @@ function grabarPedido(){
 	}
 			
 }	// ... fin funcion grabarPedido() ...
-	
-
-function validarFechaMayor(){
-		
-	if($("#inputFecha").val()=="" ||  $("#inputEntrega").val()==""  ){
-		alert("¡¡¡ E R R O R !!! ... El contenido de FECHA ó FECHA ENTREGA está vacío, seleccione una fecha");	
-	}else{
-		var fechaInicio =$("#inputFecha").val();
-	 	var fechaFin = $("#inputEntrega").val();
-	 	
-		fechaInicio = fechaInicio.split('-');
-	 	fechaFin = fechaFin.split('-');
-	                    
-	 	fechaInicio = new Date(fechaInicio[0], fechaInicio[1] - 1, fechaInicio[2]).valueOf();
-	 	fechaFin = new Date(fechaFin[0], fechaFin[1] - 1, fechaFin[2]).valueOf();
-	
-        // Verificamos que la fecha no sea posterior a la actual
-        
-        if(fechaInicio > fechaFin)
-        {	
-   			alert(" ¡¡¡... ERROR ... !!! La fecha final "+$("#inputEntrega").val()+" NO es superior a la fecha inicial "+$("#inputFecha").val()  );   
-   			value="<?=date('d-m-Y')?>"
-   			$("#inputFecha").val("<?=date('d-m-Y')?>");
-   			$("#inputEntrega").val("<?=date('d-m-Y')?>");	
-        }
-	}
-					                                	
-}   // fin ... validarFechas ...
-
-
-function validarIngresoColor(filaExistencia){
-   
-	if($("#idMat_"+filaExistencia).val()==""){
-		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar color.");
-		$("#colorMat_"+filaExistencia).val("");   // borra celda de color
-					
-	}
-}   // fin ... validarIngresoColor ...
-
-		
+			
 function validarCantidadIngreso(numero, filaExistencia){
-   
 	if($("#idMat_"+filaExistencia).val()==""){
 		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar cantidad.");
-		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad
-					
-	}else{
-			
+		$("#cantMat_"+filaExistencia).val("");   // borra celda de cantidad			
+	}else{	
 		var cantidad=parseFloat( numero ); // convierte de string to number 
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
     	if (!/^\d{1,7}(\.\d{1,2})?$/.test(numero)){  // ...hasta 5 digitos parte entera y hasta 2 parte decimal ...
@@ -309,11 +240,9 @@ function validarCantidadIngreso(numero, filaExistencia){
 
 
 function validarPrecio(numero, filaExistencia){
-   
 	if($("#idMat_"+filaExistencia).val()==""){
 		alert("¡¡¡ ERROR !!! Primero seleccione un registro para ingresar precio.");
-		$("#precioMat_"+filaExistencia).val("");   // borra celda de cantidad
-					
+		$("#precioMat_"+filaExistencia).val("");   // borra celda de cantidad		
 	}else{	
 	    //var precio=parseFloat( numero ); // convierte de string to number 
     	//if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
@@ -372,20 +301,6 @@ function calcularTotalBs(sufijo){
 		i++;
 	} // fin ciclo WHILE
 	
-	aCuenta=$("#aCuenta").val();
-	
-	aCuenta=eliminarComa(aCuenta);   //... elimina ,
-	
-	embalaje=$("#embalaje").val();
-	
-	embalaje=eliminarComa(embalaje);   //... elimina ,
-	
-	descuento=$("#descuento").val();
-	
-	descuento=eliminarComa(descuento);   //... elimina ,
-	
-	
-	saldo= totalBs + embalaje - descuento - aCuenta; 
 	
 	aCuenta=separadorMiles(aCuenta.toFixed(2) );
 	saldo=separadorMiles(saldo.toFixed(2) );
@@ -422,10 +337,19 @@ function filaVacia(posicionFila, codPrefijo){
 	}
 }  // ... fin validarFilaSeleccionada ...
 
+
+function validarEmail(cadenaEmail){
+	//	var cadenaEmail= $('#inputEmail').val();
+	if (cadenaEmail.indexOf('@')==-1 || cadenaEmail.indexOf('.')==-1) {				//... si no se encuentra la subcadena en la cadena ...
+		alert("¡¡¡ E R R O R !!! ... El contenido de CORREO ELECTRONICO no es válido");
+		$("#correo").val("");   // borra celda de correo elctronico ...
+	}
+}	//... fin validarEmail ...
+
 </script>
 
 <div class="jumbotron" id="cuerpoIngreso">	
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPedido" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarProforma" id="form_" name="form_" >
    	<div style="height:7px;"></div>
 	 
 	<div class="cabeceraIngreso">
@@ -454,7 +378,7 @@ function filaVacia(posicionFila, codPrefijo){
 	    	</div-->
 	    	
 	    	<div class="col-xs-3">
-	    	 	<span id="titulo" class="label label-default">Proforma: 1055/2017 <!--?= $secuenciaPedido.'/'.$anhoSistema ?--> </span>
+	    	 	<span id="titulo" class="label label-default">Proforma: <?= substr($proforma,0,4).'/'.substr($proforma,4,strlen($proforma)-4) ?> </span>
 	    	</div> 	
 	    	
 	    	<!--div class="col-xs-1">
@@ -514,8 +438,7 @@ function filaVacia(posicionFila, codPrefijo){
     		<th style="width: 10px;"></th>
         	<th style="width: 180px;">Código</th>
             <th style="width: 120px;">Producto</th>
-            <th style="width: 140px;"></th>
-            <th style="width: 60px;"></th>
+            <th style="width: 200px;"></th>
             <th style="width: 90px;">Cantidad</th>                              
             <th style="width: 90px">Unidad</th>
             <th style="width: 80px">Precio Bs.</th>
@@ -557,12 +480,9 @@ function filaVacia(posicionFila, codPrefijo){
 		</span>
 	</div>	
 		
-		
 	<input type="hidden"  name="numeroFilas"  />
-	<!--input type="hidden"  name="numPedido" value="<?= $pedido ?>" />     				<!--  numero pedido -->
-	<!--input type="hidden"  name="local" value="<?= $local ?>" />     						<!--  local  F: fabrica  T: tienda -->
-	<!--input type="hidden"  name="secuenciaPedido" value="<?= $secuenciaPedido ?>" />     	<!--  secuenciaPedido -->
-	<!--input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     			<!--  anhoSistema -->
+	<input type="hidden"  name="numProforma" value="<?= $proforma ?>" />     				<!--  numero pedido -->
+	<input type="hidden"  name="local" value="<?= $local ?>" />     						<!--  local  F: fabrica  T: tienda -->
 	
 	<div style="text-align: right; padding-top: 15px;"> 
 		
@@ -570,7 +490,6 @@ function filaVacia(posicionFila, codPrefijo){
 		 	<span></span>
 		</div>
 		
-    	
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPedido" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -622,27 +541,3 @@ function filaVacia(posicionFila, codPrefijo){
   </div>
 </div>
 <!-- ... fin  lightbox ... -->
-
-<!-- ... inicio  lightbox nota... -->
-<div id="notaModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
-  <div class="nota-dialog"  >
-  <div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h5 class="modal-title">cabecera de caja luz</h5>
-	</div>
-	<div class="modal-body">
-		<div class="input-group input-group-sm">
-	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
-		</div>
-	</div>
-	
-	<div class="modal-footer">
-	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarNota"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
-	</div>
-	
-   </div>
-  </div>
-</div>
-<!-- ... fin  lightbox nota... -->

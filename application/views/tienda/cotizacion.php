@@ -43,7 +43,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 <script>
 
 $(document).ready(function(){
-
 	/*  inicio de light box  verFotografia javascript */
 	$('#btnVerPlano').click(function(){
   		var title = $(this).attr("title");

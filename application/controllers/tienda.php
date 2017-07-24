@@ -1253,9 +1253,7 @@ class Tienda extends CI_Controller {
         
 	} //... fin funcion: generarReporteVentasAnhoMes ...
 	
-	
-	
-	
+
 	public function notaEntrega(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -1282,6 +1280,7 @@ class Tienda extends CI_Controller {
 		}	//... fin validar acceso usuario ...
 	}	//... fin notaEntrega ...
 	
+	
 	public function proforma(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -1296,11 +1295,48 @@ class Tienda extends CI_Controller {
 		else {		//... usuario validado ...
 			$local= $_GET['local']; //...  local ( T:tienfa/F:fabrica ) ...		
 			
-			$sql="SELECT * FROM pedidoproducto WHERE estadoItem='T'"; 
-			$registros = $this->db->query($sql)->result_array();
-					
-			$datos['registros']=$registros;		
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='noproforma'.strtolower($local); // ... prefijoTabla
+	    	$proforma = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de proforma ...
+			//////////////////////////////////////
+			
+			if($local=="T"){
+				$anhoSistema = date("Y");	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+ 				if(substr($proforma, 4, 4)!=$anhoSistema){
+ 					$proforma='1001'.$anhoSistema;
+ 				}else{
+ 					$proforma=substr($proforma, 0, 4);
+					$proforma=(int)$proforma;
+					$proforma=$proforma+1;
+					$proforma=$proforma.$anhoSistema;
+ 				}
+ 				
+ 			}else{
+ 				$anhoSistema = date("Y");	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+ 				if(substr($proforma, 4, 2)!=$anhoSistema){
+ 					$proforma='6001'.$anhoSistema;
+ 				}else{
+ 					$proforma=substr($proforma, 0, 4);
+					$proforma=(int)$proforma;
+					$proforma=$proforma+1;
+					$proforma=$proforma.$anhoSistema;
+ 				}
+ 				
+			}
+		
+			
+			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+			$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+			
+			$datos['insumos']=$insumos;		
 			$datos['local']=$local;	// ... T: tienda/ F: fabrica ...
+			
+			$datos['proforma']=$proforma;	
 	
 			$this->load->view('header');
 			$this->load->view('tienda/proforma',$datos);
@@ -3848,6 +3884,74 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}		//... fin IF total registros encontrados ...
 	}		//..fin buscarCotizaciones ...
+	
+	
+	public function grabarProforma(){		
+		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
+		$local=$_POST['local'];
+		$numProforma=str_replace(" ","",$_POST['numProforma']);
+		
+		// ... actualizar numero de proforma ...	
+		$nombreTabla='noproforma'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
+		$this-> numeroDocumento_model -> actualizar($numProforma,$nombreTabla);
+		// fin actualizar numero de proforma ...
+		
+		
+//		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
+//		$montoConDescto=$montoConDescto -$descuento + $embalaje;
+
+		$proformaCabecera = array(
+	    	"idProforma"=>$numProforma,
+		    "fechaProf"=>$_POST['inputFecha'],
+		    "local"=>$_POST['local'],
+		    "clienteProf"=>$_POST['cliente'],
+		    "contactoProf"=>$_POST['contacto'],
+		    "fonoCel"=>$_POST['telCel'],
+		    "direccionProf"=>$_POST['direccion'],
+		    "correoProf"=>$_POST['correo'], 
+		    "usuario"=>$this->session->userdata('userName')
+		);
+		
+		// ... inserta registro tabla pedidocabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+	    $this-> tablaGenerica_model -> grabar('proformacabecera', $proformaCabecera);
+		
+		$secuencia=0;		//...secuencia ... para cada item ...
+        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+          	    $secuencia=$i+1;
+				if($secuencia<10){
+					$secuencia='0'.$secuencia;
+				}
+          	    //... agrega registro tabla pedidoproducto ...      
+/*	            $plantillaProducto = array(
+	            	"numeroPedido"=>$numPedido,
+				    "idProducto"=>$codigoSinEspacio,
+				    "descripcion"=>$_POST['mat_'.$i],
+				    "color"=>$_POST['colorMat_'.$i],
+				    "cantidad"=>$_POST['cantMat_'.$i],
+				    "unidad"=>$_POST['unidadMat_'.$i],
+				    "precio"=>$_POST['precioMat_'.$i]
+				);
+			
+				// ... inserta registro tabla transacciones ... proformaproducto 
+				$this-> load -> model("tablaGenerica_model");		//carga modelo 
+				$this-> tablaGenerica_model -> grabar('proformaproducto',$plantillaProducto);
+				// ... fin de inserción  registro tabla transacciones ... proformaproducto
+*/				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR 
+		
+//		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+	
+	}	//... fin grabarProforma ...
+		
+	
  
 }
 

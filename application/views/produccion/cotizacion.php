@@ -804,6 +804,14 @@ function filaVacia(posicionFila, codPrefijo){
 	}
 }  // ... fin validarFilaSeleccionada ...
 
+function validarEmail(cadenaEmail){
+	//	var cadenaEmail= $('#inputEmail').val();
+	if (cadenaEmail.indexOf('@')==-1 || cadenaEmail.indexOf('.')==-1) {				//... si no se encuentra la subcadena en la cadena ...
+		alert("¡¡¡ E R R O R !!! ... El contenido de CORREO ELECTRONICO no es válido");
+		$("#correo").val("");   // borra celda de correo elctronico ...
+	}
+}	//... fin validarEmail ...
+
 </script>
 
 <div class="jumbotron" id="cuerpoIngreso">	
