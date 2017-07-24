@@ -3928,21 +3928,20 @@ class Tienda extends CI_Controller {
 					$secuencia='0'.$secuencia;
 				}
           	    //... agrega registro tabla pedidoproducto ...      
-/*	            $plantillaProducto = array(
-	            	"numeroPedido"=>$numPedido,
-				    "idProducto"=>$codigoSinEspacio,
-				    "descripcion"=>$_POST['mat_'.$i],
-				    "color"=>$_POST['colorMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i],
-				    "unidad"=>$_POST['unidadMat_'.$i],
-				    "precio"=>$_POST['precioMat_'.$i]
+	            $plantillaProducto = array(
+	            	"codProf"=>$numProforma,
+				    "idProd"=>$codigoSinEspacio,
+				    "descriProd"=>$_POST['mat_'.$i],
+				    "cantProf"=>str_replace(",","",$_POST['cantMat_'.$i]),
+				    "unidadProf"=>$_POST['unidadMat_'.$i],
+				    "precioProf"=>str_replace(",","",$_POST['precioMat_'.$i])
 				);
 			
 				// ... inserta registro tabla transacciones ... proformaproducto 
 				$this-> load -> model("tablaGenerica_model");		//carga modelo 
 				$this-> tablaGenerica_model -> grabar('proformaproducto',$plantillaProducto);
 				// ... fin de inserción  registro tabla transacciones ... proformaproducto
-*/				
+				
 			}	// ... fin IF
 			
 		}  // ... fin  FOR 
