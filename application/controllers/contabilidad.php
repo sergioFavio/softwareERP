@@ -4174,6 +4174,27 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 	}		//... fin funcion: buscarComprobante ...
 	
 	
+	public function autorizarInicioPeriodoGestion(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='contabilidad'){  //... valida permiso de userName y de menu...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Contabilidad';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+
+		}	//... fin control de permisos de acceso ....
+		else {	//... usuario validado ...
+			$datos['mensaje']='¿Está seguro de iniciar un nuevo período de gestión contable abril 2017?';
+			$this->load->view('header');
+			$this->load->view('contabilidad/iniciarPeriodoGestion',$datos );
+			$this->load->view('footer');
+		}
+		
+	}		//... fin iniciarPeriodoGestion ...
+	
+	
 }
 
 /* End of file contabilidad.php */
