@@ -945,7 +945,7 @@ class Contabilidad extends CI_Controller {
 			$this->pdf->tipoComprobante=$tComprobante; 								//...pasando variable para el header del PDF
 			$this->pdf->numeroCheque=$numeroCheque; 								//...pasando variable para el header del PDF
 			$this->pdf->concepto=$concepto; 										//...pasando variable para el header del PDF
-//			$this->pdf->usuario=$usuario; 											//...pasando variable para el header del PDF
+		    
 		    // Agregamos una página
 		    $this->pdf->AddPage();
 		    // Define el alias para el número de página que se imprimirá en el pie
@@ -1041,12 +1041,11 @@ class Contabilidad extends CI_Controller {
 		
 			$this->load->view('header');
 			$this->load->view('reportePdfSinFechas',$datos );
-			$this->load->view('footer');
-	
-//			 redirect("menuController/index");					
+			$this->load->view('footer');			
 		}
 	    
 	} //... fin funcion: generarComprobantePDF ...
+	
 	
 	public function reporteContabilidad(){
 		$reporte= $_GET['reporte']; //... lee reporte[DG:diario general/ MY:mayores/ BG:balnce general/ ER:estado resultados] ...

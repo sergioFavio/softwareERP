@@ -4145,52 +4145,7 @@ class Tienda extends CI_Controller {
 			$this->pdf->Ln('5');
 			$this->pdf->Ln('5');
 			$this->pdf->Cell(85,5,utf8_decode('*** Validez de la oferta 10 días calendario ***'),0,0,'C');
-			
-			
-/*			
-			if($nota!=""){
-				$this->pdf->Ln('5');
-				$this->pdf->Ln('5');
-				$this->pdf->Cell(1,5,'N O T A :','',0,'L',0);
-				
-				if(substr($nota,0,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,0,124) ),0,0,'L');
-				}
-				
-				if(substr($nota,124,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,124,124) ),0,0,'L');
-				}
-				
-				if(substr($nota,248,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,248,124) ),0,0,'L');
-				}
-				
-				if(substr($nota,372,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,372,124) ),0,0,'L');
-				}
-				
-				if(substr($nota,496,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,496,124) ),0,0,'L');
-				}
-				
-				if(substr($nota,620,124)!=""){
-					$this->pdf->Ln(5);
-					$this->pdf->Cell(15,5,'','',0,'L',0);
-					$this->pdf->Cell(85,5,utf8_decode(substr($nota,620,124) ),0,0,'L');
-				}
-
-			}
-			
+						
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador
 		     *
@@ -4207,9 +4162,14 @@ class Tienda extends CI_Controller {
 		     */
 			 
 			$this->pdf->Output('pdfsArchivos/proformas/proforma'.$numeroProforma.'.pdf', 'F');
-			
-			 redirect("menuController/index");			
-					
+			 
+			$datos['documento']="pdfsArchivos/proformas/proforma".$numeroProforma.".pdf";	
+			$datos['titulo']=' Proforma No. '.substr($numeroProforma,0,4).'/'.substr($numeroProforma,4,strlen($numeroProforma)-4);	// ... titulo ...
+		
+			$this->load->view('header');
+			$this->load->view('reportePdfSinFechas',$datos );
+			$this->load->view('footer');	
+							
 		}
 	    
 	} //... fin funcion: generarProformaPDF ...
