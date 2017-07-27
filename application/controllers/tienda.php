@@ -2,10 +2,8 @@
 
 class Tienda extends CI_Controller {
 	
-		
 	public function cuentasPorCobrarZ(){
 		//... control de permisos de acceso ....
-		
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
@@ -16,7 +14,6 @@ class Tienda extends CI_Controller {
 			$this->load->view('footer');
 		}			// ... fin control permiso de accesos...
 		else{
-//			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
 			$local='Z';	
 		
 			$this->load->model("tablaGenerica_model");
@@ -1286,7 +1283,7 @@ class Tienda extends CI_Controller {
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
-		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas'){  //... valida permiso de userName ...
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName ...
 			$datos['mensaje']='Usuario NO autorizado para hacer PROFORMAS';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
@@ -4127,10 +4124,6 @@ class Tienda extends CI_Controller {
 					$this->pdf->Cell(15,5,'','',0,'L',0);
 					$this->pdf->Cell(85,5,utf8_decode(substr($producto->descriProd,738,56) ),0,0,'L');
 				}
-				
-				
-	
-				
 				
 				$totalPorNumeroProforma=$totalPorNumeroProforma +( $producto->cantProf*$producto->precioProf ); //... acumula los importes de cada nota de ingreso...
 		        //Se agrega un salto de linea
