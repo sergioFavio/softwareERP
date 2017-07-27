@@ -123,6 +123,9 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
 							<li><a href="<?=base_url();?>tienda/verProformas"><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verProformasPorCliente"><span class="glyphicon glyphicon-search"></span> Buscar Proformas por Cliente</a></li>
+						
 						</ul>
 					</li>
                                          
@@ -178,6 +181,8 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
 							<li><a href="<?=base_url();?>tienda/verProformas"><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verProformasPorCliente"><span class="glyphicon glyphicon-search"></span> Buscar Proformas por Cliente</a></li>
 						</ul>
 					</li>
 					

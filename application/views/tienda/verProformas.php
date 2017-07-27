@@ -106,10 +106,10 @@ function proformaPdf(nProforma){
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		<?php 
-			if($buscarPor=="numPedido"){
-				$funcionBuscar='buscarPedido';
+			if($buscarPor=="idProforma"){
+				$funcionBuscar='buscarProforma';
 			}else{
-				$funcionBuscar='buscarPedidoPorCliente';
+				$funcionBuscar='buscarProformaPorCliente';
 			}
 		
 		?>
@@ -124,7 +124,7 @@ function proformaPdf(nProforma){
 			   	             
 				<div class="col-xs-3">
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaPedido ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar número de proforma sin ' / ' ">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaProforma ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar número de proforma sin ' / ' ">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
