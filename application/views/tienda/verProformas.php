@@ -205,7 +205,7 @@ function proformaPdf(nProforma){
 					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='proformaPdf($numeroProforma);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	
 					 if($permisoUserName=='superuser'){
-					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$proforma->idProforma."' data-cli='".$proforma->contactoProf."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar proforma' data-item-id='".$proforma->idProforma."' data-cli='".$proforma->contactoProf."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 					 }else{
 					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'></td>"; 
 					 }
@@ -230,7 +230,7 @@ function proformaPdf(nProforma){
 </div>
 
 
-<!-- ...  lightbox borrar material ... -->
+<!-- ...  lightbox borrar proforma ... -->
 
 <div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -240,8 +240,8 @@ function proformaPdf(nProforma){
         <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
       </div>
       <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarPedido" method="POST">
-        ¿ Esta seguro de eliminar el pedido <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
+	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarProforma" method="POST">
+        ¿ Esta seguro de eliminar la proforma <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 	  </form>
       </div>
@@ -253,7 +253,7 @@ function proformaPdf(nProforma){
   </div>
 </div>
 
-<!-- ... fin  lightbox borrar material ... -->
+<!-- ... fin  lightbox borrar proforma ... -->
 
 
 <!-- ... inicio  lightbox proformaPdf... -->

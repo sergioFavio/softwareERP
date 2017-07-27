@@ -4247,6 +4247,27 @@ class Tienda extends CI_Controller {
 	}
 	
 	
+	public function eliminarProforma(){
+		//... elimina pedido de las tablas pedidocabecera, pedidoproducto ...
+		$codigoProforma=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('proformacabecera','idProforma',$codigoProforma);
+		$this-> tablaGenerica_model -> eliminar('proformaproducto','codProf',$codigoProforma);
+		
+//		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+//		$archivoPDF='pedido'.$numePedidoSinGuion.'.pdf';
+
+		$archivoPDF=$codigoProforma.'.pdf';
+		$archivo ='pdfsArchivos/proformas/proforma'.$codigoProforma.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verProformas");
+		echo $data;
+	}	//...fin eliminarProforma ...
  
 }
 
