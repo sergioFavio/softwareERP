@@ -81,14 +81,14 @@ $(document).ready(function() {
  }); // fin document.ready 
 
 
-function pedidoPdf(nPedido){
-    var pedido= nPedido;
+function proformaPdf(nProforma){
+    var proforma= nProforma;
   
 	$.ajax({
-      url: "<?=base_url()?>produccion/pedidoPdfCrud",
+      url: "<?=base_url()?>tienda/proformaPdfCrud",
 
       type: "POST",
-      data: {numePedido: pedido},
+      data: {numeProforma: proforma},
 
       success: function(data){
          //alert(data);
@@ -100,7 +100,7 @@ function pedidoPdf(nPedido){
 
   $('#pdfModal').modal({show:true});
    
-}  // ... fin pedidoPdf ...
+}  // ... fin proformaPdf ...
 	
 </script>
 
@@ -168,20 +168,20 @@ function pedidoPdf(nPedido){
     			<th style="width: 80px;">Fecha</th>
 				<th style="width: 200px;">Cliente - Empresa</th>
 				<th style="width: 80px;">Fono/Celular</th>
-				<th style="width: 175px;text-align:center">Correo</th>
-				<th style="width: 160px;text-align:center">Acciones</th>
+				<th style="width: 225px;text-align:center">Correo</th>
+				<th style="width: 110px;text-align:center">Acciones</th>
     		</tr>
  		</thead>
  		
  		<tbody>	
 			<?php  $posicionFila=-1; ?>			
-	        <?php foreach($listaPedido as $pedido):?>
+	        <?php foreach($listaProforma as $proforma):?>
 				<tr class='letraDetalle'>
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numeroProforma = $pedido->idProforma;
-					$local = $pedido->local;
+					$numeroProforma = $proforma->idProforma;
+					$local = $proforma->local;
 					$secuenciaProforma=substr($numeroProforma,0,4);
 									
 					if(strlen($numeroProforma)==6){						//...si es proforma de Fabrica ... 
@@ -194,24 +194,18 @@ function pedidoPdf(nPedido){
 								
 					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$numeProformaAux."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 						
-					 echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaProf)."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".fechaMysqlParaLatina($proforma->fechaProf)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 							 
-					 echo"<td style='width: 200px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$pedido->clienteProf."' readonly='readonly' style='border:none; width:200px;' /></td>";
+					 echo"<td style='width: 200px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$proforma->clienteProf."' readonly='readonly' style='border:none; width:200px;' /></td>";
 						
-					 echo"<td style='width: 80px;'><input type='text' id='telCel_".$posicionFila."' name='telCel_".$posicionFila."' value='".$pedido->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
+					 echo"<td style='width: 80px;'><input type='text' id='telCel_".$posicionFila."' name='telCel_".$posicionFila."' value='".$proforma->fonoCel."' readonly='readonly' style='border:none; width:80px;text-align:center;' /></td>";
 
-					 echo"<td style='width: 200px;'><input type='text' id='correo_".$posicionFila."' name='correo_".$posicionFila."' value='".$pedido->correoProf."' readonly='readonly' style='border:none; width:200px;' /></td>";
-					
-	//				 echo"<td style='width: 40px;'><input type='text' id='estado_".$posicionFila."' name='estado_".$posicionFila."' value='".$pedido->estado."' readonly='readonly' style='border:none; width:40px;' /></td>";
-					
-	//				 echo"<td style='width: 63px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEstado)."' readonly='readonly' style='border:none; width:63px;' /></td>";
-					
-	//				 echo"<td style='width: 65px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:65px;' /></td>";
-								
-					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroProforma);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
+					 echo"<td style='width: 200px;'><input type='text' id='correo_".$posicionFila."' name='correo_".$posicionFila."' value='".$proforma->correoProf."' readonly='readonly' style='border:none; width:200px;' /></td>";
+												
+					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='proformaPdf($numeroProforma);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	
 					 if($permisoUserName=='superuser'){
-					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$pedido->idProforma."' data-cli='".$pedido->contactoProf."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar pedido' data-item-id='".$proforma->idProforma."' data-cli='".$proforma->contactoProf."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 					 }else{
 					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'></td>"; 
 					 }
@@ -262,7 +256,7 @@ function pedidoPdf(nPedido){
 <!-- ... fin  lightbox borrar material ... -->
 
 
-<!-- ... inicio  lightbox pedidoPdf... -->
+<!-- ... inicio  lightbox proformaPdf... -->
 
 <div class="modal fade" id="pdfModal" >
   <div class="modalEditar-dialog">
@@ -283,6 +277,6 @@ function pedidoPdf(nPedido){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- ... fin  lightbox pedidoPdf ... -->
+<!-- ... fin  lightbox proformaPdf ... -->
 
 

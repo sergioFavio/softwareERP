@@ -4222,7 +4222,7 @@ class Tienda extends CI_Controller {
 			
 				/* Se obtienen los registros a mostrar*/ 
 				
-				$datos['listaPedido'] = $this->tablaGenerica_model->get_registros('proformacabecera',$config['per_page'], $desde); 
+				$datos['listaProforma'] = $this->tablaGenerica_model->get_registros('proformacabecera',$config['per_page'], $desde); 
 				$datos['consultaPedido'] ='';
 				$datos['permisoUserName'] =$permisoUserName;
 				$datos['buscarPor'] ='idProforma';
@@ -4236,6 +4236,16 @@ class Tienda extends CI_Controller {
 		}	//... fin IF validar usuario ...
 		
 	} //... fin verProformas ...
+	
+	
+	public function proformaPdfCrud(){
+		//... recupera la variable de numePedido ...
+		$numeProforma=$_POST["numeProforma"];
+		?>
+		<embed src="<?= base_url('pdfsArchivos/proformas/proforma'.$numeProforma.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}
+	
 	
  
 }
