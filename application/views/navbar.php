@@ -122,11 +122,10 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proformas </a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
-							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+							<li><a href="<?=base_url();?>tienda/verProformas"><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
 						</ul>
 					</li>
-                                        
-                    <li><a href="#"><span class="glyphicon glyphicon-list-alt"></span> Reportes</a></li>  
+                                         
                 </ul>
             </li>
 
@@ -178,7 +177,7 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-list-alt"></span> Proformas </a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/proforma?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Proforma </a></li>
-							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
+							<li><a href="<?=base_url();?>tienda/verProformas"><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
 						</ul>
 					</li>
 					
