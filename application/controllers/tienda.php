@@ -3902,7 +3902,9 @@ class Tienda extends CI_Controller {
 		    "fonoCel"=>$_POST['telCel'],
 		    "direccionProf"=>$_POST['direccion'],
 		    "correoProf"=>$_POST['correo'], 
-		    "usuario"=>$this->session->userdata('userName')
+		    "usuario"=>$this->session->userdata('userName'),
+		    "responsableProf"=>$_POST['responsable'], 
+		    "notaProf"=>$_POST['nota'] 
 		);
 		
 		// ... inserta registro tabla pedidocabecera ...
@@ -3981,6 +3983,9 @@ class Tienda extends CI_Controller {
 		$fono= $proformaCabecera["fonoCel"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$correo= $proformaCabecera["correoProf"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$usuario= $proformaCabecera["usuario"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$responsable= $proformaCabecera["responsableProf"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$nota= $proformaCabecera["notaProf"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		
 							
 		$sql ="SELECT * FROM proformacabecera WHERE idProforma='$numeroProforma' ";
 		
@@ -4137,7 +4142,89 @@ class Tienda extends CI_Controller {
 			$this->pdf->Ln('5');
 			$this->pdf->Ln('5');
 			$this->pdf->Ln('5');
-			$this->pdf->Cell(85,5,utf8_decode('*** Validez de la oferta 10 días calendario ***'),0,0,'C');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Tiempo de entrega: '),0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode('A definir según cantidad'),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Forma de pago: '),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Al contado'),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Lugar de entrega: '),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Sus instalaciones RADIO URBANO en CBBA'),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Validez de la proforma: '),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,utf8_decode('10 días calendario'),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Responsable de la proforma: '),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,utf8_decode($responsable),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Aprobado por: '),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			 $this->pdf->SetFont('Arial', '', 10);
+			$this->pdf->Cell(40,5,utf8_decode('Producción'),0,0,'L');
+		
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			 $this->pdf->SetFont('Arial', 'B', 10);
+			$this->pdf->Cell(1,5,'N O T A :','',0,'L',0);
+			 $this->pdf->SetFont('Arial', '', 10);
+			
+			if(substr($nota,0,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,0,124) ),0,0,'L');
+			}
+			
+			if(substr($nota,124,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,124,124) ),0,0,'L');
+			}
+			
+			if(substr($nota,248,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,248,124) ),0,0,'L');
+			}
+			
+			if(substr($nota,372,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,372,124) ),0,0,'L');
+			}
+			
+			if(substr($nota,496,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,496,124) ),0,0,'L');
+			}
+			
+			if(substr($nota,620,124)!=""){
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'','',0,'L',0);
+				$this->pdf->Cell(85,5,utf8_decode(substr($nota,620,124) ),0,0,'L');
+			}
+		
 						
 		     /* PDF Output() settings
 		     * Se manda el pdf al navegador

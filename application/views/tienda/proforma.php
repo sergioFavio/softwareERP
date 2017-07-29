@@ -85,10 +85,21 @@ $(document).ready(function() {
         	borrarFormularioIngreso();
     });	
     		
-	$("#btnGrabarPedido").click(function(){
+	$("#btnGrabarProforma").click(function(){
 	// grabar cotizacion...
-    	grabarPedido();
+    	grabarProforma();
 	});
+	
+	$('#btnNota').click(function(){	
+		var title = $(this).attr("data-title");
+		$('.modal-title').html(title);		
+  		$('#notaModal').modal({show:true});
+	});	//...fin btnNota ...
+	
+	$("#btnBorrarNota").click(function(){
+        	$("#nota").val("");
+    });
+
 	
 		
 }); // fin document.ready 
@@ -140,7 +151,7 @@ function eliminarComa(numero){
 } // ... fin funcion eliminarComa ... 
 	
 
-function grabarPedido(){
+function grabarProforma(){
 	var i=0;  //... cuenta numeroFilas  del formulario materiales ...
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
@@ -191,6 +202,15 @@ function grabarPedido(){
 			registrosValidos= false;	
 	}
 	
+	if($("#responsable").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de RESPONSABLE está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#nota").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de NOTA está vacío");
+			registrosValidos= false;	
+	}
 			
 	// ... valida que los registros no tengan cantidad vacia formulario materiales  ...
 	while($("#idMat_"+i).val()!= ""){
@@ -472,6 +492,25 @@ function validarEmail(cadenaEmail){
    
       </tbody>
 	</table>
+	
+	<div class="col-md-2">
+		<div class="input-group input-group-sm">
+	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width: 200px;font-size:11px;text-align:center;" >
+		</div>
+	</div><!-- /.col-md-2 -->
+	
+	<div class="col-xs-2">
+	 	<span></span>
+	</div>
+	
+	<div class="col-xs-1">
+		<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
+	</div>
+	
+	
+	
+	
 	   	
 	<div class="totalPedido">
 		<span class="label label-success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -492,7 +531,7 @@ function validarEmail(cadenaEmail){
 		
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPedido" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarProforma" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
    <div style="height:10px;"></div>
 </div>
@@ -541,3 +580,28 @@ function validarEmail(cadenaEmail){
   </div>
 </div>
 <!-- ... fin  lightbox ... -->
+
+<!-- ... inicio  lightbox nota... -->
+<div id="notaModal"  class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" >
+  <div class="nota-dialog"  >
+  <div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h5 class="modal-title">cabecera de caja luz</h5>
+	</div>
+	<div class="modal-body">
+		<div class="input-group input-group-sm">
+	 		<textarea rows='10'  id='nota' name='nota' placeholder="nota&hellip;" style="width:410px;font-size:11px;text-align:center;" ></textarea>
+		</div>
+	</div>
+	
+	<div class="modal-footer">
+	   <button type="button" class="btn btn-default btn-sm"  id="btnBorrarNota"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+	   <button class="btn btn-default btn-sm" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>&nbsp;&nbsp;&nbsp;
+	</div>
+	
+   </div>
+  </div>
+</div>
+<!-- ... fin  lightbox nota... -->
+

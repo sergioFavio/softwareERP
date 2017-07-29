@@ -54,7 +54,7 @@
 			$this->Cell(15,7,'precio Bs.','TB',0,'L','0');
 			$this->Cell(9,7,' ','TB',0,'R','0');
 			$this->Cell(19,7,'importe Bs.','TBR',0,'R','0');
-	        $this->Ln(7);
+	        $this->Ln(8);
        }
 
 
