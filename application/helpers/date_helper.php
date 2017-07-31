@@ -22,7 +22,7 @@ function mesLiteral($mesNum){
 	$mes[9]="Septiembre";
 	$mes[10]="Octubre";
 	$mes[11]="Noviembre";
-	$mes[12]="Deciembre";
+	$mes[12]="Diciembre";
 	return $mes[$mesNum];
 }
 

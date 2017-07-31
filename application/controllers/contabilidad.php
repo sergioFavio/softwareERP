@@ -4185,7 +4185,32 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 
 		}	//... fin control de permisos de acceso ....
 		else {	//... usuario validado ...
-			$datos['mensaje']='¿Está seguro de iniciar un nuevo período de gestión contable abril 2017?';
+			$sql ="SELECT * FROM contagestion ORDER BY gestion DESC LIMIT 1";		//... recupera el ultimo registro insertado de una tabla... 
+		
+			$consulta = $this->db->query($sql);
+			if ($consulta->num_rows() > 0){
+			   $row = $consulta->row_array(); 
+			   $gestion= $row['gestion'];			//..asign ultimo registro tabla contagestion ...
+			}
+			
+			$mesGestion=substr($gestion,4,2);
+			$anhoGestion=substr($gestion,0,4);
+			
+			$mesSiguiente= $mesGestion+1;
+			if($mesSiguiente>12){
+				$anhoSiguiente=$anhoGestion+1;
+				$mesSiguiente='01';
+				$gestionSiguiente=$anhoSiguiente.$mesSiguiente;
+			}else{
+				if($mesSiguiente<10){
+					$mesSiguiente='0'.$mesSiguiente;
+				}
+				$gestionSiguiente=$anhoGestion.$mesSiguiente;
+			}
+			
+		    $datos['gestionSiguiente']=$gestionSiguiente;
+			$datos['mesSiguiente']=$mesSiguiente;
+			$datos['mensaje']='¿Está seguro de iniciar un nuevo período de gestión contable '.mesLiteral((int)$mesSiguiente).' '.substr($gestionSiguiente,0,4).' ?';
 			$this->load->view('header');
 			$this->load->view('contabilidad/iniciarPeriodoGestion',$datos );
 			$this->load->view('footer');

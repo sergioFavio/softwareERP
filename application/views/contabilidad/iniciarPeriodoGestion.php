@@ -1,13 +1,13 @@
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>">
 
 <style type="text/css" >    
-	#cuerpo{margin:0 auto; padding:0; width:510px; height:140px;}
+	#cuerpo{margin:0 auto; padding:0; width:540px; height:140px;}
 	  
 </style>
 
 <div class="panel panel-primary" id="cuerpo">
     <div class="panel-heading">
-        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> Iniciar Nuevo período de Gestión abril 2017</h3>
+        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> Iniciar Nuevo período de Gestión <?= mesLiteral((int)$mesSiguiente).' '.substr($gestionSiguiente,0,4) ?> </h3>
     </div>
     <div class="panel-body" >
         <?= $mensaje ?> 
