@@ -4587,19 +4587,53 @@ class Tienda extends CI_Controller {
 	
 	
 	public function pedidoNotaEntrega(){
-		$localAux= $_POST['localAux']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+		$local= $_POST['localAux']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
 		
+		$this->load->model("numeroDocumento_model");
+		$nombreTabla='noentrega'.strtolower($local); // ... prefijoTabla
+    	$entrega = $this->numeroDocumento_model->getNumero($nombreTabla);
+		
+		///////////////////////////////////////
+		///...INICIO genera nuevo numero de proforma ...
+		//////////////////////////////////////
+		
+		if($local=="T"){
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+			if(substr($entrega, 4, 4)!=$anhoSistema){
+				$entrega='1001'.$anhoSistema;
+			}else{
+				$entrega=substr($entrega, 0, 4);
+				$entrega=(int)$entrega;
+				$entrega=$entrega+1;
+				$entrega=$entrega.$anhoSistema;
+			}
+			
+		}else{
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+			if(substr($entrega, 4, 2)!=$anhoSistema){
+				$entrega='6001'.$anhoSistema;
+			}else{
+				$entrega=substr($entrega, 0, 4);
+				$entrega=(int)$entrega;
+				$entrega=$entrega+1;
+				$entrega=$entrega.$anhoSistema;
+			}
+			
+		}
+	
 		$numeroPedido= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
 
 		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
 		
-		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
+		if($local=='Z'){			//...cuando el local es Z:Zúñiga ...
 			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabeceraz','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
 		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
 			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
 		} 
 		
-		$local= $pedidoCabecera["local"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$localReg= $pedidoCabecera["local"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fechaPedido= $pedidoCabecera["fechaPedido"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fechaEntrega= $pedidoCabecera["fechaEntrega"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$cliente= $pedidoCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
@@ -4617,44 +4651,7 @@ class Tienda extends CI_Controller {
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$notaComentario= $pedidoCabecera["notaComentario"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		
-		
-		if(strlen($numeroPedido)==3){
-			$secuenciaPedido=substr($numeroPedido,0,1);
-			$anhoSistema=substr($numeroPedido,1,2);
-		}
-		
-		if(strlen($numeroPedido)==4){
-			$secuenciaPedido=substr($numeroPedido,0,2);
-			$anhoSistema=substr($numeroPedido,2,2);
-		}
-		
-		if(strlen($numeroPedido)==5){
-			if($local=='F'){		//..local:Fabrica ..
-				$secuenciaPedido=substr($numeroPedido,0,3);
-				$anhoSistema=substr($numeroPedido,3,2);
-			}else{					//..local:tienda ..
-				$secuenciaPedido=substr($numeroPedido,0,1);
-				$anhoSistema=substr($numeroPedido,1,4);
-			}
-		}
-		
-		if(strlen($numeroPedido)==6){
-			$secuenciaPedido=substr($numeroPedido,0,2);
-			$anhoSistema=substr($numeroPedido,2,4);
-		}
-		
-		if(strlen($numeroPedido)==7){
-			$secuenciaPedido=substr($numeroPedido,0,3);
-			$anhoSistema=substr($numeroPedido,3,4);
-		}
-		
-		if(strlen($numeroPedido)==8){
-			$secuenciaPedido=substr($numeroPedido,0,4);
-			$anhoSistema=substr($numeroPedido,4,4);
-		}
-		
-		
-		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
+		if($local=='Z'){			//...cuando el local es Z:Zúñiga ...
 			$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$numeroPedido' AND estadoItem='T'";
 		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
 			$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$numeroPedido' AND estadoItem='T'";
@@ -4662,20 +4659,12 @@ class Tienda extends CI_Controller {
 		
 		$regPedido=mysql_query($sql);
 		$nRegistrosPedido= mysql_num_rows($regPedido); 	//... numero registros salida que satisfacen la consulta ...
-		
-		if($localAux=='Z'){			//...cuando el local es Z:Zúñiga ...
-			$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
-			$insumos = $this->db->query($sql)->result_array();
-		}else{						//...cuando el local es T:Tienda o F:Fábrica ...
-			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla maestra[almacen/bodega]
-			$insumos= $this->tablaGenerica_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama productosfabrica..
-		}	
-		
+			
 		$datos['numeroPedido']=$numeroPedido;			//... dato cabecera pedido ..
 		
 		$datos['titulo']='mPedido:';
-		$datos['secuenciaPedido']=$secuenciaPedido;		//... dato cabecera pedido ..
-		$datos['anhoSistema']=$anhoSistema;				//... dato cabecera pedido ..
+		$datos['entrega']=$entrega;						//... dato cabecera pedido ..
+
 		$datos['numPedido']=$numeroPedido; 				//... dato cabecera pedido ..
 		$datos['local']=$local;							//... dato cabecera pedido ..
 		$datos['fechaPedido']=$fechaPedido;				//... dato cabecera pedido ..

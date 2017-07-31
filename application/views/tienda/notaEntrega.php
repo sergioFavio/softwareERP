@@ -140,7 +140,7 @@ function filaVacia(posicionFila){
 
 <div class="jumbotron" id="cuerpoSalida">		
 		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarPlantilla" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarNotaEntrega" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">
@@ -153,12 +153,12 @@ function filaVacia(posicionFila){
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
-			<div class="col-xs-2 col-md-2">
+			<div class="col-xs-1">
 				<span></span>
 			</div>    	
 	    	
-	    	<div class="col-xs-4">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Nota Entrega #: <?= $numeroPedido ?> </span>
+	    	<div class="col-xs-5">
+	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Nota Entrega <?= $local.' : '.substr($entrega,0,4).' / '.substr($entrega,4,strlen($entrega)-4) ?> </span>
 	    	</div> 
 	    	
 			<div class="col-xs-1">
