@@ -155,7 +155,7 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega PENDIENTE</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>tienda/notaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
+							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
 							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
 						</ul>
 					</li>
