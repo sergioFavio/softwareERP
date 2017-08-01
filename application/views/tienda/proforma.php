@@ -531,29 +531,39 @@ function validarEmail(cadenaEmail){
 	<input type="hidden"  name="numProforma" value="<?= $proforma ?>" />     				<!--  numero pedido -->
 	<input type="hidden"  name="local" value="<?= $local ?>" />     						<!--  local  F: fabrica  T: tienda -->
 	
-	<div style="text-align:right;padding-top:15px;"> 
+	<div style="text-align:right;padding-top:15px;" > 
+		
+	<div style="height:13px;"></div>
 			
 		<div class="col-xs-1">
-			<div class="input-group input-group-sm">
+			<div class="input-group input-group-sm" >
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="tiempoEntrega" name="tiempoEntrega" placeholder="forma de pago &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+		 		<input type="text"  class="form-control input-sm" id="tiempoEntrega" name="tiempoEntrega" placeholder="forma de pago &hellip;" style="width:120px;font-size:11px;text-align:center;" >
 			</div>
 		</div><!-- /.col-md-2 -->
 		
-		<!--div class="col-xs-1">
+		<div class="col-xs-2">
 		 	<span></span>
-		</div-->
+		</div>
 		
-		<!--div class="col-xs-1">
+		<div class="col-xs-2">
 			<div class="input-group input-group-sm">
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
+		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width:120px;font-size:11px;text-align:center;" >
 			</div>
 		</div><!-- /.col-md-2 -->
 		
 		<div class="col-xs-1">
 		 	<span></span>
 		</div>
+		
+		<div class="col-xs-2">
+			<div class="input-group input-group-sm">
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
+		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width:120px;font-size:11px;text-align:center;" >
+			</div>
+		</div><!-- /.col-md-2 -->
+		
 		
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-default btn-sm"  id="btnBorrarIngreso"><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
