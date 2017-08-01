@@ -493,7 +493,7 @@ function validarEmail(cadenaEmail){
       </tbody>
 	</table>
 	
-	<div class="col-xs-2">
+	<div class="col-md-2">
 		<div class="input-group input-group-sm">
 	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
 	 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width: 200px;font-size:11px;text-align:center;" >
@@ -508,18 +508,10 @@ function validarEmail(cadenaEmail){
 		<button type="button" class="btn btn-warning btn-sm" data-title='Nota' id="btnNota"><span class="glyphicon glyphicon-comment"></span> Nota</button>&nbsp;
 	</div>
 	
-	<div class="col-xs-1">
-	 	<span></span>
-	</div>
-	
-	<div class="col-xs-1">
-		<div class="input-group input-group-sm">
-	    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-time"></span></span>
-	 		<input type="text"  class="form-control input-sm" id="tiempoEntrega" name="tiempoEntrega" placeholder="tiempo de entrega &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
-		</div>
-	</div><!-- /.col-md-2 -->
 	
 	
+	
+	   	
 	<div class="totalPedido">
 		<span class="label label-success">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Bs.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="label label-success">
@@ -531,25 +523,7 @@ function validarEmail(cadenaEmail){
 	<input type="hidden"  name="numProforma" value="<?= $proforma ?>" />     				<!--  numero pedido -->
 	<input type="hidden"  name="local" value="<?= $local ?>" />     						<!--  local  F: fabrica  T: tienda -->
 	
-	<div style="text-align:right;padding-top:15px;"> 
-			
-		<div class="col-xs-1">
-			<div class="input-group input-group-sm">
-		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="tiempoEntrega" name="tiempoEntrega" placeholder="forma de pago &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
-			</div>
-		</div><!-- /.col-md-2 -->
-		
-		<!--div class="col-xs-1">
-		 	<span></span>
-		</div-->
-		
-		<!--div class="col-xs-1">
-			<div class="input-group input-group-sm">
-		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width: 120px;font-size:11px;text-align:center;" >
-			</div>
-		</div><!-- /.col-md-2 -->
+	<div style="text-align: right; padding-top: 15px;"> 
 		
 		<div class="col-xs-1">
 		 	<span></span>
@@ -560,7 +534,6 @@ function validarEmail(cadenaEmail){
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarProforma" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
    <div style="height:10px;"></div>
-   </form>
 </div>
 
 

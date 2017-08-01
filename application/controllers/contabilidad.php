@@ -4208,6 +4208,7 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 				$gestionSiguiente=$anhoGestion.$mesSiguiente;
 			}
 			
+			$datos['gestion']=$gestion;
 		    $datos['gestionSiguiente']=$gestionSiguiente;
 			$datos['mesSiguiente']=$mesSiguiente;
 			$datos['mensaje']='¿Está seguro de iniciar un nuevo período de gestión contable '.mesLiteral((int)$mesSiguiente).' '.substr($gestionSiguiente,0,4).' ?';
@@ -4216,7 +4217,51 @@ $this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);
 			$this->load->view('footer');
 		}
 		
-	}		//... fin iniciarPeriodoGestion ...
+	}		//... fin autorizarInicioPeriodoGestion ...
+	
+	
+	public function iniciarPeriodoGestion(){
+		$gestion=$_POST['gestion'];
+		$mesSiguiente=$_POST['mesSiguiente'];
+		$gestionSiguiente=$_POST['gestionSiguiente'];
+
+		if($mesSiguiente=='04'){
+			$sql="CREATE TABLE comprobantecabecera".$gestion." SELECT * FROM comprobantecabecera";	//...tabla: comprobantecabecera ..
+			mysql_query($sql);
+			
+			$sql="CREATE TABLE comprobantedetalle".$gestion." SELECT * FROM comprobantedetalle";	//...tabla: comprobantedetalle ..
+			mysql_query($sql);
+			
+			$sql="CREATE TABLE contaplandectas".$gestion." SELECT * FROM contaplandectas";			//...tabla: contaplandectas ..
+			mysql_query($sql);
+			
+			$sql="UPDATE contaplandectas SET debeacumulado=0.00, haberacumulado=0.00, debemes=0.00, habermes=0.00";	//...tabla: contaplandectas cerea acumulado y mes debe/haber..
+			mysql_query($sql);
+			
+			$sql="DELETE FROM comprobantecabecera";					//...tabla: comprobantecabecera borra todos los registros ..
+			mysql_query($sql);
+			
+			$sql="DELETE FROM comprobantedetalle";					//...tabla: comprobantedetalle borra todos los registros ..
+			mysql_query($sql);
+			
+			$sql="DELETE FROM contagestion";					//...tabla: contagestion borra todos los registros ..
+			mysql_query($sql);
+			
+			$sql="INSERT INTO contagestion VALUES ($gestionSiguiente);";	//...tabla: contagestion inserta registro inicio gestion ..
+			mysql_query($sql);	
+
+		}else{			//... ssi es un mes diferente del inicio gestion anual ...
+			$sql="UPDATE contaplandectas SET debemes=0.00, habermes=0.00";	//...tabla: contaplandectas cerea mes debe/haber..
+			mysql_query($sql);
+			
+			$sql="INSERT INTO contagestion VALUES ($gestionSiguiente);";	//...tabla: contagestion inserta registro inicio gestion ..
+			mysql_query($sql);
+		}
+		
+		redirect("menuController/index");	//... vuelve menu principal ...
+		
+	}	//... fin  funcion: iniciarPeriodoGestion ...
+	
 	
 	
 }

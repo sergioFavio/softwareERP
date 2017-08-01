@@ -26,9 +26,9 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpoCabecera{margin:0 auto; padding:0; width:775px; height:50px;}
-	#cuerpoDetalle{margin:0 auto; padding:0; width:775px; height:410px;}
-	#cuerpoPaginacion{margin:0 auto;padding:0; width:775px; height:60px;}
+	#cuerpoCabecera{margin:0 auto; padding:0; width:780px; height:50px;}
+	#cuerpoDetalle{margin:0 auto; padding:0; width:780px; height:410px;}
+	#cuerpoPaginacion{margin:0 auto;padding:0; width:780px; height:60px;}
 	
 	#inputBuscarPatron, #letraCabecera{font-size:11px;text-align:center; }
 	
