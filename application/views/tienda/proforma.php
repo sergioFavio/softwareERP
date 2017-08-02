@@ -169,29 +169,7 @@ function grabarProforma(){
 			alert("¡¡¡ E R R O R !!! ... El contenido de DIRECCION está vacío");
 			registrosValidos= false;	
 	}
-/*	
-	
-*/	
-//	if($("#telCel").val()!="" ){
-/*		alert("¡¡¡ E R R O R !!! ... El contenido de TELEFONO/CELULAR está vacío");
-		registrosValidos= false;	
-	}
-	else{
-*/		
-//		var numero= $('#telCel').val();
-//		if (!/^([0-9])*$/.test(numero))  // ... solo numeros enteros ...  
-//		{
-//    		alert("El valor " + numero + " no es un número telefónico");
-//    		$("#telCel").val("");   // borra celda de cantidad
-//    		registrosValidos= false;
-//    	}
-//	}
-	
-//	if($("#localidad").val()=="" ){
-//			alert("¡¡¡ E R R O R !!! ... El contenido de LOCALIDAD está vacío");
-//			registrosValidos= false;	
-//	}
-	
+		
 	if($("#inputFecha").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
 			registrosValidos= false;	
@@ -209,6 +187,26 @@ function grabarProforma(){
 	
 	if($("#nota").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de NOTA está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#tiempoEntrega").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de TIEMPO DE ENTREGA está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#formaPago").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de FORMA DE PAGO está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#lugarEntrega").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de LUGAR DE ENTREGA está vacío");
+			registrosValidos= false;	
+	}
+	
+	if($("#validezProforma").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de VALIDEZ DE LA PROFORMA está vacío");
 			registrosValidos= false;	
 	}
 			
@@ -538,7 +536,7 @@ function validarEmail(cadenaEmail){
 		<div class="col-xs-1">
 			<div class="input-group input-group-sm" >
 		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-usd"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="tiempoEntrega" name="tiempoEntrega" placeholder="forma de pago &hellip;" style="width:120px;font-size:11px;text-align:center;" >
+		 		<input type="text"  class="form-control input-sm" id="formaPago" name="formaPago" placeholder="forma de pago &hellip;" style="width:170px;font-size:11px;text-align:center;" >
 			</div>
 		</div><!-- /.col-md-2 -->
 		
@@ -548,8 +546,8 @@ function validarEmail(cadenaEmail){
 		
 		<div class="col-xs-2">
 			<div class="input-group input-group-sm">
-		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width:120px;font-size:11px;text-align:center;" >
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-globe"></span></span>
+		 		<input type="text"  class="form-control input-sm" id="lugarEntrega" name="lugarEntrega" placeholder="lugar de entrega &hellip;" style="width:170px;font-size:11px;text-align:center;" >
 			</div>
 		</div><!-- /.col-md-2 -->
 		
@@ -559,8 +557,8 @@ function validarEmail(cadenaEmail){
 		
 		<div class="col-xs-2">
 			<div class="input-group input-group-sm">
-		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-user"></span></span>
-		 		<input type="text"  class="form-control input-sm" id="responsable" name="responsable" placeholder="responsable cotización &hellip;" style="width:120px;font-size:11px;text-align:center;" >
+		    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-calendar"></span></span>
+		 		<input type="text"  class="form-control input-sm" id="validezProforma" name="validezProforma" placeholder="validez proforma &hellip;" style="width:120px;font-size:11px;text-align:center;" >
 			</div>
 		</div><!-- /.col-md-2 -->
 		
@@ -570,7 +568,7 @@ function validarEmail(cadenaEmail){
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarProforma" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
    <div style="height:10px;"></div>
-   </form>
+   <!--/form-->
 </div>
 
 
@@ -641,4 +639,4 @@ function validarEmail(cadenaEmail){
   </div>
 </div>
 <!-- ... fin  lightbox nota... -->
-
+ </form>

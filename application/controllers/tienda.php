@@ -3877,7 +3877,11 @@ class Tienda extends CI_Controller {
 		    "correoProf"=>$_POST['correo'], 
 		    "usuario"=>$this->session->userdata('userName'),
 		    "responsableProf"=>$_POST['responsable'], 
-		    "notaProf"=>$_POST['nota'] 
+		    "notaProf"=>$_POST['nota'],
+		    "tiempoEntregaProf"=>$_POST['tiempoEntrega'],
+		    "formaPagoProf"=>$_POST['formaPago'],
+		    "lugarEntregaProf"=>$_POST['lugarEntrega'],
+		    "validezProformaProf"=>$_POST['validezProforma']
 		);
 		
 		// ... inserta registro tabla pedidocabecera ...
@@ -3958,7 +3962,12 @@ class Tienda extends CI_Controller {
 		$usuario= $proformaCabecera["usuario"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$responsable= $proformaCabecera["responsableProf"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$nota= $proformaCabecera["notaProf"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$tiempoEntrega= $proformaCabecera["tiempoEntregaProf"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$formaPago= $proformaCabecera["formaPagoProf"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$lugarEntrega= $proformaCabecera["lugarEntregaProf"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$validezProforma= $proformaCabecera["validezProformaProf"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		
+			
 							
 		$sql ="SELECT * FROM proformacabecera WHERE idProforma='$numeroProforma' ";
 		
@@ -4119,28 +4128,28 @@ class Tienda extends CI_Controller {
 			$this->pdf->Cell(40,5,utf8_decode('Tiempo de entrega: '),0,0,'L');
 			 $this->pdf->SetFont('Arial', '', 10);
 			$this->pdf->Cell(40,5,'',0,0,'L');
-			$this->pdf->Cell(40,5,utf8_decode('A definir según cantidad'),0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode($tiempoEntrega),0,0,'L');
 			
 			$this->pdf->Ln('5');
 			 $this->pdf->SetFont('Arial', 'B', 10);
 			$this->pdf->Cell(40,5,utf8_decode('Forma de pago: '),0,0,'L');
 			$this->pdf->Cell(40,5,'',0,0,'L');
 			 $this->pdf->SetFont('Arial', '', 10);
-			$this->pdf->Cell(40,5,utf8_decode('Al contado'),0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode($formaPago),0,0,'L');
 			
 			$this->pdf->Ln('5');
 			 $this->pdf->SetFont('Arial', 'B', 10);
 			$this->pdf->Cell(40,5,utf8_decode('Lugar de entrega: '),0,0,'L');
 			$this->pdf->Cell(40,5,'',0,0,'L');
 			 $this->pdf->SetFont('Arial', '', 10);
-			$this->pdf->Cell(40,5,utf8_decode('Sus instalaciones RADIO URBANO en CBBA'),0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode($lugarEntrega),0,0,'L');
 			
 			$this->pdf->Ln('5');
 			 $this->pdf->SetFont('Arial', 'B', 10);
 			$this->pdf->Cell(40,5,utf8_decode('Validez de la proforma: '),0,0,'L');
 			$this->pdf->Cell(40,5,'',0,0,'L');
 			 $this->pdf->SetFont('Arial', '', 10);
-			$this->pdf->Cell(40,5,utf8_decode('10 días calendario'),0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode($validezProforma),0,0,'L');
 			
 			$this->pdf->Ln('5');
 			 $this->pdf->SetFont('Arial', 'B', 10);
