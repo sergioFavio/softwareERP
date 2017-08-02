@@ -101,7 +101,6 @@ function separadorMiles(n){
         while(rx.test(w)){
             w= w.replace(rx, '$1,$2');
         }
-        
         return w;
     });
 }

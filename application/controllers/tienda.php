@@ -4577,11 +4577,11 @@ class Tienda extends CI_Controller {
 		else{		//... fin control de permisos de acceso ....
 			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
 			if($local=='Z'){					//.. cuando local es Z:Zúñiga ...
-				$sql ="SELECT * FROM pedidocabeceraz WHERE local='$local' AND estado!='E'";	
+				$sql ="SELECT DISTINCT a.* FROM pedidocabeceraz AS a, pedidoproductoz AS bWHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}else{								//.. cuando local es T:tienda o F.fábrica ...
-				$sql ="SELECT * FROM pedidocabecera WHERE local='$local' AND estado!='E'";	
+				$sql ="SELECT DISTINCT a.* FROM pedidocabecera AS a, pedidoproducto AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}
-				
+			
 			$cabeceraPedido = $this->db->query($sql)->result_array();
 			 	
 			$datos['titulo']='Ubicar PEDIDO para NOTA ENTREGA';
