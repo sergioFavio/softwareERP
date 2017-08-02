@@ -55,17 +55,35 @@ $(document).ready(function() {
 	});
 	/*  fin de light box javascript  */	
 			
+			
+	$("#btnBorrarPlantillaProduccion").click(function(){
+        	borrarPlantillaProduccion();
+    });	
     			
-	$("#btnGrabarNotaEntrega").click(function(){
+	$("#btnGrabarPlantilla").click(function(){
 	// grabar salida [almacen/bodega]
-    	grabarNotaEntrega();
+    	grabarPlantilla();
 	});
 	
 		
 }); // fin document.ready 
 		
+
+
+function borrarPlantillaProduccion(){
+	//...esta funcion borra los datos del formularioSalida
+	var fila = document.getElementsByClassName("detalleMaterial");
+	for(var i=0; i<fila.length; i++){
+	    $("#idMat_"+i).val("");
+        $("#mat_"+i).val("");
+		$("#cantMat_"+i).val("");
+		$("#unidadMat_"+i).val("");
+	} // fin ciclo FOR
+} // fin funcion borrarPlantillaProduccion 
+
 	
-function grabarNotaEntrega(){
+function grabarPlantilla(){
+	
 	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
@@ -231,7 +249,8 @@ function filaVacia(posicionFila){
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarNotaEntrega" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-default btn-sm"  id="btnBorrarPlantillaProduccion" ><span class="glyphicon glyphicon-remove"></span> Borrar</button>&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarPlantilla" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
    </form>
