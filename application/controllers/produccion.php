@@ -118,10 +118,8 @@ class Produccion extends CI_Controller {
 	}	//... fin consultarproduccionProducto ...
 	
 	
-	public function grabarPlantilla()
-	{
+	public function grabarPlantilla(){
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [blanco/acabado] ...
-				
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salidaMaterial [blanco/acabado] ...
 		
         for($i=0; $i<$numeroFilasValidas; $i++){

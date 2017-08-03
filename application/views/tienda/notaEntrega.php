@@ -1,5 +1,5 @@
-<link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.min.css"/>
-<script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script>
+<!--link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.min.css"/-->
+<!--script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script-->
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
 
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
@@ -29,8 +29,6 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 .letraNumeroNegrita{font-size:11px;text-align:right; font-weight : bold;}
 
 
-.letraDetalleLightBox{font-size:10px;margin-top:1px;text-align:left;}
-
 </style>
 
 
@@ -39,23 +37,7 @@ td { height:10px;  width:890px; margin:0px; cell-spacing:0px;}
 var filaActual =-100;  // fila del formulario donde se adiciona registro ..
 	
 $(document).ready(function() {
-	
-	/*  inicio de light box  javascript */
-	$('.openLightBox').click(function(){
-  		var title = $(this).attr("title");
-  		filaActual = $(this).attr("fila");
-  				
-  		if(!filaVacia(filaActual)){
-  			$('.modal-title').html(title);
-	  		$('#materialModal').modal({show:true});
-  		}else{
-  			alert('¡¡¡ A V I S O !!! ... Seleccione la primera fila vacía.')// fila vacía ...
-  		}
-
-	});
-	/*  fin de light box javascript  */	
 			
-    			
 	$("#btnGrabarNotaEntrega").click(function(){
 	// grabar salida [almacen/bodega]
     	grabarNotaEntrega();
@@ -66,33 +48,20 @@ $(document).ready(function() {
 		
 	
 function grabarNotaEntrega(){
-	var i=0;
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
-	if($("#inputCodigo").val()=="" ){
-			alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO DE PRODUCTO está vacío");
+	if($("#inputFecha").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío");
 			var registrosValidos= false;	
 	}
 			
-	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
-	while($("#idMat_"+i).val()!= ""){
-		if($("#cantMat_"+i).val()==""){
-			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
-			var registrosValidos= false;	
-		}
-	
-		i++;
-	} // ... fin while ...
-		
-	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
-		
 	if(!registrosValidos){
 		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía.');
 	}else{
 		$("#form_").submit(); // ...  graba registros ...
 	}
 			
-}	// ... fin funcion grabarSalida() ...
+}	// ... fin funcion grabarNotaEntrega() ...
 		
 		
 function separadorMiles(n){
@@ -105,22 +74,10 @@ function separadorMiles(n){
     });
 }
 
-		
-function filaVacia(posicionFila){
-	var filaAnterior= parseInt( posicionFila )-1;
-				
-	if($("#idMat_"+ filaAnterior).val()==""  && filaAnterior >=0 ){
-		return true;  // fila vac�a ...
-	}else{
-		return false; // fila llena ...
-	}
-}  // ... fin validarFilaSeleccionada ...
-
-
 </script>
 
 <div class="jumbotron" id="cuerpoSalida">		
-		
+
    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarNotaEntrega" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
@@ -194,40 +151,29 @@ function filaVacia(posicionFila){
     <tbody >
     		
     	<?php
-    		$x=0;
+    		$x=-1;
 			$item='';
 			while($regCompbte = mysql_fetch_row($regPedido)){
+				$x=$x+1;
 				$item=$regCompbte[0].'-'.$regCompbte[8];		//... item del pedido ...
             	echo "<tr class='detalleMaterial' >";
-					echo"<td  class='openLightBox' style='width: 80px; background-color: #d9f9ec;' fila=$x>
+					echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$item'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
                     echo "<td class='letraDetalle'  style='width:400px; background-color: #f9f9ec;' ><textarea rows='5'  id='mat_".$x."' name='mat_".$x."'    style='border:none;width:390px;' />$regCompbte[2]</textarea></td>";
                     echo "<td style='width: 80px; background-color: #f9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$regCompbte[4]'  readonly='readonly' style='width: 80px; border:none;' /></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$regCompbte[5]' size='7' readonly='readonly' style='border:none;'/></td>";
                 echo "</tr>";
-                $x=$x+1;
              }
     	
-        	//if ciclo de impresion de filas 
-/*       		for($y=$x+1; $y<20; $y++){
-            	echo "<tr class='detalleMaterial' >";
-					echo"<td  class='openLightBox' title='Seleccionar producto de la tabla de pedidoproducto' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-                    echo "<td class='letraDetalle'  style='width: 400px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
-                    echo "<td style='width: 80px; background-color: #f9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' readonly='readonly' style='width: 80px; border:none;' /></td>";          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' readonly='readonly' style='border:none;'/></td>";
-                echo "</tr>";
-             }
- 
- */
          ?>
       </tbody>
   
 	</table>
 	
-	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  nombreDeposito: almacen/bodega -->
-	
+	<input type="hidden"  name="numeroFilas"    value="<?=  $nRegistrosPedido ?>" />
+	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  local: T:ienda/F:abrica/Z:uñiga -->
+	<input type="hidden"  name="telefono" value="<?= $fono ?>" />     <!--  fono/celular -->
+
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
         <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarNotaEntrega" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

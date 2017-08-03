@@ -4671,23 +4671,16 @@ class Tienda extends CI_Controller {
 			
 		$datos['numeroPedido']=$numeroPedido;			//... dato cabecera pedido ..
 		
-		$datos['titulo']='mPedido:';
 		$datos['entrega']=$entrega;						//... dato cabecera pedido ..
 
 		$datos['numPedido']=$numeroPedido; 				//... dato cabecera pedido ..
 		$datos['local']=$local;							//... dato cabecera pedido ..
-		$datos['fechaPedido']=$fechaPedido;				//... dato cabecera pedido ..
-		$datos['fechaEntrega']=$fechaEntrega;			//... dato cabecera pedido ..
-		
 		$datos['cliente']=$cliente;						//... dato cabecera pedido ..
 		
-		$datos['contacto']=$contacto;					//... dato cabecera pedido ..
 		$datos['direccion']=$direccion;					//... dato cabecera pedido ..
 		$datos['fono']=$fono;							//... dato cabecera pedido ..
-		$datos['localidad']=$localidad;					//... dato cabecera pedido ..
 		
 		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
-		$datos['notaComentario']=$notaComentario;		//... dato cabecera pedido ..	
 		
 		$datos['nRegistrosPedido']=$nRegistrosPedido;	
 		$datos['regPedido']=$regPedido;	
@@ -4698,6 +4691,14 @@ class Tienda extends CI_Controller {
 	}		//... fin funcion: pedidoNotaEntrega ...
 	
 	
+	public function grabarNotaEntrega(){
+		
+		echo"hola mundo";
+		echo" numero filas= ".$_POST['numeroFilas'];
+		echo" telefono= ".$_POST['telefono'];
+		
+	}	//..fin funcion: grabarNotaEntrega ...
+		
 	
 }
 
