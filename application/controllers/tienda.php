@@ -1803,19 +1803,39 @@ class Tienda extends CI_Controller {
 				if($secuencia<10){
 					$secuencia='0'.$secuencia;
 				}
-          	    //... agrega registro tabla pedidoproducto ...      
-	            $plantillaProducto = array(
-	            	"numeroPedido"=>$numPedido,
-				    "idProducto"=>$codigoSinEspacio,
-				    "descripcion"=>$_POST['mat_'.$i],
-				    "color"=>$_POST['colorMat_'.$i],
-				    "cantidad"=>$_POST['cantMat_'.$i],
-				    "unidad"=>$_POST['unidadMat_'.$i],
-				    "precio"=>$_POST['precioMat_'.$i],
-				    "secuencia"=>$secuencia,
-				    "cliente"=>$_POST['cliente'],
-				    "fechaEntrega"=>$_POST['inputEntrega']
-				);
+          	    //... agrega registro tabla pedidoproducto ...   
+          	    
+          	    if($local=='Z'){		//..pedido Zuñiga graba por defecto estadoItem='T' ...
+          	    
+		            $plantillaProducto = array(
+		            	"numeroPedido"=>$numPedido,
+					    "idProducto"=>$codigoSinEspacio,
+					    "descripcion"=>$_POST['mat_'.$i],
+					    "color"=>$_POST['colorMat_'.$i],
+					    "cantidad"=>$_POST['cantMat_'.$i],
+					    "unidad"=>$_POST['unidadMat_'.$i],
+					    "precio"=>$_POST['precioMat_'.$i],
+					    "secuencia"=>$secuencia,
+					    "cliente"=>$_POST['cliente'],
+					    "fechaEntrega"=>$_POST['inputEntrega'],
+					    "estadoItem"=>'T'
+					);
+				}else{								////..pedido T:ienda/F.abrica ...
+					$plantillaProducto = array(
+		            	"numeroPedido"=>$numPedido,
+					    "idProducto"=>$codigoSinEspacio,
+					    "descripcion"=>$_POST['mat_'.$i],
+					    "color"=>$_POST['colorMat_'.$i],
+					    "cantidad"=>$_POST['cantMat_'.$i],
+					    "unidad"=>$_POST['unidadMat_'.$i],
+					    "precio"=>$_POST['precioMat_'.$i],
+					    "secuencia"=>$secuencia,
+					    "cliente"=>$_POST['cliente'],
+					    "fechaEntrega"=>$_POST['inputEntrega']
+					);
+				}
+				
+				
 			
 				// ... inserta registro tabla transacciones ... cotizacionmaterial 
 				$this-> load -> model("tablaGenerica_model");		//carga modelo 
@@ -4577,7 +4597,7 @@ class Tienda extends CI_Controller {
 		else{		//... fin control de permisos de acceso ....
 			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
 			if($local=='Z'){					//.. cuando local es Z:Zúñiga ...
-				$sql ="SELECT DISTINCT a.* FROM pedidocabeceraz AS a, pedidoproductoz AS bWHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
+				$sql ="SELECT DISTINCT a.* FROM pedidocabeceraz AS a, pedidoproductoz AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}else{								//.. cuando local es T:tienda o F.fábrica ...
 				$sql ="SELECT DISTINCT a.* FROM pedidocabecera AS a, pedidoproducto AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}
@@ -4605,6 +4625,19 @@ class Tienda extends CI_Controller {
 		///////////////////////////////////////
 		///...INICIO genera nuevo numero de proforma ...
 		//////////////////////////////////////
+		if($local=="Z"){
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+			if(substr($entrega, 4, 4)!=$anhoSistema){
+				$entrega='9001'.$anhoSistema;
+			}else{
+				$entrega=substr($entrega, 0, 4);
+				$entrega=(int)$entrega;
+				$entrega=$entrega+1;
+				$entrega=$entrega.$anhoSistema;
+			}
+			
+		}
 		
 		if($local=="T"){
 			$anhoSistema = date("Y");	//... anho del sistema
@@ -4618,7 +4651,9 @@ class Tienda extends CI_Controller {
 				$entrega=$entrega.$anhoSistema;
 			}
 			
-		}else{
+		}
+		
+		if($local=="F"){
 			$anhoSistema = date("Y");	//... anho del sistema
 			$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
 			if(substr($entrega, 4, 2)!=$anhoSistema){
@@ -4692,11 +4727,124 @@ class Tienda extends CI_Controller {
 	
 	
 	public function grabarNotaEntrega(){
+		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario notaEntrega ...
+		$numEntrega=$_POST['numeroEntrega'];
+		$fecha=$_POST['fecha'];
+		$numPedido=$_POST['numeroPedido'];
+		$local=$_POST['local'];
+		$cliente=$_POST['cliente'];
+		$direccion=$_POST['direccion'];
+		$telefono=$_POST['telefono'];
 		
-		echo"hola mundo";
-		echo" numero filas= ".$_POST['numeroFilas'];
-		echo" telefono= ".$_POST['telefono'];
+		// ... actualizar numero de cotizacion ...	
+		$nombreTabla='noentrega'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
+		$this-> load -> model("numeroDocumento_model");	//... modelo numeroDocumento_model ... cotizacion		
+		$this-> numeroDocumento_model -> actualizar($numEntrega,$nombreTabla);
+		// fin actualizar numero de cotizacion ...
 		
+		$entregaCabecera = array(
+	    	"entrega"=>$numEntrega=$_POST['numeroEntrega'],
+	    	"fecha"=>$_POST['fecha'],
+	    	"pedido"=>$numPedido=$_POST['numeroPedido'],
+	    	"local"=>$_POST['local'],
+		    "cliente"=>$_POST['cliente'], 
+		    "direccion"=>$_POST['direccion'],    
+		    "telefono"=>$telefono=$_POST['telefono']
+		);
+		
+		// ... inserta registro tabla entregacabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+		if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
+			$this-> tablaGenerica_model -> grabar('entregacabeceraZ', $entregaCabecera);
+		}else{							//... si es pedido de T:tienda o F:fábrica... ...
+	    	$this-> tablaGenerica_model -> grabar('entregacabecera', $entregaCabecera);
+		}
+
+        for($i=0; $i<$numeroFilasValidas; $i++){     			// ... formulario material
+			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
+			
+        	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
+          	    //... si cantidad mayor que cero  graba registro ... 
+
+          	    //... agrega registro tabla pedidoproducto ...      
+	            $plantillaProducto = array(
+	            	"numEntrega"=>$numEntrega,
+	            	"pedidoItem"=>$codigoSinEspacio,
+				    "producto"=>$_POST['mat_'.$i],
+				    "cantidad"=>$_POST['cantMat_'.$i],
+				    "unidad"=>$_POST['unidadMat_'.$i]
+				);
+				
+				$pedidoItem=$codigoSinEspacio;
+				$pedidoItem=str_replace("-","",$pedidoItem); //...quita guion ..
+				
+				$pedidoAux=substr($pedidoItem,0,strlen($pedidoItem)-2);
+				$secuenciaAux=substr($pedidoItem,strlen($pedidoItem)-2,2);
+				
+				
+				
+echo"len pedido aux= ".strlen($pedidoAux)." len secuencia aux= ".strlen($secuenciaAux);	
+				
+echo"pedido aux= ".$pedidoAux." secuencia aux= ".$secuenciaAux;				
+				
+				
+			
+				// ... inserta registro tabla transacciones ... cotizacionmaterial 
+				$this-> load -> model("tablaGenerica_model");		//carga modelo 
+				if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
+	    			$this-> tablaGenerica_model -> grabar('entregaproductoz',$plantillaProducto);
+				
+					$sql="UPDATE pedidoproductoz SET estadoItem='E' WHERE numeroPedido='$pedidoAux' AND secuencia='$secuenciaAux' ";
+				
+				}else{							//... si es pedido de T:tienda o F:fábrica... ...
+					$this-> tablaGenerica_model -> grabar('entregaproducto',$plantillaProducto);
+					
+					$sql="UPDATE pedidoproducto SET estadoItem='E' WHERE numeroPedido='$pedidoAux' AND secuencia='$secuenciaAux' ";
+				}
+							
+				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
+				
+				
+				if($local=='Z'){
+					$sql="SELECT COUNT(*) FROM pedidoproductoz WHERE numeroPedido='$pedidoAux'";
+					$regPedido = $this->db->query($sql);
+					
+					$sql="SELECT COUNT(*) FROM pedidoproductoz WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
+					$regItemTerminadoPedido = $this->db->query($sql);
+					
+					if($regPedido == $regItemTerminadoPedido){		//...cuando estan terminados todos los items del pedido ...
+						$sql="UPDATE pedidocabeceraz SET estado='E', fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
+						$this->db->query($sql);
+					}else{											//...cuando NO estan terminados todos los items del pedido ...
+						$sql="UPDATE pedidocabeceraz SET fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
+						$this->db->query($sql);
+					}
+							
+				}else{				//...local es T:ienda o F:abrica ...
+					
+					$sql="SELECT COUNT(*) FROM pedidoproducto WHERE numeroPedido='$pedidoAux'";
+					$regPedido = $this->db->query($sql);
+					
+					$sql="SELECT COUNT(*) FROM pedidoproducto WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
+					$regItemTerminadoPedido = $this->db->query($sql);
+					
+					if($regPedido == $regItemTerminadoPedido){		//...cuando estan terminados todos los items del pedido ...
+						$sql="UPDATE pedidocabecera SET estado='E', fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
+						$this->db->query($sql);
+					}else{											//...cuando NO estan terminados todos los items del pedido ...
+						$sql="UPDATE pedidocabecera SET fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
+						$this->db->query($sql);
+					}
+							
+				}
+					
+				
+			}	// ... fin IF
+			
+		}  // ... fin  FOR 
+		
+//		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+	
 	}	//..fin funcion: grabarNotaEntrega ...
 		
 	

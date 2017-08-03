@@ -1,5 +1,3 @@
-<!--link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.min.css"/-->
-<!--script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script-->
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
 
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
@@ -42,7 +40,6 @@ $(document).ready(function() {
 	// grabar salida [almacen/bodega]
     	grabarNotaEntrega();
 	});
-	
 		
 }); // fin document.ready 
 		
@@ -50,7 +47,7 @@ $(document).ready(function() {
 function grabarNotaEntrega(){
 	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
 	
-	if($("#inputFecha").val()=="" ){
+	if($("#fecha").val()=="" ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío");
 			var registrosValidos= false;	
 	}
@@ -87,7 +84,7 @@ function separadorMiles(n){
 	    	<div class="col-lg-2">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputCodigo" name="inputCodigo" value="<?= $numeroPedido ?>" readonly="readonly" placeholder="pedido #&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="numeroPedido" name="numeroPedido" value="<?= $numeroPedido ?>" readonly="readonly" placeholder="pedido #&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -103,10 +100,10 @@ function separadorMiles(n){
 				<span></span>
 			</span>
 		
-			<div class="col-xs-1" >
+			<div class="col-xs-1">
 				<div class="input-group input-group-sm" >
 			    	<span class="input-group-addon" id="letraCabecera"><span class="glyphicon glyphicon-calendar"></span> </span>
-	    			<input type="date" class="form-control input-sm" id="inputFecha" name="inputFecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
+	    			<input type="date" class="form-control input-sm" id="fecha" name="fecha" value="<?=date('d-m-Y')?>"  style="width: 130px;" >
 	    		</div>
 	    	</div><!-- /.col-xs-1 -->
 	    	
@@ -158,8 +155,8 @@ function separadorMiles(n){
 				$item=$regCompbte[0].'-'.$regCompbte[8];		//... item del pedido ...
             	echo "<tr class='detalleMaterial' >";
 					echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$item'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-                    echo "<td class='letraDetalle'  style='width:400px; background-color: #f9f9ec;' ><textarea rows='5'  id='mat_".$x."' name='mat_".$x."'    style='border:none;width:390px;' />$regCompbte[2]</textarea></td>";
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$item'  readonly='readonly' style='width: 70px; border:none; background-color: #d9f9ec;' /></td>";
+                    echo "<td class='letraDetalle'  style='width:390px; background-color: #f9f9ec;' ><textarea rows='5'  id='mat_".$x."' name='mat_".$x."'    style='border:none;width:380px;' />$regCompbte[2]</textarea></td>";
                     echo "<td style='width: 80px; background-color: #f9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$regCompbte[4]'  readonly='readonly' style='width: 80px; border:none;' /></td>";          
                     echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$regCompbte[5]' size='7' readonly='readonly' style='border:none;'/></td>";
                 echo "</tr>";
@@ -173,6 +170,7 @@ function separadorMiles(n){
 	<input type="hidden"  name="numeroFilas"    value="<?=  $nRegistrosPedido ?>" />
 	<input type="hidden"  name="local" value="<?= $local ?>" />     <!--  local: T:ienda/F:abrica/Z:uñiga -->
 	<input type="hidden"  name="telefono" value="<?= $fono ?>" />     <!--  fono/celular -->
+	<input type="hidden"  name="numeroEntrega" value="<?= $entrega ?>" />     <!--  numero notaEntrega -->
 
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

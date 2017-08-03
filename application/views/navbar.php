@@ -125,7 +125,13 @@
 							<li><a href="<?=base_url();?>tienda/verProformas"><span class="glyphicon glyphicon-eye-open"></span> Ver Proformas</a></li>
 							<li class="divider"></li>
 							<li><a href="<?=base_url();?>tienda/verProformasPorCliente"><span class="glyphicon glyphicon-search"></span> Buscar Proformas por Cliente</a></li>
-						
+						</ul>
+					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
 						</ul>
 					</li>
                                          
@@ -153,10 +159,17 @@
 						</ul>
 					</li>
 					
-					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega PENDIENTE</a>
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
 							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
+						</ul>
+					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega Zúñiga</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=Z"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega Zúñiga</a></li>
+							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas Zúñiga</a></li>
 						</ul>
 					</li>
 					
