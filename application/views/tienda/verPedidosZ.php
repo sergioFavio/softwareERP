@@ -26,9 +26,9 @@
     
     .tituloReporte{font-size:9px; margin-top:10px; }
     
-	#cuerpoCabecera{margin:0 auto; padding:0; width:820px; height:50px;}
-	#cuerpoDetalle{margin:0 auto; padding:0; width:820px; height:410px;}
-	#cuerpoPaginacion{margin:0 auto;padding:0; width:820px; height:60px;}
+	#cuerpoCabecera{margin:0 auto; padding:0; width:830px; height:50px;}
+	#cuerpoDetalle{margin:0 auto; padding:0; width:830px; height:410px;}
+	#cuerpoPaginacion{margin:0 auto;padding:0; width:830px; height:60px;}
 	
 	#inputBuscarPatron, #letraCabecera{font-size:11px;text-align:center; }
 	
@@ -163,7 +163,7 @@ function pedidoPdf(nPedido){
 				<th style="width: 40px;">Estado</th>
 				<th style="width: 75px;">Fecha Estado</th>
 				<th style="width: 30px;">Nota Entrega</th>
-				<th style="width: 130px;text-align:center ">Acciones</th>
+				<th style="width: 140px;text-align:center ">Acciones</th>
     		</tr>
  		</thead>
  		
@@ -227,7 +227,7 @@ function pedidoPdf(nPedido){
 					
 					 echo"<td style='width: 60px;'><input type='text' id='fechaEstado_".$posicionFila."' name='fechaEstado_".$posicionFila."' value='".fechaMysqlParaLatina($pedido->fechaEstado)."' readonly='readonly' style='border:none; width:60px;' /></td>";
 					
-					 echo"<td style='width: 40px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:40px;' /></td>";
+					 echo"<td style='width: 50px;'><input type='text' id='notaEntrega_".$posicionFila."' name='notaEntrega_".$posicionFila."' value='".$pedido->notaEntrega."' readonly='readonly' style='border:none; width:50px;' /></td>";
 								
 					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='pedidoPdf($numeroPedido);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	

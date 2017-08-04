@@ -4780,37 +4780,30 @@ class Tienda extends CI_Controller {
 				
 				$pedidoAux=substr($pedidoItem,0,strlen($pedidoItem)-2);
 				$secuenciaAux=substr($pedidoItem,strlen($pedidoItem)-2,2);
-				
-				
-				
-echo"len pedido aux= ".strlen($pedidoAux)." len secuencia aux= ".strlen($secuenciaAux);	
-				
-echo"pedido aux= ".$pedidoAux." secuencia aux= ".$secuenciaAux;				
-				
-				
-			
+							
 				// ... inserta registro tabla transacciones ... cotizacionmaterial 
 				$this-> load -> model("tablaGenerica_model");		//carga modelo 
 				if($local=='Z'){			//... si es pedido de Z:Zúñiga ...
 	    			$this-> tablaGenerica_model -> grabar('entregaproductoz',$plantillaProducto);
 				
 					$sql="UPDATE pedidoproductoz SET estadoItem='E' WHERE numeroPedido='$pedidoAux' AND secuencia='$secuenciaAux' ";
-				
+					$this->db->query($sql);
 				}else{							//... si es pedido de T:tienda o F:fábrica... ...
 					$this-> tablaGenerica_model -> grabar('entregaproducto',$plantillaProducto);
 					
 					$sql="UPDATE pedidoproducto SET estadoItem='E' WHERE numeroPedido='$pedidoAux' AND secuencia='$secuenciaAux' ";
+					$this->db->query($sql);
 				}
 							
 				// ... fin de inserción  registro tabla transacciones ... cotizacionmaterial
 				
 				
 				if($local=='Z'){
-					$sql="SELECT COUNT(*) FROM pedidoproductoz WHERE numeroPedido='$pedidoAux'";
-					$regPedido = $this->db->query($sql);
+					$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$pedidoAux'";
+					$regPedido = $this->db->query($sql)->num_rows; //...contador de registros que satisfacen la consulta ...
 					
-					$sql="SELECT COUNT(*) FROM pedidoproductoz WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
-					$regItemTerminadoPedido = $this->db->query($sql);
+					$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
+					$regItemTerminadoPedido = $this->db->query($sql)->num_rows; //...contador de registros que satisfacen la consulta ...
 					
 					if($regPedido == $regItemTerminadoPedido){		//...cuando estan terminados todos los items del pedido ...
 						$sql="UPDATE pedidocabeceraz SET estado='E', fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
@@ -4822,11 +4815,11 @@ echo"pedido aux= ".$pedidoAux." secuencia aux= ".$secuenciaAux;
 							
 				}else{				//...local es T:ienda o F:abrica ...
 					
-					$sql="SELECT COUNT(*) FROM pedidoproducto WHERE numeroPedido='$pedidoAux'";
-					$regPedido = $this->db->query($sql);
+					$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$pedidoAux'";
+					$regPedido = $this->db->query($sql)->num_rows; //...contador de registros que satisfacen la consulta ...
 					
-					$sql="SELECT COUNT(*) FROM pedidoproducto WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
-					$regItemTerminadoPedido = $this->db->query($sql);
+					$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$pedidoAux' AND estadoItem='E'";
+					$regItemTerminadoPedido = $this->db->query($sql)->num_rows; //...contador de registros que satisfacen la consulta ...
 					
 					if($regPedido == $regItemTerminadoPedido){		//...cuando estan terminados todos los items del pedido ...
 						$sql="UPDATE pedidocabecera SET estado='E', fechaEstado='$fecha',notaEntrega='$numEntrega'  WHERE numPedido='$pedidoAux'";
@@ -4836,8 +4829,14 @@ echo"pedido aux= ".$pedidoAux." secuencia aux= ".$secuenciaAux;
 						$this->db->query($sql);
 					}
 							
-				}
+				}   //... fin if LOCAL ....
 					
+				
+					
+				
+echo"regPedido= ".$regPedido." regItemTerminadoPedido= ".$regItemTerminadoPedido;				
+								
+				
 				
 			}	// ... fin IF
 			
