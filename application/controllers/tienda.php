@@ -3937,10 +3937,8 @@ class Tienda extends CI_Controller {
 			
 		}  // ... fin  FOR 
 		
-//		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
 		redirect("tienda/generarProformaPDF?numeroProforma=$numProforma&local=$local");
 		
-	
 	}	//... fin grabarProforma ...
 	
 	
@@ -4016,7 +4014,6 @@ class Tienda extends CI_Controller {
 			$this->pdf->contacto=$contacto; 								//...pasando variable para el header del PDF
 			$this->pdf->direccion=$direccion; 								//...pasando variable para el header del PDF
 			$this->pdf->fonoCelular=$fono; 									//...pasando variable para el header del PDF
-			$this->pdf->correo=$correo; 									//...pasando variable para el header del PDF
 			$this->pdf->correo=$correo; 									//...pasando variable para el header del PDF
 			
 			$this->pdf->secuenciaProforma=substr($numeroProforma,0,4); 		//...pasando variable para el header del PDF
@@ -4832,19 +4829,250 @@ class Tienda extends CI_Controller {
 				}   //... fin if LOCAL ....
 					
 				
-					
-				
-echo"regPedido= ".$regPedido." regItemTerminadoPedido= ".$regItemTerminadoPedido;				
-								
-				
-				
 			}	// ... fin IF
 			
 		}  // ... fin  FOR 
 		
-//		redirect("tienda/generarPedidoPDF?numeroPedido=$numPedido&local=$local&secuenciaPedido=$secuenciaPedido&anhoSistema=$anhoSistema");
+		redirect("tienda/generarNotaEntregaPDF?numeroEntrega=$numEntrega&local=$local");
 	
 	}	//..fin funcion: grabarNotaEntrega ...
+	
+	
+	public function generarNotaEntregaPDF(){
+		//... genera reporte de salida en PDF
+		$numeroEntrega= $_GET['numeroEntrega']; 		//... lee numeroEntrega que viene de grabarNotaEntrega ...
+		$local= $_GET['local']; 						//... lee local que viene de grabarNotaEntrega ...
+		
+		$nombreLocal='';
+		if($local=='T'){
+			$nombreLocal='Tienda';
+		}else{
+			if($local=='Z'){
+				$nombreLocal='Zúñiga';
+			}else{
+				$nombreLocal='Fábrica';
+			}	
+		}
+		
+		// Se carga la libreria fpdf
+		$this->load->library('tienda/NotaEntregaPdf');
+		
+		// Se obtienen los registros de la base de datos
+		if($local=='Z'){									//... cuando notaEntrega es Z:úñiga ...
+			$sql ="SELECT numEntrega,pedidoItem,producto,cantidad,unidad FROM entregaproductoz WHERE numEntrega='$numeroEntrega' ";	
+		}else{												//... cuando notaEntrega es T:tienda o F:fábrica ...
+			$sql ="SELECT numEntrega,pedidoItem,producto,cantidad,unidad FROM entregaproducto WHERE numEntrega='$numeroEntrega' ";	
+		}
+		
+		$productos = $this->db->query($sql);
+		
+		$this->load->model("tablaGenerica_model");
+		
+		if($local=='Z'){								//... cuando notaEntrega es Z:úñiga ...						
+			$entregaCabecera= $this->tablaGenerica_model->buscar('entregacabeceraz','entrega',$numeroEntrega); //..carga el modelo de la tabla ..
+		}else{											//... cuando notaEntrega es T:tienda o F:fábrica ...
+			$entregaCabecera= $this->tablaGenerica_model->buscar('entregacabecera','entrega',$numeroEntrega); //..carga el modelo de la tabla ..
+		}
+		
+		$fechaEntrega= $entregaCabecera["fecha"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$pedido= $entregaCabecera["pedido"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $entregaCabecera["cliente"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$direccion= $entregaCabecera["direccion"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fono= $entregaCabecera["telefono"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+					
+		if($local=='Z'){								//... cuando notaEntrega es Z:úñiga ...									
+			$sql ="SELECT * FROM entregacabeceraz WHERE entrega='$numeroEntrega' ";
+		}else{												//... cuando notaEntrega es T:tienda o F:fábrica ...
+			$sql ="SELECT * FROM entregacabecera WHERE entrega='$numeroEntrega' ";
+		}	
+		
+		$contador = $this->db->query($sql);	
+ 		$contador= $contador->num_rows; //...contador de registros que satisfacen la consulta ..
+
+		if($contador==0){
+			$datos['mensaje']='No hay registro grabado con el n&uacute;mero de  entrega '.$numeroEntrega.' en la tabla ENTREGA CABECERA.';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}else{
+			// Creacion del PDF
+		    /*
+		    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+		    * heredó todos las variables y métodos de fpdf
+		    */
+		     
+		    ob_clean(); // cierra si es se abrio el envio de pdf...
+		    $this->pdf = new NotaEntregaPdf();
+			
+			$this->pdf->local=$nombreLocal;   			   				//...pasando variable para el header del PDF
+			$this->pdf->numeroEntrega=$numeroEntrega;				    //...pasando variable para el header del PDF
+			$this->pdf->fechaEntrega=fechaMysqlParaLatina($fechaEntrega); 		//...pasando variable para el header del PDF
+			$this->pdf->cliente=$cliente; 								//...pasando variable para el header del PDF
+			$this->pdf->direccion=$direccion; 							//...pasando variable para el header del PDF
+			$this->pdf->fonoCelular=$fono; 								//...pasando variable para el header del PDF
+			
+			$this->pdf->secuenciaEntrega=substr($numeroEntrega,0,4); 		//...pasando variable para el header del PDF
+			$this->pdf->anhoSistema=substr($numeroEntrega,4,strlen($numeroEntrega)-4); 	//...pasando variable para el header del PDF
+			
+		    // Agregamos una página
+		    $this->pdf->AddPage();
+		    // Define el alias para el número de página que se imprimirá en el pie
+		    $this->pdf->AliasNbPages();
+		 
+		    /* Se define el titulo, márgenes izquierdo, derecho y
+		    * el color de relleno predeterminado
+		    */
+		         
+	        $this->pdf->SetLeftMargin(10);
+	        $this->pdf->SetRightMargin(10);
+	        $this->pdf->SetFillColor(200,200,200);
+	 
+		    // Se define el formato de fuente: Arial, negritas, tamaño 9
+		    //$this->pdf->SetFont('Arial', 'B', 9);
+		    //$this->pdf->SetFont('Arial', '', 9);
+		    $this->pdf->SetFont('Arial', '', 10);
+			
+		    // La variable $numeroAnterior se utiliza para hacer corte de control por número salida
+		    $numeroAnterior = 0;
+
+		    foreach ($productos->result() as $producto) {
+		        // se imprime el numero actual y despues se incrementa el valor de $x en uno
+		        // Se imprimen los datos de cada registro
+
+				$this->pdf->Cell(20,5,$producto->pedidoItem,'',0,'L',0);
+				$this->pdf->Cell(5,5,' ','',0,'L',0);
+				$this->pdf->Cell(94,5,utf8_decode(substr($producto->producto,0,56) ),'',0,'L',0);
+				$this->pdf->Cell(12,5,' ','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($producto->cantidad,2),'',0,'R',0);
+				$this->pdf->Cell(12,5,' ','',0,'L',0);
+				$this->pdf->Cell(15,5,$producto->unidad,'',0,'L',0);
+			
+				if(substr($producto->producto,56,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,56,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,112,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,112,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,178,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,178,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,234,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,234,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,290,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,290,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,346,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,346,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,402,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,402,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,458,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,458,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,514,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,514,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,570,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,570,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,626,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,626,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,682,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,682,56) ),0,0,'L');
+				}
+				
+				if(substr($producto->producto,738,56)!=""){
+					$this->pdf->Ln(5);
+					$this->pdf->Cell(15,5,'','',0,'L',0);
+					$this->pdf->Cell(85,5,utf8_decode(substr($producto->producto,738,56) ),0,0,'L');
+				}
+				
+		        //Se agrega un salto de linea
+		        $this->pdf->Ln('5');
+		    }
+
+		
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(30,5,'',0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode('___________________'),0,0,'L');
+			$this->pdf->Cell(40,5,'',0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode('___________________'),0,0,'L');
+			
+			$this->pdf->Ln('5');
+			$this->pdf->Cell(34,5,'',0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode('Entregué conforme'),0,0,'L');
+			$this->pdf->Cell(42,5,'',0,0,'L');
+			$this->pdf->Cell(40,5,utf8_decode('Recibí conforme'),0,0,'L');
+						
+		     /* PDF Output() settings
+		     * Se manda el pdf al navegador
+		     *
+		     * $this->pdf->Output(nombredelarchivo, destino);
+		     *
+		     * I = Muestra el pdf en el navegador
+		     * D = Envia el pdf para descarga
+			 * F: save to a local file
+			 * S: return the document as a string. name is ignored.
+			 * $pdf->Output(); //default output to browser
+			 * $pdf->Output('D:/example2.pdf','F');
+			 * $pdf->Output("example2.pdf", 'D');
+			 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+		     */
+			 
+			$this->pdf->Output('pdfsArchivos/entregas/notaEntrega'.$numeroEntrega.'.pdf', 'F');
+			 
+			$datos['documento']="pdfsArchivos/entregas/notaEntrega".$numeroEntrega.".pdf";	
+			$datos['titulo']=' Nota de Entrega No. '.substr($numeroEntrega,0,4).'/'.substr($numeroEntrega,4,strlen($numeroEntrega)-4);	// ... titulo ...
+		
+			$this->load->view('header');
+			$this->load->view('reportePdfSinFechas',$datos );
+			$this->load->view('footer');	
+							
+		}
+
+	} //... fin funcion: generarNotaEntregaPDF ...
+	
+	
 		
 	
 }
