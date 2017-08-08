@@ -107,9 +107,9 @@ function entregaPdf(nEntrega){
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		<?php 
 			if($buscarPor=="entrega"){
-				$funcionBuscar='buscarEntrega';
+				$funcionBuscar='buscarEntregaZ';
 			}else{
-				$funcionBuscar='buscarEntregaPorCliente';
+				$funcionBuscar='buscarEntregaPorClienteZ';
 			}
 		?>
 	
@@ -137,7 +137,7 @@ function entregaPdf(nEntrega){
 			   	</div>
 			   	
 			   	<div class="col-xs-3"> 
-					<span  id="titulo" class="label label-success"> V e r  &nbsp;&nbsp; N o t a s &nbsp;&nbsp; d e &nbsp;&nbsp;  E n t r e g a</span>
+					<span  id="titulo" class="label label-success"> Ver Notas de Entrega Zúñiga</span>
 			   	</div>
 			    
 			    <div class="col-xs-2"> 
@@ -229,7 +229,7 @@ function entregaPdf(nEntrega){
 </div>
 
 
-<!-- ...  lightbox borrar proforma ... -->
+<!-- ...  lightbox borrar NOTA DE ENTREGA ... -->
 
 <div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -239,7 +239,7 @@ function entregaPdf(nEntrega){
         <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
       </div>
       <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarNotaEntrega" method="POST">
+	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarNotaEntregaZ" method="POST">
         ¿ Esta seguro de eliminar la nota de entrega <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 	  </form>
@@ -252,10 +252,10 @@ function entregaPdf(nEntrega){
   </div>
 </div>
 
-<!-- ... fin  lightbox borrar proforma ... -->
+<!-- ... fin  lightbox borrar nota de entrega ... -->
 
 
-<!-- ... inicio  lightbox proformaPdf... -->
+<!-- ... inicio  lightbox notaEntregaPdf... -->
 
 <div class="modal fade" id="pdfModal" >
   <div class="modalEditar-dialog">
@@ -276,6 +276,6 @@ function entregaPdf(nEntrega){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- ... fin  lightbox proformaPdf ... -->
+<!-- ... fin  lightbox notaEntregaPdf ... -->
 
 

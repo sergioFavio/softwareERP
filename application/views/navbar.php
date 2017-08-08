@@ -131,7 +131,9 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tags"></span> Notas de Entrega</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
-							<li><a href="<?=base_url();?>tienda/..."><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
+							<li><a href="<?=base_url();?>tienda/verNotasEntrega"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verNotasEntregaPorCliente"><span class="glyphicon glyphicon-eye-open"></span> buscar Notas de Entregas por Cliente</a></li>
 						</ul>
 					</li>
                                          
@@ -163,6 +165,8 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=T"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega </a></li>
 							<li><a href="<?=base_url();?>tienda/verNotasEntrega"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verNotasEntregaPorCliente"><span class="glyphicon glyphicon-eye-open"></span> buscar Notas de Entregas por Cliente</a></li>
 						</ul>
 					</li>
 					
@@ -170,6 +174,8 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaEntrega?local=Z"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Entrega Zúñiga</a></li>
 							<li><a href="<?=base_url();?>tienda/verNotasEntregaZ"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas Zúñiga</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verNotasEntregaPorClienteZ"><span class="glyphicon glyphicon-eye-open"></span> buscar Notas de Entregas por Cliente Zúñiga</a></li>
 						</ul>
 					</li>
 					

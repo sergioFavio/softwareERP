@@ -5139,6 +5139,76 @@ class Tienda extends CI_Controller {
 		
 	} //... fin verNotasEntrega ...
 	
+			
+	public function verNotasEntregaPorCliente(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Proformas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/verNotasEntregaPorCliente';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('entregacabecera');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('entregacabecera'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaEntrega'] = $this->tablaGenerica_model->get_registros('entregacabecera',$config['per_page'], $desde); 
+				$datos['consultaEntrega'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='cliente';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verNotasEntrega', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verNotasEntregaPorCliente ...
+	
 	
 	public function entregaPdfCrud(){
 		//... recupera la variable de numePedido ...
@@ -5148,7 +5218,6 @@ class Tienda extends CI_Controller {
 		<?php
 	}
 	
-		
 		
 	public function buscarEntrega(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
@@ -5223,8 +5292,422 @@ class Tienda extends CI_Controller {
 		}		//... fin IF total registros encintrados ...
 		
 	}		//... fin funcion: buscarEntrega ...
+			
+	
+	public function buscarEntregaPorCliente(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='cliente';   	//... el campo por elcual se va hacer la búsqueda ...
 		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaEntrega=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaEntrega);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaEntrega = fgets($fp);
+			fclose($fp); 
+		}	
 		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabecera',$campo1,$consultaEntrega);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarEntregaPorCliente';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabecera',$campo1,$consultaEntrega);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaEntrega'] = $this-> tablaGenerica_model -> buscarPaginacion('entregacabecera',$campo1,$consultaEntrega, $config['per_page'], $desde );
+			$datos['consultaEntrega'] =$consultaEntrega;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='cliente';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verNotasEntrega', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarEntregaPorCliente ...
+			
+	
+	public function eliminarNotaEntrega(){
+		//... elimina nota de entrega de las tablas entregacabecera, entregaproducto ...
+		$codigoEntrega=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('entregacabecera','entrega',$codigoEntrega);
+		$this-> tablaGenerica_model -> eliminar('entregaproducto','numEntrega',$codigoEntrega);
+		
+//		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+//		$archivoPDF='pedido'.$numePedidoSinGuion.'.pdf';
+
+		$archivoPDF=$codigoEntrega.'.pdf';
+		$archivo ='pdfsArchivos/entregas/notaEntrega'.$codigoEntrega.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verNotasEntrega");
+		echo $data;
+	}	//...fin eliminarNotaEntrega ...
+	
+	
+			
+	public function verNotasEntregaZ(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Proformas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/verNotasEntregaZ';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('entregacabeceraz');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('entregacabeceraz'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaEntrega'] = $this->tablaGenerica_model->get_registros('entregacabeceraz',$config['per_page'], $desde); 
+				$datos['consultaEntrega'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='entrega';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verNotasEntregaZ', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verNotasEntregaZ ...
+	
+	
+	public function eliminarNotaEntregaZ(){
+		//... elimina nota de entrega de las tablas entregacabecera, entregaproducto ...
+		$codigoEntrega=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('entregacabeceraz','entrega',$codigoEntrega);
+		$this-> tablaGenerica_model -> eliminar('entregaproductoz','numEntrega',$codigoEntrega);
+		
+//		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+//		$archivoPDF='pedido'.$numePedidoSinGuion.'.pdf';
+
+		$archivoPDF=$codigoEntrega.'.pdf';
+		$archivo ='pdfsArchivos/entregas/notaEntrega'.$codigoEntrega.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verNotasEntregaZ");
+		echo $data;
+	}	//...fin eliminarNotaEntregaZ ...
+	
+			
+	public function buscarEntregaZ(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='entrega';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaEntrega=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaEntrega);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaEntrega = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabeceraz',$campo1,$consultaEntrega);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarEntregaZ';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabeceraz',$campo1,$consultaEntrega);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaEntrega'] = $this-> tablaGenerica_model -> buscarPaginacion('entregacabeceraz',$campo1,$consultaEntrega, $config['per_page'], $desde );
+			$datos['consultaEntrega'] =$consultaEntrega;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='entrega';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verNotasEntregaZ', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarEntregaZ ...
+			
+	
+	public function buscarEntregaPorClienteZ(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='cliente';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaEntrega=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaEntrega);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaEntrega = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabeceraz',$campo1,$consultaEntrega);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarEntregaPorClienteZ';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('entregacabeceraz',$campo1,$consultaEntrega);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaEntrega'] = $this-> tablaGenerica_model -> buscarPaginacion('entregacabeceraz',$campo1,$consultaEntrega, $config['per_page'], $desde );
+			$datos['consultaEntrega'] =$consultaEntrega;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='cliente';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verNotasEntregaZ', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarEntregaPorClienteZ ...
+			
+	
+	public function verNotasEntregaPorClienteZ(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Proformas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/verNotasEntregaPorClienteZ';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('entregacabeceraz');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('entregacabeceraz'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaEntrega'] = $this->tablaGenerica_model->get_registros('entregacabeceraz',$config['per_page'], $desde); 
+				$datos['consultaEntrega'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='cliente';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verNotasEntregaZ', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verNotasEntregaPorClienteZ ...
+	
+	
+	
+	
 	
 }
 
