@@ -69,8 +69,6 @@
                     <li><a href="#">Editar Proveedor</a></li>
                     <li><a href="#">Eliminar Proveedor</a></li>
                     <li><a href="#">Listar Proveedores </a></li>
-                    <li><a href="#">Hacer Pedido</a></li>
-                    <li><a href="#">otros ...</a></li>
                 </ul>
             </li>
 
@@ -134,6 +132,13 @@
 							<li><a href="<?=base_url();?>tienda/verNotasEntrega"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Entregas</a></li>
 							<li class="divider"></li>
 							<li><a href="<?=base_url();?>tienda/verNotasEntregaPorCliente"><span class="glyphicon glyphicon-eye-open"></span> buscar Notas de Entregas por Cliente</a></li>
+						</ul>
+					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tag"></span> Notas de Remisi&oacute;n</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaRemision?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Remisi&oacute;n </a></li>
+							<li><a href="<?=base_url();?>tienda/verNotasEntrega"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Remisi&oacute;n</a></li>
 						</ul>
 					</li>
                                          

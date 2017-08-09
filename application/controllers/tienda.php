@@ -4678,16 +4678,8 @@ class Tienda extends CI_Controller {
 		$contacto= $pedidoCabecera["contacto"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$direccion= $pedidoCabecera["direccion"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		$fono= $pedidoCabecera["telCel"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$localidad= $pedidoCabecera["localidad"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$cotizacionFabrica= $pedidoCabecera["cotizacionFabrica"];	// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$ordenCompra= $pedidoCabecera["ordenCompra"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$facturarA= $pedidoCabecera["facturarA"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$nit= $pedidoCabecera["nit"];								// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$aCuenta= $pedidoCabecera["aCuenta"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$descuento= $pedidoCabecera["descuento"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$embalaje= $pedidoCabecera["embalaje"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+
 		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
-		$notaComentario= $pedidoCabecera["notaComentario"];			// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
 		
 		if($local=='Z'){			//...cuando el local es Z:Zúñiga ...
 			$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$numeroPedido' AND estadoItem='T'";
@@ -5706,6 +5698,137 @@ class Tienda extends CI_Controller {
 	} //... fin verNotasEntregaPorClienteZ ...
 	
 	
+	public function ubicarPedidoNotaRemision(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}
+		else{		//... fin control de permisos de acceso ....
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+			if($local=='Z'){					//.. cuando local es Z:Zúñiga ...
+				$sql ="SELECT DISTINCT a.* FROM pedidocabeceraz AS a, pedidoproductoz AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
+			}else{								//.. cuando local es T:tienda o F.fábrica ...
+				$sql ="SELECT DISTINCT a.* FROM pedidocabecera AS a, pedidoproducto AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
+			}
+			
+			$cabeceraPedido = $this->db->query($sql)->result_array();
+			 	
+			$datos['titulo']='Ubicar PEDIDO para NOTA REMISION';
+			$datos['cabeceraPedido']=$cabeceraPedido;	
+			$datos['local']=$local;
+	
+			$this->load->view('header');
+			$this->load->view('tienda/buscarPedidoNotaRemision',$datos);
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
+	}	//..fin ubicarPedidoNotaRemision ...
+	
+	
+	public function pedidoNotaRemision(){
+		$local= $_POST['localAux']; //... lee local que viene del menu principal(T: tienda/F: fabrica ) ...	
+		
+		$this->load->model("numeroDocumento_model");
+		$nombreTabla='noremision'.strtolower($local); // ... prefijoTabla
+    	$remision = $this->numeroDocumento_model->getNumero($nombreTabla);
+		
+		///////////////////////////////////////
+		///...INICIO genera nuevo numero de proforma ...
+		//////////////////////////////////////
+		if($local=="Z"){
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+			if(substr($remision, 4, 4)!=$anhoSistema){
+				$remision='5001'.$anhoSistema;
+			}else{
+				$remision=substr($remision, 0, 4);
+				$remision=(int)$remision;
+				$remision=$remision+1;
+				$remision=$remision.$anhoSistema;
+			}
+			
+		}
+		
+		if($local=="T"){
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+			if(substr($remision, 4, 4)!=$anhoSistema){
+				$remision='3001'.$anhoSistema;
+			}else{
+				$remision=substr($remision, 0, 4);
+				$remision=(int)$remision;
+				$remision=$remision+1;
+				$remision=$remision.$anhoSistema;
+			}
+			
+		}
+		
+		if($local=="F"){
+			$anhoSistema = date("Y");	//... anho del sistema
+			$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+			if(substr($remision, 4, 2)!=$anhoSistema){
+				$remision='8001'.$anhoSistema;
+			}else{
+				$remision=substr($remision, 0, 4);
+				$remision=(int)$remision;
+				$remision=$remision+1;
+				$remision=$remision.$anhoSistema;
+			}
+			
+		}
+	
+		$numeroPedido= str_replace(" ","",$_POST['inputNumero']); //... lee tipoComprobante y quita espacio en blanco ..
+
+		$this->load->model("tablaGenerica_model");	//...carga el modelo tabla generica ...
+		
+		if($local=='Z'){			//...cuando el local es Z:Zúñiga ...
+			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabeceraz','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
+			$pedidoCabecera= $this->tablaGenerica_model->buscar('pedidocabecera','numPedido',$numeroPedido); //..una vez cargado el modelo de la tabla llama cotizacioncabecera..
+		} 
+		
+		$localReg= $pedidoCabecera["local"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaPedido= $pedidoCabecera["fechaPedido"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fechaEntrega= $pedidoCabecera["fechaEntrega"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$cliente= $pedidoCabecera["cliente"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$direccion= $pedidoCabecera["direccion"];					// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$fono= $pedidoCabecera["telCel"];							// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+
+		$usuario= $pedidoCabecera["usuario"];						// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		
+		if($local=='Z'){			//...cuando el local es Z:Zúñiga ...
+			$sql="SELECT * FROM pedidoproductoz WHERE numeroPedido='$numeroPedido' AND estadoItem='T'";
+		}else{						//...cuando el local es T:Tienda o f:Fábrica ...
+			$sql="SELECT * FROM pedidoproducto WHERE numeroPedido='$numeroPedido' AND estadoItem='T'";
+		}
+		
+		$regPedido=mysql_query($sql);
+		$nRegistrosPedido= mysql_num_rows($regPedido); 	//... numero registros salida que satisfacen la consulta ...
+			
+		$datos['numeroPedido']=$numeroPedido;			//... dato cabecera pedido ..
+		
+		$datos['remision']=$remision;					//... dato cabecera pedido ..
+
+		$datos['numPedido']=$numeroPedido; 				//... dato cabecera pedido ..
+		$datos['local']=$local;							//... dato cabecera pedido ..
+		$datos['cliente']=$cliente;						//... dato cabecera pedido ..
+		
+		$datos['direccion']=$direccion;					//... dato cabecera pedido ..
+		$datos['fono']=$fono;							//... dato cabecera pedido ..
+		
+		$datos['usuario']=$usuario;						//... dato cabecera pedido ..
+		
+		$datos['nRegistrosPedido']=$nRegistrosPedido;	
+		$datos['regPedido']=$regPedido;	
+
+		$this->load->view('header');
+		$this->load->view('tienda/notaRemision',$datos);
+		$this->load->view('footer');
+	}		//... fin funcion: pedidoNotaRemision ...
 	
 	
 	
