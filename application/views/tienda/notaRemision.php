@@ -75,7 +75,7 @@ function separadorMiles(n){
 
 <div class="jumbotron" id="cuerpoSalida">		
 
-   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarNotaEntrega" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/grabarNotaRemision" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">
