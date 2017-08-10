@@ -138,7 +138,9 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tag"></span> Notas de Remisi&oacute;n</a>
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/ubicarPedidoNotaRemision?local=F"><span class="glyphicon glyphicon-pencil"></span> Hacer Nota de Remisi&oacute;n </a></li>
-							<li><a href="<?=base_url();?>tienda/verNotasEntrega"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Remisi&oacute;n</a></li>
+							<li><a href="<?=base_url();?>tienda/verNotasRemision"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Remisi&oacute;n</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verNotasRemisionPorCliente"><span class="glyphicon glyphicon-eye-open"></span> Buscar Notas de Remisi&oacute;n por Cliente</a></li>
 						</ul>
 					</li>
                                          
@@ -226,9 +228,19 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>tienda/fechasReporteVentasPedido?atributo=P"><span class="glyphicon glyphicon-signal"></span> 30 productos mas vendidos</a></li>
 							<li><a href="<?=base_url();?>tienda/generarReporteVentasAnhoMes"><span class="glyphicon glyphicon-list-alt"></span><span class="glyphicon glyphicon-usd"></span> Reporte de ventas por meses del año</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> .... Sr. XXX de Sucre</a></li>
+							
 						</ul>
 					</li>
+					
+					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-tag"></span> Notas de Remisi&oacute;n</a>
+						<ul class="dropdown-menu">
+							<li><a href="<?=base_url();?>tienda/verNotasRemision"><span class="glyphicon glyphicon-eye-open"></span> Ver Notas de Remisi&oacute;n</a></li>
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>tienda/verNotasRemisionPorCliente"><span class="glyphicon glyphicon-eye-open"></span> Buscar Notas de Remisi&oacute;n por Cliente</a></li>
+						
+						</ul>
+					</li>
+					
                     
                 </ul>
             </li>

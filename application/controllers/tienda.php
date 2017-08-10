@@ -5713,7 +5713,7 @@ class Tienda extends CI_Controller {
 			if($local=='Z'){					//.. cuando local es Z:Zúñiga ...
 				$sql ="SELECT DISTINCT a.* FROM pedidocabeceraz AS a, pedidoproductoz AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}else{								//.. cuando local es T:tienda o F.fábrica ...
-				$sql ="SELECT DISTINCT a.* FROM pedidocabecera AS a, pedidoproducto AS b WHERE local='$local' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
+				$sql ="SELECT DISTINCT a.* FROM pedidocabecera AS a, pedidoproducto AS b WHERE local='T' AND estado!='E' AND numPedido=numeroPedido AND estadoItem='T'";	
 			}
 			
 			$cabeceraPedido = $this->db->query($sql)->result_array();
@@ -6180,6 +6180,330 @@ class Tienda extends CI_Controller {
 		}
 
 	} //... fin funcion: generarNotaRemisionPDF ...
+	
+	
+	public function verNotasRemision(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Notas de Remision';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/verNotasRemision';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('remisioncabecera');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('remisioncabecera'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaRemision'] = $this->tablaGenerica_model->get_registros('remisioncabecera',$config['per_page'], $desde); 
+				$datos['consultaRemision'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='remision';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verNotasRemision', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verNotasRemision ...
+	
+	
+		
+	public function verNotasRemisionPorCliente(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Notas de Remision';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/verNotasRemisionPorCliente';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('remisioncabecera');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('remisioncabecera'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaRemision'] = $this->tablaGenerica_model->get_registros('remisioncabecera',$config['per_page'], $desde); 
+				$datos['consultaRemision'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='cliente';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('tienda/verNotasRemision', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verNotasRemisionPorCliente ...
+	
+	
+	public function remisionPdfCrud(){
+		//... recupera la variable de numePedido ...
+		$numeRemision=$_POST["numeRemision"];
+		?>
+		<embed src="<?= base_url('pdfsArchivos/remisiones/notaRemision'.$numeRemision.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}
+	
+	
+	public function eliminarNotaRemision(){
+		//... elimina nota de entrega de las tablas entregacabecera, entregaproducto ...
+		$codigoRemision=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('remisioncabecera','remision',$codigoRemision);
+		$this-> tablaGenerica_model -> eliminar('remisionproducto','numRemision',$codigoRemision);
+		
+//		$numePedidoSinGuion =str_replace("-","",$codigoPedido); //...quita - como separador de codigo ...	
+//		$archivoPDF='pedido'.$numePedidoSinGuion.'.pdf';
+
+		$archivoPDF=$codigoRemision.'.pdf';
+		$archivo ='pdfsArchivos/remisiones/notaRemision'.$codigoRemision.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("tienda/verNotasRemision");
+		echo $data;
+	}	//...fin eliminarNotaRemision ...
+	
+			
+	public function buscarRemision(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='remision';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaRemision=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaRemision);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaRemision = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('remisioncabecera',$campo1,$consultaRemision);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarRemision';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('remisioncabecera',$campo1,$consultaRemision);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaRemision'] = $this-> tablaGenerica_model -> buscarPaginacion('remisioncabecera',$campo1,$consultaRemision, $config['per_page'], $desde );
+			$datos['consultaRemision'] =$consultaRemision;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='remision';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verNotasRemision', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarRemision ...
+			
+			
+	public function buscarRemisionPorCliente(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='cliente';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaRemision=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaRemision);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaRemision = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('remisioncabecera',$campo1,$consultaRemision);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarRemisionPorCliente';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('remisioncabecera',$campo1,$consultaRemision);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaRemision'] = $this-> tablaGenerica_model -> buscarPaginacion('remisioncabecera',$campo1,$consultaRemision, $config['per_page'], $desde );
+			$datos['consultaRemision'] =$consultaRemision;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='cliente';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('tienda/verNotasRemision', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarRemisionPorCliente ...
+			
 	
 	
 	
