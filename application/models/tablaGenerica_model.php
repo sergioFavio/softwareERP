@@ -44,7 +44,7 @@ class TablaGenerica_model extends CI_Model{
     return $this->db->count_all($nombreTabla);
   }
   
-  
+    
   function get_registros($nombreTabla,$porpagina,$segmento){
     $query = $this->db->get($nombreTabla,$porpagina,$segmento);
     if( $query->num_rows > 0 )

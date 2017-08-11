@@ -114,10 +114,14 @@ $(document).ready(function() {
     	var codigoProducto = $('td', this).eq(0).text();
     	var nombreProducto = $('td', this).eq(1).text();
     	var medidas = $('td', this).eq(2).text();
+    	
+    		var unidad = $('td', this).eq(3).text();
   		
 		$('#inputCodigo').val(codigoProducto);
 		$('#inputDescripcion').val(nombreProducto);
 		$('#inputMedida').val(medidas);
+		
+				$('#inputUnidad').val(unidad);
 	
     	$('#productoModal').modal('hide'); // cierra el lightBox
   
@@ -323,6 +327,11 @@ function filaVacia(posicionFila){
 	    	 		<input type="text"  class="form-control input-sm" id="inputMedida" name="inputMedida" readonly='readonly' placeholder="medidas&hellip;" style="width: 162px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
+	    	
+	
+ <input type="hidden"  id="inputUnidad" name="inputUnidad" >
+    	
+	    	
 	    	
 	    	<div style="height:25px;"></div>
 	    	

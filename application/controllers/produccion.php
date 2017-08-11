@@ -122,8 +122,24 @@ class Produccion extends CI_Controller {
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [blanco/acabado] ...
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salidaMaterial [blanco/acabado] ...
 		
+		$codigoProductoSinEspacio=str_replace(" ","",$_POST['inputCodigo']); //...quita espacio en blanco ..
+		$descripcionProducto=$_POST['inputDescripcion']; 	//... formularioplantillaProducto ...
+		$medidaProducto=$_POST['inputMedida']; 				//... formularioplantillaProducto ...
+		$unidadProducto=$_POST['inputUnidad']; 				//... formularioplantillaProducto ...
+			
+		$prodAcabadoCabecera = array(
+	    	"codProducto"=>$codigoProductoSinEspacio,
+	    	"descripcion"=>$descripcionProducto,
+		    "medidas"=>$medidaProducto,
+		    "unidad"=>$unidadProducto
+		);
+		
+		// ... inserta registro tabla prodacabadocabecera ...
+		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
+	    $this-> tablaGenerica_model -> grabar('prodacabadocabecera', $prodAcabadoCabecera);
+				
         for($i=0; $i<$numeroFilasValidas; $i++){
-       		$codigoProductoSinEspacio=str_replace(" ","",$_POST['inputCodigo']); //...quita espacio en blanco ..
+       		
 			$codigoSinEspacio=str_replace(" ","",$_POST['idMat_'.$i]); //...quita espacio en blanco ..
 			
         	if($_POST['cantMat_'.$i] != "0" || $_POST['cantMat_'.$i] != "0.00"){
@@ -146,9 +162,10 @@ class Produccion extends CI_Controller {
 			
 		}  // ... fin  FOR  
 	
-		redirect("produccion/crearPlantillaProducto?nombreDeposito=$nombreDeposito");
+//		redirect("produccion/crearPlantillaProducto?nombreDeposito=$nombreDeposito");
+		redirect("menuController/index");
+		
 	}	//... fin grabarPlantilla
-	
 	
 	
 	public function grabarCotizacion()
@@ -2106,6 +2123,77 @@ class Produccion extends CI_Controller {
 		
 		}     //... fin IF total registros encontrados ...
 	}	//..fin buscarOrdenStock ...
+	
+	
+	public function verPlantillaProductoAcabado(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Producción';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'produccion/verPlantillaProductoAcabado';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('prodacabadocabecera');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('prodacabadocabecera'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaEntrega'] = $this->tablaGenerica_model->get_registros('prodacabadocabecera',$config['per_page'], $desde); 
+				$datos['consultaEntrega'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='codProducto';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('produccion/verPlantillaProductoAcabado', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verPlantillaProductoAcabado ...
+	
 	
 	
 	
