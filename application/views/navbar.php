@@ -95,8 +95,8 @@
 					
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-signal"></span> Producción</a>
 						<ul class="dropdown-menu">
-							<li><a href="<?=base_url();?>produccion/crearPlantillaProducto?nombreDeposito=acabado"><span class="glyphicon glyphicon-list-alt"></span> Crear Plantilla Producto Acabado</a></li>
-							<li><a href="<?=base_url();?>produccion/crearPlantillaProducto?nombreDeposito=blanco"><span class="glyphicon glyphicon-list-alt"></span> Crear Plantilla Producto Blanco</a></li>
+							<li><a href="<?=base_url();?>produccion/crearPlantillaProducto?tipoProducto=acabado"><span class="glyphicon glyphicon-list-alt"></span> Crear Plantilla Producto Acabado</a></li>
+							<li><a href="<?=base_url();?>produccion/crearPlantillaProducto?tipoProducto=blanco"><span class="glyphicon glyphicon-list-alt"></span> Crear Plantilla Producto Blanco</a></li>
 							<li><a href="<?=base_url();?>produccion/consultarProduccionProducto?nombreDeposito=acabado"><span class="glyphicon glyphicon-question-sign"></span> Consultar Producción Producto Acabado</a></li>
 							<li><a href="<?=base_url();?>produccion/consultarProduccionProducto?nombreDeposito=blanco"><span class="glyphicon glyphicon-question-sign"></span> Consultar Producción Producto Blanco</a></li>
 							<li><a href="<?=base_url();?>produccion/verPlantillaProductoAcabado"><span class="glyphicon glyphicon-eye-open"></span> Ver Plantilla Producto Acabado</a></li>

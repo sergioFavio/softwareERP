@@ -81,14 +81,15 @@ $(document).ready(function() {
  }); // fin document.ready 
 
 
-function entregaPdf(nEntrega){
-    var entrega= nEntrega;
-  
+function acabadoPdf(posicionFila){
+    
+     var codigoProducto= $("#codigo_"+posicionFila).val();
+    
 	$.ajax({
-      url: "<?=base_url()?>tienda/entregaPdfCrud",
+      url: "<?=base_url()?>produccion/acabadoPdf",
 
       type: "POST",
-      data: {numeEntrega: entrega},
+      data: {idProducto: codigoProducto},
 
       success: function(data){
          //alert(data);
@@ -123,7 +124,7 @@ function entregaPdf(nEntrega){
 			   	             
 				<div class="col-xs-3">
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaEntrega ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar número de entrega sin ' / ' ">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaAcabado ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar número de entrega sin ' / ' ">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
@@ -163,49 +164,35 @@ function entregaPdf(nEntrega){
 	<table width="99%" class="table table-striped table-bordered table-condensed" id="tabla1">   		
 		<thead>
     		<tr style="background-color: #b9e9ec;" class='letraDetalle'>
-    			<th style="width: 80px;">&nbsp;&nbsp;&nbsp;Entrega</th>
-    			<th style="width: 80px;">Fecha</th>
-				<th style="width: 200px;">Cliente - Empresa</th>
-				<th style="width: 80px;">Fono/Celular</th>
-				<th style="width: 225px;text-align:center">Pedido</th>
-				<th style="width: 110px;text-align:center">Acciones</th>
+    			<th style="width:80px;text-align:center">C&oacute;digo</th>
+				<th style="width:280px;text-align:center">Producto</th>
+				<th style="width:210px;text-align:center">Medidas</th>
+				<th style="width:75px;text-align:center">Unidad</th>
+				<th style="width:130px;text-align:center">Acciones</th>
     		</tr>
  		</thead>
  		
  		<tbody>	
 			<?php  $posicionFila=-1; ?>			
-	        <?php foreach($listaEntrega as $entrega):?>
+	        <?php foreach($listaAcabado as $acabado):?>
 				<tr class='letraDetalle'>
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
-/*		
-					$numeroEntrega = $entrega->entrega;
-					$local = $entrega->local;
-					$secuenciaEntrega=substr($numeroEntrega,0,4);
-									
-					if(strlen($numeroEntrega)==6){						//...si es nota de entrega de Fabrica ... 
-						$anhoSistema=substr($numeroEntrega,4,2);
-					}else{												//...si es nota de entrega de Tienda ... 
-						$anhoSistema=substr($numeroEntrega,4,4);
-					}
 					
-			  		$numeEntregaAux=$secuenciaEntrega.'/'.$anhoSistema;
-*/
+					$codigoProducto=$acabado->codProducto;
 								
-					 echo"<td style='width:60px;'><input type='text' id='idPedido_".$posicionFila."' name='idPedido_".$posicionFila."' value='".$entrega->codProducto."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
-						
-					 //echo"<td style='width: 60px;'><input type='text' id='fechaEntrega_".$posicionFila."' name='fechaEntrega_".$posicionFila."' value='".$entrega->descripcion."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width:60px;'><input type='text' id='codigo_".$posicionFila."' name='codigo_".$posicionFila."' value='".$acabado->codProducto."' readonly='readonly' style='border:none; width:60px;text-align:center;' /></td>";
 							 
-					 echo"<td style='width: 260px;'><input type='text' id='contactoEmpresa_".$posicionFila."' name='contactoEmpresa_".$posicionFila."' value='".$entrega->descripcion."' readonly='readonly' style='border:none; width:260px;' /></td>";
+					 echo"<td style='width: 260px;'><input type='text' id='producto_".$posicionFila."' name='producto_".$posicionFila."' value='".$acabado->descripcion."' readonly='readonly' style='border:none; width:260px;' /></td>";
 						
-					 echo"<td style='width:220px;'><input type='text' id='telCel_".$posicionFila."' name='telCel_".$posicionFila."' value='".$entrega->medidas."' readonly='readonly' style='border:none; width:220px;text-align:center;' /></td>";
+					 echo"<td style='width:220px;'><input type='text' id='medida_".$posicionFila."' name='medida_".$posicionFila."' value='".$acabado->medidas."' readonly='readonly' style='border:none; width:220px;text-align:center;' /></td>";
 
-					 echo"<td style='width:60px;'><input type='text' id='correo_".$posicionFila."' name='correo_".$posicionFila."' value='".$entrega->unidad."' readonly='readonly' style='border:none; width:60px;' /></td>";
+					 echo"<td style='width:60px;'><input type='text' id='unidad_".$posicionFila."' name='unidad_".$posicionFila."' value='".$acabado->unidad."' readonly='readonly' style='border:none; width:60px;' /></td>";
 												
-					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='entregaPdf($entrega->codProducto);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
+					 echo"<td style='width:50px;background-color:#b9e9ec;align=left;'><a href='#' onClick='acabadoPdf($posicionFila);'><span class='glyphicon glyphicon-print'></span> PDF</a></td>";
 					 	
 					 if($permisoUserName=='superuser'){
-					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar nota de entrega' data-item-id='".$entrega->codProducto."' data-cli='".$entrega->descripcion."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
+					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'><a href='#' data-title='Eliminar plantilla producto acabado' data-item-id='".$acabado->codProducto."' data-cli='".$acabado->descripcion."' data-toggle='modal' data-target='#borrarModal'><span class='glyphicon glyphicon-trash'></span> Eliminar</a></td>"; 
 					 }else{
 					 	echo"<td style='width:65px;background-color:#a5d4da;align=left;'></td>"; 
 					 }
@@ -241,7 +228,7 @@ function entregaPdf(nEntrega){
       </div>
       <div class="modal-body">
 	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarNotaEntrega" method="POST">
-        ¿ Esta seguro de eliminar la nota de entrega <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
+        ¿ Esta seguro de eliminar la plantilla producto acabado con código <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 	  </form>
       </div>

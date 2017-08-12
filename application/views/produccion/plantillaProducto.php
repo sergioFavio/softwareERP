@@ -288,7 +288,7 @@ function filaVacia(posicionFila){
 			</div>    	
 	    	
 	    	<div class="col-md-4">
-	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Plantilla Producto <?= strtoupper($nombreDeposito) ?> </span>
+	    	 	<span class="label label-default" style="font-size:14px;text-align:center;">Plantilla Producto <?= strtoupper($tipoProducto) ?> </span>
 	    	</div> 
 	    	
 	    	
@@ -353,7 +353,7 @@ function filaVacia(posicionFila){
         //if ciclo de impresion de filas 
        		for($x=0; $x<20; $x++){
             	echo "<tr class='detalleMaterial' >";
-					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de $nombreDeposito' style='width: 80px; background-color: #d9f9ec;' fila=$x>
+					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de materiales de almacén' style='width: 80px; background-color: #d9f9ec;' fila=$x>
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
                     echo "<td class='letraDetalle'  style='width: 400px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
                     echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";          
@@ -366,7 +366,7 @@ function filaVacia(posicionFila){
 	</table>
 	
 	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
+	<input type="hidden"  name="tipoProducto" value="<?= $tipoProducto ?>" />     <!--   acabado/blanco -->
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;

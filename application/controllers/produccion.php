@@ -72,10 +72,10 @@ class Produccion extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....
 		else {		//... usuario validado ...
-			$nombreDeposito= $_GET['nombreDeposito']; //...  nombreDeposito ( blanco/acabado ) ...		
+			$tipoProducto= $_GET['tipoProducto']; //...  nombreDeposito ( blanco/acabado ) ...		
 			
 			$this->load->model("produccion/consultasVarias_model");	
-			$productos= $this->consultasVarias_model->productoDiferencia($nombreDeposito); 
+			$productos= $this->consultasVarias_model->productoDiferencia($tipoProducto); 
 			
 			
 			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
@@ -83,7 +83,7 @@ class Produccion extends CI_Controller {
 							
 	      	$datos['productos']=$productos;	
 			$datos['insumos']=$insumos;		
-			$datos['nombreDeposito']=$nombreDeposito;	// ... egreso: almacen/bodega ...
+			$datos['tipoProducto']=$tipoProducto;	// ... egreso: almacen/bodega ...
 	
 			$this->load->view('header');
 			$this->load->view('produccion/plantillaProducto',$datos);
@@ -119,7 +119,7 @@ class Produccion extends CI_Controller {
 	
 	
 	public function grabarPlantilla(){
-		$nombreDeposito=$_POST['nombreDeposito']; //... formulario salidaMaterial [blanco/acabado] ...
+		$tipoProducto=$_POST['tipoProducto']; //... formulario [blanco/acabado] ...
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario salidaMaterial [blanco/acabado] ...
 		
 		$codigoProductoSinEspacio=str_replace(" ","",$_POST['inputCodigo']); //...quita espacio en blanco ..
@@ -152,8 +152,8 @@ class Produccion extends CI_Controller {
 				);
 				
 				// ... inserta registro tabla transacciones[prodBlancoPlantilla/prodAcabadoPlantilla]
-				$this-> load -> model("produccion/prodPlantilla_model");		//carga modelo [prodBlancoPlantilla/prodAcabadoPlantilla]
-	    		$this-> prodPlantilla_model -> grabar($plantilla,$nombreDeposito);
+				$this-> load -> model("tablaGenerica_model");		//carga modelo [prodBlancoPlantilla/prodAcabadoPlantilla]
+	    		$this-> tablaGenerica_model -> grabar('prodacabadoplantilla',$plantilla);
 					
 								
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega
@@ -2131,7 +2131,7 @@ class Produccion extends CI_Controller {
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoProceso1=$this->session->userdata('usuarioProceso1');
 		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
-			$datos['mensaje']='Usuario NO autorizado para operar Producción';
+			$datos['mensaje']='Usuario NO autorizado para operar Produccicón';
 			$this->load->view('header');
 			$this->load->view('mensaje',$datos );
 			$this->load->view('footer');
@@ -2179,8 +2179,8 @@ class Produccion extends CI_Controller {
 			
 				/* Se obtienen los registros a mostrar*/ 
 				
-				$datos['listaEntrega'] = $this->tablaGenerica_model->get_registros('prodacabadocabecera',$config['per_page'], $desde); 
-				$datos['consultaEntrega'] ='';
+				$datos['listaAcabado'] = $this->tablaGenerica_model->get_registros('prodacabadocabecera',$config['per_page'], $desde); 
+				$datos['consultaAcabado'] ='';
 				$datos['permisoUserName'] =$permisoUserName;
 				$datos['buscarPor'] ='codProducto';
 				
@@ -2194,6 +2194,14 @@ class Produccion extends CI_Controller {
 		
 	} //... fin verPlantillaProductoAcabado ...
 	
+	
+		public function acabadoPdf(){
+		//... recupera la variable de numePedido ...
+		$idProducto=$_POST["idProducto"];
+		?>
+		<embed src="<?= base_url('pdfsArchivos/productosAcabados/'.$idProducto.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+	}
 	
 	
 	
