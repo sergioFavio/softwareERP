@@ -122,21 +122,16 @@ function acabadoPdf(posicionFila){
 					<span></span>
 			   	</div>
 			   	             
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaAcabado ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar número de entrega sin ' / ' ">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaAcabado ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar código producto">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>
                     	</div>
                     </div>
 			    </div>	
-			    
-			    			    
-			    <div class="col-xs-1"> 
-					<span></span>
-			   	</div>
-			   	
+			      	
 			   	<div class="col-xs-3"> 
 					<span  id="titulo" class="label label-success"> Ver Plantilla de Productos Acabados</span>
 			   	</div>
@@ -227,7 +222,7 @@ function acabadoPdf(posicionFila){
         <h4 class="modal-title" id="borrarModalLabel">Modal title</h4>
       </div>
       <div class="modal-body">
-	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>tienda/eliminarNotaEntrega" method="POST">
+	  <form class="form-horizontal" data-async data-target="#rating-modal" action="<?=base_url()?>produccion/eliminarPlantillaProductoAcabado" method="POST">
         ¿ Esta seguro de eliminar la plantilla producto acabado con código <span id="showCodigo" style="font-weight : bold;"></span> de <span id="showCliente" style="font-weight : bold;"></span> ?
 		<input type="hidden" value="" name="codigo" class="itemId">
 	  </form>

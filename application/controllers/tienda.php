@@ -5381,6 +5381,7 @@ class Tienda extends CI_Controller {
 
 		$data=base_url("tienda/verNotasEntrega");
 		echo $data;
+		
 	}	//...fin eliminarNotaEntrega ...
 	
 	

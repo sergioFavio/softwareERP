@@ -2195,13 +2195,34 @@ class Produccion extends CI_Controller {
 	} //... fin verPlantillaProductoAcabado ...
 	
 	
-		public function acabadoPdf(){
+	public function acabadoPdf(){
 		//... recupera la variable de numePedido ...
 		$idProducto=$_POST["idProducto"];
 		?>
 		<embed src="<?= base_url('pdfsArchivos/productosAcabados/'.$idProducto.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
 		<?php
 	}
+	
+
+	public function eliminarPlantillaProductoAcabado(){
+		//... elimina registro de las tablas prodacabadocabecera, prodacabadoplantilla ...
+		$codigoProducto=$_POST['codigo'];
+		$this-> load -> model("tablaGenerica_model");
+   		$this-> tablaGenerica_model -> eliminar('prodacabadocabecera','codProducto',$codigoProducto);
+		$this-> tablaGenerica_model -> eliminar('prodacabadoplantilla','codPro',$codigoProducto);
+		
+		$archivoPDF=$codigoProducto.'.pdf';
+		$archivo ='pdfsArchivos/productosAcabados/'.$codigoProducto.'.pdf';
+		$hacer = unlink($archivo);
+ 
+		if($hacer != true){
+ 			echo "Ocurrió un error tratando de borrar el archivo" .$archivoPDF. "<br />";
+ 		}
+
+		$data=base_url("produccion/verPlantillaProductoAcabado");
+		echo $data;
+		
+	}	//...fin eliminarPlantillaProductoAcabado ...
 	
 	
 	
