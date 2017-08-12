@@ -162,8 +162,7 @@ class Produccion extends CI_Controller {
 			
 		}  // ... fin  FOR  
 	
-//		redirect("produccion/crearPlantillaProducto?nombreDeposito=$nombreDeposito");
-		redirect("menuController/index");
+		redirect("produccion/generarPlantillaProductoPDF?codigoProducto=$codigoProductoSinEspacio&tipoProducto=$tipoProducto");
 		
 	}	//... fin grabarPlantilla
 	
@@ -2442,6 +2441,118 @@ class Produccion extends CI_Controller {
 		}	//... fin IF validar usuario ...
 		
 	} //... fin verPlantillaProductoAcabadoPorDescripcion ...
+	
+	
+	public function generarPlantillaProductoPDF(){
+		//... genera reporte de salida en PDF
+		$codigoProducto= $_GET['codigoProducto']; 		//... lee codigoProducto que viene de grabarPlantilla ...
+		$tipoProducto= $_GET['tipoProducto']; 			//... lee tipoProducto que viene de grabarPlantilla ...
+		
+		// Se carga la libreria fpdf
+		$this->load->library('produccion/PlantillaProductoPdf');
+		
+		// Se obtienen los registros de la base de datos
+		if($tipoProducto=='acabado'){									//... cuando es producto acabado ...
+			$sql ="SELECT codMat,nombreInsumo,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo ";	
+		}else{															//... cuando es producto blanco ...
+			$sql ="SELECT codMat,nombreInsumo,cantidad,unidad FROM prodblancoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo ";		
+		}
+		
+		$materiales = $this->db->query($sql);
+		
+		$this->load->model("tablaGenerica_model");
+		
+		if($tipoProducto=='acabado'){								//... cuando es producto acabado ...						
+			$prodCabecera= $this->tablaGenerica_model->buscar('prodacabadocabecera','codProducto',$codigoProducto); //..carga el modelo de la tabla ..
+		}else{														//... cuando es producto blanco...
+			$prodCabecera= $this->tablaGenerica_model->buscar('prodblancocabecera','codProducto',$codigoProducto); //..carga el modelo de la tabla ..
+		}
+		
+		$descripcion= $prodCabecera["descripcion"];		// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$medidas= $prodCabecera["medidas"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+		$unidad= $prodCabecera["unidad"];				// ... forma de asignar cuando se utliza funcion ...buscar ... de tablaGenerica_model ...
+				
+		// Creacion del PDF
+	    /*
+	    * Se crea un objeto de la clase EstructuraCotizacionPdf, recordar que la clase Pdf
+	    * heredó todos las variables y métodos de fpdf
+	    */
+	     
+	    ob_clean(); // cierra si es se abrio el envio de pdf...
+	    $this->pdf = new PlantillaProductoPdf();
+		
+		$this->pdf->tipoProducto=$tipoProducto;   			   		//...pasando variable para el header del PDF
+		$this->pdf->codigoProducto=$codigoProducto;				    //...pasando variable para el header del PDF
+		$this->pdf->descripcion=$descripcion; 						//...pasando variable para el header del PDF
+		$this->pdf->unidad=$unidad; 								//...pasando variable para el header del PDF
+		
+	    // Agregamos una página
+	    $this->pdf->AddPage();
+	    // Define el alias para el número de página que se imprimirá en el pie
+	    $this->pdf->AliasNbPages();
+	 
+	    /* Se define el titulo, márgenes izquierdo, derecho y
+	    * el color de relleno predeterminado
+	    */
+	         
+        $this->pdf->SetLeftMargin(10);
+        $this->pdf->SetRightMargin(10);
+        $this->pdf->SetFillColor(200,200,200);
+ 
+	    // Se define el formato de fuente: Arial, negritas, tamaño 9
+	    //$this->pdf->SetFont('Arial', 'B', 9);
+	    //$this->pdf->SetFont('Arial', '', 9);
+	    $this->pdf->SetFont('Arial', '', 10);
+		
+	    foreach ($materiales->result() as $material) {
+	        // se imprime el numero actual y despues se incrementa el valor de $x en uno
+	        // Se imprimen los datos de cada registro
+
+			$this->pdf->Cell(20,5,$material->codMat,'',0,'L',0);
+			$this->pdf->Cell(5,5,' ','',0,'L',0);
+			$this->pdf->Cell(94,5,utf8_decode(substr($material->nombreInsumo,0,56) ),'',0,'L',0);
+			$this->pdf->Cell(12,5,' ','',0,'L',0);
+			$this->pdf->Cell(20,5,number_format($material->cantidad,2),'',0,'R',0);
+			$this->pdf->Cell(12,5,' ','',0,'L',0);
+			$this->pdf->Cell(15,5,$material->unidad,'',0,'L',0);
+			
+	        //Se agrega un salto de linea
+	        $this->pdf->Ln('5');
+	    }
+		
+	     /* PDF Output() settings
+	     * Se manda el pdf al navegador
+	     *
+	     * $this->pdf->Output(nombredelarchivo, destino);
+	     *
+	     * I = Muestra el pdf en el navegador
+	     * D = Envia el pdf para descarga
+		 * F: save to a local file
+		 * S: return the document as a string. name is ignored.
+		 * $pdf->Output(); //default output to browser
+		 * $pdf->Output('D:/example2.pdf','F');
+		 * $pdf->Output("example2.pdf", 'D');
+		 * $pdf->Output('', 'S'); //... Returning the PDF file content as a string:
+	     */
+		 
+		if($tipoProducto=='acabado'){
+			$this->pdf->Output('pdfsArchivos/productosAcabados/'.$codigoProducto.'.pdf', 'F');
+			$datos['documento']="pdfsArchivos/productosAcabados/".$codigoProducto.".pdf";	
+		}else{
+			$this->pdf->Output('pdfsArchivos/productosBlancos/'.$codigoProducto.'.pdf', 'F');
+			$datos['documento']="pdfsArchivos/productosBlancos/".$codigoProducto.".pdf";	
+		}
+		
+		$datos['titulo']=' Plantilla Producto '.$tipoProducto.': '.$codigoProducto;	// ... titulo ...
+	
+		$this->load->view('header');
+		$this->load->view('reportePdfSinFechas',$datos );
+		$this->load->view('footer');	
+						
+
+	} //... fin funcion: generarPlantillaProductoPDF ...
+	
+	
 	
 	
 	
