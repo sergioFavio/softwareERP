@@ -107,14 +107,14 @@ function acabadoPdf(posicionFila){
 
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 		<?php 
-			if($buscarPor=="entrega"){
-				$funcionBuscar='buscarEntrega';
+			if($buscarPor=="codProducto"){
+				$funcionBuscar='buscarAcabado';
 			}else{
-				$funcionBuscar='buscarEntregaPorCliente';
+				$funcionBuscar='buscarAcabadoPorDescripcion';
 			}
 		?>
 	
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>tienda/<?= $funcionBuscar ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>produccion/<?= $funcionBuscar ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:10px;"></div>
 			
 			<div class="row">
@@ -124,7 +124,7 @@ function acabadoPdf(posicionFila){
 			   	             
 				<div class="col-xs-4">
 			    	<div class="input-group input-group-sm">
-			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaAcabado ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar código producto">
+			    		<input type="text" class="form-control input-sm" id="inputBuscarPatron" name="inputBuscarPatron" value='<?= $consultaAcabado ?>' placeholder="buscar por <?= $buscarPor ?>" data-toggle='tooltip' title="ingresar <?= $buscarPor ?>">
 						
 						<div class="input-group-btn">
                         	<button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span></button>

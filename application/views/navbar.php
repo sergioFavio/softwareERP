@@ -100,7 +100,8 @@
 							<li><a href="<?=base_url();?>produccion/consultarProduccionProducto?nombreDeposito=acabado"><span class="glyphicon glyphicon-question-sign"></span> Consultar Producción Producto Acabado</a></li>
 							<li><a href="<?=base_url();?>produccion/consultarProduccionProducto?nombreDeposito=blanco"><span class="glyphicon glyphicon-question-sign"></span> Consultar Producción Producto Blanco</a></li>
 							<li><a href="<?=base_url();?>produccion/verPlantillaProductoAcabado"><span class="glyphicon glyphicon-eye-open"></span> Ver Plantilla Producto Acabado</a></li>
-
+							<li class="divider"></li>
+							<li><a href="<?=base_url();?>produccion/verPlantillaProductoAcabadoPorDescripcion"><span class="glyphicon glyphicon-search"></span> Buscar Plantilla Producto Acabado por Descripci&oacute;n</a></li>						
 						</ul>
 					</li>
                                        

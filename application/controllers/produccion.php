@@ -2224,6 +2224,225 @@ class Produccion extends CI_Controller {
 		
 	}	//...fin eliminarPlantillaProductoAcabado ...
 	
+			
+	public function buscarAcabado(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='codProducto';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaAcabado=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaAcabado);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaAcabado = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('prodacabadocabecera',$campo1,$consultaAcabado);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarAcabado';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('prodacabadocabecera',$campo1,$consultaAcabado);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaAcabado'] = $this-> tablaGenerica_model -> buscarPaginacion('prodacabadocabecera',$campo1,$consultaAcabado, $config['per_page'], $desde );
+			$datos['consultaAcabado'] =$consultaAcabado;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='codProducto';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('produccion/verPlantillaProductoAcabado', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarAcabado ...
+			
+	
+	public function buscarAcabadoPorDescripcion(){
+		//... buscar los registros que coincidan con el patron busqueda ingresado ...
+
+		$campo1='descripcion';   	//... el campo por elcual se va hacer la búsqueda ...
+		
+		$permisoUserName=$this->session->userdata('userName');
+		if(isset($_POST['inputBuscarPatron'])){
+			$consultaAcabado=$_POST['inputBuscarPatron'];
+			
+			// Escribimos una primera línea en consultaCrud.txt
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
+			fputs($fp, $consultaAcabado);
+			fclose($fp); 
+
+		}else{
+			// Leemos la primera línea de consultaCrud.txt
+			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
+			$consultaAcabado = fgets($fp);
+			fclose($fp); 
+		}	
+		
+		$this-> load -> model("tablaGenerica_model");
+		
+		$totalRegistrosEncontrados=0;		
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('prodacabadocabecera',$campo1,$consultaAcabado);
+		//echo"total registros econtrados".$totalRegistrosEncontrados;
+		if($totalRegistrosEncontrados==0){
+			redirect('menuController/index');
+		}else{
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'tienda/buscarAcabadoPorDescripcion';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('prodacabadocabecera',$campo1,$consultaAcabado);
+		
+			/*Obtiene el numero de registros a mostrar por pagina */
+	    	$config['per_page'] = '13';
+			
+			/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+	    	$config['uri_segment'] = '3';
+			$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+	  
+			/*Se personaliza la paginación para que se adapte a bootstrap*/
+		    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+		    $config['cur_tag_close'] = '</a></li>';
+		    $config['num_tag_open'] = '<li>';
+		    $config['num_tag_close'] = '</li>';
+		    $config['last_link'] = FALSE;
+		    $config['first_link'] = FALSE;
+		    $config['next_link'] = '&raquo;';
+		    $config['next_tag_open'] = '<li>';
+		    $config['next_tag_close'] = '</li>';
+		    $config['prev_link'] = '&laquo;';
+		    $config['prev_tag_open'] = '<li>';
+		    $config['prev_tag_close'] = '</li>';
+			
+			/* Se inicializa la paginacion*/
+	    	$this->pagination->initialize($config);
+	
+			/* Se obtienen los registros a mostrar*/ 
+			$datos['listaAcabado'] = $this-> tablaGenerica_model -> buscarPaginacion('prodacabadocabecera',$campo1,$consultaAcabado, $config['per_page'], $desde );
+			$datos['consultaAcabado'] =$consultaAcabado;
+			$datos['permisoUserName'] =$permisoUserName;
+			$datos['buscarPor'] ='descripcion';
+			
+			/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('produccion/verPlantillaProductoAcabado', $datos);
+			$this->load->view('footer');
+		}		//... fin IF total registros encintrados ...
+		
+	}		//... fin funcion: buscarAcabadoPorDescripcion ...
+	
+	
+	public function verPlantillaProductoAcabadoPorDescripcion(){
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='produccion'){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Produccicón';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}			// ... fin control permiso de accesos...
+		else {
+			$this->load->model("tablaGenerica_model");
+			
+			/* URL a la que se desea agregar la paginación*/
+	    	$config['base_url'] = base_url().'produccion/verPlantillaProductoAcabadoPorDescripcion';
+			
+			/*Obtiene el total de registros a paginar */
+	    	$config['total_rows'] = $this->tablaGenerica_model->get_total_registros('prodacabadocabecera');
+		
+			$contador= $this->tablaGenerica_model->get_total_registros('prodacabadocabecera'); //...contador de registros  ...		
+			if($contador==0){
+				$datos['mensaje']='No hay registros para mostrar ';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+			}else{
+				/*Obtiene el numero de registros a mostrar por pagina */
+				$config['per_page'] = '13';
+				
+				/*Indica que segmento de la URL tiene la paginación, por default es 3*/
+				$config['uri_segment'] = '3';
+				$desde = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+			  
+				/*Se personaliza la paginación para que se adapte a bootstrap*/
+			    $config['cur_tag_open'] = '<li class="active"><a href="#">';
+			    $config['cur_tag_close'] = '</a></li>';
+			    $config['num_tag_open'] = '<li>';
+			    $config['num_tag_close'] = '</li>';
+			    $config['last_link'] = FALSE;
+			    $config['first_link'] = FALSE;
+			    $config['next_link'] = '&raquo;';
+			    $config['next_tag_open'] = '<li>';
+			    $config['next_tag_close'] = '</li>';
+			    $config['prev_link'] = '&laquo;';
+			    $config['prev_tag_open'] = '<li>';
+			    $config['prev_tag_close'] = '</li>';
+				
+				/* Se inicializa la paginacion*/
+				$this->pagination->initialize($config);
+			
+				/* Se obtienen los registros a mostrar*/ 
+				
+				$datos['listaAcabado'] = $this->tablaGenerica_model->get_registros('prodacabadocabecera',$config['per_page'], $desde); 
+				$datos['consultaAcabado'] ='';
+				$datos['permisoUserName'] =$permisoUserName;
+				$datos['buscarPor'] ='descripcion';
+				
+				/*Se llama a la vista para mostrar la información*/
+				$this->load->view('header');
+				$this->load->view('produccion/verPlantillaProductoAcabado', $datos);
+				$this->load->view('footer');
+					
+			}//..fin IF contador registros mayor que cero ..
+		}	//... fin IF validar usuario ...
+		
+	} //... fin verPlantillaProductoAcabadoPorDescripcion ...
+	
 	
 	
 }
