@@ -2576,6 +2576,53 @@ class Materiales extends CI_Controller {
 	}
 	
 	
+	public function salidaMaterialProductoAcabado(){
+		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
+		
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoDeposito=$this->session->userdata('usuarioDeposito');
+		$permisoProceso2=$this->session->userdata('usuarioProceso1');
+		if( $permisoUserName!='superuser' && $permisoUserName!='developer'   &&  $permisoDeposito!=$nombreDeposito ){  //... valida permiso de userName ...
+
+				$datos['mensaje']='Usuario NO autorizado para operar Sistema de Inventarios';
+				$this->load->view('header');
+				$this->load->view('mensaje',$datos );
+				$this->load->view('footer');
+	//			redirect('menuController/index');		
+		}	//... fin control de permisos de acceso ....	
+		else {
+			$this->load->model("inventarios/numeroIngresoSalida_model");
+			$prefijoTabla='nosal'; // ... prefijoTabla
+	    	$salida = $this->numeroIngresoSalida_model->getNumero($nombreDeposito, $prefijoTabla);
+			
+			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+			$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+			
+			
+			$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
+	 		$pedidos = $this->db->query($sql);				
+	      	$datos['pedidos']=$pedidos;	
+			
+			
+			
+			
+							
+			$datos['titulo']=$nombreDeposito.' Prod. Acabado';
+			$datos['salida']=$salida;
+			$datos['insumos']=$insumos;		
+			$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
+	
+			$this->load->view('header');
+			$this->load->view('inventarios/salida_materialAcabado',$datos);
+			$this->load->view('footer');
+		}	//... fin validar usuario ...
+	}	//... fin salidamaterialProductoAcabado ...
+
+	
+	
+	
 }
 
 

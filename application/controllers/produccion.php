@@ -1108,8 +1108,7 @@ class Produccion extends CI_Controller {
 		}	//... fin control de permisos de acceso ....	
 		else{
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
-	//		$pedidos= $this->tablaGenerica_model->getTodos('pedidoproducto'); //..una vez cargado el modelo de la tabla pedidocabecera..
-			
+	
 			$sql ="SELECT * FROM pedidoproducto WHERE codTrabajador=''";		//...selecciona registros que NO han sido asignados ..
 	 		$pedidos = $this->db->query($sql);
 			
