@@ -38,23 +38,8 @@
                     <li class="divider"></li>
                     <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=almacen"><span class="glyphicon glyphicon-log-out"></span> Salida de Almacén</a></li>
                     
-                    
-                    
-                    
-                    
-                    
-                    
-                   <li><a href="<?=base_url();?>materiales/salidaMaterialProductoAcabado?nombreDeposito=almacen"><span class="glyphicon glyphicon-log-out"></span> Salida de Almacén para Producto Acabado</a></li>
+                   <li><a href="<?=base_url();?>materiales/ubicarOrden?tipoProducto=acabado"><span class="glyphicon glyphicon-log-out"></span> Salida de Almacén para Producto Acabado</a></li>
 
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     <li><a href="<?=base_url();?>materiales/salidaMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-log-out"></span> Salida de Bodega</a></li> 	
               		<li><a href="<?=base_url();?>materiales/traspasoMaterial?nombreDeposito=bodega"><span class="glyphicon glyphicon-retweet"></span> Traspaso de Bodega a Almacén</a></li> 		
                     <li class="divider"></li>

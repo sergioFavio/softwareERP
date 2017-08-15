@@ -51,9 +51,9 @@ $(document).ready(function() {
     	var secuencia = $('td', this).eq(1).text();
   		var trabajador = $('td', this).eq(2).text();
   		
-  		codigoProducto = $('td', this).eq(3).text();
+  		var codigoProducto = $('td', this).eq(3).text();
   		
-  		var cantidad = $('td', this).eq(4).text();
+  		var cantidadProducto = $('td', this).eq(4).text();
   		var unidad = $('td', this).eq(5).text();
   		
   		
@@ -63,7 +63,7 @@ $(document).ready(function() {
 		
 		
 		$('#codigoProducto').val(codigoProducto);
-		$('#cantidadProducto').val(cantidad);
+		$('#cantidadProducto').val(cantidadProducto);
 		
 //		document.form_.codigoProducto.value=codigoProducto;  	// ... codigoProducto  variable hidden formulario...
 //		document.form_.producto.value=producto;  				// ... producto  variable hidden formulario...
@@ -72,8 +72,36 @@ $(document).ready(function() {
 //		document.form_.secuencia.value=secuencia;  				// ... secuencia  variable hidden formulario...
 		
     	$('#pedidoModal').modal('hide'); // cierra el lightBox
+    	
+    	
+ //   			alert('codigo producto'+codigoProducto);
+ //   			alert('cantidad producto'+cantidadProducto);
+    	
+    			$.ajax({
+			      url: "<?=base_url()?>materiales/buscarPlantillaAcabado",
+			
+			      type: "POST",
+			      data: {codigoProducto: $('#codigoProducto').val(),cantidadProducto: $('#cantidadProducto').val() },
+			
+			      success: function(data){
+			         alert('data= '+data);
+				    //  aca deberia poner la funcion que hace el refrescado del listado	    
+					$("#recargarDatos").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
+				  }
+				      
+			   });	// ... fin AJAX ...
+    	
+    	
+    	
   
 	} ); // fin #tabla1 tbody
+
+
+
+
+
+
+
 
 
 	
@@ -128,7 +156,7 @@ $(document).ready(function() {
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Trabajador </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" readonly="readonly" placeholder="trabajador&hellip;" style="width: 220px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputGlosa" name="inputGlosa" readonly="readonly" value="<?= $trabajador ?>" style="width: 220px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -141,13 +169,13 @@ $(document).ready(function() {
 		    <div class="col-lg-4">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" >Orden No. </span>
-	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden" title='Seleccionar un &iacute;tem de orden de la tabla PEDIDOPRODUCTO' readonly="readonly" placeholder="orden #&hellip;" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
+	    	 		<input type="text"  class="form-control input-sm" id="inputOrden" name="inputOrden"  readonly="readonly" value="<?= $orden ?>" style="background-color:#d9f9ec;width:90px;font-size:11px;text-align:center;" >
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
 	    	
-	    	<input type="hidden"  name="codigoProducto" >
-	    	<input type="hidden"  name="cantidadProducto" >
+	    	<input type="hidden"  id="codigoProducto" name="codigoProducto">
+	    	<input type="hidden"  id="cantidadProducto" name="cantidadProducto" >
 
 	    	
 	    	<div style="height:25px;"></div>
@@ -165,33 +193,39 @@ $(document).ready(function() {
             <th style="width: 85px">Unidad</th>
     	</tr>
       </thead >
-    <tbody >
-    		
+    <tbody>
+    	
     	<?php
-        //if ciclo de impresion de filas 
-       		for($x=0; $x<25; $x++){
-            	echo "<tr class='detalleMaterial' >";
+    	
+    	$x=0;
+		while($plantilla = mysql_fetch_row($regPlantilla)){
+			echo "<tr class='detalleMaterial' >";
            
-					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de $titulo' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' readonly='readonly' style='border:none;' /></td>";
-                    
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' size='7' readonly='readonly' style='border:none;' /></td>";
-					
-                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
-					          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' size='7' readonly='readonly' style='border:none;'/></td>";
-                echo "</tr>";
-             }
-         ?>
+				echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
+				<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+				
+                echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value='$plantilla[1]' readonly='readonly' style='border:none;' /></td>";
+                
+                echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' value='$plantilla[2]' size='7' readonly='readonly' style='border:none;' /></td>";
+
+				$cantidadMaterial=$plantilla[3]*$cantidadProducto;
+                echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$cantidadMaterial' readonly='readonly' style='width: 80px; border:none; background-color: #d9f9ec;' /></td>";  
+				          
+                echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$plantilla[4]' size='7' readonly='readonly' style='border:none;'/></td>";
+
+	        echo "</tr>";
+			
+			$x=$x+1;
+		}
+    	
+    	?>
+    	
       </tbody>
   
 	</table>
 	
-	<input type="hidden"  name="numeroFilas"  />
-	<input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen/bodega -->
-	<input type="hidden"  name="codigoProducto"  />
+	<input type="hidden"  name="numeroFilas" value="<?= $nRegistrosPlantilla ?>" />
+	<input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen -->
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
@@ -200,61 +234,3 @@ $(document).ready(function() {
    <div style="height:10px;"></div>
    </form>
 </div>
-
-
-<!-- ... inicio  lightbox pedidos... -->
-
-<div id="pedidoModal"  class="modal fade" tabindex="-1" role="dialog" >
-  <div class="pedido-dialog"  >
-  <div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h4 class="modal-title">cabecera de caja luz</h4>
-	</div>
-	<div class="modal-body">
-		
-		<table  cellspacing="0" cellpadding="0" border="0" class="display compact" id="tabla1">
-			<thead>
-				<tr class='letraDetalleLightBox'>
-					<th style='width:48px;'># Orden</th>
-					<th style='width:8px;text-align:left'>Item</th>
-					<th style='width:160px;'>Trabajador</th>
-					<th style='width:10px;'>C&oacute;digo</th>
-					<th style='width:15px;'>Cantidad</th>
-					<th style='width:5px;'>Unidad</th>
-					
-				</tr>
-			</thead>
-			<tbody>		
-				<!--?php foreach($pedidos as $pedido):?-->	
-                <?php foreach($pedidos->result() as $pedido){?>
-                    <tr class='letraDetalleLightBox'>
-                        <td style='width:50px;text-align:right'> <?= $pedido->numeroPedido ?></td>
-                        <td style='width:25px;text-align:left' ><?= $pedido->secuencia  ?></td>
-                        <td style='width:165px;'> <?= $pedido->trabajador ?></td>
-                        <!--td style='width:45px;text-align:right' > <?= $pedido->idProducto ?></td-->
-                        
-                        
-                        <td style='width:45px;text-align:right' >
-                        	<input type="text" class="form-control input-sm"  value='<?= $pedido->idProducto ?>' readonly='readonly' data-toggle='tooltip' title='<?= $pedido->descripcion ?>' style='font-size:9px;width:65px;text-align:right;height:12px;'>
-						</td>
-                        
-                        
-   						<td style='width:40px;text-align:right' ><?= $pedido->cantidad  ?></td>
-   						<td style='width:25px;text-align:right' ><?= $pedido->unidad  ?></td>
-   						
-                    </tr>
-                <?php } ?>
-                <!--?php endforeach ?-->
-			</tbody>
-		</table>
-		
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-	</div>
-   </div>
-  </div>
-</div>
-<!-- ... fin  lightbox pedidos... -->
-

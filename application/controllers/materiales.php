@@ -2577,42 +2577,41 @@ class Materiales extends CI_Controller {
 	
 	
 	public function salidaMaterialProductoAcabado(){
-		$nombreDeposito= $_GET['nombreDeposito']; //... lee nombreDeposito que viene del menu principal(salida de  almacen/bodega ) ...	
-		
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
 		$permisoDeposito=$this->session->userdata('usuarioDeposito');
 		$permisoProceso2=$this->session->userdata('usuarioProceso1');
 		if( $permisoUserName!='superuser' && $permisoUserName!='developer'   &&  $permisoDeposito!=$nombreDeposito ){  //... valida permiso de userName ...
-
-				$datos['mensaje']='Usuario NO autorizado para operar Sistema de Inventarios';
-				$this->load->view('header');
-				$this->load->view('mensaje',$datos );
-				$this->load->view('footer');
-	//			redirect('menuController/index');		
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Inventarios';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');	
 		}	//... fin control de permisos de acceso ....	
-		else {
+		else{
+			$orden= $_POST['inputOrden']; 					//... lee inputOrden ...	
+			$trabajador= $_POST['inputTrabajador']; 		//... lee inputTrabajador ...	
+			$codigoProducto= str_replace(" ","",$_POST['codigoProducto']); 		//... lee codigoProducto ...	
+			$cantidadProducto= $_POST['cantidadProducto']; 	//... lee cantidadProducto ...	
+			$nombreDeposito='almacen'; //... nombreDeposito ...	
+				
 			$this->load->model("inventarios/numeroIngresoSalida_model");
 			$prefijoTabla='nosal'; // ... prefijoTabla
-	    	$salida = $this->numeroIngresoSalida_model->getNumero($nombreDeposito, $prefijoTabla);
-			
-			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
-			$insumos= $this->maestroMaterial_model->getTodos($nombreDeposito); //..una vez cargado el modelo de la tabla llama almacen/bodega..
-			
-			
-			$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
-	 		$pedidos = $this->db->query($sql);				
-	      	$datos['pedidos']=$pedidos;	
-			
-			
-			
-			
-							
-			$datos['titulo']=$nombreDeposito.' Prod. Acabado';
+	    	$salida = $this->numeroIngresoSalida_model->getNumero('almacen', $prefijoTabla);
+					
+			$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo";
+			$regPlantilla=mysql_query($sql);
+			$nRegistrosPlantilla= mysql_num_rows($regPlantilla); 	//... numero registros salida que satisfacen la consulta ...
+					
+			$datos['regPlantilla']=$regPlantilla;
+			$datos['nRegistrosPlantilla']=$nRegistrosPlantilla;	
+	
+			$datos['orden']=$orden;		
+			$datos['trabajador']=$trabajador;
+			$datos['cantidadProducto']=$cantidadProducto;	
+			$datos['nombreDeposito']=$nombreDeposito;
+			$datos['titulo']='Almacén Prod. Acabado';
 			$datos['salida']=$salida;
-			$datos['insumos']=$insumos;		
-			$datos['nombreDeposito']=$nombreDeposito;	// ... salida: almacen/bodega ...
 	
 			$this->load->view('header');
 			$this->load->view('inventarios/salida_materialAcabado',$datos);
@@ -2620,6 +2619,90 @@ class Materiales extends CI_Controller {
 		}	//... fin validar usuario ...
 	}	//... fin salidamaterialProductoAcabado ...
 
+	 
+	public function ubicarOrden(){
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		$permisoProceso1=$this->session->userdata('usuarioProceso1');
+		$permisoDeposito=$this->session->userdata('usuarioDeposito');
+		
+		if( $permisoUserName!='superuser' && $permisoUserName!='developer'   &&  $permisoDeposito!=$nombreDeposito ){  //... valida permiso de userName ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Inventarios';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}	//... fin control de permisos de acceso ....	
+		else{
+			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
+	
+			$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
+	 		$pedidos = $this->db->query($sql);
+							
+	      	$datos['pedidos']=$pedidos;
+			$datos['descripcionProducto']='...';		
+			$datos['titulo']='Datos Orden de Trabajo';
+			$this->load->view('header');
+			$this->load->view('inventarios/ubicarOrdenTrabajo',$datos );
+			$this->load->view('footer');
+		}	//..fin IF validar usuario...
+	}	//... fin ubicarOrden ...
+		
+	
+	
+	
+	
+	public function buscarPlantillaAcabado(){
+		//... recupera la variable de numePedido ...
+		$codigoProducto=$_POST["codigoProducto"];
+		$cantidadProducto=$_POST["cantidadProducto"];
+		
+//		echo"codigoProducto= $codigoProducto  cantidadProducto=$cantidadProducto";
+		
+		$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo ";
+		$regPlantilla=mysql_query($sql);
+		$nRegistrosPlantilla= mysql_num_rows($regPlantilla); 	//... numero registros salida que satisfacen la consulta ...
+		
+		$x=0;
+		while($plantilla = mysql_fetch_row($regPlantilla)){
+			echo "<tr class='detalleMaterial' >";
+           
+					echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
+					
+                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value='$plantilla[1]' readonly='readonly' style='border:none;' /></td>";
+                    
+                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' value='$plantilla[2]' size='7' readonly='readonly' style='border:none;' /></td>";
+					
+                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$plantilla[3]' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
+					          
+                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$plantilla[5]' size='7' readonly='readonly' style='border:none;'/></td>";
+                echo "</tr>";
+			
+			
+			$x=$x+1;
+		}
+		
+		$data="<?= $x=0;
+		while($plantilla = mysql_fetch_row($regPlantilla)){
+			echo '<tr  >';
+           
+					echo'<td  style='width:80px; background-color:#d9f9ec;' fila=$x>
+					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>';
+					  echo '</tr>';
+			
+			
+			$x=$x+1;
+		}     ?>";
+		echo $data;
+			
+/*
+		?>
+		<embed src="<?= base_url('pdfsArchivos/pedidos/pedido'.$numePedido.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
+		<?php
+
+ */
+ 		
+	}	// fin:  buscarPlantillaAcabado ...
 	
 	
 	
