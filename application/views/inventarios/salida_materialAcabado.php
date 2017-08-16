@@ -1,9 +1,8 @@
 
 <link rel="stylesheet" type="text/css"  href="<?=base_url(); ?>css/ingresoSalidaMaterial.css" />
 	
-<link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.min.css"/>
-<script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script>
+<!--link rel="stylesheet" type="text/css" media="screen" href="<?=base_url(); ?>media/css/jquery.dataTables.css"/-->
+<!--script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script-->
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
 
 <!--script type="text/javascript" src="<?=base_url(); ?>js/ingresoSalidaMaterial.js"></script-->
@@ -31,16 +30,15 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 
 <script>
 
-$(document).ready(function() {
+$(document).ready(function(){
 			
-	$("#btnGrabarSalidaProdPlantilla").click(function(){
-		// grabar salida [almacen/bodega]
+	$("#btnGrabar").click(function(){
+		// grabar salida [almacen]
     	grabarSalida();
 	});
 	
 
 }); // fin document.ready 
-
 
 
 function grabarSalida(){
@@ -52,37 +50,47 @@ function grabarSalida(){
 			var registrosValidos= false;	
 	}
 	
-	if($("#inputGlosa").val()=="" ){
+	if($("#inputGlosa").val()==null ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
 			var registrosValidos= false;	
 	}
 	
-	if( $("#inputOrden").val()=="" ){
+	if( $("#inputOrden").val()==null ){
 			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
 			var registrosValidos= false;	
 	}
 	
-	if($("#idMat_0").val()=="" ){
+	if($("#idMat_0").val()==null ){
 			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
 			var registrosValidos= false;	
 	}
 		
-	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
-	while($("#idMat_"+i).val()!= ""){
-		if($("#cantMat_"+i).val()==""){
+	// ... valida que los registros no tengan cantidad vacia o cantidad > existencia ...
+	while($("#idMat_"+i).val()!= null){
+		
+		var cantidad=$("#cantMat_"+i).val();
+		cantidad=cantidad.split(','); //... elimina ,
+		cantidad=cantidad[0]+cantidad[1]+cantidad[2];	
+		cantidad=parseFloat(cantidad);
+		
+		var existencia=$("#existMat_"+i).val();
+		existencia=existencia.split(','); //... elimina ,
+		existencia=existencia[0]+existencia[1]+existencia[2];	
+		existencia=parseFloat(existencia);
+
+		if($("#cantMat_"+i).val()==null){
 			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
 			var registrosValidos= false;	
-		}else{
-				
-			if(parseFloat($("#cantMat_"+i).val() )> parseFloat($("#existMat_"+i).val() ) ){
-				alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD es mayor que EXISTENCIA");
+		}else{	
+			if(cantidad > existencia ){
+				alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD: " +cantidad +" es mayor que EXISTENCIA: "+existencia);
 				var registrosValidos= false;	
 			}
 		}
 	
 		i++;
 	} // ... fin while ...
-		
+
 	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
 		
 	if(!registrosValidos){
@@ -92,14 +100,35 @@ function grabarSalida(){
 	}
 			
 }	// ... fin funcion grabarSalida() ...
+
+
+function separadorMilesExistencia(numero, filaExistencia){		//...validarMontoHaberM ... modificar comprobante ...
+	var cantidad=$("#existMat_"+filaExistencia).val();
+	cantidad=parseFloat(cantidad);
+	$("#existMat_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+}   // fin ... validarMontoHaberM(odificacion) ...
+
+function separadorMilesCantidad(numero, filaExistencia){		//...validarMontoHaberM ... modificar comprobante ...
+	var cantidad=$("#cantMat_"+filaExistencia).val();
+	cantidad=parseFloat(cantidad);
+	$("#cantMat_"+filaExistencia).val( separadorMiles( cantidad.toFixed(2) ) );   //... actualiza cantHaber
+}   // fin ... validarMontoHaberM(odificacion) ...
+
+function separadorMiles(n){
+    var rx=  /(\d+)(\d{3})/;
+    return String(n).replace(/^\d+/, function(w){
+        while(rx.test(w)){
+            w= w.replace(rx, '$1,$2');
+        }
+        
+        return w;
+    });
+}
+
 		
-
-
-
 </script>
 
 	
-
 <div class="jumbotron" id="cuerpoSalida">		
 		
    <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarSalida" id="form_" name="form_" >
@@ -161,11 +190,6 @@ function grabarSalida(){
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
-	    	
-	    	<input type="hidden"  id="codigoProducto" name="codigoProducto">
-	    	<input type="hidden"  id="cantidadProducto" name="cantidadProducto" >
-
-	    	
 	    	<div style="height:25px;"></div>
 	    	
 		</div>
@@ -185,25 +209,32 @@ function grabarSalida(){
     	
     	<?php
     	
-    	$x=0;
+    	$x=-1;
 		while($plantilla = mysql_fetch_row($regPlantilla)){
 			echo "<tr class='detalleMaterial' >";
            
+		   		$x=$x+1;
+				
 				echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
 				<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
 				
                 echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value='$plantilla[1]' readonly='readonly' style='border:none;' /></td>";
                 
                 echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' value='$plantilla[2]' size='7' readonly='readonly' style='border:none;' /></td>";
+				echo "<script>";
+				echo "separadorMilesExistencia($plantilla[2],$x);";
+				echo "</script>";
 
 				$cantidadMaterial=$plantilla[3]*$cantidadProducto;
-                echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$cantidadMaterial' readonly='readonly' style='width: 80px; border:none; background-color: #d9f9ec;' /></td>";  
+                echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$cantidadMaterial,2)' readonly='readonly' style='width: 80px; border:none; background-color: #d9f9ec;' /></td>";  
+				echo "<script>";
+				echo "separadorMilesCantidad($cantidadMaterial,$x);";
+				echo "</script>";		 
 				          
                 echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$plantilla[4]' size='7' readonly='readonly' style='border:none;'/></td>";
 
 	        echo "</tr>";
 			
-			$x=$x+1;
 		}
     	
     	?>
@@ -217,7 +248,7 @@ function grabarSalida(){
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarSalidaProdPlantilla" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabar" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
    </form>
