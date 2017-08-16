@@ -6,7 +6,7 @@
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?=base_url(); ?>media/js/jquery-ui-1.8.20.custom.min.js"></script>
 
-<script type="text/javascript" src="<?=base_url(); ?>js/ingresoSalidaMaterial.js"></script>
+<!--script type="text/javascript" src="<?=base_url(); ?>js/ingresoSalidaMaterial.js"></script-->
 
 <link rel="stylesheet" href="<?= base_url("css/bootstrap-theme.min.css")?>"> <!-- una de las librerias de bootstarp para manejar fecha-->
 
@@ -32,80 +32,68 @@ td { height:10px;  width:665px; margin:0px; cell-spacing:0px;}
 <script>
 
 $(document).ready(function() {
-	
-	$('[data-toggle="tooltip"]').tooltip(); 
-	
-	/*  inicio de light box  pedido javascript */
-	$('#inputOrden').click(function(){
-  		var title = $(this).attr("title");
-		$('.modal-title').html(title);
-  		$('#pedidoModal').modal({show:true});
+			
+	$("#btnGrabarSalidaProdPlantilla").click(function(){
+		// grabar salida [almacen/bodega]
+    	grabarSalida();
 	});
-	/*  fin de light box pedido javascript  */	
 	
 
-	$('#tabla1').dataTable();
-    
-    $('#tabla1 tbody').on('click', 'tr', function () {	
-    	var codigoPedido = $('td', this).eq(0).text();
-    	var secuencia = $('td', this).eq(1).text();
-  		var trabajador = $('td', this).eq(2).text();
-  		
-  		var codigoProducto = $('td', this).eq(3).text();
-  		
-  		var cantidadProducto = $('td', this).eq(4).text();
-  		var unidad = $('td', this).eq(5).text();
-  		
-  		
-		$('#inputOrden').val(codigoPedido+'-'+secuencia);
-		$('#inputGlosa').val(trabajador);
-		
-		
-		
-		$('#codigoProducto').val(codigoProducto);
-		$('#cantidadProducto').val(cantidadProducto);
-		
-//		document.form_.codigoProducto.value=codigoProducto;  	// ... codigoProducto  variable hidden formulario...
-//		document.form_.producto.value=producto;  				// ... producto  variable hidden formulario...
-//		document.form_.cantidad.value=cantidad;  				// ... cantidad  variable hidden formulario...
-//		document.form_.unidad.value=unidad;  					// ... unidad  variable hidden formulario...
-//		document.form_.secuencia.value=secuencia;  				// ... secuencia  variable hidden formulario...
-		
-    	$('#pedidoModal').modal('hide'); // cierra el lightBox
-    	
-    	
- //   			alert('codigo producto'+codigoProducto);
- //   			alert('cantidad producto'+cantidadProducto);
-    	
-    			$.ajax({
-			      url: "<?=base_url()?>materiales/buscarPlantillaAcabado",
-			
-			      type: "POST",
-			      data: {codigoProducto: $('#codigoProducto').val(),cantidadProducto: $('#cantidadProducto').val() },
-			
-			      success: function(data){
-			         alert('data= '+data);
-				    //  aca deberia poner la funcion que hace el refrescado del listado	    
-					$("#recargarDatos").html(data);	   // ...etiqueta id=recargado ... en pdfModal 
-				  }
-				      
-			   });	// ... fin AJAX ...
-    	
-    	
-    	
-  
-	} ); // fin #tabla1 tbody
-
-
-
-
-
-
-
-
-
-	
 }); // fin document.ready 
+
+
+
+function grabarSalida(){
+	var i=0;
+	var registrosValidos= true;	  // ... bandera para grabar o no grabar registros ...
+	
+	if($("#inputFecha").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de FECHA está vacío, seleccione una fecha");
+			var registrosValidos= false;	
+	}
+	
+	if($("#inputGlosa").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de GLOSA está vacío");
+			var registrosValidos= false;	
+	}
+	
+	if( $("#inputOrden").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... El contenido de NUMERO de ORDEN está vacío");
+			var registrosValidos= false;	
+	}
+	
+	if($("#idMat_0").val()=="" ){
+			alert("¡¡¡ E R R O R !!! ... No se ha ingresado ningún registro de materiales");
+			var registrosValidos= false;	
+	}
+		
+	// ... valida que los registros no tengan cantidad vac�a o cantidad > existencia ...
+	while($("#idMat_"+i).val()!= ""){
+		if($("#cantMat_"+i).val()==""){
+			alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD está vacío");
+			var registrosValidos= false;	
+		}else{
+				
+			if(parseFloat($("#cantMat_"+i).val() )> parseFloat($("#existMat_"+i).val() ) ){
+				alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD es mayor que EXISTENCIA");
+				var registrosValidos= false;	
+			}
+		}
+	
+		i++;
+	} // ... fin while ...
+		
+	document.form_.numeroFilas.value=i;  // ... numeroFilasValidas  variable hidden formulario...
+		
+	if(!registrosValidos){
+		alert('Corrija los campos que están vacíos y/o registros que tienen CANTIDAD vacía o mayor que EXISTENCIA');
+	}else{
+		$("#form_").submit(); // ...  graba registros ...
+	}
+			
+}	// ... fin funcion grabarSalida() ...
+		
+
 
 
 </script>
@@ -114,7 +102,7 @@ $(document).ready(function() {
 
 <div class="jumbotron" id="cuerpoSalida">		
 		
-   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarSalidaAcabado" id="form_" name="form_" >
+   <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/grabarSalida" id="form_" name="form_" >
    	  <div style="height:10px;"></div>
    	   
       <div class="cabeceraSalida">
@@ -224,12 +212,12 @@ $(document).ready(function() {
   
 	</table>
 	
-	<input type="hidden"  name="numeroFilas" value="<?= $nRegistrosPlantilla ?>" />
+	<input type="hidden"  name="numeroFilas" />
 	<input type="hidden"  name="nombreDeposito" value="<?= $nombreDeposito ?>" />     <!--  nombreDeposito: almacen -->
 	
 	<div style="text-align: right; padding-top: 3px;">   
     	<button type="button" id="btnSalir" class="btn btn-primary btn-sm" onClick="window.location.href='<?=base_url();?>menuController/index'"><span class="glyphicon glyphicon-eject"></span> Salir</button>&nbsp;
-        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarSalida" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-inverse btn-sm" id="btnGrabarSalidaProdPlantilla" ><span class="glyphicon glyphicon-hdd"></span> Grabar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    </div>
    <div style="height:10px;"></div>
    </form>

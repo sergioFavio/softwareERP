@@ -450,8 +450,9 @@ class Materiales extends CI_Controller {
 			}	// ... fin IF
 			
 		}  // ... fin  FOR  
-	
+		
 		redirect("materiales/salidaMaterial?nombreDeposito=$nombreDeposito");
+		
 	}	//... fin grabarSalida
 		
 		
@@ -2647,64 +2648,7 @@ class Materiales extends CI_Controller {
 		}	//..fin IF validar usuario...
 	}	//... fin ubicarOrden ...
 		
-	
-	
-	
-	
-	public function buscarPlantillaAcabado(){
-		//... recupera la variable de numePedido ...
-		$codigoProducto=$_POST["codigoProducto"];
-		$cantidadProducto=$_POST["cantidadProducto"];
 		
-//		echo"codigoProducto= $codigoProducto  cantidadProducto=$cantidadProducto";
-		
-		$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo ";
-		$regPlantilla=mysql_query($sql);
-		$nRegistrosPlantilla= mysql_num_rows($regPlantilla); 	//... numero registros salida que satisfacen la consulta ...
-		
-		$x=0;
-		while($plantilla = mysql_fetch_row($regPlantilla)){
-			echo "<tr class='detalleMaterial' >";
-           
-					echo"<td  class='letraDetalle' style='width: 80px; background-color: #d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";
-					
-                    echo "<td class='letraDetalle'  style='width: 320px; background-color: #f9f9ec;' ><input type='text' id='mat_".$x."' name='mat_".$x."' size='50' value='$plantilla[1]' readonly='readonly' style='border:none;' /></td>";
-                    
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraNumero' name='existMat_".$x."' id='existMat_".$x."' value='$plantilla[2]' size='7' readonly='readonly' style='border:none;' /></td>";
-					
-                    echo "<td style='width: 80px; background-color: #d9f9ec;'><input type='text' class='letraNumeroNegrita' name='cantMat_".$x."' id='cantMat_".$x."' value='$plantilla[3]' style='width: 80px; border:none; background-color: #d9f9ec;' onChange='validarCantidad(this.value,$x);'/></td>";  
-					          
-                    echo "<td style='width: 80px; background-color: #f9f9ec;' ><input type='text' class='letraCentreada' name='unidadMat_".$x."' id='unidadMat_".$x."' value='$plantilla[5]' size='7' readonly='readonly' style='border:none;'/></td>";
-                echo "</tr>";
-			
-			
-			$x=$x+1;
-		}
-		
-		$data="<?= $x=0;
-		while($plantilla = mysql_fetch_row($regPlantilla)){
-			echo '<tr  >';
-           
-					echo'<td  style='width:80px; background-color:#d9f9ec;' fila=$x>
-					<input type='text' name='idMat_".$x."' id='idMat_".$x."' value='$plantilla[0]'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>';
-					  echo '</tr>';
-			
-			
-			$x=$x+1;
-		}     ?>";
-		echo $data;
-			
-/*
-		?>
-		<embed src="<?= base_url('pdfsArchivos/pedidos/pedido'.$numePedido.'.pdf') ?>" width="820" height="455" id="sergio"> <!-- documento embebido PDF -->
-		<?php
-
- */
- 		
-	}	// fin:  buscarPlantillaAcabado ...
-	
-	
 	
 }
 
