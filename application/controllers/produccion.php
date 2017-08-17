@@ -75,8 +75,13 @@ class Produccion extends CI_Controller {
 			$tipoProducto= $_GET['tipoProducto']; //...  nombreDeposito ( blanco/acabado ) ...		
 			
 			$this->load->model("produccion/consultasVarias_model");	
-			$productos= $this->consultasVarias_model->productoDiferencia($tipoProducto); 
 			
+			
+			if($tipoProducto=='acabado'){
+				$productos= $this->consultasVarias_model->productoDiferenciaAcabado($tipoProducto); 
+			}else{
+				$productos= $this->consultasVarias_model->productoDiferenciaBlanco($tipoProducto); 
+			}
 			
 			$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
 			$insumos= $this->maestroMaterial_model->getTodos('almacen'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
@@ -127,7 +132,7 @@ class Produccion extends CI_Controller {
 		$medidaProducto=$_POST['inputMedida']; 				//... formularioplantillaProducto ...
 		$unidadProducto=$_POST['inputUnidad']; 				//... formularioplantillaProducto ...
 			
-		$prodAcabadoCabecera = array(
+		$prodCabecera = array(
 	    	"codProducto"=>$codigoProductoSinEspacio,
 	    	"descripcion"=>$descripcionProducto,
 		    "medidas"=>$medidaProducto,
@@ -136,7 +141,7 @@ class Produccion extends CI_Controller {
 		
 		// ... inserta registro tabla prodacabadocabecera ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
-	    $this-> tablaGenerica_model -> grabar('prodacabadocabecera', $prodAcabadoCabecera);
+	    $this-> tablaGenerica_model -> grabar('prod'.$tipoProducto.'cabecera', $prodCabecera);
 				
         for($i=0; $i<$numeroFilasValidas; $i++){
        		
@@ -153,7 +158,7 @@ class Produccion extends CI_Controller {
 				
 				// ... inserta registro tabla transacciones[prodBlancoPlantilla/prodAcabadoPlantilla]
 				$this-> load -> model("tablaGenerica_model");		//carga modelo [prodBlancoPlantilla/prodAcabadoPlantilla]
-	    		$this-> tablaGenerica_model -> grabar('prodacabadoplantilla',$plantilla);
+	    		$this-> tablaGenerica_model -> grabar('prod'.$tipoProducto.'plantilla',$plantilla);
 					
 								
 				// ... fin de inserción  registro tabla transacciones y actualizacion tablas maestras almacen/bodega

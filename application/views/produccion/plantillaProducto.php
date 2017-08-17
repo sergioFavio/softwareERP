@@ -444,10 +444,17 @@ function filaVacia(posicionFila){
 			<tbody>			
                 <?php foreach($productos as $producto):?>
                     <tr class='letraDetalleLightBox'>
-                        <td style='width:40px;'> <?= $producto["idProd"] ?></td>
-                        <td style='width:450px;'> <?= $producto["nombreProd"]?></td>
-                        <td style='width:70px;'> <?= $producto["medidas"]?></td>
-   						<td style='width:30px;' ><?= $producto['unidad']  ?></td>
+                    	<?php if($tipoProducto=='acabado'){ ?>
+	                        <td style='width:40px;'> <?= $producto["idProd"] ?></td>
+	                        <td style='width:450px;'> <?= $producto["nombreProd"]?></td>
+	                        <td style='width:70px;'> <?= $producto["medidas"]?></td>
+	   						<td style='width:30px;' ><?= $producto['unidad']  ?></td>
+   						<?php }else{ ?>	
+	   						<td style='width:40px;'> <?= $producto["codInsumo"] ?></td>
+	                        <td style='width:450px;'> <?= $producto["nombreInsumo"]?></td>
+	                        <td style='width:70px;'> <?= $producto["unidad"]?></td>
+	   						<td style='width:30px;' ><?= $producto['unidad']  ?></td>	
+   						<?php } ?>	
                     </tr>
                 <?php endforeach ?>
 			</tbody>
