@@ -1647,7 +1647,7 @@ class Materiales extends CI_Controller {
 		}
 		//... fin control de permisos de acceso ....
 				
-		$numeroOrden= $_POST['numeroOrden']; //... lee numeroOrden			
+		$numeroOrden= str_replace(" ","",$_POST['numeroOrden']); //... lee numeroOrden			
 		
         // Se carga la libreria fpdf
         $this->load->library('inventarios/SalidaNumeroOrden');
@@ -1658,8 +1658,10 @@ class Materiales extends CI_Controller {
  
         // Se obtienen los registros de la base de datos
         //$salidas = $this->db->query('SELECT t1.numSal, fecha,numOrden, glosa,idMaterial,nombreInsumo, cantidad,unidad,tipoInsumo FROM '.$salidaMaterial.' t1, '.$salidaCabecera.' t2, '.$maestroMaterial.' t3 WHERE t1.numSal = t2.numero AND  t1.idMaterial=t3.codInsumo ORDER BY t1.numSal');
-	    $sql ="SELECT numSal,fecha,numOrden,glosa,idMaterial,nombreInsumo,cantidad,unidad,tipoInsumo FROM $salidaMaterial,$salidaCabecera,$maestroMaterial WHERE numSal=numero AND idMaterial=codInsumo AND numOrden='$numeroOrden'ORDER BY numSal";
+	//    $sql ="SELECT numSal,fecha,numOrden,glosa,idMaterial,nombreInsumo,cantidad,unidad,tipoInsumo FROM $salidaMaterial,$salidaCabecera,$maestroMaterial WHERE numSal=numero AND idMaterial=codInsumo AND numOrden='$numeroOrden'ORDER BY numSal";
+		$sql ="SELECT numSal,fecha,numOrden,glosa,idMaterial,nombreInsumo,cantidad,unidad,tipoInsumo FROM $salidaMaterial,$salidaCabecera,$maestroMaterial WHERE numSal=numero AND idMaterial=codInsumo AND numOrden LIKE'%$numeroOrden%'ORDER BY numSal";
 
+		
  		$salidas = $this->db->query($sql);
  
  		$contador= $salidas->num_rows; //...contador de registros que satisfacen la consulta ..
@@ -2621,10 +2623,10 @@ class Materiales extends CI_Controller {
 			$datos['salida']=$salida;
 	
 			$this->load->view('header');
-			$this->load->view('inventarios/salida_materialAcabado',$datos);
+			$this->load->view('inventarios/salida_materialAcabadoBlanco',$datos);
 			$this->load->view('footer');
 		}	//... fin validar usuario ...
-	}	//... fin salidamaterialProductoAcabado ...
+	}	//... fin salidamaterialProducto ...
 
 	 
 	public function ubicarOrden(){
