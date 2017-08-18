@@ -1210,10 +1210,9 @@ class Produccion extends CI_Controller {
         $this->pdf->SetFont('Arial', '',12);
         
         //... lineq de detalle ...		
-		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
+		$this->pdf->Cell(1,14,$codigoProducto,'',0,'L',0);
 		$this->pdf->Cell(15,7,' ','',0,'L',0);
 		$this->pdf->Cell(60,7,utf8_decode(substr($producto,0,56) ),'',0,'L',0);
-		$this->pdf->Cell(7,7,' ','',0,'L',0);
 		$this->pdf->Cell(70,7,' ','',0,'L',0);
 		$this->pdf->Cell(15,7,number_format($cantidad,2),'',0,'R',0);
 		$this->pdf->Cell(5,7,' ','',0,'L',0);
@@ -1257,7 +1256,7 @@ class Produccion extends CI_Controller {
 		
         //Se agrega un salto de linea
         $this->pdf->Ln(7);
-		$this->pdf->Cell(12,7,' ','',0,'L',0);
+		$this->pdf->Cell(14,7,' ','',0,'L',0);
         $this->pdf->Cell(90,7,utf8_decode($color),'',0,'L',0);
 		
         
@@ -1735,29 +1734,12 @@ class Produccion extends CI_Controller {
 			
 			$anhoSistema = date("Y");	//... anho del sistema
 			$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-			
-			if(strlen($pedido)==2 ){
-				$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
-			}
-			
-			if(strlen($pedido)==3 ){
-				$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
-			}
-			
-			if(strlen($pedido)==4 ){
-				$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
-			}
-			
-			if(strlen($pedido)==5 ){
-				$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
-			}
+		
+			$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
+			$anhoPedido= substr($pedido, 4, 2);  // toma los primeros 4 caracteres ... anho.
 			
 			if($anhoPedido!=$anhoSistema){
-				$secuenciaPedido="1";
+				$secuenciaPedido="3001";
 			}else{		//... si anhoPedido==anhoSistema ...
 		     	$secuenciaPedido=$secuenciaPedido+1;
 			}
@@ -1766,8 +1748,12 @@ class Produccion extends CI_Controller {
 			
 			$this->load->model("TablaGenerica_model");	
 			$empleados= $this->TablaGenerica_model->getTodos('prodmanoobra'); 
+			
+			$this->load->model("TablaGenerica_model");	
+			$blancos= $this->TablaGenerica_model->getTodos('prodblancocabecera');
 					
 	      	$datos['empleados']=$empleados;	
+			$datos['blancos']=$blancos;
 			
 			$datos['secuenciaPedido']=$secuenciaPedido;
 			$datos['anhoSistema']=$anhoSistema;
@@ -1785,6 +1771,7 @@ class Produccion extends CI_Controller {
 		$secuenciaStock=$_POST['secuenciaStock'];
 		$anhoSistema=$_POST['anhoSistema'];
 		
+		$codProdBlanco=$_POST['codBlanco'];
 		$descripcion=$_POST['descripcion'];
 		$cantidad=$_POST['cantidad'];
 		$unidad=$_POST['unidad'];
@@ -1801,17 +1788,18 @@ class Produccion extends CI_Controller {
 		    "fInicio"=>date("Y-m-d"),
 		    "codTrabajador"=>str_replace(" ","",$_POST['codEmpleado']),
 		    "trabajador"=>$_POST['empleado'],
+		    "codProdBlanco"=>$_POST['codBlanco'],
 		    "cantidad"=>str_replace(",","",$_POST['cantidad']), //...quita , como separador de miles ...
 		    "descripcion"=>$_POST['descripcion'],
 		    "unidad"=>$_POST['unidad'],
-		    "estado"=>"I"
+		    "estado"=>"P"
 		);
 		
 		// ... inserta registro tabla ordenstock ...
 		$this-> load -> model("tablaGenerica_model");		//carga modelo ...
 		$this-> tablaGenerica_model -> grabar('ordenstock',$regOrdenStock);	
 		
-		redirect("produccion/generarOrdenStockPDF?numStock=$numStock&secuencia=$secuenciaStock&anhoSistema=$anhoSistema&descripcion=$descripcion&cantidad=$cantidad&unidad=$unidad&empleado=$empleado");
+		redirect("produccion/generarOrdenStockPDF?numStock=$numStock&secuencia=$secuenciaStock&anhoSistema=$anhoSistema&codProdBlanco=$codProdBlanco&descripcion=$descripcion&cantidad=$cantidad&unidad=$unidad&empleado=$empleado");
 	
 	}	//... fin grabarOrdenStock ...
 			
@@ -1823,6 +1811,12 @@ class Produccion extends CI_Controller {
 		$nombreTrabajador= $_GET['empleado']; 							//... lee nombre del trabajador ...
 		$fechaInicial= date("Y-m-d"); 									//... lee fecha inicial ...
 //		$fechaFinal= $_POST['inputFechaFinal']; 						//... lee fecha final ...
+
+
+		$codProdBlanco= $_GET['codProdBlanco']; 						//... lee codigo producto blanco ...= $_GET['codProdBlanco']; 							//... lee descripcion ...
+
+		
+		
 		$descripcion= $_GET['descripcion']; 							//... lee descripcion ...
 		$cantidad= str_replace(",","",$_GET['cantidad']); 									//... lee cantidad ...
 		$unidad= $_GET['unidad']; 										//... lee unidad ...
@@ -1863,14 +1857,17 @@ class Produccion extends CI_Controller {
  
         // Se define el formato de fuente: Arial, negritas, tamaño 9
         //$this->pdf->SetFont('Arial', 'B', 9);
-        $this->pdf->SetFont('Arial', '',12);
+        $this->pdf->SetFont('Arial', '',10);
         
         //... lineq de detalle ...		
 //		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
 		$this->pdf->Cell(1,10,' ','',0,'L',0);
+		
+		$this->pdf->Cell(15,10,utf8_decode(substr($codProdBlanco,0,75) ),'',0,'L',0);
+		$this->pdf->Cell(5,10,' ','',0,'L',0);
 		$this->pdf->Cell(50,10,utf8_decode(substr($descripcion,0,75) ),'',0,'L',0);
-		$this->pdf->Cell(25,10,' ','',0,'L',0);
-		$this->pdf->Cell(75,10,' ','',0,'L',0);
+		
+		$this->pdf->Cell(80,10,' ','',0,'L',0);
 		$this->pdf->Cell(15,10,number_format($cantidad,2),'',0,'R',0);
 		$this->pdf->Cell(10,10,' ','',0,'L',0);
         $this->pdf->Cell(15,10,$unidad,'',0,'L',0);

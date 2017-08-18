@@ -28,7 +28,7 @@
            
             $this->Cell(1,10,utf8_decode('Trabajador: '.$this->nombreTrabajador),0,0,'L');
             $this->Cell(36);
-    		$this->Cell(110,10,'Desde: '.$this->fechaInicial.'     Hasta:  /  /    ',0,0,'C');
+    		$this->Cell(110,10,'Desde: '.$this->fechaInicial.'     Hasta:    /    /',0,0,'C');
 			
 			$this->Cell(30,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'C');
 			

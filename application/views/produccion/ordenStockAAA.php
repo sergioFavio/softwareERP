@@ -12,9 +12,6 @@
 .empleado-dialog {width:530px;}
 #empleadoModal{padding-left:440px;}  /* ... baja la ventana modal más al centro vertical ... */
 
-.blanco-dialog {width:530px;}
-#blancoModal{padding-left:440px;}  /* ... baja la ventana modal más al centro vertical ... */
-
 	/*  inicio de scrollbar  */
 thead { display:block;  margin:0px; cell-spacing:0px; left:0px; }  
 tbody { display:block; overflow:auto; height:330px; }               
@@ -68,31 +65,6 @@ $(document).ready(function() {
   
 	} ); // fin #tabla3 tbody
 	
-	
-	$('#codBlanco').click(function(){
-  		var title = $(this).attr("title");
-		$('.modal-title').html(title);
-  		$('#blancoModal').modal({show:true});
-	});
-	/*  fin de light box producto javascript  */	
-	
-	
-	$('#tabla5').dataTable();
-    
-    $('#tabla5 tbody').on('click', 'tr', function () {	
-    	var codigoBlanco = $('td', this).eq(0).text();
-    	var nombreBlanco = $('td', this).eq(1).text();	
-    	var unidad = $('td', this).eq(2).text();
-    	
-    	document.form_.unidad.value=unidad;  			// ... unidad variable hidden formulario ...
-		
-		$('#codBlanco').val(codigoBlanco);
-		$('#descripcion').val(nombreBlanco);
-
-    	$('#blancoModal').modal('hide'); // cierra el lightBox
-  
-	} ); // fin #tabla5 tbody
-	
 					
 	$("#btnBorrar").click(function(){
         	borrarOrdenStock();
@@ -111,7 +83,7 @@ function borrarOrdenStock(){
 	//...esta funcion borra los datos del formularioSalida
     $("#empleado").val("");
     $("#cantidad").val("");
-	$("#codBlanco").val("");
+	$("#unidad").val("");
 	$("#descripcion").val("");
 } // fin funcion borrarOrdenStock
 
@@ -129,8 +101,8 @@ function grabarPlantilla(){
 		var registrosValidos= false;	
 	}
 	
-	if($("#codBlanco").val()=="" ){
-		alert("¡¡¡ E R R O R !!! ... El contenido de CODIGO PRODUCTO BLANCO está vacío");
+	if($("#descripcion").val()=="" ){
+		alert("¡¡¡ E R R O R !!! ... El contenido de DESCRIPCION está vacío");
 		var registrosValidos= false;	
 	}
 		
@@ -224,7 +196,10 @@ function separadorMiles(n){
 		    <div class="col-xs-2">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-tag"></span></span>
-	    	 		<input type="text" class="form-control input-sm" id="codBlanco" name="codBlanco" title='Seleccionar producto blanco' readonly="readonly" placeholder="c&oacute;digo producto blanco&hellip;" style="background-color:#d9f9ec;width:150px;font-size:11px;text-align:center;" >	
+	    	 		<select  class="form-control input-sm" id="unidad" name="unidad" placeholder="unidad&hellip;" style="width:150px;font-size:11px;text-align:center;" >
+	    	 		    <option value="pieza">Pieza</option>
+				         <option value="juego">Juego</option>
+		        	</select>	
 	    		</div>
 	    	</div><!-- /.col-lg-2 -->
 	    	
@@ -237,7 +212,7 @@ function separadorMiles(n){
 		    <div class="col-xs-3">
 				<div class="input-group input-group-sm">
 			    	<span class="input-group-addon" id="letraCabecera" ><span class="glyphicon glyphicon-comment"></span></span>
-	    	 		<input type="text" class="form-control input-sm" id="descripcion" name="descripcion"  readonly="readonly" placeholder=" producto blanco&hellip;" style="width:365px;font-size:11px;text-align:left;" >	
+	    	 		<textarea rows='6'   id="descripcion" name="descripcion"  placeholder="descripci&oacute;n&hellip;" style="width:365px;font-size:11px;text-align:center;" ></textarea>
 	    		</div>
 	    	</div><!-- /.col-lg-4 -->
 	    	
@@ -251,7 +226,7 @@ function separadorMiles(n){
 	<input type="hidden"  name="secuenciaStock" value="<?= $secuenciaPedido ?>" />      <!--  secuenciaStock -->
 	<input type="hidden"  name="anhoSistema" value="<?= $anhoSistema ?>" />     		<!--  anhoSistema -->
 	<input type="hidden"  name="codEmpleado"  />     									<!--  codEmpleado -->
-	<input type="hidden"  name="unidad"  />     										<!--  unidad -->
+
 	
 	<div style="height:80px;"></div>
 	<div style="text-align: right; padding-top: 3px;">   
@@ -302,41 +277,3 @@ function separadorMiles(n){
 <!-- ... fin  lightbox trabajadores ... -->
 
 
-<!-- ... inicio  lightbox blanco... -->
-
-<div id="blancoModal"  class="modal fade" tabindex="-1" role="dialog" >
-  <div class="blanco-dialog"  >
-  <div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h4 class="modal-title">cabecera de caja luz</h4>
-	</div>
-	<div class="modal-body">
-		
-		<table  cellspacing="0" cellpadding="0" border="0" class="display" id="tabla5">
-			<thead>
-				<tr class='letraDetalleLightBox'>
-					<th style='width:40px;'>Código</th>
-					<th style='width:450px;'>Producto Blanco</th>
-					<th style='width:40px;'>Unidad</th>
-				</tr>
-			</thead>
-			<tbody>			
-                <?php foreach($blancos as $blanco):?>
-                    <tr class='letraDetalleLightBox'>
-                        <td style='width:40px;'> <?= $blanco["codProducto"] ?></td>
-                        <td style='width:450px;'> <?= $blanco["descripcion"]?></td>
-                        <td style='width:40px;'> <?= $blanco["unidad"] ?></td>
-                    </tr>
-                <?php endforeach ?>
-			</tbody>
-		</table>
-		
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-off"></span> Cerrar</button>
-	</div>
-   </div>
-  </div>
-</div>
-<!-- ... fin  lightbox blanco ... -->

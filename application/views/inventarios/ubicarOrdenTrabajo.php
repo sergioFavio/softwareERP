@@ -53,7 +53,12 @@ $(document).ready(function(){
   		var cantidadProducto = $('td', this).eq(4).text();
   		var unidad = $('td', this).eq(5).text();
   		
-		$('#inputOrden').val(codigoPedido+'-'+secuencia);
+  		if(secuencia=='P'){						//... si es orden de stock...
+  			$('#inputOrden').val(codigoPedido);
+  		}else{									// ... si es orden de trabajo...
+  			$('#inputOrden').val(codigoPedido+'-'+secuencia);
+  		}
+  		
 		$('#inputTrabajador').val(trabajador);
 		$('#codigoProducto').val(codigoProducto);	
 		$('#cantidadProducto').val(cantidadProducto);
@@ -72,7 +77,7 @@ $(document).ready(function(){
 		
 	<div class="cuerpoCabeceraReporteSalida">
 		
-	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/salidaMaterialProductoAcabado' id='form_' name='form_' >
+	    <form class='form-horizontal' method='post' action='<?=base_url()?>materiales/salidaMaterialProducto' id='form_' name='form_' >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> <?= $titulo ?> </span></p>
 	
@@ -145,7 +150,7 @@ $(document).ready(function(){
 			    
 			</div><!-- /.row -->
 			
-			<!--input type="hidden"  name="codTrabajador"  /-->				<!--  codTrabajador  -->
+			<input type="hidden"  name="tipoProducto" value="<?= $tipoProducto ?>" /-->				<!--  codTrabajador  -->
 			
 	    </form>
 	</div>
@@ -167,7 +172,13 @@ $(document).ready(function(){
 			<thead>
 				<tr class='letraDetalleLightBox'>
 					<th style='width:48px;'># Orden</th>
-					<th style='width:8px;text-align:left'>Item</th>
+					
+					<?php if($tipoProducto=='acabado'){	?>					<!-- ... tipoProducto=='acabado' ... -->
+						<th style='width:8px;text-align:left'>Item</th>
+					<?php }else{ ?>											<!-- ... tipoProducto=='blanco' ... -->
+						<th style='width:8px;text-align:left'>Estado</th>
+					<?php } ?>
+					
 					<th style='width:160px;'>Trabajador</th>
 					<th style='width:10px;'>C&oacute;digo</th>
 					<th style='width:15px;'>Cantidad</th>
@@ -175,8 +186,9 @@ $(document).ready(function(){
 				</tr>
 			</thead>
 			<tbody>		
-				<!--?php foreach($pedidos as $pedido):?-->	
-                <?php foreach($pedidos->result() as $pedido){?>
+				<!--?php foreach($pedidos as $pedido):?-->
+				<?php if($tipoProducto=='acabado'){	?>					<!-- ... tipoProducto=='acabado' ... -->
+					<?php foreach($pedidos->result() as $pedido){?>
                     <tr class='letraDetalleLightBox'>
                         <td style='width:50px;text-align:right'> <?= $pedido->numeroPedido ?></td>
                         <td style='width:25px;text-align:left' ><?= $pedido->secuencia  ?></td>
@@ -185,7 +197,27 @@ $(document).ready(function(){
    						<td style='width:55px;text-align:right' ><?= $pedido->cantidad  ?></td>
    						<td style='width:35px;text-align:right' ><?= $pedido->unidad  ?></td>
                     </tr>
-                <?php } ?>
+                	<?php } ?>
+                	
+				<?php }else{ ?>												<!-- ... tipoProducto=='blanco' ...  -->
+					<?php foreach($pedidos->result() as $pedido){?>
+                    <tr class='letraDetalleLightBox'>
+                        <td style='width:50px;text-align:right'> <?= $pedido->stock ?></td>
+                        <td style='width:25px;text-align:left' ><?= $pedido->estado  ?></td>
+                        <td style='width:165px;'> <?= $pedido->trabajador ?></td>
+                        <td style='width:45px;text-align:right' > <?= $pedido->codProdBlanco ?></td>                       
+   						<td style='width:55px;text-align:right' ><?= $pedido->cantidad  ?></td>
+   						<td style='width:35px;text-align:right' ><?= $pedido->unidad  ?></td>
+                    </tr>
+                	<?php } ?>
+					
+				<?php } ?>
+					
+                
+                
+                
+                
+                
                 <!--?php endforeach ?-->
 			</tbody>
 		</table>

@@ -2577,7 +2577,7 @@ class Materiales extends CI_Controller {
 	}
 	
 	
-	public function salidaMaterialProductoAcabado(){
+	public function salidaMaterialProducto(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
 		$permisoMenu=$this->session->userdata('usuarioMenu');
@@ -2590,6 +2590,7 @@ class Materiales extends CI_Controller {
 			$this->load->view('footer');	
 		}	//... fin control de permisos de acceso ....	
 		else{
+			$tipoProducto= $_POST['tipoProducto']; 			//... lee tipoProducto ...
 			$orden= $_POST['inputOrden']; 					//... lee inputOrden ...	
 			$trabajador= $_POST['inputTrabajador']; 		//... lee inputTrabajador ...	
 			$codigoProducto= str_replace(" ","",$_POST['codigoProducto']); 		//... lee codigoProducto ...	
@@ -2600,7 +2601,12 @@ class Materiales extends CI_Controller {
 			$prefijoTabla='nosal'; // ... prefijoTabla
 	    	$salida = $this->numeroIngresoSalida_model->getNumero('almacen', $prefijoTabla);
 					
-			$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo";
+			if($tipoProducto=='acabado'){			//... tipoProducto=='acabado' ...
+				$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodacabadoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo";
+			}else{									//... tipoProducto=='blanco' ...
+				$sql="SELECT codMat,nombreInsumo,existencia,cantidad,unidad FROM prodblancoplantilla,almacen WHERE codPro='$codigoProducto' AND codMat=codInsumo";
+			}
+			
 			$regPlantilla=mysql_query($sql);
 			$nRegistrosPlantilla= mysql_num_rows($regPlantilla); 	//... numero registros salida que satisfacen la consulta ...
 					
@@ -2611,7 +2617,7 @@ class Materiales extends CI_Controller {
 			$datos['trabajador']=$trabajador;
 			$datos['cantidadProducto']=$cantidadProducto;	
 			$datos['nombreDeposito']=$nombreDeposito;
-			$datos['titulo']='Almacén Prod. Acabado';
+			$datos['titulo']='Almacén Prod. '.$tipoProducto;
 			$datos['salida']=$salida;
 	
 			$this->load->view('header');
@@ -2634,14 +2640,29 @@ class Materiales extends CI_Controller {
 			$this->load->view('footer');
 		}	//... fin control de permisos de acceso ....	
 		else{
+			$tipoProducto=$_GET['tipoProducto']; //... lee tipoProducto ...
+			
 			$this->load->model("tablaGenerica_model");	//...carga el modelo tabla 
 	
-			$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
+			if($tipoProducto=='acabado'){				//... cuando tipoProducto=acabado ...
+				$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
+				$restoTitulo='Trabajo';
+			}else{																//... cuando tipoProducto=blanco ...
+				$sql ="SELECT * FROM ordenstock WHERE estado='P'";		//...selecciona registros que  han sido asignados ..
+				$restoTitulo='Stock';
+			}
+			
+			
+//			$sql ="SELECT * FROM pedidoproducto WHERE estadoItem='P'";		//...selecciona registros que  han sido asignados ..
+
+
 	 		$pedidos = $this->db->query($sql);
-							
+			
+			
+			$datos['tipoProducto']=$tipoProducto;
 	      	$datos['pedidos']=$pedidos;
-			$datos['descripcionProducto']='...';		
-			$datos['titulo']='Datos Orden de Trabajo';
+		
+			$datos['titulo']='Datos Orden de '.$restoTitulo;
 			$this->load->view('header');
 			$this->load->view('inventarios/ubicarOrdenTrabajo',$datos );
 			$this->load->view('footer');
