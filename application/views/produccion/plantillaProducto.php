@@ -351,7 +351,7 @@ function filaVacia(posicionFila){
     		
     	<?php
         //if ciclo de impresion de filas 
-       		for($x=0; $x<20; $x++){
+       		for($x=0; $x<55; $x++){
             	echo "<tr class='detalleMaterial' >";
 					echo"<td  class='openLightBox' title='Seleccionar material de la tabla de materiales de almacén' style='width: 80px; background-color: #d9f9ec;' fila=$x>
 					<input type='text' name='idMat_".$x."' id='idMat_".$x."'  readonly='readonly' style='width: 60px; border:none; background-color: #d9f9ec;' /></td>";

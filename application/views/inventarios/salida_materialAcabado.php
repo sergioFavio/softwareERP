@@ -83,7 +83,7 @@ function grabarSalida(){
 			var registrosValidos= false;	
 		}else{	
 			if(cantidad > existencia ){
-				alert("¡¡¡ E R R O R !!! ... El valor de CANTIDAD: " +cantidad +" es mayor que EXISTENCIA: "+existencia);
+				alert("¡¡¡ E R R O R !!! ... El codigo: "+ $("#idMat_"+i).val()  +" tiene CANTIDAD: " +cantidad +" mayor que EXISTENCIA: "+existencia);
 				var registrosValidos= false;	
 			}
 		}
