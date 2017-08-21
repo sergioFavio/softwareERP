@@ -326,9 +326,9 @@
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-signal"></span> Producci&oacute;n</a>
                     	<ul class="dropdown-menu">
 							<li><a href="<?=base_url();?>produccion/crudMaterialArea"><span class="glyphicon glyphicon-file"></span> CRUD material X m2</a></li>
-							<li><a href="<?=base_url();?>contabilidad/generarReportePlanDeCuentas"><span class="glyphicon glyphicon-print"></span> Listado material X m2</a></li>
+							<!--li><a href="<?=base_url();?>contabilidad/generarReportePlanDeCuentas"><span class="glyphicon glyphicon-print"></span> Listado material X m2</a></li-->
 							<li><a href="<?=base_url();?>produccion/crudManoObra"><span class="glyphicon glyphicon-file"></span> CRUD mano de obra</a></li>
-							<li><a href="<?=base_url();?>contabilidad/generarReportePlanDeCuentas"><span class="glyphicon glyphicon-print"></span> Listado mano de obra</a></li>
+							<!--li><a href="<?=base_url();?>contabilidad/generarReportePlanDeCuentas"><span class="glyphicon glyphicon-print"></span> Listado mano de obra</a></li-->
 							
 							<!--li><a href="<?=base_url();?>produccion/dataTable"><span class="glyphicon glyphicon-file"></span> data Table</a></li-->
 							
@@ -346,7 +346,7 @@
 					</li>
 					
                     <li><a href="<?=base_url();?>menuController/respaldoBaseDatos"><span class="glyphicon glyphicon-floppy-save"></span> Respaldo Base  Datos</a></li>
-                    <li><a href="#">otros ...</a></li>
+                    <!--li><a href="#">otros ...</a></li-->
                 </ul>
             </li>
             

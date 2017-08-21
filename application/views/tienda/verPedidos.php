@@ -215,13 +215,23 @@ function pedidoPdf(nPedido){
 					}
 					
 					if(strlen($numeroPedido)==6){
-						$secuenciaPedido=substr($numeroPedido,0,2);
-						$anhoSistema=substr($numeroPedido,2,4);
+						if($local=='F'){		//..local:Fabrica ..
+							$secuenciaPedido=substr($numeroPedido,0,4);
+							$anhoSistema=substr($numeroPedido,4,2);
+						}else{		
+							$secuenciaPedido=substr($numeroPedido,0,2);
+							$anhoSistema=substr($numeroPedido,2,4);
+						}		
 					}
 					
 					if(strlen($numeroPedido)==7){
 						$secuenciaPedido=substr($numeroPedido,0,3);
 						$anhoSistema=substr($numeroPedido,3,4);
+					}
+					
+					if(strlen($numeroPedido)==8){
+						$secuenciaPedido=substr($numeroPedido,0,4);
+						$anhoSistema=substr($numeroPedido,4,4);
 					}
 					
 			  		$numePedidoAux=$secuenciaPedido.'/'.$anhoSistema;

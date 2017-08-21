@@ -1495,43 +1495,77 @@ class Tienda extends CI_Controller {
 			if($local=="F"){
 				$anhoSistema = date("Y");	//... anho del sistema
  				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
-
-				$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 4, 2);  // toma los ultimos 2 caracteres ... anho.	
+		
+				if(strlen($pedido)==2 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==3 ){
+					$secuenciaPedido= substr($pedido, 0, 1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= substr($pedido, 0, 2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0, 3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 2);  // toma los primeros 4 caracteres ... anho.
+				}
+				
 			}
 			
 			if($local=="T"){		//...cuando el local es T:tienda ...
 				$anhoSistema = date("Y");	//... anho del sistema
 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-		
-				$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+ 				 					
+				if(strlen($pedido)==4 ){
+					$secuenciaPedido= 0;  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 0, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==5 ){
+					$secuenciaPedido= substr($pedido, 0,1);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 1, 4);  // toma 4 caracteres ... anho.
+				}
+			
+				if(strlen($pedido)==6 ){
+					$secuenciaPedido= substr($pedido, 0,2);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 2, 4);  // toma 4 caracteres ... anho.
+				}
+				
+				if(strlen($pedido)==7 ){
+					$secuenciaPedido= substr($pedido, 0,3);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 3, 4);  // toma 4 caracteres ... anho.
+				}
+			
 			}
 			
 			
 			if($local=="Z"){		//...cuando el local es Z:Zuñiga...
 				$anhoSistema = date("Y");	//... anho del sistema
 				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
-			 				
-				$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
-				$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+				 				
+				if(strlen($pedido)==8 ){
+					$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
+					$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+				}
+			
 			}
+			
 			
 			if($anhoPedido!=$anhoSistema){
+				$secuenciaPedido="1";
 				if($local=="Z"){
-					$secuenciaPedido="5000";
+					$secuenciaPedido="1001";
 				}
 				
-				if($local=="T"){
-					$secuenciaPedido="1000";
-				}
-				
-				if($local=="F"){
-					$secuenciaPedido="6000";
-				}
+			}else{		//... si anhoPedido==anhoSistema ...
+		     	$secuenciaPedido=$secuenciaPedido+1;
 			}
-			
-			$secuenciaPedido=$secuenciaPedido+1;
 			
 			$pedido=$secuenciaPedido.$anhoSistema;	
 			

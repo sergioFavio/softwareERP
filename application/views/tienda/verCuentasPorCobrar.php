@@ -190,8 +190,9 @@ function pedidoCtaCobrarPdf(nPedido,local){
 				
 					<?php  $posicionFila=$posicionFila+1;  //...posicionFila
 		
-					$numeroPedido = $pedido->numPedido;
-								
+					$numeroPedido = str_replace(" ","",$pedido->numPedido);
+					$local=$pedido->local;
+
 					if(strlen($numeroPedido)==3){
 						$secuenciaPedido=substr($numeroPedido,0,1);
 						$anhoSistema=substr($numeroPedido,1,2);
@@ -213,8 +214,13 @@ function pedidoCtaCobrarPdf(nPedido,local){
 					}
 					
 					if(strlen($numeroPedido)==6){
-						$secuenciaPedido=substr($numeroPedido,0,2);
-						$anhoSistema=substr($numeroPedido,2,4);
+						if($local=='F'){		//..local:Fabrica ..
+							$secuenciaPedido=substr($numeroPedido,0,4);
+							$anhoSistema=substr($numeroPedido,4,2);
+						}else{
+							$secuenciaPedido=substr($numeroPedido,0,2);
+							$anhoSistema=substr($numeroPedido,2,4);
+						}
 					}
 					
 					if(strlen($numeroPedido)==7){

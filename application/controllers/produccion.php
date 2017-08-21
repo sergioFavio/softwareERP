@@ -1210,10 +1210,10 @@ class Produccion extends CI_Controller {
         $this->pdf->SetFont('Arial', '',12);
         
         //... lineq de detalle ...		
-		$this->pdf->Cell(1,14,$codigoProducto,'',0,'L',0);
+		$this->pdf->Cell(1,7,$codigoProducto,'',0,'L',0);
 		$this->pdf->Cell(15,7,' ','',0,'L',0);
 		$this->pdf->Cell(60,7,utf8_decode(substr($producto,0,56) ),'',0,'L',0);
-		$this->pdf->Cell(70,7,' ','',0,'L',0);
+		$this->pdf->Cell(80,7,' ','',0,'L',0);
 		$this->pdf->Cell(15,7,number_format($cantidad,2),'',0,'R',0);
 		$this->pdf->Cell(5,7,' ','',0,'L',0);
         $this->pdf->Cell(15,7,$unidad,'',0,'L',0);
