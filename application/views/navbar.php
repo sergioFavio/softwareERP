@@ -72,8 +72,7 @@
                 <a href="<?=base_url();?>" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Proveedores <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="<?=base_url();?>proveedores/crudProveedores"><span class="glyphicon glyphicon-file"></span> CRUD Proveedores</a></li>
-
-                    <li><a href="#">Listar Proveedores </a></li>
+                    <li><a href="<?=base_url();?>proveedores/generarReporteProveedores"><span class="glyphicon glyphicon-print"></span> Listado Proveedores</a></li>
                 </ul>
             </li>
 
