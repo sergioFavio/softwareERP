@@ -237,11 +237,6 @@ class Materiales extends CI_Controller {
 	}		//... fin funcion: modificarSalidaAlmacen ...
 	
 	
-	public function salir(){
-		redirect("/");
-	}
-	
-	
 	public function grabarIngreso(){
 		$nombreDeposito=$_POST['nombreDeposito']; //... formulario ingresoMaterial [almacen/bodega] ...
 				
