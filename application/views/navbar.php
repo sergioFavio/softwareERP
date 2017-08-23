@@ -65,6 +65,8 @@
                     
                     <li><a href="<?=base_url();?>produccion/verOrdenesTrabajo"><span class="glyphicon glyphicon-eye-open"></span> Ver Órdenes de Trabajo</a></li>
                     <li><a href="<?=base_url();?>produccion/verOrdenesStock"><span class="glyphicon glyphicon-eye-open"></span> Ver Órdenes de Stock</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?=base_url();?>materiales/consultarStockAlmacenBodega"><span class="glyphicon glyphicon-file"></span> Consultar Stock en Almacén y Bodega simultáneamente</a></li>
                 </ul>
             </li>
 

@@ -20,7 +20,11 @@
             $this->SetFont('Arial','',14);
             $this->Cell(50);
 			
-			$this->Cell(90,10,utf8_decode($this->local.' Nota de Entrega No. ').$this->secuenciaEntrega.' / '.$this->anhoSistema ,0,0,'C');	
+			if($this->local=='Zúñiga'){			//... local es Zúñiga ...
+				$this->Cell(90,10,utf8_decode(' Nota de Entrega Z No. ').$this->secuenciaEntrega.' / '.$this->anhoSistema ,0,0,'C');	
+			}else{								//... local es Tienda/Fábrica ...
+				$this->Cell(90,10,utf8_decode($this->local.' Nota de Entrega No. ').$this->secuenciaEntrega.' / '.$this->anhoSistema ,0,0,'C');	
+			}
 			
             $this->Ln('8');
             //$this->SetFont('Arial','B',8);

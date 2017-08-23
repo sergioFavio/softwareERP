@@ -2666,7 +2666,32 @@ class Materiales extends CI_Controller {
 		}	//..fin IF validar usuario...
 	}	//... fin ubicarOrden ...
 		
+	
+ 	public function consultarStockAlmacenBodega(){
+		$sql="SELECT a.codInsumo AS codigo,a.nombreInsumo AS material,a.existencia AS existenciaAlmacen,b.existencia AS existenciaBodega,a.unidad AS unidad FROM almacen AS a,bodega AS b WHERE a.codInsumo=b.codInsumo";
+		$registros = $this->db->query($sql);
+ 		$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 		
+		if($contador==0){  //...cuando NO hay registros ...
+			$datos['mensaje']='No hay registros grabados en las tablas ALMACEN y BODEGA ';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}
+		else{      //... cuando hay registros ...
+			/* Se obtienen los registros a mostrar*/ 
+	   		$datos['listaMaterial'] = $registros;
+			
+	 		/*Se llama a la vista para mostrar la información*/
+			$this->load->view('header');
+			$this->load->view('inventarios/consultarStockAlmacenBodega', $datos);
+			$this->load->view('footer');
+			
+		}  // fin else cuando hay registros 
+		
+	} //... fin consultarStockAlmacenBodega
+ 
+	
 	
 }
 

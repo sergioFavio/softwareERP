@@ -1069,8 +1069,7 @@ class Produccion extends CI_Controller {
 	////////////////////////////////
 
  
- 		public function dataTable(){
- 			
+ 	public function dataTable(){
 		$nombreTabla='materialarea';
 		$this->load->model("tablaGenerica_model");
 		
