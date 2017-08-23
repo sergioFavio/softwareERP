@@ -230,7 +230,7 @@ class Proveedores extends CI_Controller {
 			
 				$datos['consultaProveedor'] ='';
 				
-				$datos['campoBusqueda'] ='codProveedor';
+				$datos['campoBusqueda'] ='proveedor';
 				
 				$datos['nuevoCodigoProveedor'] =$nuevoCodigoProveedor;
 				
@@ -375,30 +375,30 @@ class Proveedores extends CI_Controller {
 	
 	
 	
-	public function buscarMaterialCrud(){
+	public function buscarProveedor(){
 		//... buscar los registros que coincidan con el patron busqueda ingresado ...
-		$campoBusqueda="nombreInsumo";
+		$campoBusqueda="proveedor";
 
 		if(isset($_POST['inputBuscarPatron'])){
-			$consultaMaterial=$_POST['inputBuscarPatron'];
+			$consultaProveedor=$_POST['inputBuscarPatron'];
 			
 			// Escribimos una primera línea en consultaCrud.txt
 			$fp = fopen("pdfsArchivos/consultaCrud.txt", "w");
-			fputs($fp, $consultaMaterial);
+			fputs($fp, $consultaProveedor);
 			fclose($fp); 
 
 		}else{
 			// Leemos la primera línea de consultaCrud.txt
 			// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
 			$fp = fopen("pdfsArchivos/consultaCrud.txt", "r");
-			$consultaMaterial = fgets($fp);
+			$consultaProveedor = fgets($fp);
 			fclose($fp); 
 		}	
 				
 		$this-> load -> model("tablaGenerica_model");
 		
 		$totalRegistrosEncontrados=0;		
-		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
+		$totalRegistrosEncontrados=$this->tablaGenerica_model->getTotalRegistrosBuscar('proveedores',$campoBusqueda,$consultaProveedor);
 		//echo"total registros econtrados".$totalRegistrosEncontrados;
 		if($totalRegistrosEncontrados==0){
 		//	$datos['mensaje']='No hay registros grabados en la tabla '.$nombreTabla;
@@ -406,11 +406,21 @@ class Proveedores extends CI_Controller {
 		//	redirect('produccion/crudVerCotizaciones');
 			redirect('menuController/index');
 		}else{
+			$nuevoCodigoProveedor ='';
+			$rs = mysql_query("SELECT MAX(codProveedor) AS ultimoCodigoProveedor FROM proveedores");
+			if ($row = mysql_fetch_row($rs)) {
+				$ultimoCodigoProveedor = trim($row[0]);
+			}
+			
+			$nuevoCodigoProveedor =substr($ultimoCodigoProveedor,3,3)+1;
+			$nuevoCodigoProveedor ='prv'.$nuevoCodigoProveedor;
+				
+				
 			/* URL a la que se desea agregar la paginación*/
 	    	$config['base_url'] = base_url().'materiales/buscarMaterialCrud';
 			
 			/*Obtiene el total de registros a paginar */
-			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('almacen',$campoBusqueda,$consultaMaterial);
+			$config['total_rows'] = $this->tablaGenerica_model->getTotalRegistrosBuscar('proveedores',$campoBusqueda,$consultaProveedor);
 	
 		
 			/*Obtiene el numero de registros a mostrar por pagina */
@@ -438,22 +448,24 @@ class Proveedores extends CI_Controller {
 	    	$this->pagination->initialize($config);
 	
 			/* Se obtienen los registros a mostrar*/ 		
-			$datos['listaMaterial'] = $this-> tablaGenerica_model -> buscarPaginacion('almacen',$campoBusqueda,$consultaMaterial, $config['per_page'], $desde );
+			$datos['listaProveedor'] = $this-> tablaGenerica_model -> buscarPaginacion('proveedores',$campoBusqueda,$consultaProveedor, $config['per_page'], $desde );
 			
-			$datos['consultaMaterial'] =$consultaMaterial;
+			$datos['consultaProveedor'] =$consultaProveedor;
 			
 			$datos['campoBusqueda'] =$campoBusqueda;
 			
+			$datos['nuevoCodigoProveedor'] =$nuevoCodigoProveedor;
+			
 			/*Se llama a la vista para mostrar la información*/
 			$this->load->view('header');
-			$this->load->view('inventarios/mostrarMaterialesCrud', $datos);
+			$this->load->view('proveedores/verProveedoresCrud', $datos);
 			$this->load->view('footer');
 		
 		}     //... fin IF total registros encontrados ...
-	}		//.. fin buscarMaterialCrud ..
+	}		//.. fin buscarProveedor ..
 	
 		
-	function validarCodigoMaterialCrud(){
+	function validarCodigoProveedorCrud(){
 		//... recupera la variable de codigoMaterial ...
 		$nombreTabla=$this->input->post("nombreTabla");
 		$campo=$this->input->post("campo");
@@ -468,7 +480,7 @@ class Proveedores extends CI_Controller {
 			echo json_encode(false);
 		}   		
 		
-	}	//... fin validarCodigoMaterialCrud() ...
+	}	//... fin validarCodigoProveedorCrud() ...
 	
 	
 	//... fin de funciones CRUD ...

@@ -247,7 +247,7 @@ function validarCodigoNoRepetido(numero){
   		var codExiste='';	//... variable se guarda el resultado de si codigo esta repetido o no ...
 		var codMat= numero;	
 		$.ajax({
-	    	url: "validarCodigoMaterialCrud",  //"convertirNumeroAliteral('1490)",
+	    	url: "validarCodigoProveedorCrud",  //"convertirNumeroAliteral('1490)",
 	        type:"POST",
 	        data:{nombreTabla:'proveedores',campo:'codProveedor',patron:codMat},
 	        dataType: "json",
@@ -296,14 +296,14 @@ function validarSitioWebM(cadenaEmail){
 <div class="jumbotron" id="cuerpoCabecera" >	<!--cuerpoCrudMaterial-->
 	
 		<?php
-			if($campoBusqueda=="nombreInsumo"){
-				$buscaPor="buscarMaterialCrud";
+			if($campoBusqueda=="proveedor"){
+				$buscaPor="buscarProveedor";
 			}else{
-				$buscaPor="buscarMaterialCrudPorCodigo";
+				$buscaPor="buscarProveedorPorCodigo";
 			}
 		?>
 	
-	    <form class="form-horizontal" method="post" action="<?=base_url()?>materiales/<?= $buscaPor ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
+	    <form class="form-horizontal" method="post" action="<?=base_url()?>proveedores/<?= $buscaPor ?>" id="formBuscarRegistro_" name="formBuscarRegistro_" >
 	    	<div style="height:2px;"></div>
 			<p align="center" class="tituloReporte" ><span class="label label-default"> CRUD Proveedores </span></p>
 	
