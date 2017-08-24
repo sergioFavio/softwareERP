@@ -1560,7 +1560,97 @@ class Tienda extends CI_Controller {
 		}		//... fin IF validar usuario ...
 	}	//..fin realizarPedido ...
 	
+		
+	public function realizarPedidoM(){
+		//... realizarPedidoM para muestrario de la tienda
+		//... control de permisos de acceso ....
+		$permisoUserName=$this->session->userdata('userName');
+		$permisoMenu=$this->session->userdata('usuarioMenu');
+		if($permisoUserName!='superuser' && $permisoUserName!='developer' && $permisoMenu!='ventas' ){  //... valida permiso de userName y de menu ...
+			$datos['mensaje']='Usuario NO autorizado para operar Sistema de Ventas';
+			$this->load->view('header');
+			$this->load->view('mensaje',$datos );
+			$this->load->view('footer');
+		}
+		else{		//... fin control de permisos de acceso ....
+			$local= $_GET['local']; //... lee local que viene del menu principal(T: tienda/F: fabrica/Z:zuñiga ) ...	
+			$this->load->model("numeroDocumento_model");
+			$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla
+	    	$pedido = $this->numeroDocumento_model->getNumero($nombreTabla);
+			
+			///////////////////////////////////////
+			///...INICIO genera nuevo numero de pedido ...
+			//////////////////////////////////////
 
+			if($local=="F"){
+				$anhoSistema = date("Y");	//... anho del sistema
+ 				$anhoSistema = substr($anhoSistema, 2, 2);	//... anho del sistema
+
+				$secuenciaPedido= substr($pedido, 0, 4);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 4, 2);  // toma los ultimos 2 caracteres ... anho.	
+			}
+			
+			if($local=="T"){		//...cuando el local es T:tienda ...
+				$anhoSistema = date("Y");	//... anho del sistema
+				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+		
+				$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+			}
+			
+			
+			if($local=="Z"){		//...cuando el local es Z:Zuñiga...
+				$anhoSistema = date("Y");	//... anho del sistema
+				$anhoSistema = substr($anhoSistema, 0, 4);	//... anho del sistema
+			 				
+				$secuenciaPedido= substr($pedido, 0,4);  // toma los caracteres ... secuencia.
+				$anhoPedido= substr($pedido, 4, 4);  // toma 4 caracteres ... anho.
+			}
+			
+			if($anhoPedido!=$anhoSistema){
+				if($local=="Z"){
+					$secuenciaPedido="5000";
+				}
+				
+				if($local=="T"){
+					$secuenciaPedido="1000";
+				}
+				
+				if($local=="F"){
+					$secuenciaPedido="6000";
+				}
+			}
+			
+			$secuenciaPedido=$secuenciaPedido+1;
+			
+			$pedido=$secuenciaPedido.$anhoSistema;	
+			
+			///////////////////////////////////////
+			///...FIN genera nuevo numero de pedido ...
+			//////////////////////////////////////
+			
+			if($local=="Z"){		//...cuando el local es Z:Zuñiga...
+				$sql="SELECT * FROM productosfabrica WHERE idProd LIKE 'Z%'";	
+				$insumos = $this->db->query($sql)->result_array();
+			}else{						//.. cuando local es T:tienda o F:fabrica ...
+				$this->load->model("inventarios/maestroMaterial_model");	//...carga el modelo tabla maestra[almacen/bodega]
+				$insumos= $this->maestroMaterial_model->getTodos('productosfabrica'); //..una vez cargado el modelo de la tabla llama almacen/bodega..
+			}
+			
+			$datos['local']='M';					//... M: tienda para pedido de muestrario...		
+			$datos['titulo']='productosfabrica';
+			$datos['secuenciaPedido']=$secuenciaPedido;
+			$datos['anhoSistema']=$anhoSistema;
+			$datos['pedido']=$pedido;
+			$datos['insumos']=$insumos;	
+				
+			$this->load->view('header');
+			$this->load->view('tienda/pedido',$datos);		
+			$this->load->view('footer');
+		}		//... fin IF validar usuario ...
+	}	//..fin realizarPedidoM ...
+	
+	
 	public function ubicarPedido(){
 		//... control de permisos de acceso ....
 		$permisoUserName=$this->session->userdata('userName');
@@ -1711,10 +1801,15 @@ class Tienda extends CI_Controller {
 	
 	public function grabarPedido(){		
 		$numeroFilasValidas=$_POST['numeroFilas']; //... formulario materiales ...
-		$local=$_POST['local'];
+		$local=str_replace(",","",$_POST['local']);
 		$numPedido=$_POST['numPedido'];
 		$secuenciaPedido=$_POST['secuenciaPedido'];
 		$anhoSistema=$_POST['anhoSistema'];
+		
+		$localAux=$local;						//... para cuando es M: de muestrario para tienda ...
+		if($local=='M'){
+			$local='T';
+		}
 		
 		// ... actualizar numero de cotizacion ...	
 		$nombreTabla='nopedido'.strtolower($local); // ... prefijoTabla ... F: fabrica  T: tienda ...
@@ -1725,7 +1820,12 @@ class Tienda extends CI_Controller {
 		$descuento= $_POST['descuento'];
 		$embalaje= $_POST['embalaje'];
 		$montoConDescto=str_replace(",","",$_POST['detalleTotalBs']);
-		$montoConDescto=$montoConDescto -$descuento + $embalaje;
+		
+		if($localAux=='M'){							//... pedido de tienda para muestrario ...
+			$montoConDescto=0.00;
+		}else{										//... pedido corriente ...
+			$montoConDescto=$montoConDescto -$descuento + $embalaje;
+		}
 
 		$pedidoCabecera = array(
 	    	"numPedido"=>$_POST['numPedido'],
@@ -1787,6 +1887,12 @@ class Tienda extends CI_Controller {
 					    "estadoItem"=>'T'
 					);
 				}else{								////..pedido T:ienda/F.abrica ...
+					if($localAux=='M'){		//... pedido de tienda para muestrario ...
+						$precioItem=0.00;
+					}else{					//... pedido corriente ...
+						$precioItem=$_POST['precioMat_'.$i];
+					}
+					
 					$plantillaProducto = array(
 		            	"numeroPedido"=>$numPedido,
 					    "idProducto"=>$codigoSinEspacio,
@@ -1794,7 +1900,7 @@ class Tienda extends CI_Controller {
 					    "color"=>$_POST['colorMat_'.$i],
 					    "cantidad"=>$_POST['cantMat_'.$i],
 					    "unidad"=>$_POST['unidadMat_'.$i],
-					    "precio"=>$_POST['precioMat_'.$i],
+					    "precio"=>$precioItem,
 					    "secuencia"=>$secuencia,
 					    "cliente"=>$_POST['cliente'],
 					    "fechaEntrega"=>$_POST['inputEntrega']
