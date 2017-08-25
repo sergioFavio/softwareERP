@@ -3069,12 +3069,12 @@ class Contabilidad extends CI_Controller {
 			$this->load->library('contabilidad/FlujoEfectivoPdf');
 			
 			// Se obtienen los registros de la base de datos						
-			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel<='3' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
+			$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,debemes, habermes,nivel FROM contaaux WHERE nivel>='2' AND nivel<='3' AND cuenta<='39999999' AND( debeacumulado!=0.00 || haberacumulado!=0.00 || debemes!=0.00 || habermes!=0.00 ) ";
 			$registros = $this->db->query($sql);
 			$contador= $registros->num_rows; //...contador de registros que satisfacen la consulta ..
 			
 			if($contador==0){
-				$datos['mensaje']='No hay registros seleccionados para el BALANCE COMPARATIVO.'.$contador;
+				$datos['mensaje']='No hay registros seleccionados para el FLUJO DE EFECTIVO.'.$contador;
 				$this->load->view('header');
 				$this->load->view('mensaje',$datos );
 				$this->load->view('footer');
@@ -3104,340 +3104,272 @@ class Contabilidad extends CI_Controller {
 				// Se define el formato de fuente: Arial, negritas, tamaño 9
 				//$this->pdf->SetFont('Arial', 'B', 9);
 				$this->pdf->SetFont('Arial', '', 9);
-			
+				$espacio=1; 			//... epacio variable para imprimir ...
+							
+				$totalActividadesOperativas=0.00;
+				
+				$totalActividadesInversion=0.00;
+
+				$totalEfectivoInicioPeriodo=0.00;
+				
+				$totalFlujoEfectivo=0.00;
+				
+				$numeroLineas=0; 	//...numero de lineas de impresion ...
+				
+				$resultadosAcumulados=0.00;				//... para calcular la diferencia ...
+				$resultadosDeLaGestion=0.00;			//... para calcular la diferencia ...
+				
+				$this->pdf->Ln(3);
+				$this->pdf->Cell(1,5,'RECURSOS GENERADOS POR ACTIVIDADES OPERATIVAS','',0,'L',0);
+				$this->pdf->Ln(3);
+				
+				foreach ($registros->result() as $registro) {
+					if( substr($registro->cuenta,0,4)!='1101' && substr($registro->cuenta,0,2)!='14' && substr($registro->cuenta,0,2)!='15' ){		//...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
 						
-$this->pdf->Ln(5);
-$this->pdf->Cell(1,5,'','',0,'L',0);			
-$this->pdf->Cell(15,5,'ORIGEN DE LOS FONDOS','',0,'L',0);
+				    // Se imprimen los datos de cada registro
+				    $numeroLineas = $numeroLineas +1;
+					$this->pdf->Ln(5);
 
-//... resultados de la gestión ....	   			
-$sql="SELECT cuenta,descripcion,debeacumulado,haberacumulado,nivel FROM contaaux WHERE nivel='3' AND cuenta>='40000000' AND cuenta<='69999999' AND(debeacumulado!=0.00 || haberacumulado!=0.00) ";
-$registros = $this->db->query($sql);
-$resultadoGestion=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$resultadoGestion=$resultadoGestion+($registro->debeacumulado - $registro->haberacumulado);
-}
-$resultadoGestion=$resultadoGestion*(-1);
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(5,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,'FONDOS GENERADOS POR LAS OPERACIONES','',0,'L',0);
-
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Resultados De La Gestión'),'',0,'L',0);
-				
-$this->pdf->Cell(63,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($resultadoGestion ,2),'',0,'R',0);				
+				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+					
+			   		if($registro->nivel=='2'){
+			   			$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+					}
 			
-			
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Partidas que no generan movimiento de fondos:'),'',0,'L',0);			
-			
-$sql="SELECT * FROM contaaux WHERE cuenta='22010000' ";
-$registros = $this->db->query($sql);
-$previsiones=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$previsiones=$registro->haberacumulado - $registro->habermes;
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Previsiones'),'',0,'L',0);
+					if($registro->nivel=='3'){
+						if($registro->cuenta<='19999999'){
+							if(($registro->debeacumulado-$registro->debemes)*(-1)>0.00){
+								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
+							}else{
+								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
+							}
+							
+							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format(($registro->debeacumulado-$registro->debemes)*(-1) ,2),'',0,'R',0);
+							
+							$totalActividadesOperativas=$totalActividadesOperativas+( ($registro->debeacumulado-$registro->debemes)*(-1) );
+							
+				    	}else{
+				    		if($registro->cuenta=='31040100'){					//... para re-calcular RESULTADOS DE LA GESTION ... 
+				    			$resultadosAcumulados=$registro->haberacumulado-$registro->habermes;	//... para calcular la diferencia ...
+				    		}
+				    		
+							if(($registro->haberacumulado-$registro->habermes)>0.00){
+								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
+							}else{
+								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
+							}
+											
+							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							
+				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							
+							if($registro->cuenta=='31050100'){	//... recalcula RESULTADOS DE LA GESTION por la diferencia de RESULTADOS DE LA GESTION - RESULTADOS ACUMULADOS
+		
+								$this->pdf->Cell(20,5,number_format(($registro->haberacumulado-$registro->habermes)-$resultadosAcumulados,2),'',0,'R',0);
+								
+								$totalActividadesOperativas=$totalActividadesOperativas+(  ($registro->haberacumulado-$registro->habermes)-$resultadosAcumulados );
+								
+							}else{
+								$this->pdf->Cell(20,5,number_format($registro->haberacumulado-$registro->habermes,2),'',0,'R',0);
+								
+								$totalActividadesOperativas=$totalActividadesOperativas+ ( $registro->haberacumulado-$registro->habermes );
+							}
+							
+				    	}
+					}
+				 
+				  	
+				  	
+				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
+						
+				  					
+				}			//... fin foreach ....
 				
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($previsiones ,2),'',0,'R',0);
-
-
-$sql="SELECT * FROM contaaux WHERE cuenta='51070000' ";
-$registros = $this->db->query($sql);
-$depreciaciones=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$depreciaciones=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Depreciaciones'),'',0,'L',0);
+				$totalFlujoEfectivo=$totalFlujoEfectivo+$totalActividadesOperativas;
 				
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($depreciaciones ,2),'',0,'R',0);
-
-
-
-$sql="SELECT * FROM contaaux WHERE cuenta='31020000' ";
-$registros = $this->db->query($sql);
-$ajusteCapital=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$ajusteCapital=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Ajuste de Capital'),'',0,'L',0);
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(74,5,utf8_decode('TOTAL RECURSOS GENERADOS POR ACTIVIDADES OPERATIVAS'),'',0,'L',0);
+				$this->pdf->Cell(93,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalActividadesOperativas,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+		
 				
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($ajusteCapital ,2),'',0,'R',0);
+				///////////////////////////////////////////////////////////////////////////////////////////////
+				//... segundo ciclo de impresión ...cuentas de inversion.... ACTIVOS FIJOS y OTROS FIJOS ......
+				///////////////////////////////////////////////////////////////////////////////////////////////
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,utf8_decode('ACTIVIDADES DE INVERSIÓN'),'',0,'L',0);
+				$this->pdf->Ln(5);
+						
+				foreach ($registros->result() as $registro) {
+					if(substr($registro->cuenta,0,2)>='14' && substr($registro->cuenta,0,2)<='15'){		//...1er ciclo salta cuentas diferentes de ACTIVO FIJO y OTROS ACTIVOS...
+						
+				    // Se imprimen los datos de cada registro
+				    $numeroLineas = $numeroLineas +1;
+					$this->pdf->Ln(5);
+
+				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+					
+			   		if($registro->nivel=='2'){
+			   			$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+					}
 			
-
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('TOTAL FONDOS GENERADOS'),'',0,'L',0);		
-
-$totalFondosGenerados= $resultadoGestion + $previsiones + $depreciaciones + $ajusteCapital;
-$this->pdf->Cell(63,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($totalFondosGenerados ,2),'',0,'R',0);	
-
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);	
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Aumento Neto de Pasivos:'),'',0,'L',0);	
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='21100400' ";
-$registros = $this->db->query($sql);
-$ivaDebitoFiscalPorPagar=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$ivaDebitoFiscalPorPagar=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('IVA Débito Fiscal'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($ivaDebitoFiscalPorPagar ,2),'',0,'R',0);	
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='31040000' ";
-$registros = $this->db->query($sql);
-$resultadosAcumulados=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$resultadosAcumulados=$registro->debeacumulado - $registro->haberacumulado; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Resultados Acumulados'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($resultadosAcumulados ,2),'',0,'R',0);		
+					if($registro->nivel=='3'){
+						if($registro->cuenta<='19999999'){
+							if(($registro->debeacumulado-$registro->debemes)*(-1)>0.00){
+								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
+							}else{
+								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
+							}
+							
+							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format(($registro->debeacumulado-$registro->debemes)*(-1) ,2),'',0,'R',0);
+							
+							$totalActividadesInversion=$totalActividadesInversion+( ($registro->debeacumulado-$registro->debemes)*(-1) );
+				    	}
+						
+					}
+				 
+				  	
+				  	
+				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
+						
+				  					
+				}			//... fin foreach ....
+				
+				
+				$totalFlujoEfectivo=$totalFlujoEfectivo+$totalActividadesInversion;	
+					
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(74,5,utf8_decode('TOTAL ACTIVIDADES DE INVERSIÓN'),'',0,'L',0);
+				$this->pdf->Cell(93,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalActividadesInversion,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+				
+				
+				
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(74,5,utf8_decode('TOTAL AUMENTO/DISMINUCIÓN DE ACTIVIDADES'),'',0,'L',0);
+				$this->pdf->Cell(93,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalFlujoEfectivo,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+				
+				
+				
+				
 		
+										
+				///////////////////////////////////////////////////////////////////////////////////////////////
+				//... tercer ciclo de impresión ...cuentas de inversion.... ACTIVOS FIJOS y OTROS FIJOS ......
+				///////////////////////////////////////////////////////////////////////////////////////////////
+				$this->pdf->Ln(5);
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,utf8_decode('EFECTIVO AL INICIO DEL PERÍODO'),'',0,'L',0);
+				$this->pdf->Ln(5);
+						
+				foreach ($registros->result() as $registro) {
+					if(substr($registro->cuenta,0,4)=='1101' ){		//...1er ciclo salta cuentas diferentes de ACTIVO FIJO y OTROS ACTIVOS...
+						
+				    // Se imprimen los datos de cada registro
+				    $numeroLineas = $numeroLineas +1;
+					$this->pdf->Ln(5);
+
+				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+					
+			   		if($registro->nivel=='2'){
+			   			$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+					}
+			
+					if($registro->nivel=='3'){
+						if($registro->cuenta<='19999999'){
+							if(($registro->debeacumulado-$registro->debemes)*(-1)>0.00){
+								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
+							}else{
+								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
+							}
+							
+							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
+							
+							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
+							$this->pdf->Cell(20,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
+							
+							$totalEfectivoInicioPeriodo=$totalEfectivoInicioPeriodo+( ($registro->debemes) );
+				    	}
+						
+					}
+				 
+				  	
+				  	
+				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
+						
+				  					
+				}			//... fin foreach ....
+				
+				
+				$totalFlujoEfectivo=$totalFlujoEfectivo+$totalEfectivoInicioPeriodo;
+					
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(74,5,utf8_decode('TOTAL EFECTIVO AL INICIO DEL PERÍODO'),'',0,'L',0);
+				$this->pdf->Cell(93,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalEfectivoInicioPeriodo,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
 		
-$sql="SELECT * FROM contaaux WHERE  cuenta='31030300' ";
-$registros = $this->db->query($sql);
-$reservaLegal=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$reservaLegal=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Reserva Legal'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($reservaLegal ,2),'',0,'R',0);		
-	
-	
-$sql="SELECT * FROM contaaux WHERE  cuenta='31030200' ";
-$registros = $this->db->query($sql);
-$reservaParaCapitalizacion=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$reservaParaCapitalizacion=$registro->haberacumulado - $registro->habermes; //..preguntar si es debe-haber || debeacum - debemes || haberacum - dhabermes ...
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Reserva Para Capitalización'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($reservaParaCapitalizacion ,2),'',0,'R',0);	
-
-
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);	
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Disminución  Neta de Activos:'),'',0,'L',0);
-		
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='13000000' ";
-$registros = $this->db->query($sql);
-$activoRealizable=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$activoRealizable=$registro->debeacumulado - $registro->debemes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Activo Realizable'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($activoRealizable ,2),'',0,'R',0);
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='12000000' ";
-$registros = $this->db->query($sql);
-$activoExigible=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$activoExigible=$registro->debeacumulado - $registro->debemes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Activo Exigible'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($activoExigible ,2),'',0,'R',0);
-
-
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('TOTAL ORIGEN DE FONDOS'),'',0,'L',0);		
-
-$totalOrigenFondos= $totalFondosGenerados+$ivaDebitoFiscalPorPagar+$resultadosAcumulados+$reservaLegal+$reservaParaCapitalizacion+$activoRealizable+$activoExigible ;
-$this->pdf->Cell(63,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($totalOrigenFondos ,2),'',0,'R',0);	
-
-		
-$this->pdf->Ln(5);
-$this->pdf->Ln(5);
-$this->pdf->Cell(1,5,'','',0,'L',0);			
-$this->pdf->Cell(15,5,utf8_decode('APLICACIÓN DE LOS FONDOS'),'',0,'L',0);
-
-
-$this->pdf->Ln(5);	
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Aumento Neto de Activos:'),'',0,'L',0);
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='12000000' ";
-$registros = $this->db->query($sql);
-$exigible=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$exigible=$registro->debeacumulado - $registro->debemes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Exigible'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($exigible ,2),'',0,'R',0);
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='13000000' ";
-$registros = $this->db->query($sql);
-$realizable=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$realizable=$registro->debeacumulado - $registro->debemes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Realizable'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($realizable ,2),'',0,'R',0);
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='14000000' ";
-$registros = $this->db->query($sql);
-$activoFijo=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$activoFijo=$registro->debeacumulado - $registro->debemes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Activo Fijo'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($activoFijo ,2),'',0,'R',0);
-
-
-$this->pdf->Ln(5);
-$this->pdf->Ln(5);	
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Disminución Neta de Pasivos:'),'',0,'L',0);
-		
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='21020000' ";
-$registros = $this->db->query($sql);
-$cuentasPorPagar=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$cuentasPorPagar=$registro->haberacumulado - $registro->habermes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Cuentas por Pagar'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($cuentasPorPagar ,2),'',0,'R',0);
-
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='21010000' ";
-$registros = $this->db->query($sql);
-$proveedores=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$proveedores=$registro->haberacumulado - $registro->habermes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Cell(25,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('Proveedores'),'',0,'L',0);
-$this->pdf->Cell(53,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($proveedores ,2),'',0,'R',0);
-
-
-
-$this->pdf->Ln(5);	
-$this->pdf->Ln(5);
-$this->pdf->Cell(15,5,'','',0,'L',0);			
-$this->pdf->Cell(35,5,utf8_decode('TOTAL APLICACIÓN DE FONDOS'),'',0,'L',0);		
-
-$totalAplicacionFondos= $exigible+$realizable+$activoFijo+$cuentasPorPagar+$proveedores;
-$this->pdf->Cell(63,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($totalAplicacionFondos ,2),'',0,'R',0);	
-
-
-$this->pdf->Ln(5);
-$this->pdf->Ln(5);
-$this->pdf->Cell(1,5,'','',0,'L',0);			
-$this->pdf->Cell(55,5,utf8_decode('INCREMENTO (DISMINUCIÓN) DE FONDOS EN EL EJERCICIO'),'',0,'L',0);
-
-$total1= 99999999;
-$this->pdf->Cell(57,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($total1 ,2),'',0,'R',0);	
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='11000000' ";
-$registros = $this->db->query($sql);
-$proveedores=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$total2=$registro->debemes - $registro->habermes; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Ln(5);
-$this->pdf->Cell(1,5,'','',0,'L',0);			
-$this->pdf->Cell(55,5,utf8_decode('DISPONIBILIDADES AL INICIO DEL EJERCICIO'),'',0,'L',0);
-
-$this->pdf->Cell(57,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($total2 ,2),'',0,'R',0);	
-
-
-$sql="SELECT * FROM contaaux WHERE  cuenta='11000000' ";
-$registros = $this->db->query($sql);
-$proveedores=0.00; 			//... acumulael resultado de la gestión ...
-foreach ($registros->result() as $registro) {
-	$total3=$registro->debeacumulado - $registro->haberacumulado; 
-}
-
-$this->pdf->Ln(5);
-$this->pdf->Ln(5);
-$this->pdf->Cell(1,5,'','',0,'L',0);			
-$this->pdf->Cell(55,5,utf8_decode('DISPONIBILIDADES AL CIERRE DEL EJERCICIO'),'',0,'L',0);
-
-$this->pdf->Cell(57,5,'','',0,'L',0);
-$this->pdf->Cell(20,5,number_format($total3 ,2),'',0,'R',0);	
-
-
+				
+				
+				
+				//... imprime totales ........
+				$this->pdf->Ln(5);
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
+				$this->pdf->Ln(3);		//Se agrega un salto de linea
+				$this->pdf->Cell(74,5,utf8_decode('SALDO FINAL DE EFECTIVO'),'',0,'L',0);
+				$this->pdf->Cell(93,5,'','',0,'L',0);
+				$this->pdf->Cell(20,5,number_format($totalFlujoEfectivo,2),'',0,'R',0);
+				$this->pdf->Ln(2);		//Se agrega un salto de linea
+				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
+				//... fin impresion totales  ........
+				
+				
+				
 					
 			     /* PDF Output() settings
 			     * Se manda el pdf al navegador
