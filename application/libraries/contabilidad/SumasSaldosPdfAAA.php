@@ -31,8 +31,9 @@
 			$this->Cell(60,10,utf8_decode('Fecha Impresión: ').date("d-m-Y"),0,0,'L');
             $this->Ln(7);
 			
-			$sTxt1 = "  CUENTA                        D E S C R I P C I O N                                S       U      M      A       S                   S     A    L    D     O     S              ";
-			$sTxt2 = "                                                                                                                                D E B E            H A B E R                 D E B E            H A B E R";
+			$sTxt1 = "  CUENTA                        D E S C R I P C I O N                     S U M A S    M E N S U A L E S     S U M A S    A C U M U L A D A S              ";
+//			$sTxt2 = "SALDO                                                                                                            D E B E            H A B E R                 D E B E            H A B E R";
+			$sTxt2 = "                                                                                                                         D E B E            H A B E R                 D E B E            H A B E R";
 			
 
 			//create an advanced multicell

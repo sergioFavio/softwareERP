@@ -1683,7 +1683,7 @@ class Contabilidad extends CI_Controller {
 						$subCuentaAnteriorDebeMes=$registro->debemes;
 						$subCuentaAnteriorHaberMes=$registro->habermes;
 						$subCuentaAnteriorDebeAcumulado=$registro->debeacumulado;
-						$subCuentaAnteriorhaberAcumulado=$registro->haberacumulado;
+						$subCuentaAnteriorHaberAcumulado=$registro->haberacumulado;
 						$cuenta=substr($registro->cuenta,0,6);
 						$sql="SELECT * FROM contaplandectas WHERE cuenta LIKE '$cuenta%' AND nivel='5' ";
 						$result = $this->db->query($sql);
@@ -3137,19 +3137,14 @@ class Contabilidad extends CI_Controller {
 					}
 			
 					if($registro->nivel=='3'){
-						if($registro->cuenta<='19999999'){
+						if($registro->cuenta<='19999999' ){
 							if(($registro->debeacumulado-$registro->debemes)*(-1)>0.00){
 								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
 							}else{
 								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
 							}
 							
-							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
-							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(40,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format(($registro->debeacumulado-$registro->debemes)*(-1) ,2),'',0,'R',0);
 							
 							$totalActividadesOperativas=$totalActividadesOperativas+( ($registro->debeacumulado-$registro->debemes)*(-1) );
@@ -3165,12 +3160,7 @@ class Contabilidad extends CI_Controller {
 								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
 							}
 											
-							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							
-				    		$this->pdf->Cell(20,5,number_format($registro->haberacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->habermes,2),'',0,'R',0);
-							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(40,5,'','',0,'L',0);
 							
 							if($registro->cuenta=='31050100'){	//... recalcula RESULTADOS DE LA GESTION por la diferencia de RESULTADOS DE LA GESTION - RESULTADOS ACUMULADOS
 		
@@ -3187,8 +3177,6 @@ class Contabilidad extends CI_Controller {
 				    	}
 					}
 				 
-				  	
-				  	
 				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
 						
 				  					
@@ -3224,7 +3212,7 @@ class Contabilidad extends CI_Controller {
 					$this->pdf->Ln(5);
 
 				   	$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-					
+
 			   		if($registro->nivel=='2'){
 			   			$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
 					}
@@ -3237,20 +3225,13 @@ class Contabilidad extends CI_Controller {
 								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
 							}
 							
-							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
-							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(40,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format(($registro->debeacumulado-$registro->debemes)*(-1) ,2),'',0,'R',0);
 							
 							$totalActividadesInversion=$totalActividadesInversion+( ($registro->debeacumulado-$registro->debemes)*(-1) );
 				    	}
 						
 					}
-				 
-				  	
 				  	
 				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
 						
@@ -3272,8 +3253,6 @@ class Contabilidad extends CI_Controller {
 				//... fin impresion totales  ........
 				
 				
-				
-				
 				//... imprime totales ........
 				$this->pdf->Ln(5);
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
@@ -3285,11 +3264,6 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
 				
-				
-				
-				
-				
-		
 										
 				///////////////////////////////////////////////////////////////////////////////////////////////
 				//... tercer ciclo de impresión ...cuentas de inversion.... ACTIVOS FIJOS y OTROS FIJOS ......
@@ -3314,18 +3288,10 @@ class Contabilidad extends CI_Controller {
 			
 					if($registro->nivel=='3'){
 						if($registro->cuenta<='19999999'){
-							if(($registro->debeacumulado-$registro->debemes)*(-1)>0.00){
-								$this->pdf->Cell(67,5,utf8_decode('Aumento de '.$registro->descripcion),'',0,'L',0);
-							}else{
-								$this->pdf->Cell(67,5,utf8_decode('Disminución de '.$registro->descripcion),'',0,'L',0);
-							}
 							
-							$this->pdf->Cell($espacio*($registro->nivel)*($registro->nivel),5,'','',0,'L',0);
-							
-							$this->pdf->Cell(20,5,number_format($registro->debeacumulado,2),'',0,'R',0);
-							$this->pdf->Cell(20,5,'','',0,'L',0);
-							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
-							$this->pdf->Cell(22,5,'','',0,'L',0);
+							$this->pdf->Cell(67,5,utf8_decode($registro->descripcion),'',0,'L',0);
+						
+							$this->pdf->Cell(40,5,'','',0,'L',0);
 							$this->pdf->Cell(20,5,number_format($registro->debemes ,2),'',0,'R',0);
 							
 							$totalEfectivoInicioPeriodo=$totalEfectivoInicioPeriodo+( ($registro->debemes) );
@@ -3333,8 +3299,6 @@ class Contabilidad extends CI_Controller {
 						
 					}
 				 
-				  	
-				  	
 				  	}	//... fin IF  ...1er ciclo salta cuentas ACTIVO FIJO y OTROS ACTIVOS...
 						
 				  					
@@ -3355,8 +3319,6 @@ class Contabilidad extends CI_Controller {
 				//... fin impresion totales  ........
 		
 				
-				
-				
 				//... imprime totales ........
 				$this->pdf->Ln(5);
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);
@@ -3367,8 +3329,6 @@ class Contabilidad extends CI_Controller {
 				$this->pdf->Ln(2);		//Se agrega un salto de linea
 				$this->pdf->Cell(1,5,'=====================================================================================================','',0,'L',0);			
 				//... fin impresion totales  ........
-				
-				
 				
 					
 			     /* PDF Output() settings
