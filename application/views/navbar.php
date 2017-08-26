@@ -316,12 +316,10 @@
                     		<li><a href="<?=base_url();?>materiales/buscarSalida?nombreDeposito=bodega"><span class="glyphicon glyphicon-pencil"></span> Modificar Salida de Bodega</a></li>
 						</ul>
 					</li>
-                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Proveedores PENDIENTE</a>
+                    <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Proveedores </a>
                     	<ul class="dropdown-menu">
-							<li><a href="#"><span class="glyphicon glyphicon-usd"></span> Libro Diario</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Libro Mayores</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Sumas y saldos</a></li>
-							<li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> otros ....</a></li>
+							<li><a href="<?=base_url();?>proveedores/crudProveedores"><span class="glyphicon glyphicon-file"></span> CRUD Proveedores</a></li>
+                    		<li><a href="<?=base_url();?>proveedores/generarReporteProveedores"><span class="glyphicon glyphicon-print"></span> Listado Proveedores</a></li>
 						</ul>
 					</li>
 					<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-signal"></span> Producci&oacute;n</a>
