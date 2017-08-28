@@ -1172,10 +1172,25 @@ class Produccion extends CI_Controller {
 			}
 		}		
 				
-		if(strlen($codigoPedido)>=6){		//..pedidos de tienda ... 
-			$numeroOrden=substr($codigoPedido,0,strlen($codigoPedido)-4);
-			$anhoPedido=substr($codigoPedido,strlen($numeroOrden),4);
-		}			
+		if(strlen($codigoPedido)==6){		//..pedidos de tienda ... 
+			if(substr($codigoPedido,2,4)==date("Y") ){
+				$numeroOrden=substr($codigoPedido,0,2);				//... cuando el pedido es de tienda ...
+				$anhoPedido=substr($codigoPedido,2,4);
+			}else{
+				$numeroOrden=substr($codigoPedido,0,4);				//... cuando el pedido es de fabrica ...
+				$anhoPedido=substr($codigoPedido,4,2);
+			}
+		}
+		
+		if(strlen($codigoPedido)==7){		//..pedidos de tienda ... 
+			$numeroOrden=substr($codigoPedido,0,3);
+			$anhoPedido=substr($codigoPedido,3,4);
+		}
+		
+		if(strlen($codigoPedido)==8){		//..pedidos de tienda ... 
+			$numeroOrden=substr($codigoPedido,0,4);
+			$anhoPedido=substr($codigoPedido,4,4);
+		}					
 		
 	
 		// Creacion del PDF
